@@ -30,13 +30,13 @@ class Data {
                 typeOfPokemon = listOf("Grass", "Poison"),
                 category = "Seed",
                 image = R.drawable.poke001,
-                hp = 30,
-                attack = 30,
-                defense = 30,
-                specialAttack = 40,
-                specialDefense = 30,
-                speed = 30,
-                total = 190
+                hp = 45,
+                attack = 49,
+                defense = 49,
+                specialAttack = 65,
+                specialDefense = 65,
+                speed = 45,
+                total = 318
             ),
             Pokemon(
                 id = "#002",
@@ -45,13 +45,13 @@ class Data {
                 typeOfPokemon = listOf("Grass", "Poison"),
                 category = "Seed",
                 image = R.drawable.poke002,
-                hp = 30,
-                attack = 40,
-                defense = 40,
-                specialAttack = 50,
-                specialDefense = 40,
-                speed = 40,
-                total = 240
+                hp = 60,
+                attack = 62,
+                defense = 63,
+                specialAttack = 80,
+                specialDefense = 80,
+                speed = 60,
+                total = 405
             ),
             Pokemon(
                 id = "#003",
@@ -59,7 +59,14 @@ class Data {
                 description = "There is a large flower on Venusaur's back. The flower is said to take on vivid colors if it gets plenty of nutrition and sunlight. The flower's aroma soothes the emotions of people.",
                 typeOfPokemon = listOf("Grass", "Poison"),
                 category = "Seed",
-                image = R.drawable.poke003
+                image = R.drawable.poke003,
+                hp = 80,
+                attack = 100,
+                defense = 123,
+                specialAttack = 122,
+                specialDefense = 120,
+                speed = 80,
+                total = 625
             ),
             Pokemon(
                 id = "#004",
