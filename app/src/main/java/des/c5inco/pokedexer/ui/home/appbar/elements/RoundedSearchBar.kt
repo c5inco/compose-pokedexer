@@ -1,7 +1,10 @@
 package des.c5inco.pokedexer.ui.home.appbar.elements
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -12,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
@@ -31,10 +35,10 @@ fun RoundedSearchBar() {
             Image(
                 painter = painterResource(R.drawable.search),
                 contentDescription = "Search icon",
-                modifier = Modifier.size(24.dp)
             )
             Text(
                 "Search Pokemon, Move, Ability, etc",
+                fontSize = 14.sp,
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 16.dp)

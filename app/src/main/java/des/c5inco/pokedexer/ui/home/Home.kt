@@ -2,6 +2,7 @@ package des.c5inco.pokedexer.ui.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,7 +28,7 @@ fun HomeScreen(
 ) {
     Surface(
         Modifier.fillMaxSize(),
-        color = Color.DarkGray
+        color = MaterialTheme.colors.background
     ) {
         Column {
             MainAppBar(onMenuItemSelected = onMenuItemSelected)
