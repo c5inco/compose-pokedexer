@@ -6,7 +6,7 @@ Adapted fork of original [compose-pokedex](https://github.com/zsoltk/compose-pok
 Notable changes:
 - Upgraded dependencies: Compose -> 1.1.0, AGP -> 7.1.1
 - Added [Accompanist](https://github.com/google/accompanist) for edge-to-edge UI treatment
-- Swapped out [composer-router] for [Compose Navigation](https://developer.android.com/jetpack/compose/navigation) (2.4.0)
+- Swapped out [composer-router](https://github.com/zsoltk/compose-router) for [Compose Navigation](https://developer.android.com/jetpack/compose/navigation) (2.4.0)
 - Moved color resources -> Kotlin color constants
 - Removed usage of LiveData for now
 
