@@ -12,7 +12,9 @@ Notable changes:
 
 ## Screenshots
 
-// Update screenshots>
+<img src="assets/screenshots/home.png" width="270"/>
+<img src="assets/screenshots/list.png" width="270"/>
+<img src="assets/screenshots/details.png" width="270"/>
 
 ## Original design
 
