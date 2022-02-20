@@ -12,14 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.MenuItem.*
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
-
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -42,7 +40,7 @@ fun Menu(
                 val item = menuItems[index]
                 MenuItemButton(
                     text = item.label,
-                    color = colorResource(id = item.colorResId)
+                    color = item.color
                 ) {
                     onMenuItemSelected(item)
                 }

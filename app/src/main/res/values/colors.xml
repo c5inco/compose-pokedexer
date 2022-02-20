@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/poke_red</color>
-    <color name="colorPrimaryDark">@color/poke_red</color>
+    <color name="colorPrimary">#FA6555</color>
+    <color name="colorPrimaryDark">#FA6555</color>
     <color name="colorAccent">#6C79DB</color>
 </resources>

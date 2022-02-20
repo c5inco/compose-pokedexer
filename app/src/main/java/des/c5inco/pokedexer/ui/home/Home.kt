@@ -6,19 +6,19 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
+import des.c5inco.pokedexer.ui.theme.PokemonColors
 
 sealed class MenuItem(
     val label: String,
-    val colorResId: Int
+    val color: Color
 ) {
-    object Pokedex : MenuItem("Pokedex", R.color.poke_teal)
-    object Moves : MenuItem("Moves", R.color.poke_red)
-    object Abilities : MenuItem("Abilities", R.color.poke_light_blue)
-    object Items : MenuItem("Items", R.color.poke_yellow)
-    object Locations : MenuItem("Locations", R.color.poke_purple)
-    object TypeCharts : MenuItem("Type charts", R.color.poke_brown)
+    object Pokedex : MenuItem("Pokedex", PokemonColors.Teal)
+    object Moves : MenuItem("Moves", PokemonColors.Red)
+    object Abilities : MenuItem("Abilities", PokemonColors.LightBlue)
+    object Items : MenuItem("Items", PokemonColors.Yellow)
+    object Locations : MenuItem("Locations", PokemonColors.Purple)
+    object TypeCharts : MenuItem("Type charts", PokemonColors.Brown)
 }
 
 @Composable

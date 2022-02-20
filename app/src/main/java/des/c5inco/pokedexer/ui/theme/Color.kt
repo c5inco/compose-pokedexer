@@ -2,6 +2,8 @@ package des.c5inco.pokedexer.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val Grey100 = Color(0xfff5f5f5)
+
 class PokemonColors {
     companion object {
         val Black = Color(0xff303943)
