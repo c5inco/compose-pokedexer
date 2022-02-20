@@ -12,13 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
+import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
 import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
-import des.c5inco.pokedexer.ui.home.home.Home
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
 @Composable
-fun MainAppBar(onMenuItemSelected: (Home.MenuItem) -> Unit) {
+fun MainAppBar(onMenuItemSelected: (MenuItem) -> Unit) {
     Surface(
         shape = RoundedCornerShape(
             bottomStart = 32.dp,

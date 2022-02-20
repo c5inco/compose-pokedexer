@@ -129,19 +129,28 @@ fun PokemonName(name: String?) {
     )
 }
 
+@Composable
+fun PokemonListScreen(
+    onPokemonSelected: (Pokemon) -> Unit = {}
+) {
+    Surface(Modifier.fillMaxSize()) {
+        Box {
+            PokeBallBackground(
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = 90.dp, y = (-70).dp)
+            )
+            PokemonList {
+                onPokemonSelected(it)
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
 private fun PokemonListPreview() {
     PokedexerTheme {
-        Surface(Modifier.fillMaxSize()) {
-            Box {
-                PokeBallBackground(
-                    Modifier
-                        .align(Alignment.TopEnd)
-                        .offset(x = 90.dp, y = (-70).dp)
-                )
-                PokemonList()
-            }
-        }
+        PokemonListScreen()
     }
 }
