@@ -29,10 +29,10 @@ fun MainAppBar(onMenuItemSelected: (Home.MenuItem) -> Unit) {
             PokeBallBackground(
                 Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = 90.dp, y = (-120).dp)
+                    .offset(x = 90.dp, y = (-70).dp)
             )
             Column(
-                modifier = Modifier.padding(bottom = 16.dp, start = 32.dp, end = 32.dp)
+                modifier = Modifier.padding(top = 32.dp, bottom = 16.dp, start = 32.dp, end = 32.dp)
             ) {
                 Text(
                     text = "What Pokémon\nare you looking for?",
