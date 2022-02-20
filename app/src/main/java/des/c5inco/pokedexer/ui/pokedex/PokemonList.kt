@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,9 +27,9 @@ import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.SMALL
+import des.c5inco.pokedexer.ui.entity.Data.Companion.SamplePokemons
+import des.c5inco.pokedexer.ui.entity.Data.Companion.color
 import des.c5inco.pokedexer.ui.entity.Pokemon
-import des.c5inco.pokedexer.ui.entity.SamplePokemons
-import des.c5inco.pokedexer.ui.entity.color
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
 @Composable
@@ -63,7 +62,7 @@ fun PokemonList(
 @Composable
 fun PokeDexCard(pokemon: Pokemon, onPokemonSelected: (Pokemon) -> Unit) {
     Surface(
-        color = colorResource(pokemon.color()),
+        color = pokemon.color(),
         shape = RoundedCornerShape(16.dp)
     ) {
         PokeDexCardContent(
