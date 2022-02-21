@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package des.c5inco.pokedexer.ui.pokedex
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,19 +21,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.collectAsLazyPagingItems
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.SMALL
-import des.c5inco.pokedexer.ui.entity.Data.Companion.SamplePokemons
 import des.c5inco.pokedexer.ui.entity.Data.Companion.color
 import des.c5inco.pokedexer.ui.entity.Pokemon
+import des.c5inco.pokedexer.ui.entity.PokemonListViewModel
+import des.c5inco.pokedexer.ui.entity.PokemonRepository
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PokemonList(
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
+    val pokemonListViewModel = PokemonListViewModel(PokemonRepository())
+    val lazyPokemonList = pokemonListViewModel.pokemons.collectAsLazyPagingItems()
+
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -52,8 +56,9 @@ fun PokemonList(
                     )
                 )
             }
-            items(SamplePokemons.size) { index ->
-                PokeDexCard(SamplePokemons[index], onPokemonSelected)
+            items(lazyPokemonList.itemCount) { index ->
+                val p = lazyPokemonList[index]
+                p?.let { PokeDexCard(it, onPokemonSelected) }
             }
         }
     )
