@@ -1,13 +1,14 @@
 package des.c5inco.pokedexer.ui.pokedex
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.GridItemSpan
 import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -16,30 +17,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.paging.compose.collectAsLazyPagingItems
+import des.c5inco.pokedexer.data.pokemon.RemotePokemonRepository
+import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.SMALL
-import des.c5inco.pokedexer.ui.entity.Data.Companion.color
-import des.c5inco.pokedexer.ui.entity.Pokemon
-import des.c5inco.pokedexer.ui.entity.PokemonListViewModel
-import des.c5inco.pokedexer.ui.entity.PokemonRepository
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PokemonList(
+    pokemon: List<Pokemon>,
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
-    val pokemonListViewModel = PokemonListViewModel(PokemonRepository())
-    val lazyPokemonList = pokemonListViewModel.pokemons.collectAsLazyPagingItems()
-
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -51,14 +47,12 @@ fun PokemonList(
                     text = "Pokedex",
                     style = MaterialTheme.typography.h4,
                     modifier = Modifier.padding(
-                        top = 64.dp,
-                        bottom = 24.dp
+                        top = 64.dp, bottom = 24.dp
                     )
                 )
             }
-            items(lazyPokemonList.itemCount) { index ->
-                val p = lazyPokemonList[index]
-                p?.let { PokeDexCard(it, onPokemonSelected) }
+            items(pokemon) { pokemon ->
+                PokeDexCard(pokemon, onPokemonSelected)
             }
         }
     )
@@ -92,7 +86,7 @@ fun PokeDexCardContent(
             PokemonTypeLabels(pokemon.typeOfPokemon, SMALL)
         }
         Text(
-            text = pokemon.id ?: "",
+            text = "${pokemon.id}",
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
             modifier = Modifier
@@ -110,16 +104,16 @@ fun PokeDexCardContent(
             Color.White,
             0.25f
         )
-        pokemon.image?.let {
-            Image(
-                painter = painterResource(id = it),
-                contentDescription = pokemon.name,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 8.dp, end = 8.dp)
-                    .size(72.dp)
-            )
-        }
+        // pokemon.image?.let {
+        //     Image(
+        //         painter = painterResource(id = it),
+        //         contentDescription = pokemon.name,
+        //         modifier = Modifier
+        //             .align(Alignment.BottomEnd)
+        //             .padding(bottom = 8.dp, end = 8.dp)
+        //             .size(72.dp)
+        //     )
+        // }
     }
 }
 
@@ -138,6 +132,8 @@ fun PokemonName(name: String?) {
 fun PokemonListScreen(
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
+    val vm = PokedexViewModel(RemotePokemonRepository())
+
     Surface(Modifier.fillMaxSize()) {
         Box {
             PokeBallBackground(
@@ -145,8 +141,12 @@ fun PokemonListScreen(
                     .align(Alignment.TopEnd)
                     .offset(x = 90.dp, y = (-70).dp)
             )
-            PokemonList {
-                onPokemonSelected(it)
+            if (vm.uiState.loading) {
+                CircularProgressIndicator(color = Color.Red)
+            } else {
+                PokemonList(vm.uiState.pokemon) {
+                    onPokemonSelected(it)
+                }
             }
         }
     }
