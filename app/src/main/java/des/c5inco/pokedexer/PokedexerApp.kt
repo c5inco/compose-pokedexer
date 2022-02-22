@@ -5,9 +5,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import des.c5inco.pokedexer.data.pokemon.RemotePokemonRepository
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
+import des.c5inco.pokedexer.ui.pokedex.PokedexViewModel
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetails
 import des.c5inco.pokedexer.ui.pokedex.PokemonListScreen
 
@@ -26,7 +28,9 @@ fun PokedexerApp() {
         }
         navigation(startDestination = "list", route = "pokedex") {
             composable("list") {
-                PokemonListScreen {
+                PokemonListScreen(
+                    viewModel = PokedexViewModel(RemotePokemonRepository())
+                ) {
                     pokemon = it
                     navController.navigate("details")
                 }

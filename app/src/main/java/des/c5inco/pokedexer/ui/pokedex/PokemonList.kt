@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import des.c5inco.pokedexer.data.pokemon.RemotePokemonRepository
+import des.c5inco.pokedexer.data.pokemon.LocalPokemonRepository
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.ui.common.PokeBall
@@ -33,6 +33,7 @@ import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PokemonList(
+    loading: Boolean = false,
     pokemon: List<Pokemon>,
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
@@ -51,8 +52,23 @@ fun PokemonList(
                     )
                 )
             }
-            items(pokemon) { pokemon ->
-                PokeDexCard(pokemon, onPokemonSelected)
+            if (loading) {
+                item({ GridItemSpan(2) }) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator(
+                            color = Color.Black,
+                            modifier = Modifier
+                                .size(48.dp)
+                                .padding(vertical = 24.dp)
+                        )
+                    }
+                }
+            } else {
+                items(pokemon) { pokemon ->
+                    PokeDexCard(pokemon, onPokemonSelected)
+                }
             }
         }
     )
@@ -130,10 +146,9 @@ fun PokemonName(name: String?) {
 
 @Composable
 fun PokemonListScreen(
+    viewModel: PokedexViewModel = PokedexViewModel(LocalPokemonRepository()),
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
-    val vm = PokedexViewModel(RemotePokemonRepository())
-
     Surface(Modifier.fillMaxSize()) {
         Box {
             PokeBallBackground(
@@ -141,12 +156,12 @@ fun PokemonListScreen(
                     .align(Alignment.TopEnd)
                     .offset(x = 90.dp, y = (-70).dp)
             )
-            if (vm.uiState.loading) {
-                CircularProgressIndicator(color = Color.Red)
-            } else {
-                PokemonList(vm.uiState.pokemon) {
-                    onPokemonSelected(it)
-                }
+
+            PokemonList(
+                loading = viewModel.uiState.loading,
+                pokemon = viewModel.uiState.pokemon
+            ) {
+                onPokemonSelected(it)
             }
         }
     }
@@ -156,6 +171,8 @@ fun PokemonListScreen(
 @Composable
 private fun PokemonListPreview() {
     PokedexerTheme {
-        PokemonListScreen()
+        PokemonListScreen(
+            PokedexViewModel(LocalPokemonRepository())
+        )
     }
 }
