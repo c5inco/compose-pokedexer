@@ -28,6 +28,7 @@ import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.SMALL
+import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -102,12 +103,12 @@ fun PokeDexCardContent(
             PokemonTypeLabels(pokemon.typeOfPokemon, SMALL)
         }
         Text(
-            text = "${pokemon.id}",
+            text = formatId(pokemon.id),
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 8.dp, end = 12.dp)
+                .padding(top = 10.dp, end = 12.dp)
                 .graphicsLayer {
                     alpha = 0.1f
                 }

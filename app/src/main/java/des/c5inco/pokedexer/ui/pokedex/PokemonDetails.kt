@@ -23,6 +23,7 @@ import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
+import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
@@ -172,7 +173,7 @@ private fun HeaderRight(
         horizontalAlignment = Alignment.End
     ) {
         Text(
-            text = "${pokemon.id}",
+            text = formatId(pokemon.id),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             color = Color.White

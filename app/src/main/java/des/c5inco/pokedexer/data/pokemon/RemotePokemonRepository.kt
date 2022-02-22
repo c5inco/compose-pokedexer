@@ -25,9 +25,9 @@ class RemotePokemonRepository : PokemonRepository {
 
                         Pokemon(
                             id = model.id,
-                            name = model.name,
+                            name = formatName(model.name),
                             description = model.description.first().flavor_text,
-                            typeOfPokemon = detail.types.map { it.type!!.name },
+                            typeOfPokemon = detail.types.map { formatName(it.type!!.name) },
                             category = model.species[0].genus,
                             image = model.id,
                             hp = stats[0],
@@ -46,4 +46,10 @@ class RemotePokemonRepository : PokemonRepository {
             }
         }
     }
+}
+
+private fun formatName(
+    name: String
+): String {
+    return name.replaceFirstChar { it.uppercase() }
 }
