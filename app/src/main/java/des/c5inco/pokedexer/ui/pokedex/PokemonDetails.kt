@@ -17,12 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.R
+import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
-import des.c5inco.pokedexer.ui.entity.Data.Companion.SamplePokemons
-import des.c5inco.pokedexer.ui.entity.Data.Companion.color
-import des.c5inco.pokedexer.ui.entity.Pokemon
 import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
@@ -60,13 +60,11 @@ fun PokemonDetails(
                 ,
                 pokemon = pokemon
             )
-            pokemon.image?.let {
-                PokemonImage(
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    image = it,
-                    description = pokemon.name
-                )
-            }
+            // pokemon.image.let {
+            //     PokemonImage(
+            //         modifier = Modifier.align(Alignment.TopCenter), image = it, description = pokemon.name
+            //     )
+            // }
         }
     }
 }
@@ -151,12 +149,12 @@ private fun HeaderLeft(
         modifier.padding(top = 40.dp, bottom = 32.dp, start = 32.dp, end = 32.dp)
     ) {
         Text(
-            text = pokemon.name ?: "",
+            text = pokemon.name,
             style = MaterialTheme.typography.h4,
             color = Color.White
         )
 
-        pokemon.typeOfPokemon?.let {
+        pokemon.typeOfPokemon.let {
             Row {
                 PokemonTypeLabels(it, MEDIUM)
             }
@@ -174,14 +172,14 @@ private fun HeaderRight(
         horizontalAlignment = Alignment.End
     ) {
         Text(
-            text = pokemon.id ?: "",
+            text = "${pokemon.id}",
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             color = Color.White
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            text = pokemon.category ?: "",
+            text = pokemon.category,
             fontSize = 12.sp,
             color = Color.White
         )
@@ -231,7 +229,7 @@ private fun PokemonImage(
 fun PokemonDetailsPreview() {
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {
-            PokemonDetails(SamplePokemons.first())
+            PokemonDetails(SamplePokemonData.first())
         }
     }
 }
@@ -241,7 +239,7 @@ fun PokemonDetailsPreview() {
 fun PokemonDetailsPreviewLast() {
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {
-            PokemonDetails(SamplePokemons.last())
+            PokemonDetails(SamplePokemonData.last())
         }
     }
 }

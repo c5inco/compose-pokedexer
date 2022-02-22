@@ -14,7 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import des.c5inco.pokedexer.ui.entity.Pokemon
+import des.c5inco.pokedexer.model.Pokemon
 
 data class Stat(
     val label: String,
@@ -36,7 +36,6 @@ fun BaseStatsSection(
         Stat("Sp. Atk", pokemon.specialAttack),
         Stat("Sp. Def", pokemon.specialDefense),
         Stat("Speed", pokemon.speed),
-        Stat("Total", pokemon.total, 600)
     )
 
     StatsTable(stats)

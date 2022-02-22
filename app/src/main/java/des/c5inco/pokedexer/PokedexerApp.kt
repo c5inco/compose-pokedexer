@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import des.c5inco.pokedexer.ui.entity.Data.Companion.SamplePokemons
+import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetails
@@ -14,7 +14,7 @@ import des.c5inco.pokedexer.ui.pokedex.PokemonListScreen
 @Composable
 fun PokedexerApp() {
     val navController = rememberNavController()
-    var pokemon by remember { mutableStateOf(SamplePokemons.first()) }
+    var pokemon by remember { mutableStateOf(SamplePokemonData.first()) }
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
