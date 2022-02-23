@@ -46,6 +46,14 @@ class RemotePokemonRepository : PokemonRepository {
             }
         }
     }
+
+    override suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteAllPokemon(): Result<Int> {
+        TODO("Not yet implemented")
+    }
 }
 
 private fun formatName(

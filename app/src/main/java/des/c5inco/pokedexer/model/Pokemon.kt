@@ -1,13 +1,17 @@
 package des.c5inco.pokedexer.model
 
 import androidx.compose.ui.graphics.Color
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import des.c5inco.pokedexer.ui.theme.PokemonColors
 
+@Entity
 data class Pokemon(
-    val id: Int,
+    @PrimaryKey val id: Int,
     val name: String,
     val description: String,
-    val typeOfPokemon: List<String>,
+    @ColumnInfo(name = "types") val typeOfPokemon: List<String>,
     val category: String,
     val image: Int,
     val hp: Int,

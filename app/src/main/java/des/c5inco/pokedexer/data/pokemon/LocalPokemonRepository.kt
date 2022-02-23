@@ -30,6 +30,14 @@ class LocalPokemonRepository(
      * This will fail deterministically every 5 requests
      */
     private fun shouldRandomlyFail(): Boolean = ++requestCount % 5 == 0
+
+    override suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteAllPokemon(): Result<Int> {
+        TODO("Not yet implemented")
+    }
 }
 
 class LocalPokemonDataSource {

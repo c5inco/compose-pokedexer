@@ -11,4 +11,8 @@ interface PokemonRepository {
      * Get all pokemon
      */
     suspend fun getAllPokemon(): Result<List<Pokemon>>
+
+    suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon>
+
+    suspend fun deleteAllPokemon(): Result<Int>
 }
