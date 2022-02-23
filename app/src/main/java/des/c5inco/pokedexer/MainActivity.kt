@@ -32,7 +32,9 @@ class MainActivity : ComponentActivity() {
 
             PokedexerTheme {
                 ProvideWindowInsets {
-                    PokedexerApp()
+                    PokedexerApp(
+                        (application as PokedexerApplication).repository
+                    )
                 }
             }
         }
