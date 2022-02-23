@@ -8,18 +8,24 @@ import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class RemotePokemonRepository : PokemonRepository {
+class RemotePokemonRepository(
+    private val pokemonDao: PokemonDao
+) : PokemonRepository {
     private val apolloClient = ApolloClient.Builder()
         .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
         .build()
 
     override suspend fun getAllPokemon(): Result<List<Pokemon>> {
-        return withContext(Dispatchers.IO) {
-            val response = apolloClient.query(PokemonOriginalQuery()).execute()
+        val localPokemon = pokemonDao.getAll()
 
-            if (!response.hasErrors()) {
-                Result.Success(
-                    response.dataAssertNoErrors.pokemon.map { model ->
+        if (localPokemon.isNotEmpty()) {
+            return Result.Success(localPokemon)
+        } else {
+            return withContext(Dispatchers.IO) {
+                val response = apolloClient.query(PokemonOriginalQuery()).execute()
+
+                if (!response.hasErrors()) {
+                    val pokemonFromServer = response.data!!.pokemon.map { model ->
                         val detail = model.detail.first()
                         val stats = detail.stats.map { it.base_stat }
 
@@ -38,11 +44,14 @@ class RemotePokemonRepository : PokemonRepository {
                             speed = stats[5],
                         )
                     }
-                )
-            } else {
-                Result.Error(
-                    ApolloException("The response has errors: ${response.errors}")
-                )
+
+                    pokemonDao.insertAll(*pokemonFromServer.toTypedArray())
+                    Result.Success(pokemonFromServer)
+                } else {
+                    Result.Error(
+                        ApolloException("The response has errors: ${response.errors}")
+                    )
+                }
             }
         }
     }
