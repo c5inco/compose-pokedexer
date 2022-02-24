@@ -6,6 +6,7 @@ import des.c5inco.pokedexer.PokemonOriginalQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 class RemotePokemonRepository(
@@ -19,6 +20,8 @@ class RemotePokemonRepository(
         val localPokemon = pokemonDao.getAll()
 
         if (localPokemon.isNotEmpty()) {
+            // TODO: Ask why this is needed to avoid blinking
+            delay(300)
             return Result.Success(localPokemon)
         } else {
             return withContext(Dispatchers.IO) {
@@ -45,6 +48,7 @@ class RemotePokemonRepository(
                         )
                     }
 
+                    pokemonDao.deleteAll()
                     pokemonDao.insertAll(*pokemonFromServer.toTypedArray())
                     Result.Success(pokemonFromServer)
                 } else {

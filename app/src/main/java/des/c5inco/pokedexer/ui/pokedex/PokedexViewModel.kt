@@ -33,6 +33,7 @@ class PokedexViewModel(
      */
     fun refresh() {
         viewModelScope.launch {
+            // TODO: Handle error/exception better
             val result = pokemonRepository.getAllPokemon()
 
             when (result) {
