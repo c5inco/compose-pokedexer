@@ -1,32 +1,15 @@
 package des.c5inco.pokedexer.data.pokemon
 
-import android.content.Context
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import des.c5inco.pokedexer.model.Pokemon
 
 @Database(entities = [Pokemon::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class PokemonDatabase : RoomDatabase() {
     abstract fun pokemonDao(): PokemonDao
-
-    companion object {
-        @Volatile
-        private var _instance: PokemonDatabase? = null
-
-        fun getInstance(context: Context): PokemonDatabase {
-            return _instance ?: synchronized(this) {
-                val instance = Room
-                        .databaseBuilder(
-                            context.applicationContext,
-                            PokemonDatabase::class.java,
-                            "pokemon_database"
-                        )
-                        .build()
-                _instance = instance
-                instance
-            }
-        }
-    }
 }
 
 class Converters {

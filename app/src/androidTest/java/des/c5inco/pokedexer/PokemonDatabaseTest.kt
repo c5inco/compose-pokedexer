@@ -22,6 +22,7 @@ class PokemonDatabaseTest {
 
     @Before
     fun createDb() {
+        // TODO: Use Hilt in the future
         val context = ApplicationProvider.getApplicationContext<Context>()
 
         db = Room.inMemoryDatabaseBuilder(context, PokemonDatabase::class.java)

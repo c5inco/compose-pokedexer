@@ -19,7 +19,7 @@ data class PokedexUiState(
 )
 
 class PokedexViewModel(
-    val pokemonRepository: PokemonRepository
+    private val pokemonRepository: PokemonRepository
 ): ViewModel() {
     var uiState by mutableStateOf(PokedexUiState(loading = true))
         private set
@@ -34,9 +34,7 @@ class PokedexViewModel(
     fun refresh() {
         viewModelScope.launch {
             // TODO: Handle error/exception better
-            val result = pokemonRepository.getAllPokemon()
-
-            when (result) {
+            when (val result = pokemonRepository.getAllPokemon()) {
                 is Result.Success -> {
                     uiState = uiState.copy(
                         loading = false,

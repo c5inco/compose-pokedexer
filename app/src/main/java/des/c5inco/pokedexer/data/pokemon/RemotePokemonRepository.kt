@@ -8,13 +8,12 @@ import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class RemotePokemonRepository(
-    private val pokemonDao: PokemonDao
+class RemotePokemonRepository @Inject constructor(
+    private val pokemonDao: PokemonDao,
+    private val apolloClient: ApolloClient
 ) : PokemonRepository {
-    private val apolloClient = ApolloClient.Builder()
-        .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
-        .build()
 
     override suspend fun getAllPokemon(): Result<List<Pokemon>> {
         val localPokemon = pokemonDao.getAll()
