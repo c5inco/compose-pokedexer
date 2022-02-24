@@ -21,9 +21,6 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject lateinit var repository : PokemonRepository
 
-    // val database by lazy { PokemonDatabase.getInstance(this) }
-    // val repository by lazy { RemotePokemonRepository(database.pokemonDao()) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
