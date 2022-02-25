@@ -5,6 +5,7 @@ buildscript {
         apollo_version = '3.1.0'
         room_version = '2.4.1'
         hilt_version = '2.41'
+        hilt_compose_navigation_version = '1.0.0'
     }
     dependencies {
         classpath("com.google.dagger:hilt-android-gradle-plugin:$hilt_version")

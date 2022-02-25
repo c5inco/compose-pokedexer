@@ -147,7 +147,7 @@ fun PokemonName(name: String?) {
 
 @Composable
 fun PokemonListScreen(
-    viewModel: PokedexViewModel = PokedexViewModel(LocalPokemonRepository()),
+    viewModel: PokedexViewModel,
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
     Surface(Modifier.fillMaxSize()) {

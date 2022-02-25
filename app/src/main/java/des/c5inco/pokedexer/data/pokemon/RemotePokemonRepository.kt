@@ -21,9 +21,11 @@ class RemotePokemonRepository @Inject constructor(
         if (localPokemon.isNotEmpty()) {
             // TODO: Ask why this is needed to avoid blinking
             delay(300)
+            println("from cache")
             return Result.Success(localPokemon)
         } else {
             return withContext(Dispatchers.IO) {
+                println("from network")
                 val response = apolloClient.query(PokemonOriginalQuery()).execute()
 
                 if (!response.hasErrors()) {

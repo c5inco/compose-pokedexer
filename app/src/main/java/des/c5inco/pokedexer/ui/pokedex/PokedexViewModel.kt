@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * UI state for the Pokedex screen
@@ -18,7 +20,8 @@ data class PokedexUiState(
     val loading: Boolean = false,
 )
 
-class PokedexViewModel(
+@HiltViewModel
+class PokedexViewModel @Inject constructor(
     private val pokemonRepository: PokemonRepository
 ): ViewModel() {
     var uiState by mutableStateOf(PokedexUiState(loading = true))

@@ -13,13 +13,10 @@ import androidx.core.view.WindowCompat
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
-import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject lateinit var repository : PokemonRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
             PokedexerTheme {
                 ProvideWindowInsets {
-                    PokedexerApp(repository)
+                    PokedexerApp()
                 }
             }
         }

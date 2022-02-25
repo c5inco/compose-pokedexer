@@ -2,17 +2,15 @@ package des.c5inco.pokedexer
 
 import android.app.Application
 import androidx.compose.runtime.*
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.HiltAndroidApp
-import des.c5inco.pokedexer.data.pokemon.LocalPokemonRepository
-import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
-import des.c5inco.pokedexer.ui.pokedex.PokedexViewModel
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetails
 import des.c5inco.pokedexer.ui.pokedex.PokemonListScreen
 
@@ -20,9 +18,7 @@ import des.c5inco.pokedexer.ui.pokedex.PokemonListScreen
 class PokedexerApplication : Application()
 
 @Composable
-fun PokedexerApp(
-    pokemonRepository: PokemonRepository = LocalPokemonRepository()
-) {
+fun PokedexerApp() {
     val navController = rememberNavController()
     var pokemon by remember { mutableStateOf(SamplePokemonData.first()) }
 
@@ -37,7 +33,7 @@ fun PokedexerApp(
         navigation(startDestination = "list", route = "pokedex") {
             composable("list") {
                 PokemonListScreen(
-                    viewModel = PokedexViewModel(pokemonRepository)
+                    viewModel = hiltViewModel()
                 ) {
                     pokemon = it
                     navController.navigate("details")
