@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 import kotlinx.coroutines.flow.collect
@@ -33,7 +34,26 @@ fun StatsChartPreview() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                StatsChart()
+                var loop by remember { mutableStateOf(0) }
+                val p by remember(loop) {
+                    derivedStateOf { SamplePokemonData[loop] }
+                }
+
+                LaunchedEffect(true) {
+                    infiniteLoopFlow.collect {
+                        loop = it
+                    }
+                }
+
+                Box {
+                    StatRingBackground(
+                        ringSize = 300
+                    )
+                    StatRingValues(
+                        ringSize = 300,
+                        pokemon = p
+                    )
+                }
             }
         }
     }
@@ -42,76 +62,65 @@ fun StatsChartPreview() {
 @Composable
 fun StatsChart(
     size: Int = 300,
-    pokemonId: Int = 0,
+    pokemon: Pokemon
 ) {
     Box {
-        StatRingCanvas(
+        StatRingBackground(
+            ringSize = size
+        )
+        StatRingValues(
             ringSize = size,
-            color = Color(0xfff5f5f5),
-        ) { size, path, color ->
-            this.drawContext.canvas.drawPathWithPaint(
-                path = path,
-                paint = Paint().apply {
-                    this.color = color
-                    this.pathEffect = PathEffect.cornerPathEffect(64f)
-
-                    style = PaintingStyle.Fill
-                }
-            )
-
-            drawOriginLines(
-                width = size.width,
-                height = size.height,
-                angle = 32.0.toRadian(),
-                color = Color.White
-            )
-        }
-
-        AnimatedStatRing(
-            ringSize = size,
-            pokemonId = pokemonId
+            pokemon = pokemon
         )
     }
 }
 
 @Composable
-private fun AnimatedStatRing(
+private fun StatRingBackground(ringSize: Int) {
+    StatRingCanvas(
+        ringSize = ringSize,
+        color = Color(0xfff5f5f5),
+    ) { size, path, color ->
+        this.drawContext.canvas.drawPathWithPaint(path = path, paint = Paint().apply {
+            this.color = color
+            this.pathEffect = PathEffect.cornerPathEffect(64f)
+
+            style = PaintingStyle.Fill
+        })
+
+        drawOriginLines(
+            width = size.width, height = size.height, angle = 32.0.toRadian(), color = Color.White
+        )
+    }
+}
+
+@Composable
+private fun StatRingValues(
     ringSize: Int,
-    pokemonId: Int
+    pokemon: Pokemon
 ) {
     val maxStat = 180f
 
-    var loop by remember { mutableStateOf(0) }
-    val p by remember(loop) {
-        derivedStateOf { SamplePokemonData[loop] }
-    }
-
-    LaunchedEffect(pokemonId) {
-        infiniteLoopFlow.collect {
-            loop = it
-        }
-    }
-
     val animateColor by animateColorAsState(
-        targetValue = p.color(),
+        targetValue = pokemon.color(),
     )
     val animateHp by animateFloatAsState(
-        targetValue = p.hp / maxStat,
+        targetValue = pokemon.hp / maxStat,
     )
     val animateAttack by animateFloatAsState(
-        targetValue = p.attack / maxStat
+        targetValue = pokemon.attack / maxStat
     )
     val animateDefense by animateFloatAsState(
-        targetValue = p.defense / maxStat
+        targetValue = pokemon.defense / maxStat
     )
     val animateSpeed by animateFloatAsState(
-        targetValue = p.speed / maxStat,
+        targetValue = pokemon.speed / maxStat,
     )
     val animateSpecialAttack by animateFloatAsState(
-        targetValue = p.specialAttack / maxStat,
+        targetValue = pokemon.specialAttack / maxStat,
     )
     val animateSpecialDefense by animateFloatAsState(
-        targetValue = p.specialDefense / maxStat,
+        targetValue = pokemon.specialDefense / maxStat,
     )
 
     StatRingCanvas(
