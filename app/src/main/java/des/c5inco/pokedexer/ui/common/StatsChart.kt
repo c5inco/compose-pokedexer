@@ -19,10 +19,7 @@ import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlin.math.tan
 
 @Preview
@@ -39,13 +36,6 @@ fun StatsChartPreview() {
                 StatsChart()
             }
         }
-    }
-}
-
-private val infiniteLoop: Flow<Int> = flow {
-    while (true) {
-        delay(1000L)
-        emit((0..8).random())
     }
 }
 
@@ -92,10 +82,12 @@ private fun AnimatedStatRing(
     val maxStat = 180f
 
     var loop by remember { mutableStateOf(0) }
-    val p = SamplePokemonData[loop]
+    val p by remember(loop) {
+        derivedStateOf { SamplePokemonData[loop] }
+    }
 
     LaunchedEffect(pokemonId) {
-        infiniteLoop.collect {
+        infiniteLoopFlow.collect {
             loop = it
         }
     }

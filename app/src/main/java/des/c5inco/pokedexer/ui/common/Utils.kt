@@ -8,6 +8,9 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 fun formatId(id: Int): String = "#" + "$id".padStart(3, '0')
 
@@ -20,3 +23,10 @@ fun Canvas.drawPathWithPaint(
     path: Path,
     paint: Paint = Paint()
 ) = drawPath(path, paint)
+
+val infiniteLoopFlow: Flow<Int> = flow {
+    while (true) {
+        delay(1000L)
+        emit((0..8).random())
+    }
+}
