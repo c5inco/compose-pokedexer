@@ -36,9 +36,16 @@ fun StatsChartPreview() {
                 ,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                StatsChart(size = 140)
+                StatsChart(
+                    size = 240,
+                    hp = 45,
+                    attack = 49,
+                    defense = 49,
+                    specialAttack = 65,
+                    specialDefense = 65,
+                    speed = 45
+                )
                 StatsChart()
-                StatsChart(size = 360)
             }
         }
     }
@@ -47,13 +54,15 @@ fun StatsChartPreview() {
 @Composable
 fun StatsChart(
     size: Int = 240,
-    hp: Int = 0,
-    attack: Int = 0,
-    defence: Int = 0,
-    specialAttack: Int = 0,
-    specialDefense: Int = 0,
-    speed: Int = 0,
+    hp: Int = 200,
+    attack: Int = 200,
+    defense: Int = 200,
+    specialAttack: Int = 200,
+    specialDefense: Int = 200,
+    speed: Int = 200,
 ) {
+    val maxStat = 500f
+
     Box {
         StatRing(
             ringSize = size,
@@ -64,14 +73,14 @@ fun StatsChart(
 
         AnimatedStatRing(
             ringSize = size,
-            strokeWidth = 8f,
+            strokeWidth = 4f,
             color = Color.Magenta,
-            hpRatio = 0.5f,
-            attackRatio = 0.44f,
-            defenseRatio = 0.33f,
-            specialAttackRatio = 0.66f,
-            specialDefenseRatio = 0.25f,
-            speedRatio = 0.92f
+            hpRatio = hp / maxStat,
+            attackRatio = attack / maxStat,
+            defenseRatio = defense / maxStat,
+            specialAttackRatio = specialAttack / maxStat ,
+            specialDefenseRatio = specialDefense / maxStat,
+            speedRatio = speed / maxStat
         )
     }
 }
@@ -90,7 +99,7 @@ private fun AnimatedStatRing(
     speedRatio: Float = 1f,
 ) {
     val localDensity = LocalDensity.current
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
 
     val wr = (localDensity.density * ringSize) / 2
     val hr = (localDensity.density * (ringSize * 1.15f)) / 2
