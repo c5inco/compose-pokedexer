@@ -55,4 +55,24 @@ class PokemonDatabaseTest {
         val allPokemon = pokemonDao.getAll()
         assertEquals(allPokemon.size, 9)
     }
+
+    @Test
+    @Throws(Exception::class)
+    fun insertDuplicatePokemon() = runBlocking {
+        val pokemon = SamplePokemonData[0].copy()
+        pokemonDao.insert(pokemon)
+        pokemonDao.insert(pokemon)
+        val allPokemon = pokemonDao.getAll()
+        assertEquals(allPokemon.size, 1)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun insertDuplicateMultiplePokemon() = runBlocking {
+        val pokemon = SamplePokemonData
+        pokemonDao.insertAll(*(pokemon.toTypedArray()))
+        pokemonDao.insertAll(*(pokemon.toTypedArray()))
+        val allPokemon = pokemonDao.getAll()
+        assertEquals(allPokemon.size, 9)
+    }
 }
