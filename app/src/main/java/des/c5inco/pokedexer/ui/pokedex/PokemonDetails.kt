@@ -231,19 +231,15 @@ private fun PokemonImage(
                 label = "scale",
                 transitionSpec = { spring(
                     dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = 100f
+                    stiffness = 500f
                 ) }
             ) { state ->
                 if (state == ImageState.Loading) 0.8f else 1f
             }
             val animateOffsetY by transition.animateDp(
-                label = "offsetY",
-                transitionSpec = { spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = 100f
-                ) }
+                label = "offsetY"
             ) { state ->
-                if (state == ImageState.Loading) (16).dp else 0.dp
+                if (state == ImageState.Loading) (48).dp else 0.dp
             }
 
             imageState.drawable?.let {
