@@ -2,10 +2,34 @@ buildscript {
     ext {
         compose_ui_version = '1.1.0'
         accompanist_version = '0.23.0'
+        apollo_version = '3.1.0'
+        room_version = '2.4.1'
+        hilt_version = '2.41'
+        hilt_compose_navigation_version = '1.0.0'
     }
-}// Top-level build file where you can add configuration options common to all sub-projects/modules.
+    dependencies {
+        classpath("com.google.dagger:hilt-android-gradle-plugin:$hilt_version")
+    }
+}
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     id 'com.android.application' version '7.1.1' apply false
     id 'com.android.library' version '7.1.1' apply false
     id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
+    id 'com.apollographql.apollo3' version "$apollo_version" apply false
+}
+
+subprojects {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            // Treat all Kotlin warnings as errors (disabled by default)
+            allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
+
+            jvmTarget = "1.8"
+
+            // Use experimental APIs
+            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+        }
+    }
 }
