@@ -8,7 +8,10 @@ Notable changes:
 - Added [Accompanist](https://github.com/google/accompanist) for edge-to-edge UI treatment
 - Swapped out [composer-router](https://github.com/zsoltk/compose-router) for [Compose Navigation](https://developer.android.com/jetpack/compose/navigation) (2.4.0)
 - Moved color resources -> Kotlin color constants
-- Removed usage of LiveData for now
+
+Notable additions:
+- Querying pokemon data via [GraphQL from PokeApi](https://pokeapi.co/docs/graphql), storing in local Room database
+- Added Hilt for dependency injection, as well as ViewModels
 
 ## Screenshots
 
