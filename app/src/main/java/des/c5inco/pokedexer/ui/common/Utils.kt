@@ -8,11 +8,15 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.lang.Integer.min
 
 fun formatId(id: Int): String = "#" + "$id".padStart(3, '0')
+
+fun artworkUrl(id: Int): String = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png"
 
 fun Double.toRadian(): Double = this / 180 * Math.PI
 
@@ -29,4 +33,20 @@ val infiniteLoopFlow: Flow<Int> = flow {
         delay(1000L)
         emit((0..8).random())
     }
+}
+
+fun placeholderPokemonImage(id: Int): Int {
+    val sampleImages = listOf(
+        R.drawable.poke001,
+        R.drawable.poke002,
+        R.drawable.poke003,
+        R.drawable.poke004,
+        R.drawable.poke005,
+        R.drawable.poke006,
+        R.drawable.poke007,
+        R.drawable.poke008,
+        R.drawable.poke009,
+        R.drawable.poke010,
+    )
+    return sampleImages[min(id, 10) - 1]
 }
