@@ -74,7 +74,10 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_compose_navigation_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
-    implementation 'androidx.paging:paging-compose:1.0.0-alpha14'
+    // Landscapist
+    implementation "com.github.skydoves:landscapist-coil:$landscapist_version"
+
+    // Test deps
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

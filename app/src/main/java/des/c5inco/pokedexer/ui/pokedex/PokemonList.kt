@@ -21,14 +21,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.skydoves.landscapist.coil.CoilImage
 import des.c5inco.pokedexer.data.pokemon.LocalPokemonRepository
+import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
-import des.c5inco.pokedexer.ui.common.PokeBall
-import des.c5inco.pokedexer.ui.common.PokeBallBackground
-import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
+import des.c5inco.pokedexer.ui.common.*
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.SMALL
-import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -68,7 +67,10 @@ fun PokemonList(
                 }
             } else {
                 items(pokemon) { pokemon ->
-                    PokeDexCard(pokemon, onPokemonSelected)
+                    PokeDexCard(
+                        pokemon = pokemon,
+                        onPokemonSelected = onPokemonSelected
+                    )
                 }
             }
         }
@@ -76,8 +78,13 @@ fun PokemonList(
 }
 
 @Composable
-fun PokeDexCard(pokemon: Pokemon, onPokemonSelected: (Pokemon) -> Unit) {
+fun PokeDexCard(
+    modifier: Modifier = Modifier,
+    pokemon: Pokemon,
+    onPokemonSelected: (Pokemon) -> Unit = {}
+) {
     Surface(
+        modifier = modifier,
         color = pokemon.color(),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -121,16 +128,16 @@ fun PokeDexCardContent(
             Color.White,
             0.25f
         )
-        // pokemon.image?.let {
-        //     Image(
-        //         painter = painterResource(id = it),
-        //         contentDescription = pokemon.name,
-        //         modifier = Modifier
-        //             .align(Alignment.BottomEnd)
-        //             .padding(bottom = 8.dp, end = 8.dp)
-        //             .size(72.dp)
-        //     )
-        // }
+
+        CoilImage(
+            imageModel = artworkUrl(pokemon.image),
+            contentDescription = pokemon.name,
+            previewPlaceholder = placeholderPokemonImage(pokemon.image),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 8.dp, end = 8.dp)
+                .size(72.dp)
+        )
     }
 }
 
@@ -163,6 +170,32 @@ fun PokemonListScreen(
                 pokemon = viewModel.uiState.pokemon
             ) {
                 onPokemonSelected(it)
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PokeDexCardPreview() {
+    PokedexerTheme {
+        Surface {
+            Column(
+                Modifier.width(200.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                PokeDexCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    pokemon = SamplePokemonData[0]
+                )
+                PokeDexCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    pokemon = SamplePokemonData[3]
+                )
+                PokeDexCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    pokemon = SamplePokemonData[6]
+                )
             }
         }
     }

@@ -16,14 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.skydoves.landscapist.coil.CoilImage
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
-import des.c5inco.pokedexer.ui.common.PokeBall
-import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
+import des.c5inco.pokedexer.ui.common.*
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
-import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
@@ -61,11 +60,12 @@ fun PokemonDetails(
                 ,
                 pokemon = pokemon
             )
-            // pokemon.image.let {
-            //     PokemonImage(
-            //         modifier = Modifier.align(Alignment.TopCenter), image = it, description = pokemon.name
-            //     )
-            // }
+
+            PokemonImage(
+                modifier = Modifier.align(Alignment.TopCenter),
+                image = pokemon.image,
+                description = pokemon.name
+            )
         }
     }
 }
@@ -216,9 +216,10 @@ private fun PokemonImage(
     image: Int,
     description: String?
 ) {
-    Image(
-        painter = painterResource(id = image),
+    CoilImage(
+        imageModel = artworkUrl(image),
         contentDescription = description,
+        previewPlaceholder = placeholderPokemonImage(image),
         modifier = modifier
             .padding(top = 140.dp)
             .size(200.dp)
