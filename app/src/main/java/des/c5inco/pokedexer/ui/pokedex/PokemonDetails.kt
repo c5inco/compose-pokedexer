@@ -10,12 +10,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import com.skydoves.landscapist.coil.CoilImage
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
@@ -220,6 +223,40 @@ private fun PokemonImage(
         imageModel = artworkUrl(image),
         contentDescription = description,
         previewPlaceholder = placeholderPokemonImage(image),
+        success = { imageState ->
+            val currentState = remember { MutableTransitionState(ImageState.Loading) }
+            currentState.targetState = ImageState.Loaded
+            val transition = updateTransition(currentState, label = "imageLoad")
+            val animateScale by transition.animateFloat(
+                label = "scale",
+                transitionSpec = { spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = 100f
+                ) }
+            ) { state ->
+                if (state == ImageState.Loading) 0.8f else 1f
+            }
+            val animateOffsetY by transition.animateDp(
+                label = "offsetY",
+                transitionSpec = { spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = 100f
+                ) }
+            ) { state ->
+                if (state == ImageState.Loading) (16).dp else 0.dp
+            }
+
+            imageState.drawable?.let {
+                Image(
+                    bitmap = it.toBitmap().asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .matchParentSize()
+                        .scale(animateScale)
+                        .offset(y = animateOffsetY)
+                )
+            }
+        },
         modifier = modifier
             .padding(top = 140.dp)
             .size(200.dp)
