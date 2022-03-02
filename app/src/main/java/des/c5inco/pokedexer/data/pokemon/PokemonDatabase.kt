@@ -1,15 +1,21 @@
 package des.c5inco.pokedexer.data.pokemon
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
+import androidx.room.*
+import des.c5inco.pokedexer.data.moves.MovesDao
+import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
 
-@Database(entities = [Pokemon::class], version = 1)
+@Database(
+    version = 2,
+    entities = [Pokemon::class, Move::class],
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2)
+    ]
+)
 @TypeConverters(Converters::class)
 abstract class PokemonDatabase : RoomDatabase() {
     abstract fun pokemonDao(): PokemonDao
+    abstract fun movesDao(): MovesDao
 }
 
 class Converters {

@@ -35,8 +35,8 @@ class RemoteMovesRepository @Inject constructor(
                             category = model.category!!.name,
                             type = model.type!!.name,
                             pp = model.pp!!,
-                            power = model.power!!,
-                            accuracy = model.accuracy!!
+                            power = model.power,
+                            accuracy = model.accuracy
                         )
                     }
 

@@ -4,7 +4,7 @@ query PokemonOriginalMoves {
       count
     }
   }
-  moves: pokemon_v2_move(limit: 100, where: {generation_id: {_eq: 1}}) {
+  moves: pokemon_v2_move(where: {generation_id: {_eq: 1}}) {
     id
     name
     accuracy
