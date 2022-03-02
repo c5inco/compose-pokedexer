@@ -1,20 +1,29 @@
 package des.c5inco.pokedexer.ui.pokedex.section
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
+import kotlinx.coroutines.delay
 
 data class Stat(
     val label: String,
@@ -44,7 +53,20 @@ fun BaseStatsSection(
 @Composable
 private fun StatsTable(stats: List<Stat>) {
     Column(Modifier.fillMaxWidth()) {
-        stats.forEach { stat ->
+        stats.forEachIndexed { idx, stat ->
+            val statValue = remember { Animatable(0f) }
+
+            LaunchedEffect(stat) {
+                delay(70L * idx)
+                statValue.animateTo(
+                    targetValue = stat.progress,
+                    animationSpec = spring(
+                        0.6f,
+                        1000f
+                    )
+                )
+            }
+
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -65,13 +87,23 @@ private fun StatsTable(stats: List<Stat>) {
                         .weight(0.7f)
                 )
                 LinearProgressIndicator(
-                    progress = stat.progress,
+                    progress = statValue.value,
                     color = Color.Red,
                     modifier = Modifier
                         .clip(RoundedCornerShape(100))
                         .weight(2.2f)
                 )
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun BaseStatsSectionPreview() {
+    PokedexerTheme {
+        Surface(Modifier.fillMaxWidth()) {
+            BaseStatsSection(pokemon = SamplePokemonData[0])
         }
     }
 }
