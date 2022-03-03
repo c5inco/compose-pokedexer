@@ -30,10 +30,12 @@ class RemoteMovesRepository @Inject constructor(
                     val movesFromServer = response.data!!.moves.map { model ->
                         Move(
                             id = model.id,
-                            name = model.name,
+                            name = model.name.split("-").joinToString(" ") { part ->
+                                part.replaceFirstChar { it.uppercase() }
+                            },
                             description = model.description.first().flavor_text,
                             category = model.category!!.name,
-                            type = model.type!!.name,
+                            type = model.type!!.name.replaceFirstChar { it.uppercase() },
                             pp = model.pp!!,
                             power = model.power,
                             accuracy = model.accuracy
