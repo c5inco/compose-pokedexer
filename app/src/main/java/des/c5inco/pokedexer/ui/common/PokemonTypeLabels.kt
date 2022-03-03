@@ -9,10 +9,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import des.c5inco.pokedexer.model.mapTypeToColor
 
 data class TypeLabelMetrics(
     val cornerRadius: Dp,
@@ -33,30 +35,34 @@ fun PokemonTypeLabels(
     metrics: TypeLabelMetrics
 ) {
     types?.forEach {
-        Surface(
-            color = Color(0x38FFFFFF),
-            shape = RoundedCornerShape(metrics.cornerRadius)
-        ) {
-            PokemonTypeLabel(it, metrics)
-        }
+        PokemonTypeLabel(text = it, metrics = metrics)
         Spacer(modifier = Modifier.size(metrics.elementSpacing))
     }
 }
 
 @Composable
 fun PokemonTypeLabel(
+    modifier: Modifier = Modifier,
     text: String,
+    colored: Boolean = false,
     metrics: TypeLabelMetrics
 ) {
-    Text(
-        text = text,
-        fontSize = metrics.fontSize,
-        color = Color.White,
-        modifier = Modifier.padding(
-            start = metrics.horizontalPadding,
-            end = metrics.horizontalPadding,
-            top = metrics.verticalPadding,
-            bottom = metrics.verticalPadding
-        ),
-    )
+    Surface(
+        modifier = modifier,
+        color = if (colored) mapTypeToColor(text) else Color(0x38FFFFFF),
+        shape = RoundedCornerShape(metrics.cornerRadius)
+    ) {
+        Text(
+            text = text,
+            fontSize = metrics.fontSize,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(
+                start = metrics.horizontalPadding,
+                end = metrics.horizontalPadding,
+                top = metrics.verticalPadding,
+                bottom = metrics.verticalPadding
+            ),
+        )
+    }
 }

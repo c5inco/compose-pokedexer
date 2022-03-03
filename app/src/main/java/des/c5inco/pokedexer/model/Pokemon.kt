@@ -24,15 +24,5 @@ data class Pokemon(
 
 fun Pokemon.color(): Color {
     val type = typeOfPokemon.elementAtOrNull(0)
-
-    return when (type?.lowercase()) {
-        "grass", "bug" -> PokemonColors.LightTeal
-        "fire" -> PokemonColors.LightRed
-        "water", "fighting", "normal" -> PokemonColors.LightBlue
-        "electric", "psychic" -> PokemonColors.LightYellow
-        "poison", "ghost" -> PokemonColors.LightPurple
-        "ground", "rock" -> PokemonColors.LightBrown
-        "dark" -> PokemonColors.Black
-        else -> return PokemonColors.LightBlue
-    }
+    return type?.let { mapTypeToColor(it) } ?: PokemonColors.LightBlue
 }
