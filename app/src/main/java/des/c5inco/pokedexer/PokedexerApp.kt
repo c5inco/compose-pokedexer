@@ -11,7 +11,7 @@ import dagger.hilt.android.HiltAndroidApp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
-import des.c5inco.pokedexer.ui.moves.MovesList
+import des.c5inco.pokedexer.ui.moves.MovesListScreen
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetails
 import des.c5inco.pokedexer.ui.pokedex.PokemonListScreen
 
@@ -46,7 +46,7 @@ fun PokedexerApp() {
             composable("details") { PokemonDetails(pokemon = pokemon) }
         }
         composable(route = "moves") {
-            MovesList(
+            MovesListScreen(
                 viewModel = hiltViewModel()
             )
         }
