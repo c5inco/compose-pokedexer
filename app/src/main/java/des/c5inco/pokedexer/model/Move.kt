@@ -2,6 +2,7 @@ package des.c5inco.pokedexer.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import des.c5inco.pokedexer.R
 
 @Entity
 data class Move(
@@ -26,6 +27,14 @@ fun Move.category(): MoveCategory {
 fun Move.type(): Type {
     return when(type) {
         else -> Type.Normal
+    }
+}
+
+fun Move.categoryIcon(): Int {
+    return when(category.lowercase()) {
+        "physical" -> R.drawable.ic_move_physical
+        "special" -> R.drawable.ic_move_special
+        else -> R.drawable.ic_move_status
     }
 }
 

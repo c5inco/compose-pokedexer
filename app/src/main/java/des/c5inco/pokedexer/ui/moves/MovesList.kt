@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package des.c5inco.pokedexer.ui.moves
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -7,21 +5,25 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.moves.LocalMovesRepository
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Move
+import des.c5inco.pokedexer.model.categoryIcon
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
+import des.c5inco.pokedexer.ui.theme.PokemonColors
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
 @Composable
@@ -50,32 +52,56 @@ fun MovesListScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MovesList(
     moves: List<Move> = SampleMoves
 ) {
     LazyColumn {
         stickyHeader {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colors.surface)
-                ,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    "Move",
-                    Modifier.weight(1f)
-                )
-                Text("Type", Modifier.requiredWidth(80.dp))
-                Text("Cat.", Modifier.requiredWidth(40.dp))
-                Text("Power", Modifier.requiredWidth(40.dp))
-                Text("Acc.", Modifier.requiredWidth(40.dp))
+            val textStyle = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold)
+
+            CompositionLocalProvider(LocalTextStyle provides textStyle) {
+                Row(
+                    Modifier.fillMaxWidth()
+                        .background(MaterialTheme.colors.surface)
+                        .padding(vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        "Move", Modifier.weight(1f)
+                    )
+                    Box(
+                        Modifier.requiredWidth(75.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Type")
+                    }
+                    Box(
+                        Modifier.requiredWidth(48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Cat")
+                    }
+                    Text(
+                        text = "Pwr",
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.requiredWidth(40.dp)
+                    )
+                    Text(
+                        text = "Acc",
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.requiredWidth(40.dp)
+                    )
+                }
             }
         }
         items(moves) { move ->
             Row(
-                Modifier.fillMaxWidth(),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+                ,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
@@ -85,22 +111,22 @@ private fun MovesList(
                     Modifier.weight(1f)
                 )
                 PokemonTypeLabel(
-                    modifier = Modifier.requiredWidth(80.dp),
+                    modifier = Modifier.requiredWidth(75.dp),
                     text = move.type,
                     colored = true,
                     metrics = MEDIUM
                 )
-                Text(
-                    move.category,
-                    Modifier.requiredWidth(40.dp)
+                CategoryIcon(
+                    modifier = Modifier.requiredWidth(48.dp),
+                    move = move
                 )
                 Text(
-                    "${move.power}",
+                    "${move.power ?: "—"}",
                     textAlign = TextAlign.End,
                     modifier = Modifier.requiredWidth(40.dp)
                 )
                 Text(
-                    "${move.accuracy}",
+                    text = "${move.accuracy ?: "—"}",
                     textAlign = TextAlign.End,
                     modifier = Modifier.requiredWidth(40.dp)
                 )
@@ -109,12 +135,36 @@ private fun MovesList(
     }
 }
 
+@Composable
+private fun CategoryIcon(
+    modifier: Modifier = Modifier,
+    move: Move
+) {
+    Box(
+        modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(painter = painterResource(id = move.categoryIcon()),
+            contentDescription = move.category,
+            tint = when (move.category.lowercase()) {
+                "physical" -> PokemonColors.Fire
+                "special" -> PokemonColors.Dragon
+                else -> PokemonColors.Dark
+            },
+            modifier = Modifier.graphicsLayer {
+                rotationX = 40f
+                rotationY = -15f
+            })
+    }
+}
+
 @Preview
 @Composable
 fun MovesListScreenPreview() {
     PokedexerTheme {
         Surface {
-            MovesListScreen(MovesListViewModel(LocalMovesRepository()))
+            val viewModel = MovesListViewModel(LocalMovesRepository())
+            MovesListScreen(viewModel)
         }
     }
 }
