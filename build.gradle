@@ -1,12 +1,11 @@
 buildscript {
     ext {
-        agp_version = '7.1.2'
-        kotlin_version = '1.6.10'
-        compose_ui_version = '1.1.1'
-        accompanist_version = '0.23.1'
-        apollo_version = '3.1.0'
-        room_version = '2.4.2'
-        hilt_version = '2.41'
+        agp_version = '7.3.1'
+        kotlin_version = '1.7.20'
+        accompanist_version = '0.28.0'
+        apollo_version = '3.7.1'
+        room_version = '2.4.3'
+        hilt_version = '2.44.2'
         hilt_compose_navigation_version = '1.0.0'
         landscapist_version = '1.4.8'
     }
