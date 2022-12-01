@@ -45,8 +45,7 @@ private fun PokemonImage(
     description: String?
 ) {
     CoilImage(
-        imageModel = artworkUrl(image),
-        contentDescription = description,
+        imageModel = { artworkUrl(image) },
         previewPlaceholder = placeholderPokemonImage(image),
         success = { imageState ->
             val currentState = remember { MutableTransitionState(ImageState.Loading) }
@@ -70,7 +69,7 @@ private fun PokemonImage(
             imageState.drawable?.let {
                 Image(
                     bitmap = it.toBitmap().asImageBitmap(),
-                    contentDescription = null,
+                    contentDescription = description,
                     modifier = Modifier
                         .matchParentSize()
                         // .scale(animateScale)

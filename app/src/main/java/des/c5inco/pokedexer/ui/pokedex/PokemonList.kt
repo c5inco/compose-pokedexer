@@ -140,8 +140,7 @@ fun PokeDexCardContent(
         )
 
         CoilImage(
-            imageModel = artworkUrl(pokemon.image),
-            contentDescription = pokemon.name,
+            imageModel = { artworkUrl(pokemon.image) },
             previewPlaceholder = placeholderPokemonImage(pokemon.image),
             success = { imageState ->
                 val currentState = remember { MutableTransitionState(ImageState.Loading) }
@@ -154,7 +153,7 @@ fun PokeDexCardContent(
                 imageState.drawable?.let {
                     Image(
                         bitmap = it.toBitmap().asImageBitmap(),
-                        contentDescription = null,
+                        contentDescription = pokemon.name,
                         modifier = Modifier
                             .blur(animateBlur, BlurredEdgeTreatment.Unbounded)
                     )
