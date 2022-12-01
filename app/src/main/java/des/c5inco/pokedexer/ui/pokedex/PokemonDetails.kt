@@ -10,16 +10,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
-import com.skydoves.landscapist.coil.CoilImage
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
@@ -32,10 +30,20 @@ import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
 import des.c5inco.pokedexer.ui.pokedex.section.MovesSection
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PokemonDetails(
-    pokemon: Pokemon
+    pokemon: Pokemon,
+    onPokemonChange: (Int) -> Unit = {}
 ) {
+    val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            onPokemonChange(page)
+        }
+    }
+
     Surface(
         color = pokemon.color()
     ) {
@@ -63,11 +71,10 @@ fun PokemonDetails(
                 ,
                 pokemon = pokemon
             )
-
-            PokemonImage(
-                modifier = Modifier.align(Alignment.TopCenter),
-                image = pokemon.image,
-                description = pokemon.name
+            PokemonPager(
+                modifier = Modifier.padding(top = 140.dp),
+                pokemonList = SamplePokemonData,
+                pagerState = pagerState
             )
         }
     }
@@ -196,75 +203,31 @@ private fun RotatingPokeBall(
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val angle by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
+        initialValue = 0f, targetValue = 360f, animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 4000, easing = LinearEasing)
         )
     )
 
     PokeBall(
-        modifier = modifier
-            .padding(top = 140.dp)
-            .rotate(angle)
-            .size(200.dp),
+        modifier = modifier.padding(top = 140.dp).rotate(angle).size(200.dp),
         tint = Color(0xffF5F5F5),
         alpha = 0.25f
-    )
-}
-
-@Composable
-private fun PokemonImage(
-    modifier: Modifier = Modifier,
-    image: Int,
-    description: String?
-) {
-    CoilImage(
-        imageModel = artworkUrl(image),
-        contentDescription = description,
-        previewPlaceholder = placeholderPokemonImage(image),
-        success = { imageState ->
-            val currentState = remember { MutableTransitionState(ImageState.Loading) }
-            currentState.targetState = ImageState.Loaded
-            val transition = updateTransition(currentState, label = "imageLoad")
-            val animateScale by transition.animateFloat(
-                label = "scale",
-                transitionSpec = { spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = 500f
-                ) }
-            ) { state ->
-                if (state == ImageState.Loading) 0.8f else 1f
-            }
-            val animateOffsetY by transition.animateDp(
-                label = "offsetY"
-            ) { state ->
-                if (state == ImageState.Loading) (48).dp else 0.dp
-            }
-
-            imageState.drawable?.let {
-                Image(
-                    bitmap = it.toBitmap().asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .matchParentSize()
-                        .scale(animateScale)
-                        .offset(y = animateOffsetY)
-                )
-            }
-        },
-        modifier = modifier
-            .padding(top = 140.dp)
-            .size(200.dp)
     )
 }
 
 @Preview
 @Composable
 fun PokemonDetailsPreview() {
+    var pokemonData by remember { mutableStateOf(SamplePokemonData.first()) }
+
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {
-            PokemonDetails(SamplePokemonData.first())
+            PokemonDetails(
+                pokemon = pokemonData,
+                onPokemonChange = {
+                    pokemonData = SamplePokemonData[it]
+                }
+            )
         }
     }
 }
@@ -272,9 +235,16 @@ fun PokemonDetailsPreview() {
 @Preview
 @Composable
 fun PokemonDetailsPreviewLast() {
+    var pokemonData by remember { mutableStateOf(SamplePokemonData.last()) }
+
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {
-            PokemonDetails(SamplePokemonData.last())
+            PokemonDetails(
+                pokemon = pokemonData,
+                onPokemonChange = {
+                    pokemonData = SamplePokemonData[it]
+                }
+            )
         }
     }
 }
