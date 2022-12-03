@@ -1,6 +1,8 @@
 package des.c5inco.pokedexer
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -18,6 +20,7 @@ import des.c5inco.pokedexer.ui.pokedex.PokemonListScreen
 @HiltAndroidApp
 class PokedexerApplication : Application()
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun PokedexerApp() {
     val navController = rememberNavController()
@@ -43,7 +46,12 @@ fun PokedexerApp() {
                     navController.navigate("details")
                 }
             }
-            composable("details") { PokemonDetails(pokemon = pokemon) }
+            composable("details") {
+                PokemonDetails(
+                    viewModel = hiltViewModel(),
+                    pokemon = pokemon
+                )
+            }
         }
         composable(route = "moves") {
             MovesListScreen(

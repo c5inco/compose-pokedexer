@@ -1,5 +1,8 @@
 package des.c5inco.pokedexer.ui.pokedex
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import des.c5inco.pokedexer.R
+import des.c5inco.pokedexer.data.pokemon.LocalPokemonRepository
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
@@ -30,22 +34,32 @@ import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
 import des.c5inco.pokedexer.ui.pokedex.section.MovesSection
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PokemonDetails(
+    viewModel: PokedexViewModel,
     pokemon: Pokemon,
-    onPokemonChange: (Int) -> Unit = {}
 ) {
     val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
+    var activePokemon by remember { mutableStateOf(pokemon) }
+    val pokemonTypeColor = remember { Animatable(activePokemon.color()) }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            onPokemonChange(page)
+            if (viewModel.uiState.pokemon.isNotEmpty()) {
+                val incomingPokemon = viewModel.uiState.pokemon[page]
+                activePokemon = incomingPokemon
+                pokemonTypeColor.animateTo(
+                    targetValue = incomingPokemon.color(),
+                    animationSpec = tween(durationMillis = 500)
+                )
+            }
         }
     }
 
     Surface(
-        color = pokemon.color()
+        color = pokemonTypeColor.value
     ) {
         Box(Modifier.fillMaxSize()) {
             RoundedRectangleDecoration(
@@ -59,22 +73,24 @@ fun PokemonDetails(
                     .padding(top = 4.dp, end = 100.dp)
             )
             RotatingPokeBall(Modifier.align(Alignment.TopCenter))
-            HeaderLeft(pokemon = pokemon)
+            HeaderLeft(pokemon = activePokemon)
             HeaderRight(
                 modifier = Modifier.align(Alignment.TopEnd),
-                pokemon = pokemon
+                pokemon = activePokemon
             )
             CardContent(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 300.dp)
                 ,
-                pokemon = pokemon
+                pokemon = activePokemon
             )
+
             PokemonPager(
-                modifier = Modifier.padding(top = 140.dp),
-                pokemonList = SamplePokemonData,
-                pagerState = pagerState
+                modifier = Modifier.padding(top = 116.dp),
+                loading = viewModel.uiState.loading,
+                pokemonList = viewModel.uiState.pokemon,
+                pagerState = pagerState,
             )
         }
     }
@@ -209,41 +225,38 @@ private fun RotatingPokeBall(
     )
 
     PokeBall(
-        modifier = modifier.padding(top = 140.dp).rotate(angle).size(200.dp),
+        modifier = modifier
+            .padding(top = 140.dp)
+            .rotate(angle)
+            .size(200.dp),
         tint = Color(0xffF5F5F5),
         alpha = 0.25f
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
 fun PokemonDetailsPreview() {
-    var pokemonData by remember { mutableStateOf(SamplePokemonData.first()) }
-
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {
             PokemonDetails(
-                pokemon = pokemonData,
-                onPokemonChange = {
-                    pokemonData = SamplePokemonData[it]
-                }
+                viewModel = PokedexViewModel(LocalPokemonRepository()),
+                pokemon = SamplePokemonData.first(),
             )
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
 fun PokemonDetailsPreviewLast() {
-    var pokemonData by remember { mutableStateOf(SamplePokemonData.last()) }
-
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {
             PokemonDetails(
-                pokemon = pokemonData,
-                onPokemonChange = {
-                    pokemonData = SamplePokemonData[it]
-                }
+                viewModel = PokedexViewModel(LocalPokemonRepository()),
+                pokemon = SamplePokemonData.last(),
             )
         }
     }
