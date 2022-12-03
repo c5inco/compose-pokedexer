@@ -3,10 +3,20 @@ package des.c5inco.pokedexer.ui.pokedex
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,11 +46,16 @@ import des.c5inco.pokedexer.data.pokemon.LocalPokemonRepository
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
-import des.c5inco.pokedexer.ui.common.*
+import des.c5inco.pokedexer.ui.common.ImageState
+import des.c5inco.pokedexer.ui.common.PokeBall
+import des.c5inco.pokedexer.ui.common.PokeBallBackground
+import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.SMALL
+import des.c5inco.pokedexer.ui.common.artworkUrl
+import des.c5inco.pokedexer.ui.common.formatId
+import des.c5inco.pokedexer.ui.common.placeholderPokemonImage
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PokemonList(
     loading: Boolean = false,
@@ -53,7 +68,7 @@ fun PokemonList(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         contentPadding = PaddingValues(32.dp),
         content = {
-            item({ GridItemSpan(2) }) {
+            item(span = { GridItemSpan(2) }) {
                 Text(
                     text = "Pokedex",
                     style = MaterialTheme.typography.h4,
@@ -63,7 +78,7 @@ fun PokemonList(
                 )
             }
             if (loading) {
-                item({ GridItemSpan(2) }) {
+                item(span = { GridItemSpan(2) }) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
