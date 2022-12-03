@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
@@ -112,7 +113,7 @@ fun PokemonPager(
             HorizontalPager(
                 count = pokemonList.size,
                 state = pagerState,
-                contentPadding = PaddingValues(horizontal = 92.dp, vertical = 24.dp)
+                contentPadding = PaddingValues(horizontal = 92.dp)
             ) { page ->
                 val pokemon = pokemonList[page]
                 val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
@@ -125,11 +126,13 @@ fun PokemonPager(
                 )
 
                 Column(
-                    modifier = Modifier.graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                        translationY = yPos
-                    },
+                    modifier = Modifier
+                        .padding(top = 24.dp)
+                        .graphicsLayer {
+                            scaleX = scale
+                            scaleY = scale
+                            translationY = yPos
+                        },
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     PokemonImage(
