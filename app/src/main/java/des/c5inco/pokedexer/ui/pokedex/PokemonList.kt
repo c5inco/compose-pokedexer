@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,8 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
@@ -64,8 +63,8 @@ fun PokemonList(
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(32.dp),
         content = {
             item(span = { GridItemSpan(2) }) {
@@ -129,9 +128,10 @@ fun PokeDexCardContent(
 ) {
     Box(modifier.height(120.dp)) {
         Column(
-            Modifier.padding(top = 8.dp, start = 12.dp)
+            Modifier.padding(top = 24.dp, start = 12.dp)
         ) {
             PokemonName(pokemon.name)
+            Spacer(Modifier.height(8.dp))
             PokemonTypeLabels(pokemon.typeOfPokemon, SMALL)
         }
         Text(
@@ -176,8 +176,8 @@ fun PokeDexCardContent(
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(bottom = 8.dp, end = 8.dp)
-                .size(72.dp)
+                .padding(bottom = 6.dp, end = 6.dp)
+                .size(80.dp)
         )
     }
 }
@@ -187,9 +187,8 @@ fun PokemonName(name: String?) {
     Text(
         text = name ?: "",
         fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
+        fontSize = 14.sp,
         color = Color.White,
-        modifier = Modifier.padding(bottom = 8.dp)
     )
 }
 
