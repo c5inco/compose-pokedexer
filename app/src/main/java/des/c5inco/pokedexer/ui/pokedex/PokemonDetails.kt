@@ -12,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -22,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import des.c5inco.pokedexer.R
-import des.c5inco.pokedexer.data.pokemon.LocalPokemonRepository
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
@@ -59,7 +59,10 @@ fun PokemonDetails(
     }
 
     Surface(
-        color = pokemonTypeColor.value
+        modifier = Modifier.drawBehind {
+            drawRect(pokemonTypeColor.value)
+        },
+        color = Color.Transparent
     ) {
         Box(Modifier.fillMaxSize()) {
             RoundedRectangleDecoration(
