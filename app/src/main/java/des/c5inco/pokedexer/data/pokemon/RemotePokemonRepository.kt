@@ -36,7 +36,7 @@ class RemotePokemonRepository @Inject constructor(
                         Pokemon(
                             id = model.id,
                             name = formatName(model.name),
-                            description = model.description.first().flavor_text,
+                            description = formatFlavorText(model.description.first().flavor_text, model.name),
                             typeOfPokemon = detail.types.map { formatName(it.type!!.name) },
                             category = model.species[0].genus,
                             image = model.id,
@@ -74,4 +74,15 @@ private fun formatName(
     name: String
 ): String {
     return name.replaceFirstChar { it.uppercase() }
+}
+
+private fun formatFlavorText(
+    text: String,
+    pokemonName: String,
+): String {
+    return text
+        .replace("\n", " ")
+        .replace("\u000c", " ")
+        .replace("POKéMON", "pokemon")
+        .replace(pokemonName.uppercase(), formatName(pokemonName))
 }
