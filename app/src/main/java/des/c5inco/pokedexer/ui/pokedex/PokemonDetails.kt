@@ -35,20 +35,34 @@ import des.c5inco.pokedexer.ui.pokedex.section.MovesSection
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@Composable
+fun PokemonDetailsRoute(
+    viewModel: PokedexViewModel,
+    pokemon: Pokemon,
+) {
+    PokemonDetails(
+        loading = viewModel.uiState.loading,
+        pokemonSet = viewModel.uiState.pokemon,
+        pokemon = pokemon
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun PokemonDetails(
-    viewModel: PokedexViewModel,
+internal fun PokemonDetails(
+    loading: Boolean,
+    pokemonSet: List<Pokemon>,
     pokemon: Pokemon,
 ) {
     val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
     var activePokemon by remember { mutableStateOf(pokemon) }
     val pokemonTypeColor = remember { Animatable(activePokemon.color()) }
 
-    LaunchedEffect(pagerState) {
+    LaunchedEffect(pagerState, pokemonSet) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            if (viewModel.uiState.pokemon.isNotEmpty()) {
-                val incomingPokemon = viewModel.uiState.pokemon[page]
+            if (pokemonSet.isNotEmpty()) {
+                val incomingPokemon = pokemonSet[page]
                 activePokemon = incomingPokemon
                 pokemonTypeColor.animateTo(
                     targetValue = incomingPokemon.color(),
@@ -91,8 +105,8 @@ fun PokemonDetails(
 
             PokemonPager(
                 modifier = Modifier.padding(top = 116.dp),
-                loading = viewModel.uiState.loading,
-                pokemonList = viewModel.uiState.pokemon,
+                loading = loading,
+                pokemonList = pokemonSet,
                 pagerState = pagerState,
             )
         }
@@ -240,11 +254,12 @@ private fun RotatingPokeBall(
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
-fun PokemonDetailsPreview() {
+private fun PokemonDetailsPreview() {
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {
             PokemonDetails(
-                viewModel = PokedexViewModel(LocalPokemonRepository()),
+                loading = false,
+                pokemonSet = SamplePokemonData,
                 pokemon = SamplePokemonData.first(),
             )
         }
@@ -254,11 +269,12 @@ fun PokemonDetailsPreview() {
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
-fun PokemonDetailsPreviewLast() {
+private fun PokemonDetailsPreviewLast() {
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {
             PokemonDetails(
-                viewModel = PokedexViewModel(LocalPokemonRepository()),
+                loading = false,
+                pokemonSet = SamplePokemonData,
                 pokemon = SamplePokemonData.last(),
             )
         }

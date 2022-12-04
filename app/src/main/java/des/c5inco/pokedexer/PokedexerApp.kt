@@ -14,7 +14,7 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.moves.MovesListScreen
-import des.c5inco.pokedexer.ui.pokedex.PokemonDetails
+import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsRoute
 import des.c5inco.pokedexer.ui.pokedex.PokemonListScreen
 
 @HiltAndroidApp
@@ -47,7 +47,7 @@ fun PokedexerApp() {
                 }
             }
             composable("details") {
-                PokemonDetails(
+                PokemonDetailsRoute(
                     viewModel = hiltViewModel(),
                     pokemon = pokemon
                 )
