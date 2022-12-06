@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.PokemonOriginalQuery
 import des.c5inco.pokedexer.data.Result
+import des.c5inco.pokedexer.model.Evolution
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -31,12 +32,13 @@ class RemotePokemonRepository @Inject constructor(
                 if (!response.hasErrors()) {
                     val pokemonFromServer = response.data!!.pokemon.map { model ->
                         val detail = model.detail.first()
-                        val stats = detail.stats.map { it.base_stat }
+                        val stats = detail.stats.map { it.baseStat }
+                        val evolutions = model.evolutionChain?.evolutions ?: emptyList()
 
                         Pokemon(
                             id = model.id,
                             name = formatName(model.name),
-                            description = formatFlavorText(model.description.first().flavor_text, model.name),
+                            description = formatFlavorText(model.description.first().flavorText, model.name),
                             typeOfPokemon = detail.types.map { formatName(it.type!!.name) },
                             category = model.species[0].genus,
                             image = model.id,
@@ -46,6 +48,7 @@ class RemotePokemonRepository @Inject constructor(
                             specialAttack = stats[3],
                             specialDefense = stats[4],
                             speed = stats[5],
+                            evolutionChain = transformEvolutionChain(evolutions)
                         )
                     }
 
@@ -68,6 +71,20 @@ class RemotePokemonRepository @Inject constructor(
     override suspend fun deleteAllPokemon(): Result<Int> {
         TODO("Not yet implemented")
     }
+}
+
+private fun transformEvolutionChain(
+    list: List<PokemonOriginalQuery.Evolution>
+): List<Evolution> {
+    return list
+        .map {
+            val targetLevel = if (it.targetLevels.isNotEmpty()) {
+                it.targetLevels.first().level ?: -1
+            } else {
+                -1
+            }
+            Evolution(it.id, targetLevel)
+        }
 }
 
 private fun formatName(

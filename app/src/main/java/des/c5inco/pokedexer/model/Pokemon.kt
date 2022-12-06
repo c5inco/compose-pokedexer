@@ -11,7 +11,8 @@ data class Pokemon(
     @PrimaryKey val id: Int,
     val name: String,
     val description: String,
-    @ColumnInfo(name = "types") val typeOfPokemon: List<String>,
+    @ColumnInfo(name = "types")
+    val typeOfPokemon: List<String> = listOf(),
     val category: String,
     val image: Int,
     val hp: Int,
@@ -20,6 +21,8 @@ data class Pokemon(
     val specialAttack: Int,
     val specialDefense: Int,
     val speed: Int,
+    @ColumnInfo(name = "evolutions", defaultValue = "")
+    val evolutionChain: List<Evolution> = listOf(),
 )
 
 fun Pokemon.color(): Color {

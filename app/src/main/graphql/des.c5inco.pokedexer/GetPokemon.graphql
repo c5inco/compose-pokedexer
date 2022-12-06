@@ -8,7 +8,7 @@ query PokemonOriginal {
       id
       name
       description: pokemon_v2_pokemonspeciesflavortexts(where: {version_id: {_eq: 7}}) {
-        flavor_text
+        flavorText: flavor_text
       }
       detail: pokemon_v2_pokemons {
         types: pokemon_v2_pokemontypes {
@@ -21,14 +21,15 @@ query PokemonOriginal {
             id
             name
           }
-          base_stat
+          baseStat: base_stat
         }
       }
-      evolution_chain: pokemon_v2_evolutionchain {
-        pokemon_evolve: pokemon_v2_pokemonspecies(order_by: {order: asc_nulls_first}) {
+      evolutionChain: pokemon_v2_evolutionchain {
+        evolutions: pokemon_v2_pokemonspecies(order_by: {id: asc_nulls_first}) {
           id
-          evolves_from_species_id
-          order
+          targetLevels: pokemon_v2_pokemonevolutions {
+            level: min_level
+          }
         }
       }
       species: pokemon_v2_pokemonspeciesnames(where: {pokemon_v2_language: {iso639: {_eq: "en"}}}) {
