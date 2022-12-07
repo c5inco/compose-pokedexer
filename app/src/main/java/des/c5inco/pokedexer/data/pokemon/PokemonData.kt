@@ -1,5 +1,6 @@
 package des.c5inco.pokedexer.data.pokemon
 
+import des.c5inco.pokedexer.model.Evolution
 import des.c5inco.pokedexer.model.Pokemon
 
 val SamplePokemonData = listOf(
@@ -16,6 +17,11 @@ val SamplePokemonData = listOf(
         specialAttack = 65,
         specialDefense = 65,
         speed = 45,
+        evolutionChain = listOf(
+            Evolution(1, -1),
+            Evolution(2, 16),
+            Evolution(3, 32),
+        )
     ),
     Pokemon(
         id = 2,
@@ -30,6 +36,11 @@ val SamplePokemonData = listOf(
         specialAttack = 80,
         specialDefense = 80,
         speed = 60,
+        evolutionChain = listOf(
+            Evolution(1, -1),
+            Evolution(2, 16),
+            Evolution(3, 32),
+        )
     ),
     Pokemon(
         id = 3,
@@ -44,6 +55,11 @@ val SamplePokemonData = listOf(
         specialAttack = 100,
         specialDefense = 100,
         speed = 80,
+        evolutionChain = listOf(
+            Evolution(1, -1),
+            Evolution(2, 16),
+            Evolution(3, 32),
+        )
     ),
     Pokemon(
         id = 4,
@@ -58,6 +74,11 @@ val SamplePokemonData = listOf(
         specialAttack = 60,
         specialDefense = 50,
         speed = 65,
+        evolutionChain = listOf(
+            Evolution(4, -1),
+            Evolution(5, 16),
+            Evolution(6, 32),
+        )
     ),
     Pokemon(
         id = 5,
@@ -72,6 +93,11 @@ val SamplePokemonData = listOf(
         specialAttack = 80,
         specialDefense = 65,
         speed = 80,
+        evolutionChain = listOf(
+            Evolution(4, -1),
+            Evolution(5, 16),
+            Evolution(6, 32),
+        )
     ),
     Pokemon(
         id = 6,
@@ -86,6 +112,11 @@ val SamplePokemonData = listOf(
         specialAttack = 109,
         specialDefense = 85,
         speed = 100,
+        evolutionChain = listOf(
+            Evolution(4, -1),
+            Evolution(5, 16),
+            Evolution(6, 32),
+        )
     ),
     Pokemon(
         id = 7,
@@ -100,6 +131,11 @@ val SamplePokemonData = listOf(
         specialAttack = 50,
         specialDefense = 64,
         speed = 43,
+        evolutionChain = listOf(
+            Evolution(7, -1),
+            Evolution(8, 16),
+            Evolution(9, 32),
+        )
     ),
     Pokemon(
         id = 8,
@@ -114,6 +150,11 @@ val SamplePokemonData = listOf(
         specialAttack = 65,
         specialDefense = 80,
         speed = 58,
+        evolutionChain = listOf(
+            Evolution(7, -1),
+            Evolution(8, 16),
+            Evolution(9, 32),
+        )
     ),
     Pokemon(
         id = 9,
@@ -128,5 +169,10 @@ val SamplePokemonData = listOf(
         specialAttack = 85,
         specialDefense = 105,
         speed = 78,
+        evolutionChain = listOf(
+            Evolution(7, -1),
+            Evolution(8, 16),
+            Evolution(9, 32),
+        )
     ),
 )
