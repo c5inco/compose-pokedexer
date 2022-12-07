@@ -27,7 +27,11 @@ val Typography = Typography(
     h4 = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 30.sp,
-    )
+    ),
+    h6 = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+    ),
 )
 
 @Preview(showBackground = true)
