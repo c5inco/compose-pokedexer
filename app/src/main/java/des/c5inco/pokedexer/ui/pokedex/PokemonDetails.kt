@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -252,8 +253,10 @@ private fun RotatingPokeBall(
     PokeBall(
         modifier = modifier
             .padding(top = 140.dp)
-            .rotate(angle)
-            .size(200.dp),
+            .size(200.dp)
+            .graphicsLayer {
+               rotationZ = angle
+            },
         tint = Color(0xffF5F5F5),
         alpha = 0.25f
     )
