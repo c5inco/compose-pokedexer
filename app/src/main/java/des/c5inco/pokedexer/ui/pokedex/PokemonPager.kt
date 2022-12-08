@@ -64,7 +64,7 @@ val PROGRESSIVE_TINT_SHADER = """
         if (currentValue.w > 0) {
             return mix(
                 currentValue,
-                vec4(overColor.xyz * overColor.w + (backgroundColor.xyz * (1 - overColor.w)), 1),
+                vec4(mix(overColor.rgb, backgroundColor.rgb, overColor.a), 1),
                 progress
             );
         } else {
