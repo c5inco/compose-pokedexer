@@ -16,7 +16,7 @@ import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.moves.MovesListScreen
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsRoute
 import des.c5inco.pokedexer.ui.pokedex.PokemonListScreen
- import des.c5inco.pokedexer.ui.pokedex.pokemonDetailsViewModel
+import des.c5inco.pokedexer.ui.pokedex.pokemonDetailsViewModel
 
 @HiltAndroidApp
 class PokedexerApplication : Application()
@@ -51,7 +51,6 @@ fun PokedexerApp() {
                 PokemonDetailsRoute(
                     viewModel = hiltViewModel(),
                     detailsViewModel = pokemonDetailsViewModel(pokemon),
-                    pokemon = pokemon,
                 )
             }
         }

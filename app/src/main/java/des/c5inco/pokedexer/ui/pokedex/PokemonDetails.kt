@@ -41,14 +41,15 @@ import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 fun PokemonDetailsRoute(
     viewModel: PokedexViewModel,
     detailsViewModel: PokemonDetailsViewModel,
-    pokemon: Pokemon,
 ) {
     PokemonDetails(
         loading = viewModel.uiState.loading,
         pokemonSet = viewModel.uiState.pokemon,
-        pokemon = pokemon,
+        pokemon = detailsViewModel.details,
         evolutions = detailsViewModel.evolutions,
-        onPage = onPage
+        onPage = {
+            detailsViewModel.refresh(it)
+        }
     )
 }
 
@@ -63,14 +64,13 @@ internal fun PokemonDetails(
     onPage: (Pokemon) -> Unit = {}
 ) {
     val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
-    var activePokemon by remember { mutableStateOf(pokemon) }
-    val pokemonTypeColor = remember { Animatable(activePokemon.color()) }
+    val pokemonTypeColor = remember { Animatable(pokemon.color()) }
 
     LaunchedEffect(pagerState, pokemonSet) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             if (pokemonSet.isNotEmpty()) {
                 val incomingPokemon = pokemonSet[page]
-                activePokemon = incomingPokemon
+                onPage(incomingPokemon)
                 pokemonTypeColor.animateTo(
                     targetValue = incomingPokemon.color(),
                     animationSpec = tween(durationMillis = 500)
@@ -97,17 +97,17 @@ internal fun PokemonDetails(
                     .padding(top = 4.dp, end = 100.dp)
             )
             RotatingPokeBall(Modifier.align(Alignment.TopCenter))
-            HeaderLeft(pokemon = activePokemon)
+            HeaderLeft(pokemon = pokemon)
             HeaderRight(
                 modifier = Modifier.align(Alignment.TopEnd),
-                pokemon = activePokemon
+                pokemon = pokemon
             )
             CardContent(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 300.dp)
                 ,
-                pokemon = activePokemon,
+                pokemon = pokemon,
                 evolutions = evolutions,
             )
 
@@ -266,34 +266,19 @@ private fun RotatingPokeBall(
 @Preview
 @Composable
 private fun PokemonDetailsPreview() {
-    PokedexerTheme {
-        Surface(Modifier.fillMaxSize()) {
-            PokemonDetails(
-                loading = false,
-                pokemonSet = SamplePokemonData,
-                pokemon = SamplePokemonData.first(),
-                evolutions = mapSampleEvolutionsToList(
-                    SamplePokemonData.first().evolutionChain
-                )
-            )
-        }
-    }
-}
+    var activePokemon by remember { mutableStateOf(SamplePokemonData.first()) }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@Preview
-@Composable
-private fun PokemonDetailsPreviewLast() {
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {
-            PokemonDetails(
-                loading = false,
+            PokemonDetails(loading = false,
                 pokemonSet = SamplePokemonData,
-                pokemon = SamplePokemonData.last(),
+                pokemon = activePokemon,
                 evolutions = mapSampleEvolutionsToList(
-                    SamplePokemonData.last().evolutionChain
-                )
-            )
+                    activePokemon.evolutionChain
+                ),
+                onPage = {
+                    activePokemon = it
+                })
         }
     }
 }

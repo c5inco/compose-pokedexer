@@ -2,7 +2,9 @@ package des.c5inco.pokedexer.ui.pokedex
 
 import android.app.Activity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +18,7 @@ import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.di.ViewModelFactoryProvider
 import des.c5inco.pokedexer.model.Pokemon
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 /**
@@ -48,7 +51,10 @@ class PokemonDetailsViewModel @AssistedInject constructor(
     private val pokemonRepository: PokemonRepository,
     @Assisted private val pokemon: Pokemon
 ): ViewModel() {
-    var evolutions = mutableStateListOf<PokemonDetailsEvolutions>()
+    var details by mutableStateOf(pokemon)
+        private set
+
+    var evolutions by mutableStateOf(listOf<PokemonDetailsEvolutions>())
         private set
 
     @AssistedFactory
@@ -68,17 +74,27 @@ class PokemonDetailsViewModel @AssistedInject constructor(
     }
 
     init {
-        pokemon.evolutionChain.forEach {
-            viewModelScope.launch {
-                when (val result = pokemonRepository.getPokemonById(it.id)) {
-                    is Result.Success -> {
-                        evolutions.add(PokemonDetailsEvolutions(result.data, it.targetLevel))
-                    }
-                    is Result.Error -> {
-                        throw result.exception
+        refresh(pokemon)
+    }
+
+    fun refresh(incomingPokemon: Pokemon) {
+        viewModelScope.launch {
+            val ev = mutableListOf<PokemonDetailsEvolutions>()
+            incomingPokemon.evolutionChain.map {
+                launch {
+                    when (val result = pokemonRepository.getPokemonById(it.id)) {
+                        is Result.Success -> {
+                            ev.add(PokemonDetailsEvolutions(result.data, it.targetLevel))
+                        }
+                        is Result.Error -> {
+                            throw result.exception
+                        }
                     }
                 }
-            }
+            }.joinAll()
+
+            details = incomingPokemon
+            evolutions = ev.toList()
         }
     }
 }
