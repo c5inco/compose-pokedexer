@@ -115,6 +115,7 @@ internal fun PokemonDetails(
                 modifier = Modifier.padding(top = 116.dp),
                 loading = loading,
                 pokemonList = pokemonSet,
+                backgroundColor = pokemon.color(),
                 pagerState = pagerState,
             )
         }

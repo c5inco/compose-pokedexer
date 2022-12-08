@@ -20,15 +20,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
@@ -42,11 +45,33 @@ import com.skydoves.landscapist.coil.CoilImage
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.ImageState
-import des.c5inco.pokedexer.ui.common.PROGRESSIVE_TINT_SHADER
 import des.c5inco.pokedexer.ui.common.artworkUrl
 import des.c5inco.pokedexer.ui.common.placeholderPokemonImage
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
+import org.intellij.lang.annotations.Language
 import kotlin.math.absoluteValue
+
+@Language("AGSL")
+val PROGRESSIVE_TINT_SHADER = """
+    layout(color) uniform vec4 backgroundColor;
+    uniform float progress;
+    uniform shader contents; 
+    
+    vec4 main(in vec2 fragCoord) {
+        const vec4 overColor = vec4(0,0,0,0.4);
+        vec4 currentValue = contents.eval(fragCoord);
+        
+        if (currentValue.w > 0) {
+            return mix(
+                currentValue,
+                vec4(overColor.xyz * overColor.w + (backgroundColor.xyz * (1 - overColor.w)), 1),
+                progress
+            );
+        } else {
+            return currentValue;
+        }
+    }
+""".trimIndent()
 
 @Composable
 private fun PokemonImage(
@@ -101,6 +126,7 @@ fun PokemonPager(
     modifier: Modifier = Modifier,
     loading: Boolean = false,
     pokemonList: List<Pokemon>,
+    backgroundColor: Color,
     pagerState: PagerState = rememberPagerState()
 ) {
     val shader = remember { RuntimeShader(PROGRESSIVE_TINT_SHADER) }
@@ -139,6 +165,7 @@ fun PokemonPager(
                         image = pokemon.image,
                         description = pokemon.name,
                         modifier = Modifier.graphicsLayer {
+                            shader.setColorUniform("backgroundColor", backgroundColor.toArgb())
                             shader.setFloatUniform("progress", progress)
                             renderEffect = RenderEffect.createRuntimeShaderEffect(
                                 shader,
@@ -163,7 +190,10 @@ fun PokemonPagerPreview() {
                 Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center
             ) {
-                PokemonPager(pokemonList = SamplePokemonData)
+                PokemonPager(
+                    pokemonList = SamplePokemonData,
+                    backgroundColor = MaterialTheme.colors.surface
+                )
             }
         }
     }

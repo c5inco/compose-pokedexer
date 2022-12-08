@@ -12,7 +12,6 @@ import des.c5inco.pokedexer.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.intellij.lang.annotations.Language
 import java.lang.Integer.min
 
 fun formatId(id: Int): String = "#" + "$id".padStart(3, '0')
@@ -52,20 +51,3 @@ fun placeholderPokemonImage(id: Int): Int {
     )
     return sampleImages[min(id, 10) - 1]
 }
-
-@Language("AGSL")
-val PROGRESSIVE_TINT_SHADER = """
-    uniform float progress;
-    uniform shader contents; 
-    
-    vec4 main(in vec2 fragCoord) {
-        const vec4 finalColor = vec4(0,0,0,0.4);
-        vec4 currentValue = contents.eval(fragCoord);
-        
-        if (currentValue.w > 0) {
-            return mix(currentValue, finalColor, progress);
-        } else {
-            return currentValue;
-        }
-    }
-""".trimIndent()
