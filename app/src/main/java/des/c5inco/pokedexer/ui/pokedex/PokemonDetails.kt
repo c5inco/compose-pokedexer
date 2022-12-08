@@ -153,7 +153,7 @@ private fun CardContent(
                 when (section) {
                     Sections.About -> AboutSection(pokemon)
                     Sections.BaseStats -> BaseStatsSection(pokemon)
-                    Sections.Evolution -> EvolutionSection(pokemon)
+                    Sections.Evolution -> EvolutionSection(evolutions = evolutions)
                     else -> MovesSection(pokemon)
                 }
             }
