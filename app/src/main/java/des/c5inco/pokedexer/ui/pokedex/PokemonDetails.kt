@@ -24,6 +24,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.ui.common.*
@@ -123,7 +124,8 @@ private enum class Sections(val title: String) {
 @Composable
 private fun CardContent(
     modifier: Modifier,
-    pokemon: Pokemon
+    pokemon: Pokemon,
+    evolutions: List<PokemonDetailsEvolutions>
 ) {
     Surface(
         modifier = modifier,
@@ -261,6 +263,9 @@ private fun PokemonDetailsPreview() {
                 loading = false,
                 pokemonSet = SamplePokemonData,
                 pokemon = SamplePokemonData.first(),
+                evolutions = mapSampleEvolutionsToList(
+                    SamplePokemonData.first().evolutionChain
+                )
             )
         }
     }
@@ -276,6 +281,9 @@ private fun PokemonDetailsPreviewLast() {
                 loading = false,
                 pokemonSet = SamplePokemonData,
                 pokemon = SamplePokemonData.last(),
+                evolutions = mapSampleEvolutionsToList(
+                    SamplePokemonData.last().evolutionChain
+                )
             )
         }
     }
