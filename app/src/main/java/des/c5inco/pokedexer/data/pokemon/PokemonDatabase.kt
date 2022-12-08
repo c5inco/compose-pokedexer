@@ -7,7 +7,7 @@ import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
 
 @Database(
-    version = 3,
+    version = 2,
     entities = [Pokemon::class, Move::class],
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
