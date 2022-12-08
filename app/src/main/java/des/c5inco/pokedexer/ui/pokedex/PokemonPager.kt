@@ -67,9 +67,8 @@ val PROGRESSIVE_TINT_SHADER = """
                 vec4(mix(overColor.rgb, backgroundColor.rgb, overColor.a), 1),
                 progress
             );
-        } else {
-            return currentValue;
-        }
+        }            
+        return currentValue;
     }
 """.trimIndent()
 
