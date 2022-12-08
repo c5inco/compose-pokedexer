@@ -2,6 +2,7 @@ package des.c5inco.pokedexer.data.pokemon
 
 import des.c5inco.pokedexer.model.Evolution
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsEvolutions
 
 val SamplePokemonData = listOf(
     Pokemon(
@@ -176,3 +177,14 @@ val SamplePokemonData = listOf(
         )
     ),
 )
+
+fun mapSampleEvolutionsToList(
+    sample: List<Evolution>
+): List<PokemonDetailsEvolutions> {
+    return sample.map {
+        PokemonDetailsEvolutions(
+            SamplePokemonData[it.id - 1],
+            it.targetLevel
+        )
+    }
+}

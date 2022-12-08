@@ -1,9 +1,11 @@
 package des.c5inco.pokedexer
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -17,12 +19,18 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import des.c5inco.pokedexer.ui.home.RootViewModel
+import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsViewModel
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: RootViewModel by viewModels()
 
+    @Inject
+    lateinit var pokemonDetailsViewModelFactory: PokemonDetailsViewModel.PokemonDetailsViewModelFactory
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,6 +57,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun DefaultPreview() {

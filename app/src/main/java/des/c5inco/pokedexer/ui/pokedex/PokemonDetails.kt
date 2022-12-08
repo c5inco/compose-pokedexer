@@ -39,12 +39,15 @@ import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 @Composable
 fun PokemonDetailsRoute(
     viewModel: PokedexViewModel,
+    detailsViewModel: PokemonDetailsViewModel,
     pokemon: Pokemon,
 ) {
     PokemonDetails(
         loading = viewModel.uiState.loading,
         pokemonSet = viewModel.uiState.pokemon,
-        pokemon = pokemon
+        pokemon = pokemon,
+        evolutions = detailsViewModel.evolutions,
+        onPage = onPage
     )
 }
 
@@ -55,6 +58,8 @@ internal fun PokemonDetails(
     loading: Boolean,
     pokemonSet: List<Pokemon>,
     pokemon: Pokemon,
+    evolutions: List<PokemonDetailsEvolutions>,
+    onPage: (Pokemon) -> Unit = {}
 ) {
     val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
     var activePokemon by remember { mutableStateOf(pokemon) }
@@ -101,7 +106,8 @@ internal fun PokemonDetails(
                     .align(Alignment.TopCenter)
                     .padding(top = 300.dp)
                 ,
-                pokemon = activePokemon
+                pokemon = activePokemon,
+                evolutions = evolutions,
             )
 
             PokemonPager(
