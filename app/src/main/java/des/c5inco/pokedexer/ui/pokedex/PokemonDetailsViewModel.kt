@@ -94,7 +94,9 @@ class PokemonDetailsViewModel @AssistedInject constructor(
             }.joinAll()
 
             details = incomingPokemon
-            evolutions = ev.toList()
+            evolutions = ev
+                .sortedBy { it.pokemon.id }
+                .toList()
         }
     }
 }

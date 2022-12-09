@@ -1,15 +1,17 @@
 package des.c5inco.pokedexer.ui.pokedex.section
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -20,6 +22,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,9 +41,7 @@ fun EvolutionSection(
     modifier: Modifier = Modifier,
     evolutions: List<PokemonDetailsEvolutions> = listOf(),
 ) {
-    Column(
-        modifier.fillMaxSize()
-    ) {
+    Column(modifier) {
         Text(
             "Evolution chain",
             style = MaterialTheme.typography.h6,
@@ -51,7 +52,7 @@ fun EvolutionSection(
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 24.dp, horizontal = 16.dp),
+                        .padding(vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -87,12 +88,20 @@ fun EvolutionSection(
 fun EvolutionsSectionPreview() {
     PokedexerTheme {
         Surface {
-            EvolutionSection(
-                modifier = Modifier.padding(vertical = 32.dp),
-                evolutions = mapSampleEvolutionsToList(
-                    SamplePokemonData.first().evolutionChain
+            Column {
+                EvolutionSection(
+                    modifier = Modifier.padding(vertical = 32.dp),
+                    evolutions = mapSampleEvolutionsToList(
+                        SamplePokemonData.first().evolutionChain
+                    )
                 )
-            )
+                EvolutionSection(
+                    modifier = Modifier.padding(vertical = 32.dp),
+                    evolutions = mapSampleEvolutionsToList(
+                        SamplePokemonData[3].evolutionChain
+                    )
+                )
+            }
         }
     }
 }
@@ -103,7 +112,11 @@ private fun EvolutionCard(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(8.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .clickable{}
+            .width(128.dp)
+            .padding(horizontal = 8.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -121,6 +134,7 @@ private fun EvolutionCard(
         Text(
             pokemon.name
         )
+        Spacer(Modifier.height(4.dp))
     }
 }
 
@@ -129,7 +143,10 @@ private fun EvolutionCard(
 fun EvolutionCardPreview() {
     PokedexerTheme {
         Surface {
-            EvolutionCard(pokemon = SamplePokemonData[1])
+            Column {
+                EvolutionCard(pokemon = SamplePokemonData[1])
+                EvolutionCard(pokemon = SamplePokemonData[4])
+            }
         }
     }
 }
