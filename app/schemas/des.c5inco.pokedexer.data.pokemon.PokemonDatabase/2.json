@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "ff075e66bac8d1de62f90d7c0afcbae7",
+    "identityHash": "f68061ca36223b0dc5541f26039e6be8",
     "entities": [
       {
         "tableName": "Pokemon",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `types` TEXT NOT NULL, `category` TEXT NOT NULL, `image` INTEGER NOT NULL, `hp` INTEGER NOT NULL, `attack` INTEGER NOT NULL, `defense` INTEGER NOT NULL, `specialAttack` INTEGER NOT NULL, `specialDefense` INTEGER NOT NULL, `speed` INTEGER NOT NULL, `evolutions` TEXT NOT NULL DEFAULT '', PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `types` TEXT NOT NULL, `category` TEXT NOT NULL, `image` INTEGER NOT NULL, `height` REAL NOT NULL DEFAULT 0, `weight` REAL NOT NULL DEFAULT 0, `hp` INTEGER NOT NULL, `attack` INTEGER NOT NULL, `defense` INTEGER NOT NULL, `specialAttack` INTEGER NOT NULL, `specialDefense` INTEGER NOT NULL, `speed` INTEGER NOT NULL, `evolutions` TEXT NOT NULL DEFAULT '', PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -43,6 +43,20 @@
             "columnName": "image",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "REAL",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "REAL",
+            "notNull": true,
+            "defaultValue": "0"
           },
           {
             "fieldPath": "hp",
@@ -163,7 +177,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ff075e66bac8d1de62f90d7c0afcbae7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f68061ca36223b0dc5541f26039e6be8')"
     ]
   }
 }

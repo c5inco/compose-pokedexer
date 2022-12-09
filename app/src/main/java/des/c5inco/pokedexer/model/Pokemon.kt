@@ -15,6 +15,10 @@ data class Pokemon(
     val typeOfPokemon: List<String> = listOf(),
     val category: String,
     val image: Int,
+    @ColumnInfo(defaultValue = "0.0")
+    val height: Double,
+    @ColumnInfo(defaultValue = "0.0")
+    val weight: Double,
     val hp: Int,
     val attack: Int,
     val defense: Int,
