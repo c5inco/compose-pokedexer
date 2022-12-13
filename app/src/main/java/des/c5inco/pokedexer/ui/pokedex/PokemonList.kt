@@ -1,8 +1,5 @@
 package des.c5inco.pokedexer.ui.pokedex
 
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,8 +25,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +40,6 @@ import des.c5inco.pokedexer.data.pokemon.LocalPokemonRepository
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
-import des.c5inco.pokedexer.ui.common.ImageState
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
@@ -158,19 +152,10 @@ fun PokeDexCardContent(
             imageModel = { artworkUrl(pokemon.image) },
             previewPlaceholder = placeholderPokemonImage(pokemon.image),
             success = { imageState ->
-                val currentState = remember { MutableTransitionState(ImageState.Loading) }
-                currentState.targetState = ImageState.Loaded
-                val transition = updateTransition(currentState, label = "imageLoad")
-                val animateBlur by transition.animateDp(label = "blur") { state ->
-                    if (state == ImageState.Loading) 16.dp else 0.dp
-                }
-
                 imageState.drawable?.let {
                     Image(
                         bitmap = it.toBitmap().asImageBitmap(),
                         contentDescription = pokemon.name,
-                        modifier = Modifier
-                            .blur(animateBlur, BlurredEdgeTreatment.Unbounded)
                     )
                 }
             },
