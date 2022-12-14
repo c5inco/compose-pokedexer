@@ -9,6 +9,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,7 +67,8 @@ internal fun PokemonDetails(
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>,
     onPage: (Pokemon) -> Unit = {},
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onFavoriteClick: (Int) -> Unit = { _ -> }
 ) {
     val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
     val pokemonTypeColor = remember { Animatable(pokemon.color()) }
@@ -99,28 +103,67 @@ internal fun PokemonDetails(
                     .align(Alignment.TopEnd)
                     .padding(top = 4.dp, end = 100.dp)
             )
-            RotatingPokeBall(Modifier.align(Alignment.TopCenter))
-            HeaderLeft(pokemon = pokemon)
-            HeaderRight(
-                modifier = Modifier.align(Alignment.TopEnd),
-                pokemon = pokemon
-            )
-            CardContent(
-                modifier = Modifier
+            RotatingPokeBall(
+                Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 300.dp)
-                ,
-                pokemon = pokemon,
-                evolutions = evolutions,
+                    .statusBarsPadding()
+                    .padding(top = 16.dp)
+                    .padding(top = 140.dp)
             )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(top = 16.dp)
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    IconButton(
+                        modifier = Modifier,
+                        onClick = onBackClick
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back to Pokedex",
+                            tint = Color.White
+                        )
+                    }
+                    IconButton(
+                        modifier = Modifier,
+                        onClick = { onFavoriteClick(pokemon.id) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FavoriteBorder,
+                            contentDescription = "Favorite this Pokemon",
+                            tint = Color.White
+                        )
+                    }
+                }
+                HeaderLeft(pokemon = pokemon)
+                HeaderRight(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    pokemon = pokemon
+                )
+                CardContent(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 300.dp),
+                    pokemon = pokemon,
+                    evolutions = evolutions,
+                )
 
-            PokemonPager(
-                modifier = Modifier.padding(top = 116.dp),
-                loading = loading,
-                pokemonList = pokemonSet,
-                backgroundColor = pokemon.color(),
-                pagerState = pagerState,
-            )
+                PokemonPager(
+                    modifier = Modifier.padding(top = 116.dp),
+                    loading = loading,
+                    pokemonList = pokemonSet,
+                    backgroundColor = pokemon.color(),
+                    pagerState = pagerState,
+                )
+            }
         }
     }
 }
@@ -162,7 +205,9 @@ private fun CardContent(
                     }
                 }
             }
-            Box(Modifier.padding(24.dp)) {
+            Box(
+                modifier = Modifier.padding(24.dp)
+            ) {
                 when (section) {
                     Sections.About -> AboutSection(pokemon)
                     Sections.BaseStats -> BaseStatsSection(pokemon)
@@ -203,14 +248,14 @@ private fun HeaderLeft(
     pokemon: Pokemon
 ) {
     Column(
-        modifier.padding(top = 40.dp, bottom = 32.dp, start = 32.dp, end = 32.dp)
+        modifier.padding(top = 40.dp, bottom = 32.dp, start = 24.dp, end = 24.dp)
     ) {
         Text(
             text = pokemon.name,
             style = MaterialTheme.typography.h4,
             color = Color.White
         )
-
+        Spacer(Modifier.height(8.dp))
         pokemon.typeOfPokemon.let {
             Row {
                 PokemonTypeLabels(it, MEDIUM)
@@ -225,7 +270,7 @@ private fun HeaderRight(
     pokemon: Pokemon
 ) {
     Column(
-        modifier.padding(top = 52.dp, bottom = 32.dp, start = 32.dp, end = 32.dp),
+        modifier.padding(top = 52.dp, bottom = 32.dp, start = 24.dp, end = 24.dp),
         horizontalAlignment = Alignment.End
     ) {
         Text(
@@ -256,10 +301,9 @@ private fun RotatingPokeBall(
 
     PokeBall(
         modifier = modifier
-            .padding(top = 140.dp)
             .size(200.dp)
             .graphicsLayer {
-               rotationZ = angle
+                rotationZ = angle
             },
         tint = Color(0xffF5F5F5),
         alpha = 0.25f
