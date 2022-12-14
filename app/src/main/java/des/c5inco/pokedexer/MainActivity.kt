@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
-import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,9 +47,7 @@ class MainActivity : ComponentActivity() {
 
             CompositionLocalProvider(LocalCoilImageLoader provides viewModel.imageLoader) {
                 PokedexerTheme {
-                    ProvideWindowInsets {
-                        PokedexerApp()
-                    }
+                    PokedexerApp()
                 }
             }
         }
