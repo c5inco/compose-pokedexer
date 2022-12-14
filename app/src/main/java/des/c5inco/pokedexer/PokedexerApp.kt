@@ -51,6 +51,7 @@ fun PokedexerApp() {
                 PokemonDetailsRoute(
                     viewModel = hiltViewModel(),
                     detailsViewModel = pokemonDetailsViewModel(pokemon),
+                    onBackClick = { navController.popBackStack() }
                 )
             }
         }

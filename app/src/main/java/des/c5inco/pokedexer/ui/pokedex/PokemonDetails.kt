@@ -41,6 +41,7 @@ import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 fun PokemonDetailsRoute(
     viewModel: PokedexViewModel,
     detailsViewModel: PokemonDetailsViewModel,
+    onBackClick: () -> Unit,
 ) {
     PokemonDetails(
         loading = viewModel.uiState.loading,
@@ -49,7 +50,8 @@ fun PokemonDetailsRoute(
         evolutions = detailsViewModel.evolutions,
         onPage = {
             detailsViewModel.refresh(it)
-        }
+        },
+        onBackClick = onBackClick
     )
 }
 
@@ -61,7 +63,8 @@ internal fun PokemonDetails(
     pokemonSet: List<Pokemon>,
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>,
-    onPage: (Pokemon) -> Unit = {}
+    onPage: (Pokemon) -> Unit = {},
+    onBackClick: () -> Unit = {}
 ) {
     val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
     val pokemonTypeColor = remember { Animatable(pokemon.color()) }
