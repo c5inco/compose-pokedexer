@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
  */
 data class PokemonDetailsUiState(
     val pokemon: Pokemon?,
+    val isFavorite: Boolean = false,
     val loading: Boolean = false,
 )
 
