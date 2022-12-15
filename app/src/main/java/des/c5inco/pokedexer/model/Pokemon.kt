@@ -19,6 +19,8 @@ data class Pokemon(
     val height: Double,
     @ColumnInfo(defaultValue = "0.0")
     val weight: Double,
+    @ColumnInfo(defaultValue = "-1")
+    val genderRate: Int = -1,
     val hp: Int,
     val attack: Int,
     val defense: Int,

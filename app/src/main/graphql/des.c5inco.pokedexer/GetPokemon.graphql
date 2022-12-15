@@ -26,6 +26,7 @@ query PokemonOriginal {
         height
         weight
       }
+      genderRate: gender_rate
       evolutionChain: pokemon_v2_evolutionchain {
         evolutions: pokemon_v2_pokemonspecies(order_by: {id: asc_nulls_first}) {
           id

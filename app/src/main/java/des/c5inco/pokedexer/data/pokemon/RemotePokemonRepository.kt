@@ -44,6 +44,7 @@ class RemotePokemonRepository @Inject constructor(
                             image = model.id,
                             height = (detail.height ?: 0) / 10.0, // in decimeters
                             weight = (detail.weight ?: 0) / 10.0, // in 10 gram chunks
+                            genderRate = model.genderRate ?: -1,
                             hp = stats[0],
                             attack = stats[1],
                             defense = stats[2],
