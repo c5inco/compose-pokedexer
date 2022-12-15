@@ -16,8 +16,7 @@ import java.lang.Integer.min
 
 fun formatId(id: Int): String = "#" + "$id".padStart(3, '0')
 
-fun artworkUrl(id: Int): String = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png"
-fun artworkUrlSvg(id: Int): String = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg"
+fun artworkUrl(id: Int): String = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/${id.toString().padStart(3, '0')}.png"
 
 fun Double.toRadian(): Double = this / 180 * Math.PI
 
