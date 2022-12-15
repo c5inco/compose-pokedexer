@@ -52,6 +52,9 @@ fun TypePreview() {
             Text("Body1",
                 style = MaterialTheme.typography.body1
             )
+            Text("Body2",
+                style = MaterialTheme.typography.body2
+            )
             Text("Button",
                 style = MaterialTheme.typography.button
             )
