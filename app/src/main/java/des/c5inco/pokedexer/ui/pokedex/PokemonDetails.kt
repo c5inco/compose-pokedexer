@@ -207,11 +207,16 @@ private fun CardContent(
                 },
             ) {
                 sectionTitles.forEachIndexed { index, text ->
+                    val active = index == section.ordinal
                     Tab(
-                        selected = index == section.ordinal,
+                        selected = active,
                         onClick = { section = Sections.values()[index] },
                     ) {
-                        Text(text, modifier = Modifier.padding(vertical = 20.dp))
+                        Text(
+                            text = text,
+                            fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
+                            modifier = Modifier.padding(vertical = 20.dp)
+                        )
                     }
                 }
             }
