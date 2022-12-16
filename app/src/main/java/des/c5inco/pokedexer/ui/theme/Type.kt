@@ -16,16 +16,16 @@ import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
 val appFontFamily = FontFamily(
         Font(R.font.circularstd_book),
-        Font(R.font.circularstd_medium, FontWeight.W600),
-        Font(R.font.circularstd_black, FontWeight.Bold),
-        Font(R.font.circularstd_bold, FontWeight.W900)
+        Font(R.font.circularstd_medium, FontWeight.Medium),
+        Font(R.font.circularstd_black, FontWeight.Black),
+        Font(R.font.circularstd_bold, FontWeight.Bold)
     )
 
 // Set of Material typography styles to start with
 val Typography = Typography(
     defaultFontFamily = appFontFamily,
     h4 = TextStyle(
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Black,
         fontSize = 30.sp,
     ),
     h6 = TextStyle(
