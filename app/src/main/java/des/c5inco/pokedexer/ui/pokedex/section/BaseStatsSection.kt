@@ -17,11 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.ui.common.Label
 import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 import kotlinx.coroutines.delay
 
@@ -73,25 +74,24 @@ private fun StatsTable(stats: List<Stat>) {
                     .padding(bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    stat.label,
+                Label(
+                    text = stat.label,
                     modifier = Modifier
-                        .padding(end = 16.dp)
                         .weight(1f)
                 )
                 Text(
                     "${stat.value}",
-                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(end = 16.dp)
-                        .weight(0.7f)
+                        .weight(0.6f)
                 )
                 LinearProgressIndicator(
                     progress = statValue.value,
                     color = Color.Red,
                     modifier = Modifier
                         .clip(RoundedCornerShape(100))
-                        .weight(2.2f)
+                        .weight(2.5f)
                 )
             }
         }

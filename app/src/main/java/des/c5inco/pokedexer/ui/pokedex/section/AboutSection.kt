@@ -81,7 +81,7 @@ private fun BreedingDetails(
                     .padding(end = 12.dp)
             )
             if (pokemon.genderRate != -1) {
-                Row(Modifier.weight(2.5f)) {
+                Row(Modifier.weight(2f)) {
                     val femaleGenderRate = pokemon.genderRate * 12.5
                     Row {
                         Icon(
@@ -106,7 +106,7 @@ private fun BreedingDetails(
             } else {
                 Text(
                     "Genderless",
-                    modifier = Modifier.weight(2.5f)
+                    modifier = Modifier.weight(2.2f)
                 )
             }
         }
@@ -120,7 +120,7 @@ private fun BreedingDetails(
             )
             Text(
                 "-",
-                modifier = Modifier.weight(2.5f)
+                modifier = Modifier.weight(2f)
             )
         }
         Spacer(Modifier.height(18.dp))
@@ -133,7 +133,7 @@ private fun BreedingDetails(
             )
             Text(
                 "-",
-                modifier = Modifier.weight(2.5f)
+                modifier = Modifier.weight(2f)
             )
         }
     }
