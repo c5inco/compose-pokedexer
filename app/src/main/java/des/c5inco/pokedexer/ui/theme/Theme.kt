@@ -35,8 +35,12 @@ class Theme {
             }
 
             MaterialTheme(
-                colors = colors, typography = Typography, shapes = Shapes, content = content
-            )
+                colors = colors,
+                typography = Typography,
+                shapes = Shapes
+            ) {
+                content()
+            }
         }
     }
 }
