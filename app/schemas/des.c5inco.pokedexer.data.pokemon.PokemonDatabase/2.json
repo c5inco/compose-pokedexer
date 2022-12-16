@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "6d79fcafe77fbc0e32b8da79277c7eca",
+    "identityHash": "330ace70f883ecff10be01da1d52e318",
     "entities": [
       {
         "tableName": "Pokemon",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `types` TEXT NOT NULL, `category` TEXT NOT NULL, `image` INTEGER NOT NULL, `height` REAL NOT NULL DEFAULT 0.0, `weight` REAL NOT NULL DEFAULT 0.0, `hp` INTEGER NOT NULL, `attack` INTEGER NOT NULL, `defense` INTEGER NOT NULL, `specialAttack` INTEGER NOT NULL, `specialDefense` INTEGER NOT NULL, `speed` INTEGER NOT NULL, `evolutions` TEXT NOT NULL DEFAULT '', PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `types` TEXT NOT NULL, `category` TEXT NOT NULL, `image` INTEGER NOT NULL, `height` REAL NOT NULL DEFAULT 0.0, `weight` REAL NOT NULL DEFAULT 0.0, `genderRate` INTEGER NOT NULL DEFAULT -1, `hp` INTEGER NOT NULL, `attack` INTEGER NOT NULL, `defense` INTEGER NOT NULL, `specialAttack` INTEGER NOT NULL, `specialDefense` INTEGER NOT NULL, `speed` INTEGER NOT NULL, `evolutions` TEXT NOT NULL DEFAULT '', PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -57,6 +57,13 @@
             "affinity": "REAL",
             "notNull": true,
             "defaultValue": "0.0"
+          },
+          {
+            "fieldPath": "genderRate",
+            "columnName": "genderRate",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "-1"
           },
           {
             "fieldPath": "hp",
@@ -177,7 +184,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6d79fcafe77fbc0e32b8da79277c7eca')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '330ace70f883ecff10be01da1d52e318')"
     ]
   }
 }
