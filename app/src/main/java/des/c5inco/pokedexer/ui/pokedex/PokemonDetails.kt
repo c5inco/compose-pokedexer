@@ -9,12 +9,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
@@ -193,15 +195,23 @@ private fun CardContent(
             val sectionTitles = Sections.values().map { it.title }
             var section by remember { mutableStateOf(Sections.BaseStats) }
             TabRow(
+                backgroundColor = Color.Transparent,
                 selectedTabIndex = section.ordinal,
-                divider = {}
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        modifier = Modifier
+                            .tabIndicatorOffset(tabPositions[section.ordinal])
+                            .clip(RoundedCornerShape(100)),
+                        color = MaterialTheme.colors.primary
+                    )
+                },
             ) {
                 sectionTitles.forEachIndexed { index, text ->
                     Tab(
                         selected = index == section.ordinal,
                         onClick = { section = Sections.values()[index] },
                     ) {
-                        Text(text, modifier = Modifier.padding(vertical = 12.dp))
+                        Text(text, modifier = Modifier.padding(vertical = 20.dp))
                     }
                 }
             }

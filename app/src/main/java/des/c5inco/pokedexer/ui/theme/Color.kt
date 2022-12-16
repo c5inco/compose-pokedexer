@@ -3,6 +3,7 @@ package des.c5inco.pokedexer.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val Grey100 = Color(0xfff5f5f5)
+val Indigo500 = Color(0xff6C79db)
 val NeutralBlue = Color(0xff303943)
 
 class PokemonColors {

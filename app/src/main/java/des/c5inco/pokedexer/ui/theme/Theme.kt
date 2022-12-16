@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 // )
 
 private val LightColorPalette = lightColors(
-    primary = Color.White,
+    primary = Indigo500,
     primaryVariant = Color(0xFFC20029),
     onPrimary = Color.Black,
     secondary = Color.White,
