@@ -4,12 +4,6 @@ import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +17,6 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +37,6 @@ import com.google.accompanist.pager.rememberPagerState
 import com.skydoves.landscapist.coil.CoilImage
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.ui.common.ImageState
 import des.c5inco.pokedexer.ui.common.artworkUrl
 import des.c5inco.pokedexer.ui.common.placeholderPokemonImage
 import des.c5inco.pokedexer.ui.theme.PokedexerTheme
@@ -85,32 +77,11 @@ private fun PokemonImage(
             CircularProgressIndicator()
         },
         success = { imageState ->
-            val currentState = remember { MutableTransitionState(ImageState.Loading) }
-            currentState.targetState = ImageState.Loaded
-            val transition = updateTransition(currentState, label = "imageLoad")
-            val animateScale by transition.animateFloat(
-                label = "scale",
-                transitionSpec = { spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = 500f
-                ) }
-            ) { state ->
-                if (state == ImageState.Loading) 0.8f else 1f
-            }
-            val animateOffsetY by transition.animateDp(
-                label = "offsetY"
-            ) { state ->
-                if (state == ImageState.Loading) (48).dp else 0.dp
-            }
-
             imageState.drawable?.let {
                 Image(
                     bitmap = it.toBitmap().asImageBitmap(),
                     contentDescription = description,
-                    modifier = Modifier
-                        .matchParentSize()
-                        // .scale(animateScale)
-                        // .offset(y = animateOffsetY)
+                    modifier = Modifier.matchParentSize()
                 )
             }
         },
