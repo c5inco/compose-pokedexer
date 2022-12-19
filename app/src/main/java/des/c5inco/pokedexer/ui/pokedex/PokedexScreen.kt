@@ -31,60 +31,30 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import des.c5inco.pokedexer.data.pokemon.LocalPokemonRepository
+import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @Composable
-fun PokemonList(
-    modifier: Modifier = Modifier,
-    listState: LazyGridState,
-    loading: Boolean = false,
-    title: @Composable () -> Unit,
-    pokemon: List<Pokemon>,
-    onPokemonSelected: (Pokemon) -> Unit = {},
+fun PokedexScreenRoute(
+    viewModel: PokedexViewModel,
+    onPokemonSelected: (Pokemon) -> Unit,
+    onBackClick: () -> Unit
 ) {
-    LazyVerticalGrid(
-        modifier = modifier,
-        columns = GridCells.Fixed(2),
-        state = listState,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 64.dp),
-        content = {
-            item(span = { GridItemSpan(2) }) {
-                title()
-            }
-            if (loading) {
-                item(span = { GridItemSpan(2) }) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        CircularProgressIndicator(
-                            color = Color.Black,
-                            modifier = Modifier
-                                .size(48.dp)
-                                .padding(vertical = 24.dp)
-                        )
-                    }
-                }
-            } else {
-                items(pokemon) { pokemon ->
-                    PokeDexCard(
-                        pokemon = pokemon,
-                        onPokemonSelected = onPokemonSelected
-                    )
-                }
-            }
-        }
+    PokedexScreen(
+        loading = viewModel.uiState.loading,
+        pokemon = viewModel.uiState.pokemon,
+        onPokemonSelected = onPokemonSelected,
+        onBackClick = onBackClick
     )
 }
 
 @Composable
-fun PokemonListScreen(
-    viewModel: PokedexViewModel,
+fun PokedexScreen(
+    loading: Boolean,
+    pokemon: List<Pokemon>,
     onPokemonSelected: (Pokemon) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
@@ -136,7 +106,7 @@ fun PokemonListScreen(
             PokemonList(
                 modifier = Modifier.statusBarsPadding(),
                 listState = listState,
-                loading = viewModel.uiState.loading,
+                loading = loading,
                 title = {
                     Text(
                         text = "Pokedex",
@@ -151,7 +121,7 @@ fun PokemonListScreen(
                             }
                     )
                 },
-                pokemon = viewModel.uiState.pokemon,
+                pokemon = pokemon,
                 onPokemonSelected = onPokemonSelected
             )
             NavigationTopAppBar(
@@ -176,12 +146,58 @@ fun PokemonListScreen(
     }
 }
 
+@Composable
+fun PokemonList(
+    modifier: Modifier = Modifier,
+    listState: LazyGridState,
+    loading: Boolean = false,
+    title: @Composable () -> Unit,
+    pokemon: List<Pokemon>,
+    onPokemonSelected: (Pokemon) -> Unit = {},
+) {
+    LazyVerticalGrid(
+        modifier = modifier,
+        columns = GridCells.Fixed(2),
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 64.dp),
+        content = {
+            item(span = { GridItemSpan(2) }) {
+                title()
+            }
+            if (loading) {
+                item(span = { GridItemSpan(2) }) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator(
+                            color = Color.Black,
+                            modifier = Modifier
+                                .size(48.dp)
+                                .padding(vertical = 24.dp)
+                        )
+                    }
+                }
+            } else {
+                items(pokemon) { pokemon ->
+                    PokeDexCard(
+                        pokemon = pokemon,
+                        onPokemonSelected = onPokemonSelected
+                    )
+                }
+            }
+        }
+    )
+}
+
 @Preview
 @Composable
-private fun PokemonListPreview() {
+private fun PokedexScreenPreview() {
     PokedexerTheme {
-        PokemonListScreen(
-            PokedexViewModel(LocalPokemonRepository())
+        PokedexScreen(
+            loading = false,
+            pokemon = SamplePokemonData
         )
     }
 }
