@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.ui.theme.Grey100
-import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @Composable
 fun PokeBallBackground(

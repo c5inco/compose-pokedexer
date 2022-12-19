@@ -19,7 +19,7 @@ import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import des.c5inco.pokedexer.ui.home.RootViewModel
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsViewModel
-import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 import javax.inject.Inject
 
 @AndroidEntryPoint

@@ -24,23 +24,20 @@ private val LightColorPalette = lightColors(
     onError = Color.White
 )
 
-class Theme {
-    companion object {
-        @Composable
-        fun PokedexerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-            val colors = if (darkTheme) {
-                LightColorPalette
-            } else {
-                LightColorPalette
-            }
 
-            MaterialTheme(
-                colors = colors,
-                typography = Typography,
-                shapes = Shapes
-            ) {
-                content()
-            }
-        }
+@Composable
+fun PokedexerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    val colors = if (darkTheme) {
+        LightColorPalette
+    } else {
+        LightColorPalette
+    }
+
+    MaterialTheme(
+        colors = colors,
+        typography = Typography,
+        shapes = Shapes
+    ) {
+        content()
     }
 }

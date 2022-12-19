@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import des.c5inco.pokedexer.R
-import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @Composable
 fun PokeBallLarge(tint: Color = Color.Black, alpha: Float = 1f) {

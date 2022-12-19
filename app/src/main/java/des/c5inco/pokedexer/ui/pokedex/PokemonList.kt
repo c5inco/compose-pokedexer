@@ -35,7 +35,7 @@ import des.c5inco.pokedexer.data.pokemon.LocalPokemonRepository
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
-import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @Composable
 fun PokemonList(
@@ -157,11 +157,7 @@ fun PokemonListScreen(
             NavigationTopAppBar(
                 modifier = Modifier
                     .drawBehind {
-                        drawRect(color = if (!isGridAtTop) {
-                            Color.LightGray
-                        } else {
-                            Color.Transparent
-                        }, alpha = backgroundRevealProgress)
+                        drawRect(color = Color.LightGray, alpha = backgroundRevealProgress)
                     }
                     .statusBarsPadding()
                     .padding(top = 16.dp)

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
-import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 import kotlinx.coroutines.delay
 
 data class Stat(

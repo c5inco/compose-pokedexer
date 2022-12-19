@@ -17,8 +17,7 @@ import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.MenuItem.*
-import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
-
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

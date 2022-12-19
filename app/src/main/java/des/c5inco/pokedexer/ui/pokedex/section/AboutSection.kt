@@ -24,7 +24,7 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
-import des.c5inco.pokedexer.ui.theme.Theme
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @Composable
 fun AboutSection(
@@ -142,7 +142,7 @@ private fun BreedingDetails(
 @Preview
 @Composable
 fun AboutSectionPreview() {
-    Theme.PokedexerTheme {
+    PokedexerTheme {
         Surface(Modifier.fillMaxWidth()) {
             AboutSection(pokemon = SamplePokemonData[0])
         }

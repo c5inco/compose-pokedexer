@@ -37,7 +37,7 @@ import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
 import des.c5inco.pokedexer.ui.common.artworkUrl
 import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.common.placeholderPokemonImage
-import des.c5inco.pokedexer.ui.theme.Theme
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @Composable
 fun PokeDexCard(
@@ -124,7 +124,7 @@ private fun PokemonName(name: String?) {
 @Preview
 @Composable
 private fun PokeDexCardPreview() {
-    Theme.PokedexerTheme {
+    PokedexerTheme {
         Surface {
             Column(
                 Modifier.width(200.dp),

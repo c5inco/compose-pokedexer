@@ -34,7 +34,7 @@ import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsEvolutions
 import des.c5inco.pokedexer.ui.theme.Grey100
-import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @Composable
 fun EvolutionSection(

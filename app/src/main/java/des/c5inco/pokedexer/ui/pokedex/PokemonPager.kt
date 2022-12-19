@@ -47,7 +47,7 @@ import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.ImageState
 import des.c5inco.pokedexer.ui.common.artworkUrl
 import des.c5inco.pokedexer.ui.common.placeholderPokemonImage
-import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 import org.intellij.lang.annotations.Language
 import kotlin.math.absoluteValue
 

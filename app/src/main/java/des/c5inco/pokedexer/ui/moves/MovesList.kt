@@ -23,8 +23,8 @@ import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.categoryIcon
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
+import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 import des.c5inco.pokedexer.ui.theme.PokemonColors
-import des.c5inco.pokedexer.ui.theme.Theme.Companion.PokedexerTheme
 
 @Composable
 fun MovesListScreen(
