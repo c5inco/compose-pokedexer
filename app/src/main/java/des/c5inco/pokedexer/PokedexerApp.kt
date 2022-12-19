@@ -41,11 +41,13 @@ fun PokedexerApp() {
         navigation(startDestination = "list", route = "pokedex") {
             composable("list") {
                 PokemonListScreen(
-                    viewModel = hiltViewModel()
-                ) {
-                    pokemon = it
-                    navController.navigate("details")
-                }
+                    viewModel = hiltViewModel(),
+                    onPokemonSelected = {
+                        pokemon = it
+                        navController.navigate("details")
+                    },
+                    onBackClick = { navController.popBackStack() }
+                )
             }
             composable("details") {
                 PokemonDetailsRoute(
