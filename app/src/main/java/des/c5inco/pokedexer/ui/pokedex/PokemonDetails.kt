@@ -11,11 +11,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
@@ -112,28 +112,18 @@ internal fun PokemonDetails(
                     .padding(top = 16.dp)
                     .padding(top = 140.dp)
             )
-            Box(
-                Modifier
-                    .fillMaxSize()
+            NavigationTopAppBar(
+                modifier = Modifier
                     .statusBarsPadding()
                     .padding(top = 16.dp)
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    IconButton(
-                        modifier = Modifier,
-                        onClick = onBackClick
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back to Pokedex",
-                            tint = Color.White
-                        )
-                    }
+                ,
+                title = {
+                    Text(
+                        text = pokemon.name,
+                        modifier = Modifier.alpha(0f)
+                    )
+                },
+                actions = {
                     IconButton(
                         modifier = Modifier,
                         onClick = { onFavoriteClick(pokemon.id) }
@@ -144,10 +134,24 @@ internal fun PokemonDetails(
                             tint = Color.White
                         )
                     }
-                }
-                HeaderLeft(pokemon = pokemon)
+                },
+                contentColor = Color.White,
+                onBackClick = onBackClick
+            )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(top = 16.dp)
+            ) {
+                HeaderLeft(
+                    pokemon = pokemon,
+                    modifier = Modifier.padding(top = 24.dp)
+                )
                 HeaderRight(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 24.dp),
                     pokemon = pokemon
                 )
                 CardContent(
