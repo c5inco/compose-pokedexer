@@ -15,7 +15,7 @@ import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.moves.MovesListScreen
 import des.c5inco.pokedexer.ui.pokedex.PokedexScreenRoute
-import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsRoute
+import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.pokemonDetailsViewModel
 
 @HiltAndroidApp
@@ -50,7 +50,7 @@ fun PokedexerApp() {
                 )
             }
             composable("details") {
-                PokemonDetailsRoute(
+                PokemonDetailsScreenRoute(
                     viewModel = hiltViewModel(),
                     detailsViewModel = pokemonDetailsViewModel(pokemon),
                     onBackClick = { navController.popBackStack() }

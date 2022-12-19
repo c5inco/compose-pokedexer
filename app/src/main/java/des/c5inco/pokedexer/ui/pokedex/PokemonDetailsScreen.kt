@@ -43,12 +43,12 @@ import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
-fun PokemonDetailsRoute(
+fun PokemonDetailsScreenRoute(
     viewModel: PokedexViewModel,
     detailsViewModel: PokemonDetailsViewModel,
     onBackClick: () -> Unit,
 ) {
-    PokemonDetails(
+    PokemonDetailsScreen(
         loading = viewModel.uiState.loading,
         pokemonSet = viewModel.uiState.pokemon,
         pokemon = detailsViewModel.details,
@@ -63,7 +63,7 @@ fun PokemonDetailsRoute(
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-internal fun PokemonDetails(
+internal fun PokemonDetailsScreen(
     loading: Boolean,
     pokemonSet: List<Pokemon>,
     pokemon: Pokemon,
@@ -337,7 +337,8 @@ private fun PokemonDetailsPreview() {
 
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {
-            PokemonDetails(loading = false,
+            PokemonDetailsScreen(
+                loading = false,
                 pokemonSet = SamplePokemonData,
                 pokemon = activePokemon,
                 evolutions = mapSampleEvolutionsToList(
