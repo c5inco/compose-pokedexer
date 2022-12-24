@@ -88,7 +88,8 @@ class PokemonDetailsViewModel @AssistedInject constructor(
                             ev.add(PokemonDetailsEvolutions(result.data, it.targetLevel))
                         }
                         is Result.Error -> {
-                            throw result.exception
+                            // TODO: Pokemon only queried from local database which currently limited to original 151
+                            println(result.exception)
                         }
                     }
                 }
