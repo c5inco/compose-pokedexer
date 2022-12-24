@@ -17,6 +17,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -29,6 +30,7 @@ fun NavigationTopAppBar(
 ) {
     Box(
         modifier
+            .pointerInput(Unit) {}
             .fillMaxWidth()
             .padding(top = 16.dp, bottom = 0.dp, start = 12.dp, end = 12.dp)
     ) {
