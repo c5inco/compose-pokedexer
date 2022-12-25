@@ -13,7 +13,7 @@ import dagger.hilt.android.HiltAndroidApp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
-import des.c5inco.pokedexer.ui.moves.MovesListScreen
+import des.c5inco.pokedexer.ui.moves.MovesListScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.PokedexScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.pokemonDetailsViewModel
@@ -58,8 +58,9 @@ fun PokedexerApp() {
             }
         }
         composable(route = "moves") {
-            MovesListScreen(
-                viewModel = hiltViewModel()
+            MovesListScreenRoute(
+                viewModel = hiltViewModel(),
+                onBackClick = { navController.popBackStack() }
             )
         }
     }

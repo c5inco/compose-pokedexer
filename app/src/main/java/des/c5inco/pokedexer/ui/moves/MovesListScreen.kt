@@ -17,36 +17,60 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import des.c5inco.pokedexer.data.moves.LocalMovesRepository
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.categoryIcon
+import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
 import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 import des.c5inco.pokedexer.ui.theme.PokemonColors
 
 @Composable
+fun MovesListScreenRoute(
+    viewModel: MovesListViewModel,
+    onBackClick: () -> Unit = {}
+) {
+    MovesListScreen(
+        loading = viewModel.uiState.loading,
+        moves = viewModel.uiState.moves,
+        onBackClick = onBackClick
+    )
+}
+
+@Composable
 fun MovesListScreen(
-    viewModel: MovesListViewModel
+    loading: Boolean,
+    moves: List<Move>,
+    onBackClick: () -> Unit = {},
 ) {
     Surface {
         Column(
-            Modifier
-                .fillMaxSize()
-                .padding(32.dp)
+            Modifier.fillMaxSize()
         ) {
-            Text(
-                text = "Moves",
-                style = MaterialTheme.typography.h4,
-                modifier = Modifier.padding(
-                    top = 64.dp, bottom = 24.dp
-                )
+            NavigationTopAppBar(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(top = 16.dp),
+                onBackClick = onBackClick
             )
-            if (viewModel.uiState.loading) {
-                CircularProgressIndicator(color = Color.Black)
-            } else {
-                MovesList(viewModel.uiState.moves)
+            Column(
+                Modifier
+                    .weight(1f)
+                    .padding(horizontal = 24.dp)
+            ) {
+                Text(
+                    text = "Moves",
+                    style = MaterialTheme.typography.h4,
+                    modifier = Modifier.padding(
+                        top = 16.dp, bottom = 24.dp
+                    )
+                )
+                if (loading) {
+                    CircularProgressIndicator(color = Color.Black)
+                } else {
+                    MovesList(moves = moves)
+                }
             }
         }
     }
@@ -55,15 +79,20 @@ fun MovesListScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MovesList(
+    modifier: Modifier = Modifier,
     moves: List<Move> = SampleMoves
 ) {
-    LazyColumn {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = WindowInsets.navigationBars.asPaddingValues()
+    ) {
         stickyHeader {
             val textStyle = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold)
 
             CompositionLocalProvider(LocalTextStyle provides textStyle) {
                 Row(
-                    Modifier.fillMaxWidth()
+                    Modifier
+                        .fillMaxWidth()
                         .background(MaterialTheme.colors.surface)
                         .padding(vertical = 12.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -163,8 +192,10 @@ private fun CategoryIcon(
 fun MovesListScreenPreview() {
     PokedexerTheme {
         Surface {
-            val viewModel = MovesListViewModel(LocalMovesRepository())
-            MovesListScreen(viewModel)
+            MovesListScreen(
+                loading = false,
+                moves = SampleMoves
+            )
         }
     }
 }
