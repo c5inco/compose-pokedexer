@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
@@ -29,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import des.c5inco.pokedexer.R
@@ -107,11 +107,7 @@ internal fun PokemonDetailsScreen(
     val textAlphaTarget by remember {
         derivedStateOf {
             if (swipeableProgress.to == 1) {
-                //if (swipeableProgress.fraction > 0.6f) {
-                    swipeableProgress.fraction
-                //} else {
-                    //0f
-                //}
+                swipeableProgress.fraction
             } else {
                 1f - (swipeableProgress.fraction)
             }
@@ -128,6 +124,16 @@ internal fun PokemonDetailsScreen(
                 }
             } else {
                 1f - (swipeableProgress.fraction * 4f)
+            }
+        }
+    }
+
+    val pagerZIndex by remember {
+        derivedStateOf {
+            if (swipeableProgress.from == 0 && swipeableProgress.to == 0) {
+                -1f
+            } else {
+               0f
             }
         }
     }
@@ -204,10 +210,9 @@ internal fun PokemonDetailsScreen(
 
                 PokemonPager(
                     modifier = Modifier
+                        .zIndex(pagerZIndex)
                         .padding(top = 116.dp)
-                        .graphicsLayer {
-                            alpha = imageAlphaTarget
-                        }
+                        .graphicsLayer { alpha = imageAlphaTarget }
                     ,
                     loading = loading,
                     pokemonList = pokemonSet,
