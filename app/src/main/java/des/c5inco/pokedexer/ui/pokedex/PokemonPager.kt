@@ -97,6 +97,7 @@ fun PokemonPager(
     loading: Boolean = false,
     pokemonList: List<Pokemon>,
     backgroundColor: Color,
+    enabled: Boolean = true,
     pagerState: PagerState = rememberPagerState(),
     pagerContent: @Composable (Pokemon) -> Unit
 ) {
@@ -110,7 +111,8 @@ fun PokemonPager(
             HorizontalPager(
                 count = pokemonList.size,
                 state = pagerState,
-                contentPadding = PaddingValues(horizontal = 92.dp)
+                contentPadding = PaddingValues(horizontal = 92.dp),
+                userScrollEnabled = enabled,
             ) { page ->
                 val pokemon = pokemonList[page]
                 val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue

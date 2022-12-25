@@ -212,6 +212,7 @@ internal fun PokemonDetailsScreen(
                     loading = loading,
                     pokemonList = pokemonSet,
                     backgroundColor = pokemon.color(),
+                    enabled = swipeableState.currentValue == 1,
                     pagerState = pagerState,
                 ) {
                     PokemonImage(
