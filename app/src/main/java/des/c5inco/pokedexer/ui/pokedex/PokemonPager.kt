@@ -65,7 +65,7 @@ val PROGRESSIVE_TINT_SHADER = """
 """.trimIndent()
 
 @Composable
-private fun PokemonImage(
+fun PokemonImage(
     modifier: Modifier = Modifier,
     image: Int,
     description: String?
@@ -97,7 +97,8 @@ fun PokemonPager(
     loading: Boolean = false,
     pokemonList: List<Pokemon>,
     backgroundColor: Color,
-    pagerState: PagerState = rememberPagerState()
+    pagerState: PagerState = rememberPagerState(),
+    pagerContent: @Composable (Pokemon) -> Unit
 ) {
     val shader = remember { RuntimeShader(PROGRESSIVE_TINT_SHADER) }
 
@@ -128,21 +129,16 @@ fun PokemonPager(
                             scaleX = scale
                             scaleY = scale
                             translationY = yPos
-                        },
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    PokemonImage(
-                        image = pokemon.image,
-                        description = pokemon.name,
-                        modifier = Modifier.graphicsLayer {
                             shader.setColorUniform("backgroundColor", backgroundColor.toArgb())
                             shader.setFloatUniform("progress", progress)
                             renderEffect = RenderEffect.createRuntimeShaderEffect(
                                 shader,
                                 "contents"
                             ).asComposeRenderEffect()
-                        }
-                    )
+                        },
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    pagerContent(pokemon)
                 }
             }
         }
@@ -163,7 +159,12 @@ fun PokemonPagerPreview() {
                 PokemonPager(
                     pokemonList = SamplePokemonData,
                     backgroundColor = MaterialTheme.colors.surface
-                )
+                ) {
+                    PokemonImage(
+                        image = it.image,
+                        description = it.name,
+                    )
+                }
             }
         }
     }

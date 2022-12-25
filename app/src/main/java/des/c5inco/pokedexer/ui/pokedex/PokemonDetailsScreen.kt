@@ -6,6 +6,7 @@ import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -21,9 +22,11 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -40,6 +43,7 @@ import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
 import des.c5inco.pokedexer.ui.pokedex.section.MovesSection
 import des.c5inco.pokedexer.ui.theme.PokedexerTheme
+import kotlin.math.roundToInt
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
@@ -61,7 +65,7 @@ fun PokemonDetailsScreenRoute(
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 internal fun PokemonDetailsScreen(
     loading: Boolean,
@@ -74,6 +78,59 @@ internal fun PokemonDetailsScreen(
 ) {
     val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
     val pokemonTypeColor = remember { Animatable(pokemon.color()) }
+
+    val swipeableState = rememberSwipeableState(initialValue = 1)
+    val topAnchorMin = with(LocalDensity.current) { (16 + 16 + 48).dp.toPx() }
+    val topAnchorMax = with(LocalDensity.current) { 300.dp.toPx() }
+
+    val anchors = mapOf(topAnchorMin to 0, topAnchorMax to 1)
+    val swipeableProgress by remember {
+        derivedStateOf {
+            swipeableState.progress
+        }
+    }
+
+    val scaleTarget by remember {
+        derivedStateOf {
+            if (swipeableProgress.to == 1) {
+                if (swipeableProgress.fraction > 0.7f) {
+                    swipeableProgress.fraction
+                } else {
+                    0f
+                }
+            } else {
+                1f - swipeableProgress.fraction
+            }
+        }
+    }
+
+    val textAlphaTarget by remember {
+        derivedStateOf {
+            if (swipeableProgress.to == 1) {
+                //if (swipeableProgress.fraction > 0.6f) {
+                    swipeableProgress.fraction
+                //} else {
+                    //0f
+                //}
+            } else {
+                1f - (swipeableProgress.fraction)
+            }
+        }
+    }
+
+    val imageAlphaTarget by remember {
+        derivedStateOf {
+            if (swipeableProgress.to == 1) {
+                if (swipeableProgress.fraction > 0.6f) {
+                    swipeableProgress.fraction
+                } else {
+                    0f
+                }
+            } else {
+                1f - (swipeableProgress.fraction * 4f)
+            }
+        }
+    }
 
     LaunchedEffect(pagerState, pokemonSet) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -111,7 +168,62 @@ internal fun PokemonDetailsScreen(
                     .statusBarsPadding()
                     .padding(top = 16.dp)
                     .padding(top = 140.dp)
+                    .graphicsLayer { alpha = textAlphaTarget }
             )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(top = 16.dp)
+                    .swipeable(
+                        state = swipeableState,
+                        anchors = anchors,
+                        orientation = Orientation.Vertical
+                    )
+            ) {
+                HeaderLeft(
+                    pokemon = pokemon,
+                    modifier = Modifier
+                        .padding(top = 24.dp)
+                        .graphicsLayer { alpha = textAlphaTarget }
+                )
+                HeaderRight(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 24.dp)
+                        .graphicsLayer { alpha = textAlphaTarget },
+                    pokemon = pokemon
+                )
+                CardContent(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .offset { IntOffset(x = 0, y = swipeableState.offset.value.roundToInt()) },
+                    pokemon = pokemon,
+                    evolutions = evolutions,
+                )
+
+                PokemonPager(
+                    modifier = Modifier
+                        .padding(top = 116.dp)
+                        .graphicsLayer {
+                            alpha = imageAlphaTarget
+                        }
+                    ,
+                    loading = loading,
+                    pokemonList = pokemonSet,
+                    backgroundColor = pokemon.color(),
+                    pagerState = pagerState,
+                ) {
+                    PokemonImage(
+                        image = it.image,
+                        description = it.name,
+                        modifier = Modifier.graphicsLayer {
+                            scaleX = scaleTarget
+                            scaleY = scaleTarget
+                        }
+                    )
+                }
+            }
             NavigationTopAppBar(
                 modifier = Modifier
                     .statusBarsPadding()
@@ -138,38 +250,6 @@ internal fun PokemonDetailsScreen(
                 contentColor = Color.White,
                 onBackClick = onBackClick
             )
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding()
-                    .padding(top = 16.dp)
-            ) {
-                HeaderLeft(
-                    pokemon = pokemon,
-                    modifier = Modifier.padding(top = 24.dp)
-                )
-                HeaderRight(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 24.dp),
-                    pokemon = pokemon
-                )
-                CardContent(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 300.dp),
-                    pokemon = pokemon,
-                    evolutions = evolutions,
-                )
-
-                PokemonPager(
-                    modifier = Modifier.padding(top = 116.dp),
-                    loading = loading,
-                    pokemonList = pokemonSet,
-                    backgroundColor = pokemon.color(),
-                    pagerState = pagerState,
-                )
-            }
         }
     }
 }
