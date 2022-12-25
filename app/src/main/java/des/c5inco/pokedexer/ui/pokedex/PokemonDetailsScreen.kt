@@ -238,7 +238,10 @@ internal fun PokemonDetailsScreen(
                 title = {
                     Text(
                         text = pokemon.name,
-                        modifier = Modifier.alpha(0f)
+                        modifier = Modifier.graphicsLayer {
+                            // TODO: Look into collapsing toolbar behavior later
+                            alpha = 1f - textAlphaTarget
+                        }
                     )
                 },
                 actions = {
