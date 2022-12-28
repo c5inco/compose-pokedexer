@@ -219,14 +219,17 @@ internal fun PokemonDetailsScreen(
                     backgroundColor = pokemon.color(),
                     enabled = swipeableState.currentValue == 1,
                     pagerState = pagerState,
-                ) {
+                ) { it, progress ->
                     PokemonImage(
                         image = it.image,
                         description = it.name,
                         modifier = Modifier.graphicsLayer {
                             scaleX = scaleTarget
                             scaleY = scaleTarget
-                        }
+                        },
+                        imageModifier = Modifier.graphicsLayer {
+                            alpha = 1f - progress
+                        },
                     )
                 }
             }

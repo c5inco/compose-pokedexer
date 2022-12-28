@@ -18,6 +18,7 @@ object NetworkModule {
     @Singleton
     fun provideImageLoader(@ApplicationContext context: Context): ImageLoader {
         return ImageLoader.Builder(context)
+            .allowHardware(false)
             .build()
     }
 
