@@ -127,7 +127,8 @@ private fun EvolutionCard(
                 tint = Grey100,
             )
             PokemonImage(
-                modifier = Modifier.size(72.dp), image = pokemon.id
+                modifier = Modifier.size(72.dp),
+                image = pokemon.id
             )
         }
         Spacer(Modifier.height(4.dp))
