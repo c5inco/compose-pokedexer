@@ -1,9 +1,11 @@
 package des.c5inco.pokedexer
 
 import android.app.Application
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,7 +23,6 @@ import des.c5inco.pokedexer.ui.pokedex.pokemonDetailsViewModel
 @HiltAndroidApp
 class PokedexerApplication : Application()
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun PokedexerApp() {
     val navController = rememberNavController()
