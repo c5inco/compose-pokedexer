@@ -206,7 +206,8 @@ internal fun PokemonDetailsScreen(
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
                     .padding(top = 16.dp)
-                    .padding(top = 140.dp)
+                    .padding(top = 150.dp)
+                    .size(180.dp)
                     .graphicsLayer { alpha = textAlphaTarget }
             )
             Box(
@@ -258,7 +259,7 @@ internal fun PokemonDetailsScreen(
                         description = it.name,
                         tint = tint,
                         progress = progress,
-                        modifier = scaleModifier,
+                        modifier = scaleModifier.size(216.dp),
                     )
                 }
             }
@@ -441,7 +442,6 @@ private fun RotatingPokeBall(
 
     PokeBall(
         modifier = modifier
-            .size(200.dp)
             .graphicsLayer {
                 rotationZ = angle
             },
@@ -453,7 +453,7 @@ private fun RotatingPokeBall(
 @Preview
 @Composable
 private fun PokemonDetailsPreview() {
-    var activePokemon by remember { mutableStateOf(SamplePokemonData.first()) }
+    var activePokemon by remember { mutableStateOf(SamplePokemonData[2]) }
 
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {

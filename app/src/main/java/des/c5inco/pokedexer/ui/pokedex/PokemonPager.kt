@@ -56,21 +56,19 @@ private val PROGRESSIVE_TINT_SHADER = """
 
 @Composable
 fun PagerPokemonImage(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.size(200.dp),
     image: Int,
     description: String?,
     tint: Color,
     progress: Float
 ) {
-    val sizeModifier = modifier.size(200.dp)
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         val shader = remember { RuntimeShader(PROGRESSIVE_TINT_SHADER) }
 
         PokemonImage(
             image = image,
             description = description,
-            modifier = sizeModifier.graphicsLayer {
+            modifier = modifier.graphicsLayer {
                 shader.setColorUniform("tintColor", tint.toArgb())
                 shader.setFloatUniform("progress", progress)
                 renderEffect = RenderEffect.createRuntimeShaderEffect(
@@ -84,13 +82,13 @@ fun PagerPokemonImage(
             PokemonImage(
                 image = image,
                 description = description,
-                modifier = sizeModifier
+                modifier = modifier
             )
             PokemonImage(
                 image = image,
                 description = null,
                 tint = tint,
-                modifier = sizeModifier.graphicsLayer {
+                modifier = modifier.graphicsLayer {
                     alpha = progress
                 }
             )
@@ -135,7 +133,7 @@ fun PokemonPager(
                     start = 0.5f, stop = 1f, fraction = 1f - progress
                 )
                 val yPos = lerp(
-                    start = -100f, stop = 0f, fraction = 1f - progress
+                    start = 48f, stop = 0f, fraction = 1f - progress
                 )
 
                 Box(
