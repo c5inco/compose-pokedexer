@@ -105,12 +105,14 @@ internal fun PokemonDetailsScreen(
     onBackClick: () -> Unit = {},
     onFavoriteClick: (Int) -> Unit = { _ -> }
 ) {
+    val density = LocalDensity.current
+
     val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
     val pokemonTypeColor = remember { Animatable(pokemon.color()) }
 
     val swipeableState = rememberSwipeableState(initialValue = 1)
-    val topAnchorMin = with(LocalDensity.current) { (16 + 16 + 48).dp.toPx() }
-    val topAnchorMax = with(LocalDensity.current) { 300.dp.toPx() }
+    val topAnchorMin = with(density) { (16 + 16 + 48).dp.toPx() }
+    val topAnchorMax = with(density) { 324.dp.toPx() }
 
     val anchors = mapOf(topAnchorMin to 0, topAnchorMax to 1)
     val swipeableProgress by remember {
@@ -161,6 +163,24 @@ internal fun PokemonDetailsScreen(
         }
     }
 
+
+    val cardPaddingTarget by remember {
+        derivedStateOf {
+            val max = with(density) { 40.dp.toPx() }
+            val min = max / 4
+
+            val resolvedValue = if (swipeableProgress.to == 1) {
+                swipeableProgress.fraction * max
+            } else {
+                (1 - swipeableProgress.fraction) * max
+            }
+
+            resolvedValue
+                .coerceIn(min, max)
+                .roundToInt()
+        }
+    }
+
     val pagerZIndex by remember {
         derivedStateOf {
             if (swipeableProgress.from == 0 && swipeableProgress.to == 0) {
@@ -206,7 +226,7 @@ internal fun PokemonDetailsScreen(
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
                     .padding(top = 16.dp)
-                    .padding(top = 150.dp)
+                    .padding(top = 164.dp)
                     .size(180.dp)
                     .graphicsLayer { alpha = textAlphaTarget }
             )
@@ -234,18 +254,24 @@ internal fun PokemonDetailsScreen(
                         .graphicsLayer { alpha = textAlphaTarget },
                     pokemon = pokemon
                 )
-                CardContent(
+
+                Surface(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .offset { IntOffset(x = 0, y = swipeableState.offset.value.roundToInt()) },
-                    pokemon = pokemon,
-                    evolutions = evolutions,
-                )
+                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+                ) {
+                    CardContent(
+                        modifier = Modifier.offset { IntOffset(x = 0, y = cardPaddingTarget) },
+                        pokemon = pokemon,
+                        evolutions = evolutions,
+                    )
+                }
 
                 PokemonPager(
                     modifier = Modifier
                         .zIndex(pagerZIndex)
-                        .padding(top = 116.dp)
+                        .padding(top = 124.dp)
                         .graphicsLayer { alpha = imageAlphaTarget }
                     ,
                     loading = loading,
@@ -259,7 +285,7 @@ internal fun PokemonDetailsScreen(
                         description = it.name,
                         tint = tint,
                         progress = progress,
-                        modifier = scaleModifier.size(216.dp),
+                        modifier = scaleModifier.size(240.dp),
                     )
                 }
             }
@@ -309,14 +335,14 @@ private fun CardContent(
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>
 ) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
-    ) {
+    // Surface(
+    //     modifier = modifier,
+    //     shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+    // ) {
         Column(
-            Modifier.fillMaxSize()
+            modifier.fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+            //Spacer(modifier = Modifier.height(40.dp))
 
             val sectionTitles = Sections.values().map { it.title }
             var section by remember { mutableStateOf(Sections.BaseStats) }
@@ -357,7 +383,7 @@ private fun CardContent(
                 }
             }
         }
-    }
+    // }
 }
 
 @Composable
@@ -393,7 +419,7 @@ private fun HeaderLeft(
     ) {
         Text(
             text = pokemon.name,
-            style = MaterialTheme.typography.h4,
+            style = MaterialTheme.typography.h3,
             color = Color.White
         )
         Spacer(Modifier.height(8.dp))

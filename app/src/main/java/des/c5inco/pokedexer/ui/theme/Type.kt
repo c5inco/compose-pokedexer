@@ -23,6 +23,10 @@ val appFontFamily = FontFamily(
 // Set of Material typography styles to start with
 val Typography = Typography(
     defaultFontFamily = appFontFamily,
+    h3 = TextStyle(
+        fontWeight = FontWeight.Black,
+        fontSize = 36.sp,
+    ),
     h4 = TextStyle(
         fontWeight = FontWeight.Black,
         fontSize = 30.sp,
