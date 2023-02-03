@@ -49,7 +49,7 @@ fun AboutSection(
                 Column(Modifier.weight(1f)) {
                     Label(text = "Height")
                     Spacer(Modifier.height(12.dp))
-                    Text("${pokemon.height}cm")
+                    Text("${pokemon.height}m")
                 }
                 Column(Modifier.weight(1f)) {
                     Label(text = "Weight")
