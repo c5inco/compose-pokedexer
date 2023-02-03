@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
@@ -32,3 +33,16 @@ val infiniteLoopFlow: Flow<Int> = flow {
         emit((0..8).random())
     }
 }
+
+@Preview(name = "Phone", device = "spec:width=411dp,height=891dp")
+@Preview(name = "Phone-Landscape", device = "spec:width=411dp,height=891dp,orientation=landscape")
+@Preview(name = "Foldable", device = "spec:width=673dp,height=841dp")
+@Preview(name = "Tablet", device = "spec:width=1280dp,height=800dp,dpi=240")
+@Preview(name = "Desktop", device = "spec:width=1920dp,height=1080dp,dpi=160")
+annotation class ReferenceDevicePreviews
+
+@Preview(name = "Default", fontScale = 1.0f)
+@Preview(name = "Small", fontScale = 0.85f)
+@Preview(name = "Large", fontScale = 1.15f)
+@Preview(name = "Largest", fontScale = 1.3f)
+annotation class FontScalePreviews
