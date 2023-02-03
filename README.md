@@ -16,7 +16,7 @@ Notable additions:
 
 ## Screenshots
 
-![](assets/screenshots.png)
+![](assets/feb2023-screenshots.png)
 
 ## Original design
 
