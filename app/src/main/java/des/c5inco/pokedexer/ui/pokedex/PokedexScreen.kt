@@ -27,7 +27,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -161,16 +160,7 @@ fun PokemonList(
     pokemon: List<Pokemon>,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
-    val loaded = remember { MutableTransitionState(false) }
-
-    // Used to ensure staggered animations are offset by position in list when navigating back
-    val adjustedListIdx by remember { mutableStateOf(
-        if (listState.firstVisibleItemIndex != 0) {
-            listState.firstVisibleItemIndex - 1 // Title slot is the first item ;)
-        } else {
-            listState.firstVisibleItemIndex
-        })
-    }
+    val loaded = remember { MutableTransitionState(!loading) }
 
     LazyVerticalGrid(
         modifier = modifier,
@@ -205,13 +195,13 @@ fun PokemonList(
                         enter = slideInVertically(
                             animationSpec = tween(
                                 durationMillis = 500,
-                                delayMillis = (idx - adjustedListIdx) / 2 * 150
+                                delayMillis = idx / 2 * 120
                             ),
                             initialOffsetY = { it / 2 }
                         ) + fadeIn(
                             animationSpec = tween(
-                                durationMillis = 500,
-                                delayMillis = (idx - adjustedListIdx) / 2 * 100
+                                durationMillis = 400,
+                                delayMillis = idx / 2 * 150
                             ),
                         )
                     ) {
