@@ -1,5 +1,10 @@
 package des.c5inco.pokedexer.ui.pokedex
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -22,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -155,6 +161,17 @@ fun PokemonList(
     pokemon: List<Pokemon>,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
+    val loaded = remember { MutableTransitionState(false) }
+
+    // Used to ensure staggered animations are offset by position in list when navigating back
+    val adjustedListIdx by remember { mutableStateOf(
+        if (listState.firstVisibleItemIndex != 0) {
+            listState.firstVisibleItemIndex - 1 // Title slot is the first item ;)
+        } else {
+            listState.firstVisibleItemIndex
+        })
+    }
+
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(2),
@@ -180,11 +197,29 @@ fun PokemonList(
                     }
                 }
             } else {
-                items(pokemon) { pokemon ->
-                    PokeDexCard(
-                        pokemon = pokemon,
-                        onPokemonSelected = onPokemonSelected
-                    )
+                loaded.targetState = true
+
+                itemsIndexed(pokemon) { idx, p ->
+                    AnimatedVisibility(
+                        visibleState = loaded,
+                        enter = slideInVertically(
+                            animationSpec = tween(
+                                durationMillis = 500,
+                                delayMillis = (idx - adjustedListIdx) / 2 * 150
+                            ),
+                            initialOffsetY = { it / 2 }
+                        ) + fadeIn(
+                            animationSpec = tween(
+                                durationMillis = 500,
+                                delayMillis = (idx - adjustedListIdx) / 2 * 100
+                            ),
+                        )
+                    ) {
+                        PokeDexCard(
+                            pokemon = p,
+                            onPokemonSelected = onPokemonSelected
+                        )
+                    }
                 }
             }
         }
