@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.graphics.drawable.toBitmap
 import com.skydoves.landscapist.coil.CoilImage
+import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 
 @Composable
 fun PokemonImage(

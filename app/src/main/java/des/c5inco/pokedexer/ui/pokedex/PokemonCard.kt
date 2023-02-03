@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import com.skydoves.landscapist.coil.CoilImage
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.ui.common.PokeBall
@@ -36,7 +37,6 @@ import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
 import des.c5inco.pokedexer.ui.common.artworkUrl
 import des.c5inco.pokedexer.ui.common.formatId
-import des.c5inco.pokedexer.ui.common.placeholderPokemonImage
 import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @Composable
