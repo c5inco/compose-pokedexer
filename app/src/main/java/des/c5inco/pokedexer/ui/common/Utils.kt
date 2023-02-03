@@ -47,6 +47,24 @@ fun placeholderPokemonImage(id: Int): Int {
         R.drawable.poke008,
         R.drawable.poke009,
         R.drawable.poke010,
+        R.drawable.poke011,
+        R.drawable.poke012,
+        R.drawable.poke013,
+        R.drawable.poke014,
+        R.drawable.poke015,
+        R.drawable.poke016,
+        R.drawable.poke017,
+        R.drawable.poke018,
+        R.drawable.poke019,
+        R.drawable.poke020,
+        R.drawable.poke021,
+        R.drawable.poke022,
+        R.drawable.poke023,
+        R.drawable.poke024,
+        R.drawable.poke025,
+        R.drawable.poke026,
+        R.drawable.poke027,
+        R.drawable.poke028,
     )
-    return sampleImages[min(id, 10) - 1]
+    return sampleImages[min(id, 28) - 1]
 }

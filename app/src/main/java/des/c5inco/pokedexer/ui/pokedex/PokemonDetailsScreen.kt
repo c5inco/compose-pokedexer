@@ -479,7 +479,7 @@ private fun RotatingPokeBall(
 @Preview
 @Composable
 private fun PokemonDetailsPreview() {
-    var activePokemon by remember { mutableStateOf(SamplePokemonData[2]) }
+    var activePokemon by remember { mutableStateOf(SamplePokemonData.first { it.name == "Pikachu" }) }
 
     PokedexerTheme {
         Surface(Modifier.fillMaxSize()) {

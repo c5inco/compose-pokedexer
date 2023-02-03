@@ -197,6 +197,69 @@ val SamplePokemonData = listOf(
             Evolution(9, 32),
         )
     ),
+    Pokemon(
+        id = 9,
+        name = "Blastoise",
+        description = "Blastoise has water spouts that protrude from its shell. The water spouts are very accurate. They can shoot bullets of water with enough accuracy to strike empty cans from a distance of over 160 feet.",
+        typeOfPokemon = listOf("Water"),
+        category = "Shellfish",
+        image = 9,
+        height = 1.6,
+        weight = 85.5,
+        hp = 79,
+        attack = 83,
+        defense = 100,
+        specialAttack = 85,
+        specialDefense = 105,
+        speed = 78,
+        evolutionChain = listOf(
+            Evolution(7, -1),
+            Evolution(8, 16),
+            Evolution(9, 32),
+        )
+    ),
+    Pokemon(
+        id = 9,
+        name = "Blastoise",
+        description = "Blastoise has water spouts that protrude from its shell. The water spouts are very accurate. They can shoot bullets of water with enough accuracy to strike empty cans from a distance of over 160 feet.",
+        typeOfPokemon = listOf("Water"),
+        category = "Shellfish",
+        image = 9,
+        height = 1.6,
+        weight = 85.5,
+        hp = 79,
+        attack = 83,
+        defense = 100,
+        specialAttack = 85,
+        specialDefense = 105,
+        speed = 78,
+        evolutionChain = listOf(
+            Evolution(7, -1),
+            Evolution(8, 16),
+            Evolution(9, 32),
+        )
+    ),
+    Pokemon(
+        id = 26,
+        name = "Raichu",
+        description = "If the electrical sacks become excessively charged, Raichu plants its tail in the ground and discharges. Scorched patches of ground will be found near this pokemon’s nest.",
+        typeOfPokemon = listOf("Electric"),
+        category = "Mouse Pokémon",
+        image = 26,
+        height = 0.8,
+        weight = 30.0,
+        genderRate = 4,
+        hp = 60,
+        attack = 90,
+        defense = 55,
+        specialAttack = 90,
+        specialDefense = 80,
+        speed = 110,
+        evolutionChain = listOf(
+            Evolution(25, -1),
+            Evolution(26, -1),
+        )
+    ),
 )
 
 fun mapSampleEvolutionsToList(
@@ -204,7 +267,7 @@ fun mapSampleEvolutionsToList(
 ): List<PokemonDetailsEvolutions> {
     return sample.map {
         PokemonDetailsEvolutions(
-            SamplePokemonData[it.id - 1],
+            SamplePokemonData.first { p -> it.id == p.id },
             it.targetLevel
         )
     }

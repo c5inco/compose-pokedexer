@@ -74,6 +74,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.ui.util)
     implementation(libs.navigation.compose)
     implementation(libs.bundles.accompanist)
 
