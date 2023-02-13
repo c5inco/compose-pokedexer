@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.pokedex
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -203,7 +204,8 @@ fun PokemonList(
                                 durationMillis = 400,
                                 delayMillis = idx / 2 * 150
                             ),
-                        )
+                        ),
+                        exit = ExitTransition.None
                     ) {
                         PokeDexCard(
                             pokemon = p,
