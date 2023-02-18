@@ -31,6 +31,7 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
@@ -87,10 +88,14 @@ fun PokemonDetailsScreenRoute(
         pokemonSet = viewModel.uiState.pokemon,
         pokemon = detailsViewModel.details,
         evolutions = detailsViewModel.evolutions,
+        isFavorite = detailsViewModel.isFavorite,
         onPage = {
             detailsViewModel.refresh(it)
         },
-        onBackClick = onBackClick
+        onFavoriteClick = {
+            detailsViewModel.toggleFavorite(it)
+        },
+        onBackClick = onBackClick,
     )
 }
 
@@ -101,9 +106,10 @@ internal fun PokemonDetailsScreen(
     pokemonSet: List<Pokemon>,
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>,
+    isFavorite: Boolean = false,
     onPage: (Pokemon) -> Unit = {},
+    onFavoriteClick: (Int) -> Unit = { _ -> },
     onBackClick: () -> Unit = {},
-    onFavoriteClick: (Int) -> Unit = { _ -> }
 ) {
     val density = LocalDensity.current
 
@@ -305,12 +311,11 @@ internal fun PokemonDetailsScreen(
                 },
                 actions = {
                     IconButton(
-                        modifier = Modifier,
                         onClick = { onFavoriteClick(pokemon.id) }
                     ) {
                         Icon(
-                            imageVector = Icons.Default.FavoriteBorder,
-                            contentDescription = "Favorite this Pokemon",
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
                             tint = Color.White
                         )
                     }

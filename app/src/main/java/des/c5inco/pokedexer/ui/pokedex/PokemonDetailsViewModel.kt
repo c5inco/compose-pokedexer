@@ -16,6 +16,7 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
+import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
 import des.c5inco.pokedexer.di.ViewModelFactoryProvider
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.joinAll
@@ -50,12 +51,17 @@ data class PokemonDetailsEvolutions(
 
 class PokemonDetailsViewModel @AssistedInject constructor(
     private val pokemonRepository: PokemonRepository,
+    private val userPreferencesRepository: UserPreferencesRepository,
     @Assisted private val pokemon: Pokemon
 ): ViewModel() {
+    private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
     var details by mutableStateOf(pokemon)
         private set
 
     var evolutions by mutableStateOf(listOf<PokemonDetailsEvolutions>())
+        private set
+
+    var isFavorite by mutableStateOf(false)
         private set
 
     @AssistedFactory
@@ -99,6 +105,16 @@ class PokemonDetailsViewModel @AssistedInject constructor(
             evolutions = ev
                 .sortedBy { it.pokemon.id }
                 .toList()
+
+            userPreferencesFlow.collect {
+                isFavorite = it.favorites.contains(incomingPokemon.id)
+            }
+        }
+    }
+
+    fun toggleFavorite(pokemonId: Int) {
+        viewModelScope.launch {
+            userPreferencesRepository.updateFavorites(pokemonId)
         }
     }
 }
