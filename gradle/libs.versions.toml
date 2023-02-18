@@ -1,7 +1,7 @@
 [versions]
 accompanist = "0.28.0"
 activityCompose = "1.6.1"
-androidGradlePlugin = "7.4.0"
+androidGradlePlugin = "7.4.1"
 apollo = "3.7.1"
 composeBom = "2023.01.00"
 coreKtx = "1.9.0"
@@ -16,6 +16,7 @@ landscapist = "2.1.0"
 lifecycleRuntimeKtx = "2.5.1"
 navigationCompose = "2.5.3"
 room = "2.5.0"
+dataStore = "1.0.0"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -41,6 +42,8 @@ landscapist-coil = { module = "com.github.skydoves:landscapist-coil", version.re
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+
+datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
 
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltComposeNavigation"}
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"}

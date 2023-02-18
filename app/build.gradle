@@ -83,6 +83,9 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
 
+    // Datastore
+    implementation(libs.datastore)
+
     // Hilt
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
