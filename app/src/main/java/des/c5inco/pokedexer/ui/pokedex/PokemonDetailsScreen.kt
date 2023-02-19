@@ -1,11 +1,17 @@
 package des.c5inco.pokedexer.ui.pokedex
 
 import androidx.compose.animation.Animatable
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -99,7 +105,7 @@ fun PokemonDetailsScreenRoute(
     )
 }
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 internal fun PokemonDetailsScreen(
     loading: Boolean,
@@ -247,19 +253,34 @@ internal fun PokemonDetailsScreen(
                         orientation = Orientation.Vertical
                     )
             ) {
-                HeaderLeft(
-                    pokemon = pokemon,
+                AnimatedContent(
                     modifier = Modifier
                         .padding(top = 24.dp)
-                        .graphicsLayer { alpha = textAlphaTarget }
-                )
-                HeaderRight(
+                        .graphicsLayer { alpha = textAlphaTarget },
+                    targetState = pokemon,
+                    transitionSpec = {
+                        fadeIn(tween(durationMillis = 600))
+                            .with(fadeOut(tween(durationMillis = 300)))
+                            .using(SizeTransform(clip = false))
+                    }
+                ) { targetPokemon ->
+                    HeaderLeft(pokemon = targetPokemon)
+                }
+
+                AnimatedContent(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = 24.dp)
                         .graphicsLayer { alpha = textAlphaTarget },
-                    pokemon = pokemon
-                )
+                    targetState = pokemon,
+                    transitionSpec = {
+                        fadeIn(tween(durationMillis = 600))
+                            .with(fadeOut(tween(durationMillis = 300)))
+                            .using(SizeTransform(clip = false))
+                    }
+                ) { targetPokemon ->
+                    HeaderRight(pokemon = targetPokemon)
+                }
 
                 Surface(
                     modifier = Modifier
