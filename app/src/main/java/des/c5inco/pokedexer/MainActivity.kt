@@ -17,6 +17,7 @@ import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import des.c5inco.pokedexer.ui.home.RootViewModel
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsViewModel
+import des.c5inco.pokedexer.ui.theme.M3Theme
 import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 import javax.inject.Inject
 
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
             }
 
             CompositionLocalProvider(LocalCoilImageLoader provides viewModel.imageLoader) {
-                PokedexerTheme {
+                M3Theme {
                     PokedexerApp()
                 }
             }
