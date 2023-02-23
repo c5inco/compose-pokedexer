@@ -5,6 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 
 private val M3LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -38,7 +40,6 @@ private val M3LightColors = lightColorScheme(
     scrim = md_theme_light_scrim,
 )
 
-
 private val M3DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
@@ -71,6 +72,12 @@ private val M3DarkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
+object TypesTheme {
+    val colorScheme: TypesColorScheme
+        @Composable
+        get() = LocalTypesColors.current
+}
+
 @Composable
 fun M3Theme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
@@ -82,10 +89,26 @@ fun M3Theme(
         M3DarkColors
     }
 
-    MaterialTheme(
-        colorScheme = colors,
-        typography = M3Typography,
-        shapes = M3Shapes,
-        content = content
-    )
+    val extendedTypesColors = if (!useDarkTheme) {
+        lightTypesColors
+    } else {
+        darkTypesColors
+    }
+
+    val rememberedTypesColorScheme = remember {
+        // Explicitly creating a new object here so we don't mutate the initial [colorScheme]
+        // provided, and overwrite the values set in it.
+        extendedTypesColors.copy()
+    }.apply {
+        updateTypesColorSchemeFrom(extendedTypesColors)
+    }
+
+    CompositionLocalProvider(LocalTypesColors provides rememberedTypesColorScheme){
+        MaterialTheme(
+            colorScheme = colors,
+            typography = M3Typography,
+            shapes = M3Shapes,
+            content = content
+        )
+    }
 }
