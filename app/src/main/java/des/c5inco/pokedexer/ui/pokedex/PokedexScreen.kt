@@ -1,5 +1,6 @@
 package des.c5inco.pokedexer.ui.pokedex
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.MutableTransitionState
@@ -21,10 +22,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -41,7 +38,11 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.M3Theme
+import androidx.compose.material3.CircularProgressIndicator as M3CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme as M3Theme
+import androidx.compose.material3.Surface as M3Surface
+import androidx.compose.material3.Text as M3Text
 
 @Composable
 fun PokedexScreenRoute(
@@ -100,23 +101,24 @@ fun PokedexScreen(
         }
     }
 
-    Surface {
+    M3Surface {
         Box(
             Modifier.fillMaxSize()
         ) {
             PokeBallBackground(
-                Modifier
+                modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = 90.dp, y = (-70).dp)
+                    .offset(x = 90.dp, y = (-70).dp),
+                tint = M3Theme.colorScheme.primary.copy(alpha = 0.05f)
             )
             PokemonList(
                 modifier = Modifier.statusBarsPadding(),
                 listState = listState,
                 loading = loading,
                 title = {
-                    Text(
+                    M3Text(
                         text = "Pokedex",
-                        style = MaterialTheme.typography.h4,
+                        style = M3Theme.typography.headlineMedium,
                         modifier = Modifier
                             .padding(
                                 top = 16.dp,
@@ -139,7 +141,7 @@ fun PokedexScreen(
                     .padding(top = 16.dp)
                 ,
                 title = {
-                    Text(
+                    M3Text(
                         text = "Pokedex",
                         modifier = Modifier.graphicsLayer {
                             alpha = topAppBarTitleRevealProgress
@@ -179,8 +181,8 @@ fun PokemonList(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        CircularProgressIndicator(
-                            color = Color.Black,
+                        M3CircularProgressIndicator(
+                            color = M3Theme.colorScheme.primary,
                             modifier = Modifier
                                 .size(48.dp)
                                 .padding(vertical = 24.dp)
@@ -218,10 +220,11 @@ fun PokemonList(
     )
 }
 
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
 private fun PokedexScreenPreview() {
-    PokedexerTheme {
+    M3Theme {
         PokedexScreen(
             loading = false,
             pokemon = SamplePokemonData

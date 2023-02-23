@@ -1,9 +1,10 @@
 package des.c5inco.pokedexer.ui.pokedex
 
-import androidx.compose.animation.Animatable
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -27,20 +28,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -71,6 +72,8 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
+import des.c5inco.pokedexer.model.mapTypesToPrimaryColor
+import des.c5inco.pokedexer.model.mapTypesToSurfaceColor
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
@@ -80,7 +83,7 @@ import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
 import des.c5inco.pokedexer.ui.pokedex.section.MovesSection
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.M3Theme
 import kotlin.math.roundToInt
 
 @Composable
@@ -120,7 +123,10 @@ internal fun PokemonDetailsScreen(
     val density = LocalDensity.current
 
     val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
-    val pokemonTypeColor = remember { Animatable(pokemon.color()) }
+    val pokemonTypeColor by animateColorAsState(
+        targetValue = mapTypesToSurfaceColor(types = pokemon.typeOfPokemon),
+        animationSpec = tween(durationMillis = 500)
+    )
 
     val swipeableState = rememberSwipeableState(initialValue = 1)
     val topAnchorMin = with(density) { (16 + 16 + 48).dp.toPx() }
@@ -206,19 +212,14 @@ internal fun PokemonDetailsScreen(
     LaunchedEffect(pagerState, pokemonSet) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             if (pokemonSet.isNotEmpty()) {
-                val incomingPokemon = pokemonSet[page]
-                onPage(incomingPokemon)
-                pokemonTypeColor.animateTo(
-                    targetValue = incomingPokemon.color(),
-                    animationSpec = tween(durationMillis = 500)
-                )
+                onPage(pokemonSet[page])
             }
         }
     }
 
     Surface(
         modifier = Modifier.drawBehind {
-            drawRect(pokemonTypeColor.value)
+            drawRect(pokemonTypeColor)
         },
         color = Color.Transparent
     ) {
@@ -361,55 +362,50 @@ private fun CardContent(
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>
 ) {
-    // Surface(
-    //     modifier = modifier,
-    //     shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
-    // ) {
-        Column(
-            modifier.fillMaxSize()
+    Column(
+        modifier.fillMaxSize()
+    ) {
+        val sectionTitles = Sections.values().map { it.title }
+        var section by remember { mutableStateOf(Sections.BaseStats) }
+        TabRow(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            selectedTabIndex = section.ordinal,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    modifier = Modifier
+                        .tabIndicatorOffset(tabPositions[section.ordinal])
+                        .clip(RoundedCornerShape(100)),
+                    color = mapTypesToPrimaryColor(types = pokemon.typeOfPokemon)
+                )
+            },
         ) {
-            //Spacer(modifier = Modifier.height(40.dp))
-
-            val sectionTitles = Sections.values().map { it.title }
-            var section by remember { mutableStateOf(Sections.BaseStats) }
-            TabRow(
-                backgroundColor = Color.Transparent,
-                selectedTabIndex = section.ordinal,
-                indicator = { tabPositions ->
-                    TabRowDefaults.Indicator(
-                        modifier = Modifier
-                            .tabIndicatorOffset(tabPositions[section.ordinal])
-                            .clip(RoundedCornerShape(100)),
-                        color = MaterialTheme.colors.primary
+            sectionTitles.forEachIndexed { index, text ->
+                val active = index == section.ordinal
+                Tab(
+                    selected = active,
+                    unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    onClick = { section = Sections.values()[index] },
+                ) {
+                    Text(
+                        text = text,
+                        fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
+                        modifier = Modifier.padding(vertical = 20.dp)
                     )
-                },
-            ) {
-                sectionTitles.forEachIndexed { index, text ->
-                    val active = index == section.ordinal
-                    Tab(
-                        selected = active,
-                        onClick = { section = Sections.values()[index] },
-                    ) {
-                        Text(
-                            text = text,
-                            fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
-                            modifier = Modifier.padding(vertical = 20.dp)
-                        )
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier.padding(24.dp)
-            ) {
-                when (section) {
-                    Sections.About -> AboutSection(pokemon)
-                    Sections.BaseStats -> BaseStatsSection(pokemon)
-                    Sections.Evolution -> EvolutionSection(evolutions = evolutions)
-                    else -> MovesSection(pokemon)
                 }
             }
         }
-    // }
+        Box(
+            modifier = Modifier.padding(24.dp)
+        ) {
+            when (section) {
+                Sections.About -> AboutSection(pokemon)
+                Sections.BaseStats -> BaseStatsSection(pokemon)
+                Sections.Evolution -> EvolutionSection(evolutions = evolutions)
+                else -> MovesSection(pokemon)
+            }
+        }
+    }
 }
 
 @Composable
@@ -445,7 +441,7 @@ private fun HeaderLeft(
     ) {
         Text(
             text = pokemon.name,
-            style = MaterialTheme.typography.h3,
+            style = MaterialTheme.typography.displaySmall,
             color = Color.White
         )
         Spacer(Modifier.height(8.dp))
@@ -502,12 +498,12 @@ private fun RotatingPokeBall(
     )
 }
 
-@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PokemonDetailsPreview() {
     var activePokemon by remember { mutableStateOf(SamplePokemonData.first { it.name == "Pikachu" }) }
 
-    PokedexerTheme {
+    M3Theme {
         Surface(Modifier.fillMaxSize()) {
             PokemonDetailsScreen(
                 loading = false,
