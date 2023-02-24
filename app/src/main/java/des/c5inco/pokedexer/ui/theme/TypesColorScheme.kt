@@ -4,7 +4,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.graphics.Color
 
 @Stable
@@ -30,48 +29,48 @@ class TypesColorScheme(
     onSurfacePsychic: Color,
     surfaceVariantPsychic: Color,
 ) {
-    var primaryGrass by mutableStateOf(primaryGrass, structuralEqualityPolicy())
+    var primaryGrass by mutableStateOf(primaryGrass)
         internal set
-    var primaryFire by mutableStateOf(primaryFire, structuralEqualityPolicy())
+    var primaryFire by mutableStateOf(primaryFire)
         internal set
-    var primaryElectric by mutableStateOf(primaryElectric, structuralEqualityPolicy())
+    var primaryElectric by mutableStateOf(primaryElectric)
         internal set
-    var primaryPsychic by mutableStateOf(primaryPsychic, structuralEqualityPolicy())
+    var primaryPsychic by mutableStateOf(primaryPsychic)
         internal set
-    var primaryWater by mutableStateOf(primaryWater, structuralEqualityPolicy())
-        internal set
-
-    var surfaceGrass by mutableStateOf(surfaceGrass, structuralEqualityPolicy())
-        internal set
-    var surfaceFire by mutableStateOf(surfaceFire, structuralEqualityPolicy())
-        internal set
-    var surfaceElectric by mutableStateOf(surfaceElectric, structuralEqualityPolicy())
-        internal set
-    var surfacePsychic by mutableStateOf(surfacePsychic, structuralEqualityPolicy())
-        internal set
-    var surfaceWater by mutableStateOf(surfaceWater, structuralEqualityPolicy())
+    var primaryWater by mutableStateOf(primaryWater)
         internal set
 
-    var onSurfaceGrass by mutableStateOf(onSurfaceGrass, structuralEqualityPolicy())
+    var surfaceGrass by mutableStateOf(surfaceGrass)
         internal set
-    var onSurfaceFire by mutableStateOf(onSurfaceFire, structuralEqualityPolicy())
+    var surfaceFire by mutableStateOf(surfaceFire)
         internal set
-    var onSurfaceElectric by mutableStateOf(onSurfaceElectric, structuralEqualityPolicy())
+    var surfaceElectric by mutableStateOf(surfaceElectric)
         internal set
-    var onSurfacePsychic by mutableStateOf(onSurfacePsychic, structuralEqualityPolicy())
+    var surfacePsychic by mutableStateOf(surfacePsychic)
         internal set
-    var onSurfaceWater by mutableStateOf(onSurfaceWater, structuralEqualityPolicy())
+    var surfaceWater by mutableStateOf(surfaceWater)
         internal set
 
-    var surfaceVariantGrass by mutableStateOf(surfaceVariantGrass, structuralEqualityPolicy())
+    var onSurfaceGrass by mutableStateOf(onSurfaceGrass)
         internal set
-    var surfaceVariantFire by mutableStateOf(surfaceVariantFire, structuralEqualityPolicy())
+    var onSurfaceFire by mutableStateOf(onSurfaceFire)
         internal set
-    var surfaceVariantElectric by mutableStateOf(surfaceVariantElectric, structuralEqualityPolicy())
+    var onSurfaceElectric by mutableStateOf(onSurfaceElectric)
         internal set
-    var surfaceVariantPsychic by mutableStateOf(surfaceVariantPsychic, structuralEqualityPolicy())
+    var onSurfacePsychic by mutableStateOf(onSurfacePsychic)
         internal set
-    var surfaceVariantWater by mutableStateOf(surfaceVariantWater, structuralEqualityPolicy())
+    var onSurfaceWater by mutableStateOf(onSurfaceWater)
+        internal set
+
+    var surfaceVariantGrass by mutableStateOf(surfaceVariantGrass)
+        internal set
+    var surfaceVariantFire by mutableStateOf(surfaceVariantFire)
+        internal set
+    var surfaceVariantElectric by mutableStateOf(surfaceVariantElectric)
+        internal set
+    var surfaceVariantPsychic by mutableStateOf(surfaceVariantPsychic)
+        internal set
+    var surfaceVariantWater by mutableStateOf(surfaceVariantWater)
         internal set
 
     /** Returns a copy of this ColorScheme, optionally overriding some of the values. */
@@ -127,6 +126,21 @@ class TypesColorScheme(
                 "primaryElectric=$primaryElectric" +
                 "primaryPsychic=$primaryPsychic" +
                 "primaryWater=$primaryWater" +
+                "surfaceGrass=$surfaceGrass" +
+                "surfaceFire=$surfaceFire" +
+                "surfaceElectric=$surfaceElectric" +
+                "surfacePsychic=$surfacePsychic" +
+                "surfaceWater=$surfaceWater" +
+                "onSurfaceGrass=$onSurfaceGrass" +
+                "onSurfaceFire=$onSurfaceFire" +
+                "onSurfaceElectric=$onSurfaceElectric" +
+                "onSurfacePsychic=$onSurfacePsychic" +
+                "onSurfaceWater=$onSurfaceWater" +
+                "surfaceVariantGrass=$surfaceVariantGrass" +
+                "surfaceVariantFire=$surfaceVariantFire" +
+                "surfaceVariantElectric=$surfaceVariantElectric" +
+                "surfaceVariantPsychic=$surfaceVariantPsychic" +
+                "surfaceVariantWater=$surfaceVariantWater" +
                 ")"
     }
 }
