@@ -61,7 +61,7 @@ fun mapTypesToPrimaryColor(
             Type.Flying -> PokemonColors.Flying
             Type.Water -> TypesTheme.colorScheme.primaryWater
             Type.Ice -> PokemonColors.Ice
-            Type.Dragon -> PokemonColors.Dragon
+            Type.Dragon -> TypesTheme.colorScheme.primaryDragon
             Type.Normal -> PokemonColors.Normal
             Type.Fighting -> PokemonColors.Fighting
             Type.Electric -> TypesTheme.colorScheme.primaryElectric
@@ -89,7 +89,7 @@ fun mapTypesToSurfaceColor(
             Type.Flying -> PokemonColors.Flying
             Type.Water -> TypesTheme.colorScheme.surfaceWater
             Type.Ice -> PokemonColors.Ice
-            Type.Dragon -> PokemonColors.Dragon
+            Type.Dragon -> TypesTheme.colorScheme.surfaceDragon
             Type.Normal -> PokemonColors.Normal
             Type.Fighting -> PokemonColors.Fighting
             Type.Electric -> TypesTheme.colorScheme.surfaceElectric
@@ -117,7 +117,7 @@ fun mapTypesToOnSurfaceColor(
             Type.Flying -> PokemonColors.Flying
             Type.Water -> TypesTheme.colorScheme.onSurfaceWater
             Type.Ice -> PokemonColors.Ice
-            Type.Dragon -> PokemonColors.Dragon
+            Type.Dragon -> TypesTheme.colorScheme.onSurfaceDragon
             Type.Normal -> PokemonColors.Normal
             Type.Fighting -> PokemonColors.Fighting
             Type.Electric -> TypesTheme.colorScheme.onSurfaceElectric
@@ -145,7 +145,7 @@ fun mapTypesToSurfaceVariantColor(
             Type.Flying -> PokemonColors.Flying
             Type.Water -> TypesTheme.colorScheme.surfaceVariantWater
             Type.Ice -> PokemonColors.Ice
-            Type.Dragon -> PokemonColors.Dragon
+            Type.Dragon -> TypesTheme.colorScheme.surfaceVariantDragon
             Type.Normal -> PokemonColors.Normal
             Type.Fighting -> PokemonColors.Fighting
             Type.Electric -> TypesTheme.colorScheme.surfaceVariantElectric

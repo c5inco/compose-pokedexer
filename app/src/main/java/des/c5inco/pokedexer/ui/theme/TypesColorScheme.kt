@@ -28,6 +28,10 @@ class TypesColorScheme(
     surfacePsychic: Color,
     onSurfacePsychic: Color,
     surfaceVariantPsychic: Color,
+    primaryDragon: Color,
+    surfaceDragon: Color,
+    onSurfaceDragon: Color,
+    surfaceVariantDragon: Color,
 ) {
     var primaryGrass by mutableStateOf(primaryGrass)
         internal set
@@ -38,6 +42,8 @@ class TypesColorScheme(
     var primaryPsychic by mutableStateOf(primaryPsychic)
         internal set
     var primaryWater by mutableStateOf(primaryWater)
+        internal set
+    var primaryDragon by mutableStateOf(primaryDragon)
         internal set
 
     var surfaceGrass by mutableStateOf(surfaceGrass)
@@ -50,6 +56,8 @@ class TypesColorScheme(
         internal set
     var surfaceWater by mutableStateOf(surfaceWater)
         internal set
+    var surfaceDragon by mutableStateOf(surfaceDragon)
+        internal set
 
     var onSurfaceGrass by mutableStateOf(onSurfaceGrass)
         internal set
@@ -60,6 +68,8 @@ class TypesColorScheme(
     var onSurfacePsychic by mutableStateOf(onSurfacePsychic)
         internal set
     var onSurfaceWater by mutableStateOf(onSurfaceWater)
+        internal set
+    var onSurfaceDragon by mutableStateOf(onSurfaceDragon)
         internal set
 
     var surfaceVariantGrass by mutableStateOf(surfaceVariantGrass)
@@ -72,6 +82,8 @@ class TypesColorScheme(
         internal set
     var surfaceVariantWater by mutableStateOf(surfaceVariantWater)
         internal set
+    var surfaceVariantDragon by mutableStateOf(surfaceVariantDragon)
+        internal set
 
     /** Returns a copy of this ColorScheme, optionally overriding some of the values. */
     fun copy(
@@ -80,21 +92,25 @@ class TypesColorScheme(
         primaryElectric: Color = this.primaryElectric,
         primaryPsychic: Color = this.primaryPsychic,
         primaryWater: Color = this.primaryWater,
+        primaryDragon: Color = this.primaryDragon,
         surfaceGrass: Color = this.surfaceGrass,
         surfaceFire: Color = this.surfaceFire,
         surfaceElectric: Color = this.surfaceElectric,
         surfacePsychic: Color = this.surfacePsychic,
         surfaceWater: Color = this.surfaceWater,
+        surfaceDragon: Color = this.surfaceDragon,
         onSurfaceGrass: Color = this.onSurfaceGrass,
         onSurfaceFire: Color = this.onSurfaceFire,
         onSurfaceElectric: Color = this.onSurfaceElectric,
         onSurfacePsychic: Color = this.onSurfacePsychic,
         onSurfaceWater: Color = this.onSurfaceWater,
+        onSurfaceDragon: Color = this.onSurfaceDragon,
         surfaceVariantGrass: Color = this.surfaceVariantGrass,
         surfaceVariantFire: Color = this.surfaceVariantFire,
         surfaceVariantElectric: Color = this.surfaceVariantElectric,
         surfaceVariantPsychic: Color = this.surfaceVariantPsychic,
         surfaceVariantWater: Color = this.surfaceVariantWater,
+        surfaceVariantDragon: Color = this.surfaceVariantDragon,
     ): TypesColorScheme =
         TypesColorScheme(
             primaryGrass = primaryGrass,
@@ -102,21 +118,25 @@ class TypesColorScheme(
             primaryElectric = primaryElectric,
             primaryPsychic = primaryPsychic,
             primaryWater = primaryWater,
+            primaryDragon = primaryDragon,
             surfaceGrass = surfaceGrass,
             surfaceFire = surfaceFire,
             surfaceElectric = surfaceElectric,
             surfacePsychic = surfacePsychic,
             surfaceWater = surfaceWater,
+            surfaceDragon = surfaceDragon,
             onSurfaceGrass = onSurfaceGrass,
             onSurfaceFire = onSurfaceFire,
             onSurfaceElectric = onSurfaceElectric,
             onSurfacePsychic = onSurfacePsychic,
             onSurfaceWater = onSurfaceWater,
+            onSurfaceDragon = onSurfaceDragon,
             surfaceVariantGrass = surfaceVariantGrass,
             surfaceVariantFire = surfaceVariantFire,
             surfaceVariantElectric = surfaceVariantElectric,
             surfaceVariantPsychic = surfaceVariantPsychic,
             surfaceVariantWater = surfaceVariantWater,
+            surfaceVariantDragon = surfaceVariantDragon,
         )
 
     override fun toString(): String {
@@ -126,21 +146,25 @@ class TypesColorScheme(
                 "primaryElectric=$primaryElectric" +
                 "primaryPsychic=$primaryPsychic" +
                 "primaryWater=$primaryWater" +
+                "primaryDragon=$primaryDragon" +
                 "surfaceGrass=$surfaceGrass" +
                 "surfaceFire=$surfaceFire" +
                 "surfaceElectric=$surfaceElectric" +
                 "surfacePsychic=$surfacePsychic" +
                 "surfaceWater=$surfaceWater" +
+                "surfaceDragon=$surfaceDragon" +
                 "onSurfaceGrass=$onSurfaceGrass" +
                 "onSurfaceFire=$onSurfaceFire" +
                 "onSurfaceElectric=$onSurfaceElectric" +
                 "onSurfacePsychic=$onSurfacePsychic" +
                 "onSurfaceWater=$onSurfaceWater" +
+                "onSurfaceDragon=$onSurfaceDragon" +
                 "surfaceVariantGrass=$surfaceVariantGrass" +
                 "surfaceVariantFire=$surfaceVariantFire" +
                 "surfaceVariantElectric=$surfaceVariantElectric" +
                 "surfaceVariantPsychic=$surfaceVariantPsychic" +
                 "surfaceVariantWater=$surfaceVariantWater" +
+                "surfaceVariantDragon=$surfaceVariantDragon" +
                 ")"
     }
 }
@@ -151,19 +175,23 @@ internal fun TypesColorScheme.updateTypesColorSchemeFrom(other: TypesColorScheme
     primaryElectric = other.primaryElectric
     primaryPsychic = other.primaryPsychic
     primaryWater = other.primaryWater
+    primaryDragon = other.primaryDragon
     surfaceGrass = other.surfaceGrass
     surfaceFire = other.surfaceFire
     surfaceElectric = other.surfaceElectric
     surfacePsychic = other.surfacePsychic
     surfaceWater = other.surfaceWater
+    surfaceDragon = other.surfaceDragon
     onSurfaceGrass = other.onSurfaceGrass
     onSurfaceFire = other.onSurfaceFire
     onSurfaceElectric = other.onSurfaceElectric
     onSurfacePsychic = other.onSurfacePsychic
     onSurfaceWater = other.onSurfaceWater
+    onSurfaceDragon = other.onSurfaceDragon
     surfaceVariantGrass = other.surfaceVariantGrass
     surfaceVariantFire = other.surfaceVariantFire
     surfaceVariantElectric = other.surfaceVariantElectric
     surfaceVariantPsychic = other.surfaceVariantPsychic
     surfaceVariantWater = other.surfaceVariantWater
+    surfaceVariantDragon = other.surfaceVariantDragon
 }
