@@ -11,6 +11,9 @@ interface PokemonDao {
     @Query("SELECT * FROM pokemon WHERE id = :id LIMIT 1")
     suspend fun findById(id: Int): Pokemon?
 
+    @Query("SELECT * FROM pokemon WHERE id IN (:ids)")
+    suspend fun findByIds(ids: List<Int>): List<Pokemon>
+
     @Query("SELECT * FROM pokemon WHERE name LIKE :name LIMIT 1")
     suspend fun findByName(name: String): Pokemon?
 

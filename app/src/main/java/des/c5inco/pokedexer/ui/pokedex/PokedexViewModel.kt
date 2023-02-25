@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.pokedex
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
+import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,10 +24,14 @@ data class PokedexUiState(
 
 @HiltViewModel
 class PokedexViewModel @Inject constructor(
-    private val pokemonRepository: PokemonRepository
+    private val pokemonRepository: PokemonRepository,
+    userPreferencesRepository: UserPreferencesRepository,
 ): ViewModel() {
     var uiState by mutableStateOf(PokedexUiState(loading = true))
         private set
+
+    private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
+    var favorites = mutableStateListOf<Pokemon>()
 
     init {
         refresh()
@@ -46,6 +52,20 @@ class PokedexViewModel @Inject constructor(
                 }
                 is Result.Error -> {
                     throw result.exception
+                }
+            }
+
+            userPreferencesFlow.collect {
+                if (favorites.isNotEmpty()) {
+                    favorites.clear()
+                }
+
+                when (val result = pokemonRepository.getPokemonByIds(it.favorites)) {
+                    is Result.Success -> {
+                        favorites.addAll(result.data.toList())
+                    }
+                    else ->
+                        favorites
                 }
             }
         }

@@ -76,6 +76,10 @@ class RemotePokemonRepository @Inject constructor(
         )
     }
 
+    override suspend fun getPokemonByIds(ids: List<Int>): Result<List<Pokemon>> {
+        return Result.Success(pokemonDao.findByIds(ids))
+    }
+
     override suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon> {
         TODO("Not yet implemented")
     }

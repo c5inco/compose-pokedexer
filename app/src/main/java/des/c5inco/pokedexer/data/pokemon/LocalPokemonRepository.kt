@@ -24,6 +24,10 @@ class LocalPokemonRepository(
         return Result.Success(localPokemonDataSource.getPokemonById(id))
     }
 
+    override suspend fun getPokemonByIds(ids: List<Int>): Result<List<Pokemon>> {
+        return Result.Success(localPokemonDataSource.getPokemonByIds())
+    }
+
     // used to drive "random" failure in a predictable pattern, making the first request always
     // succeed
     private var requestCount = 0
@@ -51,5 +55,13 @@ class LocalPokemonDataSource {
 
     fun getPokemonById(id: Int): Pokemon {
         return SamplePokemonData[id - 1]
+    }
+
+    fun getPokemonByIds(): List<Pokemon> {
+        return listOf(
+            SamplePokemonData[0],
+            SamplePokemonData[2],
+            SamplePokemonData[6],
+        )
     }
 }
