@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.model.mapTypesToSurfaceColor
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.home.MenuItem
@@ -48,7 +49,7 @@ fun Menu(
                 val item = menuItems[index]
                 MenuItemButton(
                     text = item.label,
-                    color = mapTypesToSurfaceColor(types = listOf(item.typeColor.name))
+                    type = item.typeColor,
                 ) {
                     onMenuItemSelected(item)
                 }
@@ -61,12 +62,12 @@ fun Menu(
 fun MenuItemButton(
     modifier: Modifier = Modifier,
     text: String,
-    color: Color,
+    type: Type,
     onClick: () -> Unit = {}
 ) {
     Surface(
         modifier = modifier,
-        color = color,
+        color = mapTypesToSurfaceColor(types = listOf(type.name)),
         shape = RoundedCornerShape(16.dp)
     ) {
         Box(
