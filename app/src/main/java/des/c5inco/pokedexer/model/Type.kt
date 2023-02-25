@@ -130,3 +130,31 @@ fun mapTypesToOnSurfaceColor(
         }
     } ?: Color.Magenta
 }
+
+@Composable
+fun mapTypesToSurfaceVariantColor(
+    types: List<String>
+): Color {
+    val type = types.elementAtOrNull(0)
+
+    return type?.let {
+        when (Type.valueOf(type)) {
+            Type.Grass -> TypesTheme.colorScheme.surfaceVariantGrass
+            Type.Bug -> PokemonColors.Bug
+            Type.Fire -> TypesTheme.colorScheme.surfaceVariantFire
+            Type.Flying -> PokemonColors.Flying
+            Type.Water -> TypesTheme.colorScheme.surfaceVariantWater
+            Type.Ice -> PokemonColors.Ice
+            Type.Dragon -> PokemonColors.Dragon
+            Type.Normal -> PokemonColors.Normal
+            Type.Fighting -> PokemonColors.Fighting
+            Type.Electric -> TypesTheme.colorScheme.surfaceVariantElectric
+            Type.Psychic -> TypesTheme.colorScheme.surfaceVariantPsychic
+            Type.Poison -> PokemonColors.Poison
+            Type.Ghost -> PokemonColors.LightPurple
+            Type.Ground, Type.Rock -> PokemonColors.LightBrown
+            Type.Dark -> PokemonColors.Dark
+            else -> PokemonColors.LightBlue
+        }
+    } ?: Color.Magenta
+}
