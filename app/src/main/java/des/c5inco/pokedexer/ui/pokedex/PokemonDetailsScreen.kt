@@ -71,9 +71,9 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.model.mapTypesToPrimaryColor
 import des.c5inco.pokedexer.model.mapTypesToSurfaceColor
+import des.c5inco.pokedexer.model.mapTypesToSurfaceVariantColor
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
@@ -241,7 +241,8 @@ internal fun PokemonDetailsScreen(
                     .padding(top = 16.dp)
                     .padding(top = 164.dp)
                     .size(180.dp)
-                    .graphicsLayer { alpha = textAlphaTarget }
+                    .graphicsLayer { alpha = textAlphaTarget },
+                tint = mapTypesToSurfaceVariantColor(types = pokemon.typeOfPokemon)
             )
             Box(
                 Modifier
@@ -300,11 +301,10 @@ internal fun PokemonDetailsScreen(
                     modifier = Modifier
                         .zIndex(pagerZIndex)
                         .padding(top = 124.dp)
-                        .graphicsLayer { alpha = imageAlphaTarget }
-                    ,
+                        .graphicsLayer { alpha = imageAlphaTarget },
                     loading = loading,
                     pokemonList = pokemonSet,
-                    backgroundColor = pokemon.color(),
+                    backgroundColor = mapTypesToSurfaceColor(types = pokemon.typeOfPokemon),
                     enabled = swipeableState.currentValue == 1,
                     pagerState = pagerState,
                 ) { it, progress, tint ->
@@ -479,7 +479,8 @@ private fun HeaderRight(
 
 @Composable
 private fun RotatingPokeBall(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tint: Color = Color(0x40F5F5F5)
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val angle by infiniteTransition.animateFloat(
@@ -493,8 +494,7 @@ private fun RotatingPokeBall(
             .graphicsLayer {
                 rotationZ = angle
             },
-        tint = Color(0xffF5F5F5),
-        alpha = 0.25f
+        tint = tint,
     )
 }
 
