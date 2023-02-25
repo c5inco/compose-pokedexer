@@ -366,7 +366,7 @@ private fun CardContent(
         modifier.fillMaxSize()
     ) {
         val sectionTitles = Sections.values().map { it.title }
-        var section by remember { mutableStateOf(Sections.BaseStats) }
+        var section by remember { mutableStateOf(Sections.About) }
         TabRow(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurface,

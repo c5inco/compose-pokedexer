@@ -1,6 +1,6 @@
 package des.c5inco.pokedexer.ui.pokedex.section
 
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import des.c5inco.pokedexer.model.Pokemon
 
@@ -8,5 +8,5 @@ import des.c5inco.pokedexer.model.Pokemon
 fun MovesSection(
     pokemon: Pokemon
 ) {
-    Text("TBD")
+    Text("\uD83D\uDEA7 - Moves for ${pokemon.name}")
 }

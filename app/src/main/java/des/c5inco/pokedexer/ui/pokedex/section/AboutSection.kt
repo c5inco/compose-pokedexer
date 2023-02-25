@@ -1,5 +1,6 @@
 package des.c5inco.pokedexer.ui.pokedex.section
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,10 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +25,7 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.M3Theme
 
 @Composable
 fun AboutSection(
@@ -39,7 +40,7 @@ fun AboutSection(
         )
         Surface(
             shape = RoundedCornerShape(12.dp),
-            elevation = 12.dp
+            tonalElevation = 3.dp
         ) {
             Row(
                 Modifier
@@ -70,7 +71,7 @@ private fun BreedingDetails(
     Column(modifier) {
         Text(
             "Breeding",
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(Modifier.height(24.dp))
         Row(Modifier.fillMaxWidth()) {
@@ -139,10 +140,11 @@ private fun BreedingDetails(
     }
 }
 
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Preview
 @Composable
 fun AboutSectionPreview() {
-    PokedexerTheme {
+    M3Theme {
         Surface(Modifier.fillMaxWidth()) {
             AboutSection(pokemon = SamplePokemonData[0])
         }
