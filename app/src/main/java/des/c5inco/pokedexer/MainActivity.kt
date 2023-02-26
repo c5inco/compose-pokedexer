@@ -18,7 +18,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import des.c5inco.pokedexer.ui.home.RootViewModel
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsViewModel
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -55,7 +54,7 @@ class MainActivity : ComponentActivity() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun DefaultPreview() {
-    PokedexerTheme {
+    AppTheme {
         PokedexerApp()
     }
 }

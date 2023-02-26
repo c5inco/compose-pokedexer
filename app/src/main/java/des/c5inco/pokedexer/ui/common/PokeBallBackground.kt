@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.Grey100
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
 
 @Composable
 fun PokeBallBackground(
@@ -27,7 +27,7 @@ fun PokeBallBackground(
 @Preview
 @Composable
 fun PokeBallBackgroundPreview() {
-    PokedexerTheme {
+    AppTheme {
         Surface(Modifier.fillMaxSize()) {
             PokeBallBackground()
         }

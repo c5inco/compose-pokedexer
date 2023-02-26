@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,7 +34,7 @@ import com.google.accompanist.pager.rememberPagerState
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.PokemonImage
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.AppTheme
 import org.intellij.lang.annotations.Language
 import kotlin.math.absoluteValue
 
@@ -156,7 +156,7 @@ fun PokemonPager(
 @Preview
 @Composable
 fun PokemonPagerPreview() {
-    PokedexerTheme {
+    AppTheme {
         Surface {
             Column(
                 Modifier.fillMaxSize(),
@@ -164,7 +164,7 @@ fun PokemonPagerPreview() {
             ) {
                 PokemonPager(
                     pokemonList = SamplePokemonData,
-                    backgroundColor = MaterialTheme.colors.surface
+                    backgroundColor = MaterialTheme.colorScheme.surface
                 ) { it, progress, tint ->
                     PagerPokemonImage(
                         image = it.image,

@@ -34,13 +34,13 @@ import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.color
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.AppTheme
 import kotlin.math.tan
 
 @Preview
 @Composable
 fun StatsChartPreview() {
-    PokedexerTheme {
+    AppTheme {
         Surface {
             Column(
                 Modifier
