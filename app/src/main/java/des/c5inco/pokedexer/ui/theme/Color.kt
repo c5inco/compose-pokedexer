@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.ui.theme
 
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 val Grey100 = Color(0xfff5f5f5)
@@ -178,61 +177,3 @@ val DragonTypeColors = TypeColors(
     surfaceVariantDark = Color(0x66180065),
     surfaceVariantLight = Color(0x26180065),
 )
-
-val lightTypesColors = TypesColorScheme(
-    primaryGrass = GrassTypeColors.primaryLight,
-    primaryFire = FireTypeColors.primaryLight,
-    primaryElectric = ElectricTypeColors.primaryLight,
-    primaryPsychic = PsychicTypeColors.primaryLight,
-    primaryWater = WaterTypeColors.primaryLight,
-    primaryDragon = DragonTypeColors.primaryLight,
-    surfaceGrass = GrassTypeColors.primaryLight,
-    surfaceFire = FireTypeColors.primaryLight,
-    surfaceElectric = ElectricTypeColors.primaryLight,
-    surfacePsychic = PsychicTypeColors.primaryLight,
-    surfaceWater = WaterTypeColors.primaryLight,
-    surfaceDragon = DragonTypeColors.primaryLight,
-    surfaceVariantGrass = GrassTypeColors.surfaceVariantLight,
-    surfaceVariantFire = FireTypeColors.surfaceVariantLight,
-    surfaceVariantElectric = ElectricTypeColors.surfaceVariantLight,
-    surfaceVariantPsychic = PsychicTypeColors.surfaceVariantLight,
-    surfaceVariantWater = WaterTypeColors.surfaceVariantLight,
-    surfaceVariantDragon = DragonTypeColors.surfaceVariantLight,
-    onSurfaceGrass = Color.White,
-    onSurfaceFire = Color.White,
-    onSurfaceElectric = Color.White,
-    onSurfacePsychic = Color.White,
-    onSurfaceWater = Color.White,
-    onSurfaceDragon = Color.White,
-)
-
-val darkTypesColors = TypesColorScheme(
-    primaryGrass = GrassTypeColors.primaryDark,
-    primaryFire = FireTypeColors.primaryDark,
-    primaryElectric = ElectricTypeColors.primaryDark,
-    primaryPsychic = PsychicTypeColors.primaryDark,
-    primaryWater = WaterTypeColors.primaryDark,
-    primaryDragon = DragonTypeColors.primaryDark,
-    surfaceGrass = GrassTypeColors.surfaceDark,
-    surfaceFire = FireTypeColors.surfaceDark,
-    surfaceElectric = ElectricTypeColors.surfaceDark,
-    surfacePsychic = PsychicTypeColors.surfaceDark,
-    surfaceWater = WaterTypeColors.surfaceDark,
-    surfaceDragon = DragonTypeColors.surfaceDark,
-    surfaceVariantGrass = GrassTypeColors.surfaceVariantDark,
-    surfaceVariantFire = FireTypeColors.surfaceVariantDark,
-    surfaceVariantElectric = ElectricTypeColors.surfaceVariantDark,
-    surfaceVariantPsychic = PsychicTypeColors.surfaceVariantDark,
-    surfaceVariantWater = WaterTypeColors.surfaceVariantDark,
-    surfaceVariantDragon = DragonTypeColors.surfaceVariantDark,
-    onSurfaceGrass = GrassTypeColors.onSurfaceDark,
-    onSurfaceFire = FireTypeColors.onSurfaceDark,
-    onSurfaceElectric = ElectricTypeColors.onSurfaceDark,
-    onSurfacePsychic = PsychicTypeColors.onSurfaceDark,
-    onSurfaceWater = WaterTypeColors.onSurfaceDark,
-    onSurfaceDragon = DragonTypeColors.onSurfaceDark,
-)
-
-val LocalTypesColors = staticCompositionLocalOf {
-    lightTypesColors.copy()
-}

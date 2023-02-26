@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,9 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.model.mapTypesToPrimaryColor
 import des.c5inco.pokedexer.ui.common.Label
 import des.c5inco.pokedexer.ui.theme.M3Theme
+import des.c5inco.pokedexer.ui.theme.TypesMaterialTheme
 import kotlinx.coroutines.delay
 
 data class Stat(
@@ -49,7 +50,7 @@ fun BaseStatsSection(
         Stat("Sp. Def", pokemon.specialDefense),
         Stat("Speed", pokemon.speed),
     )
-    val typePrimaryColor = mapTypesToPrimaryColor(types = pokemon.typeOfPokemon)
+    val trackColor = MaterialTheme.colorScheme.surfaceVariant
 
     Column(Modifier.fillMaxWidth()) {
         stats.forEachIndexed { idx, stat ->
@@ -85,13 +86,17 @@ fun BaseStatsSection(
                         .padding(end = 16.dp)
                         .weight(0.6f)
                 )
-                LinearProgressIndicator(
-                    progress = statValue.value,
-                    color = typePrimaryColor,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(100))
-                        .weight(2.5f)
-                )
+                TypesMaterialTheme(
+                    types = pokemon.typeOfPokemon
+                ) {
+                    LinearProgressIndicator(
+                        progress = statValue.value,
+                        trackColor = trackColor,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(100))
+                            .weight(2.5f)
+                    )
+                }
             }
         }
     }

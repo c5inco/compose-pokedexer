@@ -18,8 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import des.c5inco.pokedexer.model.Type
-import des.c5inco.pokedexer.model.mapTypesToSurfaceColor
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.MenuItem.Abilities
@@ -29,6 +27,7 @@ import des.c5inco.pokedexer.ui.home.MenuItem.Moves
 import des.c5inco.pokedexer.ui.home.MenuItem.Pokedex
 import des.c5inco.pokedexer.ui.home.MenuItem.TypeCharts
 import des.c5inco.pokedexer.ui.theme.M3Theme
+import des.c5inco.pokedexer.ui.theme.TypesMaterialTheme
 
 @Composable
 fun Menu(
@@ -47,11 +46,12 @@ fun Menu(
         content = {
             items(menuItems.size) { index ->
                 val item = menuItems[index]
-                MenuItemButton(
-                    text = item.label,
-                    type = item.typeColor,
-                ) {
-                    onMenuItemSelected(item)
+                TypesMaterialTheme(types = listOf(item.typeColor.name)) {
+                    MenuItemButton(
+                        text = item.label
+                    ) {
+                        onMenuItemSelected(item)
+                    }
                 }
             }
         }
@@ -62,12 +62,10 @@ fun Menu(
 fun MenuItemButton(
     modifier: Modifier = Modifier,
     text: String,
-    type: Type,
     onClick: () -> Unit = {}
 ) {
     Surface(
         modifier = modifier,
-        color = mapTypesToSurfaceColor(types = listOf(type.name)),
         shape = RoundedCornerShape(16.dp)
     ) {
         Box(

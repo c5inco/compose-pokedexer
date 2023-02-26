@@ -1,12 +1,13 @@
 package des.c5inco.pokedexer.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
+import des.c5inco.pokedexer.model.Type
 
 private val M3LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -72,12 +73,6 @@ private val M3DarkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
-object TypesTheme {
-    val colorScheme: TypesColorScheme
-        @Composable
-        get() = LocalTypesColors.current
-}
-
 @Composable
 fun M3Theme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
@@ -89,26 +84,116 @@ fun M3Theme(
         M3DarkColors
     }
 
-    val extendedTypesColors = if (!useDarkTheme) {
-        lightTypesColors
+    MaterialTheme(
+        colorScheme = colors,
+        typography = M3Typography,
+        shapes = M3Shapes,
+        content = content
+    )
+}
+
+@Composable
+fun TypesMaterialTheme(
+    types: List<String>,
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
+) {
+    val extendedTypesColors = mapTypeToColorScheme(types = types, isDark = useDarkTheme)
+
+    MaterialTheme(
+        colorScheme = extendedTypesColors,
+        typography = M3Typography,
+        shapes = M3Shapes,
+        content = content
+    )
+}
+
+@Composable
+private fun mapTypeToColorScheme(
+    types: List<String>,
+    isDark: Boolean
+): ColorScheme {
+    val firstType = types[0]
+
+    if (!isDark) {
+        return when (Type.valueOf(firstType)) {
+            Type.Grass -> M3LightColors.copy(
+                primary = GrassTypeColors.primaryLight,
+                surface = GrassTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = GrassTypeColors.surfaceVariantLight
+            )
+            Type.Fire -> M3LightColors.copy(
+                primary = FireTypeColors.primaryLight,
+                surface = FireTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = FireTypeColors.surfaceVariantLight
+            )
+            Type.Water -> M3LightColors.copy(
+                primary = WaterTypeColors.primaryLight,
+                surface = WaterTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = WaterTypeColors.surfaceVariantLight
+            )
+            Type.Dragon -> M3LightColors.copy(
+                primary = DragonTypeColors.primaryLight,
+                surface = DragonTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = DragonTypeColors.surfaceVariantLight
+            )
+            Type.Electric -> M3LightColors.copy(
+                primary = ElectricTypeColors.primaryLight,
+                surface = ElectricTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = ElectricTypeColors.surfaceVariantLight
+            )
+            Type.Psychic -> M3LightColors.copy(
+                primary = PsychicTypeColors.primaryLight,
+                surface = PsychicTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = PsychicTypeColors.surfaceVariantLight
+            )
+            else -> M3LightColors
+        }
     } else {
-        darkTypesColors
-    }
-
-    val rememberedTypesColorScheme = remember {
-        // Explicitly creating a new object here so we don't mutate the initial [colorScheme]
-        // provided, and overwrite the values set in it.
-        extendedTypesColors.copy()
-    }.apply {
-        updateTypesColorSchemeFrom(extendedTypesColors)
-    }
-
-    CompositionLocalProvider(LocalTypesColors provides rememberedTypesColorScheme){
-        MaterialTheme(
-            colorScheme = colors,
-            typography = M3Typography,
-            shapes = M3Shapes,
-            content = content
-        )
+        return when (Type.valueOf(firstType)) {
+            Type.Grass -> M3DarkColors.copy(
+                primary = GrassTypeColors.primaryDark,
+                surface = GrassTypeColors.surfaceDark,
+                onSurface = GrassTypeColors.onSurfaceDark,
+                surfaceVariant = GrassTypeColors.surfaceVariantDark
+            )
+            Type.Fire -> M3DarkColors.copy(
+                primary = FireTypeColors.primaryDark,
+                surface = FireTypeColors.surfaceDark,
+                onSurface = FireTypeColors.onSurfaceDark,
+                surfaceVariant = FireTypeColors.surfaceVariantDark
+            )
+            Type.Water -> M3DarkColors.copy(
+                primary = WaterTypeColors.primaryDark,
+                surface = WaterTypeColors.surfaceDark,
+                onSurface = WaterTypeColors.onSurfaceDark,
+                surfaceVariant = WaterTypeColors.surfaceVariantDark
+            )
+            Type.Dragon -> M3DarkColors.copy(
+                primary = DragonTypeColors.primaryDark,
+                surface = DragonTypeColors.surfaceDark,
+                onSurface = DragonTypeColors.onSurfaceDark,
+                surfaceVariant = DragonTypeColors.surfaceVariantDark
+            )
+            Type.Electric -> M3DarkColors.copy(
+                primary = ElectricTypeColors.primaryDark,
+                surface = ElectricTypeColors.surfaceDark,
+                onSurface = ElectricTypeColors.onSurfaceDark,
+                surfaceVariant = ElectricTypeColors.surfaceVariantDark
+            )
+            Type.Psychic -> M3DarkColors.copy(
+                primary = PsychicTypeColors.primaryDark,
+                surface = PsychicTypeColors.surfaceDark,
+                onSurface = PsychicTypeColors.onSurfaceDark,
+                surfaceVariant = PsychicTypeColors.surfaceVariantDark
+            )
+            else -> M3DarkColors
+        }
     }
 }
