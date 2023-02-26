@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -23,7 +23,7 @@ import des.c5inco.pokedexer.model.categoryIcon
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonColors
 
 @Composable
@@ -61,7 +61,7 @@ fun MovesListScreen(
             ) {
                 Text(
                     text = "Moves",
-                    style = MaterialTheme.typography.h4,
+                    style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(
                         top = 16.dp, bottom = 24.dp
                     )
@@ -87,13 +87,13 @@ private fun MovesList(
         contentPadding = WindowInsets.navigationBars.asPaddingValues()
     ) {
         stickyHeader {
-            val textStyle = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold)
+            val textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
 
             CompositionLocalProvider(LocalTextStyle provides textStyle) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colors.surface)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(vertical = 12.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -190,7 +190,7 @@ private fun CategoryIcon(
 @Preview
 @Composable
 fun MovesListScreenPreview() {
-    PokedexerTheme {
+    AppTheme {
         Surface {
             MovesListScreen(
                 loading = false,
@@ -203,7 +203,7 @@ fun MovesListScreenPreview() {
 @Preview
 @Composable
 fun MovesListPreview() {
-    PokedexerTheme {
+    AppTheme {
         Surface {
             MovesList()
         }
