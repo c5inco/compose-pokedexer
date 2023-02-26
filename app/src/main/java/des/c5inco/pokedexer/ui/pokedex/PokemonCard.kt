@@ -36,8 +36,8 @@ import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
 import des.c5inco.pokedexer.ui.common.artworkUrl
 import des.c5inco.pokedexer.ui.common.formatId
-import des.c5inco.pokedexer.ui.theme.M3Theme
-import des.c5inco.pokedexer.ui.theme.TypesMaterialTheme
+import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import androidx.compose.material3.Surface as M3Surface
 import androidx.compose.material3.Text as M3Text
 
@@ -47,7 +47,7 @@ fun PokeDexCard(
     pokemon: Pokemon,
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
-    TypesMaterialTheme(types = pokemon.typeOfPokemon) {
+    PokemonTypesTheme(types = pokemon.typeOfPokemon) {
         M3Surface(
             modifier = modifier,
             shape = RoundedCornerShape(16.dp)
@@ -128,7 +128,7 @@ private fun PokemonName(name: String?) {
 @Preview
 @Composable
 private fun PokeDexCardPreview() {
-    M3Theme {
+    AppTheme {
         M3Surface {
             Column(
                 Modifier.width(200.dp),

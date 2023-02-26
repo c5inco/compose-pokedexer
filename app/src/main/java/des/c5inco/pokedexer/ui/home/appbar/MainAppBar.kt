@@ -22,7 +22,7 @@ import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
 import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
-import des.c5inco.pokedexer.ui.theme.M3Theme
+import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
 fun MainAppBar(onMenuItemSelected: (MenuItem) -> Unit) {
@@ -62,7 +62,7 @@ fun MainAppBar(onMenuItemSelected: (MenuItem) -> Unit) {
 @Preview
 @Composable
 fun PreviewMainAppBar() {
-    M3Theme {
+    AppTheme {
         Surface(
             Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background

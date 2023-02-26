@@ -33,7 +33,7 @@ import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsEvolutions
-import des.c5inco.pokedexer.ui.theme.M3Theme
+import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
 fun EvolutionSection(
@@ -87,7 +87,7 @@ fun EvolutionSection(
 @Preview
 @Composable
 fun EvolutionsSectionPreview() {
-    M3Theme {
+    AppTheme {
         Surface {
             Column {
                 EvolutionSection(
@@ -143,7 +143,7 @@ private fun EvolutionCard(
 @Preview
 @Composable
 fun EvolutionCardPreview() {
-    M3Theme {
+    AppTheme {
         Surface {
             Column {
                 EvolutionCard(pokemon = SamplePokemonData[1])

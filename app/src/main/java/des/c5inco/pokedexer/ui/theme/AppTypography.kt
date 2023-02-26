@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.sp
 
 private val defaultTypography = Typography()
 
-val M3Typography = Typography(
+val AppTypography = Typography(
     displaySmall = TextStyle(
         fontWeight = FontWeight.Black,
         fontSize = 36.sp,

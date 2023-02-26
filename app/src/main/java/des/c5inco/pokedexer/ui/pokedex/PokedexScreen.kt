@@ -38,7 +38,7 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
-import des.c5inco.pokedexer.ui.theme.M3Theme
+import des.c5inco.pokedexer.ui.theme.AppTheme
 import androidx.compose.material3.CircularProgressIndicator as M3CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme as M3Theme
 import androidx.compose.material3.Surface as M3Surface
@@ -224,7 +224,7 @@ fun PokemonList(
 @Preview
 @Composable
 private fun PokedexScreenPreview() {
-    M3Theme {
+    AppTheme {
         PokedexScreen(
             loading = false,
             pokemon = SamplePokemonData

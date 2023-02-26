@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
-import des.c5inco.pokedexer.ui.theme.M3Theme
-import des.c5inco.pokedexer.ui.theme.TypesMaterialTheme
+import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlinx.coroutines.delay
 
 data class Stat(
@@ -86,7 +86,7 @@ fun BaseStatsSection(
                         .padding(end = 16.dp)
                         .weight(0.6f)
                 )
-                TypesMaterialTheme(
+                PokemonTypesTheme(
                     types = pokemon.typeOfPokemon
                 ) {
                     LinearProgressIndicator(
@@ -106,7 +106,7 @@ fun BaseStatsSection(
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun BaseStatsSectionPreview() {
-    M3Theme {
+    AppTheme {
         Surface(Modifier.fillMaxWidth()) {
             BaseStatsSection(pokemon = SamplePokemonData[0])
         }

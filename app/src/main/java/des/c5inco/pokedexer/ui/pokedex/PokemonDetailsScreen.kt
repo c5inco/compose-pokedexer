@@ -80,8 +80,8 @@ import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
 import des.c5inco.pokedexer.ui.pokedex.section.MovesSection
-import des.c5inco.pokedexer.ui.theme.M3Theme
-import des.c5inco.pokedexer.ui.theme.TypesMaterialTheme
+import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlin.math.roundToInt
 
 @Composable
@@ -211,7 +211,7 @@ internal fun PokemonDetailsScreen(
         }
     }
 
-    TypesMaterialTheme(
+    PokemonTypesTheme(
         types = pokemon.typeOfPokemon
     ) {
         val pokemonTypeColor by animateColorAsState(
@@ -286,7 +286,7 @@ internal fun PokemonDetailsScreen(
                         HeaderRight(pokemon = targetPokemon)
                     }
 
-                    M3Theme {
+                    AppTheme {
                         Surface(
                             modifier = Modifier
                                 .align(Alignment.TopCenter)
@@ -383,7 +383,7 @@ private fun CardContent(
         val sectionTitles = Sections.values().map { it.title }
         var section by remember { mutableStateOf(Sections.BaseStats) }
 
-        TypesMaterialTheme(types = pokemon.typeOfPokemon) {
+        PokemonTypesTheme(types = pokemon.typeOfPokemon) {
             TabRow(
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.onSurface,
@@ -522,7 +522,7 @@ private fun RotatingPokeBall(
 private fun PokemonDetailsPreview() {
     var activePokemon by remember { mutableStateOf(SamplePokemonData.first { it.name == "Pikachu" }) }
 
-    M3Theme {
+    AppTheme {
         Surface(Modifier.fillMaxSize()) {
             PokemonDetailsScreen(
                 loading = false,

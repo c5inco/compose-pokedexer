@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
-import des.c5inco.pokedexer.ui.theme.M3Theme
+import des.c5inco.pokedexer.ui.theme.AppTheme
 
 sealed class MenuItem(
     val label: String,
@@ -84,7 +84,7 @@ fun HomeScreen(
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    M3Theme {
+    AppTheme {
         HomeScreen()
     }
 }

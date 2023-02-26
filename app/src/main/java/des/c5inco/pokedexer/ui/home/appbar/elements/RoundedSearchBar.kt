@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import des.c5inco.pokedexer.ui.theme.M3Theme
+import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
 fun RoundedSearchBar() {
@@ -55,7 +55,7 @@ fun RoundedSearchBar() {
 @Preview
 @Composable
 fun RoundedSearchBarPreview() {
-    M3Theme {
+    AppTheme {
         RoundedSearchBar()
     }
 }

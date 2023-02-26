@@ -74,7 +74,7 @@ private val M3DarkColors = darkColorScheme(
 )
 
 @Composable
-fun M3Theme(
+fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
@@ -86,14 +86,14 @@ fun M3Theme(
 
     MaterialTheme(
         colorScheme = colors,
-        typography = M3Typography,
-        shapes = M3Shapes,
+        typography = AppTypography,
+        shapes = AppShapes,
         content = content
     )
 }
 
 @Composable
-fun TypesMaterialTheme(
+fun PokemonTypesTheme(
     types: List<String>,
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
@@ -102,8 +102,8 @@ fun TypesMaterialTheme(
 
     MaterialTheme(
         colorScheme = extendedTypesColors,
-        typography = M3Typography,
-        shapes = M3Shapes,
+        typography = AppTypography,
+        shapes = AppShapes,
         content = content
     )
 }

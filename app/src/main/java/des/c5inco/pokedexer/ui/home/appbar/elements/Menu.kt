@@ -26,8 +26,8 @@ import des.c5inco.pokedexer.ui.home.MenuItem.Locations
 import des.c5inco.pokedexer.ui.home.MenuItem.Moves
 import des.c5inco.pokedexer.ui.home.MenuItem.Pokedex
 import des.c5inco.pokedexer.ui.home.MenuItem.TypeCharts
-import des.c5inco.pokedexer.ui.theme.M3Theme
-import des.c5inco.pokedexer.ui.theme.TypesMaterialTheme
+import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
 fun Menu(
@@ -46,7 +46,7 @@ fun Menu(
         content = {
             items(menuItems.size) { index ->
                 val item = menuItems[index]
-                TypesMaterialTheme(types = listOf(item.typeColor.name)) {
+                PokemonTypesTheme(types = listOf(item.typeColor.name)) {
                     MenuItemButton(
                         text = item.label
                     ) {
@@ -102,7 +102,7 @@ fun MenuItemButton(
 @Preview
 @Composable
 fun MenuPreview() {
-    M3Theme {
+    AppTheme {
         Surface {
             Menu()
         }
