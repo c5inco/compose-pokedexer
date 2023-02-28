@@ -386,7 +386,6 @@ private fun CardContent(
         PokemonTypesTheme(types = pokemon.typeOfPokemon) {
             TabRow(
                 containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.onSurface,
                 selectedTabIndex = section.ordinal,
                 indicator = { tabPositions ->
                     TabRowDefaults.Indicator(

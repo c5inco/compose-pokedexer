@@ -89,15 +89,15 @@ class SurfaceTones {
 class PokemonColors {
     companion object {
         val Bug = Color(0xffaabb22)
-        val Dark = Color(0xff775544)
-        val Dragon = Color(0xff303943)
+        val Dark = Color(0xff303943)
+        val Dragon = Color(0xff7766EE)
         val Electric = Color(0xffFFCE4B)
         val Fire = Color(0xffff4422)
         val Fighting = Color(0xffbb5544)
         val Flying = Color(0xff8899ff)
         val Ghost = Color(0xff9F5BBA)
         val Grass = Color(0xff4FC1A6)
-        val Ground = Color(0xffCA8179)
+        val Ground = Color(0xff775544)
         val Ice = Color(0xff66ccff)
         val Normal = Color(0xffaaaa99)
         val Poison = Color(0xffaa5599)
