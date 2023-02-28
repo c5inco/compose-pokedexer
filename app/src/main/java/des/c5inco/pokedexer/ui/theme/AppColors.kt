@@ -89,11 +89,11 @@ class SurfaceTones {
 class PokemonColors {
     companion object {
         val Bug = Color(0xffaabb22)
-        val Dark = Color(0xff303943)
+        val Dark = Color(0xff775544)
         val Dragon = Color(0xff7766EE)
         val Electric = Color(0xffFFCE4B)
-        val Fire = Color(0xffff4422)
         val Fighting = Color(0xffbb5544)
+        val Fire = Color(0xffff4422)
         val Flying = Color(0xff8899ff)
         val Ghost = Color(0xff9F5BBA)
         val Grass = Color(0xff4FC1A6)
@@ -102,7 +102,7 @@ class PokemonColors {
         val Normal = Color(0xffaaaa99)
         val Poison = Color(0xffaa5599)
         val Psychic = Color(0xffff5599)
-        val Rock = Color(0xffCA8179)
+        val Rock = Color(0xffBBAA66)
         val Water = Color(0xff429BED)
     }
 }
@@ -111,36 +111,40 @@ data class TypeColors(
     val primaryDark: Color,
     val primaryLight: Color,
     val surfaceDark: Color,
+    val surfaceLight: Color = Color.Unspecified,
     val onSurfaceDark: Color,
+    val onSurfaceLight: Color = Color.Unspecified,
     val surfaceVariantDark: Color,
     val surfaceVariantLight: Color
 )
 
-val GrassTypeColors = TypeColors(
-    primaryDark = Color(0xff00876F),
-    primaryLight = PokemonColors.Grass,
-    surfaceDark = Color(0xff005141),
-    onSurfaceDark = Color(0xffE6FFF5),
+val BugTypeColors = TypeColors(
+    primaryDark = Color(0xffBFD039),
+    primaryLight = Color(0xff5A6400),
+    surfaceDark = Color(0xff434B00),
+    surfaceLight = PokemonColors.Bug,
+    onSurfaceDark = Color(0xffBFD039),
+    onSurfaceLight = Color(0xff5A6400),
     surfaceVariantDark = Color(0x66002019),
     surfaceVariantLight = Color(0x26002019),
 )
 
-val FireTypeColors = TypeColors(
-    primaryDark = Color(0xffE3300E),
-    primaryLight = PokemonColors.Fire,
-    surfaceDark = Color(0xff8E1400),
-    onSurfaceDark = Color(0xffFFDAD3),
-    surfaceVariantDark = Color(0x663E0400),
-    surfaceVariantLight = Color(0x268E1400),
+val DarkTypeColors = TypeColors(
+    primaryDark = Color(0xffFFB691),
+    primaryLight = PokemonColors.Dark,
+    surfaceDark = Color(0xff793100),
+    onSurfaceDark = Color(0xffFFDBCB),
+    surfaceVariantDark = Color(0x66341100),
+    surfaceVariantLight = Color(0x26341100),
 )
 
-val WaterTypeColors = TypeColors(
-    primaryDark = Color(0xff037BCB),
-    primaryLight = PokemonColors.Water,
-    surfaceDark = Color(0xff00497C),
-    onSurfaceDark = Color(0xffD1E4FF),
-    surfaceVariantDark = Color(0x66001D36),
-    surfaceVariantLight = Color(0x26001D36),
+val DragonTypeColors = TypeColors(
+    primaryDark = Color(0xffC7BFFF),
+    primaryLight = PokemonColors.Dragon,
+    surfaceDark = Color(0xff422AB7),
+    onSurfaceDark = Color(0xffE4DFFF),
+    surfaceVariantDark = Color(0x66180065),
+    surfaceVariantLight = Color(0x26180065),
 )
 
 val ElectricTypeColors = TypeColors(
@@ -152,6 +156,90 @@ val ElectricTypeColors = TypeColors(
     surfaceVariantLight = Color(0x26251A00),
 )
 
+val FightingTypeColors = TypeColors(
+    primaryDark = Color(0xffFFB4A7),
+    primaryLight = PokemonColors.Fighting,
+    surfaceDark = Color(0xff80291C),
+    onSurfaceDark = Color(0xffFFDAD4),
+    surfaceVariantDark = Color(0x66400200),
+    surfaceVariantLight = Color(0x26400200),
+)
+
+val FireTypeColors = TypeColors(
+    primaryDark = Color(0xffE3300E),
+    primaryLight = PokemonColors.Fire,
+    surfaceDark = Color(0xff8E1400),
+    onSurfaceDark = Color(0xffFFDAD3),
+    surfaceVariantDark = Color(0x663E0400),
+    surfaceVariantLight = Color(0x263E0400),
+)
+
+val FlyingTypeColors = TypeColors(
+    primaryDark = Color(0xffBAC3FF),
+    primaryLight = PokemonColors.Flying,
+    surfaceDark = Color(0xff2A3C9E),
+    onSurfaceDark = Color(0xffDEE0FF),
+    surfaceVariantDark = Color(0x6600105C),
+    surfaceVariantLight = Color(0x2600105C),
+)
+
+val GhostTypeColors = TypeColors(
+    primaryDark = Color(0xffECB2FF),
+    primaryLight = PokemonColors.Ghost,
+    surfaceDark = Color(0xff6A2885),
+    onSurfaceDark = Color(0xffF8D8FF),
+    surfaceVariantDark = Color(0x66320046),
+    surfaceVariantLight = Color(0x26320046),
+)
+
+val GrassTypeColors = TypeColors(
+    primaryDark = Color(0xff00876F),
+    primaryLight = PokemonColors.Grass,
+    surfaceDark = Color(0xff005141),
+    onSurfaceDark = Color(0xffE6FFF5),
+    surfaceVariantDark = Color(0x66002019),
+    surfaceVariantLight = Color(0x26002019),
+)
+
+val GroundTypeColors = TypeColors(
+    primaryDark = Color(0xffEAC248),
+    primaryLight = PokemonColors.Ground,
+    surfaceDark = Color(0xff574500),
+    onSurfaceDark = Color(0xffFFE089),
+    surfaceVariantDark = Color(0x66241A00),
+    surfaceVariantLight = Color(0x26241A00),
+)
+
+val IceTypeColors = TypeColors(
+    primaryDark = Color(0xff79D1FF),
+    primaryLight = PokemonColors.Ice,
+    surfaceDark = Color(0xff004C68),
+    onSurfaceDark = Color(0xffC3E8FF),
+    onSurfaceLight = Color(0xff003549),
+    surfaceVariantDark = Color(0x66001E2C),
+    surfaceVariantLight = Color(0x26001E2C),
+)
+
+val NormalTypeColors = TypeColors(
+    primaryDark = Color(0xffC7C9A7),
+    primaryLight = Color(0xff2F321A),
+    surfaceDark = Color(0xff47483B),
+    surfaceLight = PokemonColors.Normal,
+    onSurfaceDark = Color(0xffC8C7B7),
+    onSurfaceLight = Color(0xff5E6145),
+    surfaceVariantDark = Color(0x661A1E00),
+    surfaceVariantLight = Color(0x261A1E00),
+)
+
+val PoisonTypeColors = TypeColors(
+    primaryDark = Color(0xffFFACE9),
+    primaryLight = PokemonColors.Poison,
+    surfaceDark = Color(0xff752769),
+    onSurfaceDark = Color(0xffFFD7F1),
+    surfaceVariantDark = Color(0x66390033),
+    surfaceVariantLight = Color(0x26390033),
+)
+
 val PsychicTypeColors = TypeColors(
     primaryDark = Color(0xffF95095),
     primaryLight = PokemonColors.Psychic,
@@ -161,11 +249,21 @@ val PsychicTypeColors = TypeColors(
     surfaceVariantLight = Color(0x263E001D),
 )
 
-val DragonTypeColors = TypeColors(
-    primaryDark = Color(0xffC7BFFF),
-    primaryLight = PokemonColors.Dragon,
-    surfaceDark = Color(0xff422AB7),
-    onSurfaceDark = Color(0xffE4DFFF),
-    surfaceVariantDark = Color(0x66180065),
-    surfaceVariantLight = Color(0x26180065),
+val RockTypeColors = TypeColors(
+    primaryDark = Color(0xffE1C64B),
+    primaryLight = PokemonColors.Rock,
+    surfaceDark = Color(0xff534600),
+    onSurfaceDark = Color(0xffFFE264),
+    onSurfaceLight = Color(0xff3A3000),
+    surfaceVariantDark = Color(0x66221B00),
+    surfaceVariantLight = Color(0x26221B00),
+)
+
+val WaterTypeColors = TypeColors(
+    primaryDark = Color(0xff037BCB),
+    primaryLight = PokemonColors.Water,
+    surfaceDark = Color(0xff00497C),
+    onSurfaceDark = Color(0xffD1E4FF),
+    surfaceVariantDark = Color(0x66001D36),
+    surfaceVariantLight = Color(0x26001D36),
 )

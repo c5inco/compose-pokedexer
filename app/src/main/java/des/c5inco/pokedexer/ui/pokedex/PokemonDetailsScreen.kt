@@ -460,7 +460,7 @@ private fun HeaderLeft(
         Text(
             text = pokemon.name,
             style = MaterialTheme.typography.displaySmall,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(8.dp))
         pokemon.typeOfPokemon.let {

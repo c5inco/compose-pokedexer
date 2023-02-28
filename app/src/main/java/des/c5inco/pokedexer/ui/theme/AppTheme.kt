@@ -117,23 +117,17 @@ private fun mapTypeToColorScheme(
 
     if (!isDark) {
         return when (Type.valueOf(firstType)) {
-            Type.Grass -> M3LightColors.copy(
-                primary = GrassTypeColors.primaryLight,
-                surface = GrassTypeColors.primaryLight,
-                onSurface = Color.White,
-                surfaceVariant = GrassTypeColors.surfaceVariantLight
+            Type.Bug -> M3LightColors.copy(
+                primary = BugTypeColors.primaryLight,
+                surface = BugTypeColors.surfaceLight,
+                onSurface = BugTypeColors.onSurfaceLight,
+                surfaceVariant = BugTypeColors.surfaceVariantLight
             )
-            Type.Fire -> M3LightColors.copy(
-                primary = FireTypeColors.primaryLight,
-                surface = FireTypeColors.primaryLight,
+            Type.Dark -> M3LightColors.copy(
+                primary = DarkTypeColors.primaryLight,
+                surface = DarkTypeColors.primaryLight,
                 onSurface = Color.White,
-                surfaceVariant = FireTypeColors.surfaceVariantLight
-            )
-            Type.Water -> M3LightColors.copy(
-                primary = WaterTypeColors.primaryLight,
-                surface = WaterTypeColors.primaryLight,
-                onSurface = Color.White,
-                surfaceVariant = WaterTypeColors.surfaceVariantLight
+                surfaceVariant = DarkTypeColors.surfaceVariantLight
             )
             Type.Dragon -> M3LightColors.copy(
                 primary = DragonTypeColors.primaryLight,
@@ -147,33 +141,93 @@ private fun mapTypeToColorScheme(
                 onSurface = Color.White,
                 surfaceVariant = ElectricTypeColors.surfaceVariantLight
             )
+            Type.Fighting -> M3LightColors.copy(
+                primary = FightingTypeColors.primaryLight,
+                surface = FightingTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = FightingTypeColors.surfaceVariantLight
+            )
+            Type.Fire -> M3LightColors.copy(
+                primary = FireTypeColors.primaryLight,
+                surface = FireTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = FireTypeColors.surfaceVariantLight
+            )
+            Type.Flying -> M3LightColors.copy(
+                primary = FlyingTypeColors.primaryLight,
+                surface = FireTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = FireTypeColors.surfaceVariantLight
+            )
+            Type.Ghost -> M3LightColors.copy(
+                primary = GhostTypeColors.primaryLight,
+                surface = GhostTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = GhostTypeColors.surfaceVariantLight
+            )
+            Type.Grass -> M3LightColors.copy(
+                primary = GrassTypeColors.primaryLight,
+                surface = GrassTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = GrassTypeColors.surfaceVariantLight
+            )
+            Type.Ground -> M3LightColors.copy(
+                primary = GroundTypeColors.primaryLight,
+                surface = GroundTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = GroundTypeColors.surfaceVariantLight
+            )
+            Type.Ice -> M3LightColors.copy(
+                primary = IceTypeColors.primaryLight,
+                surface = IceTypeColors.primaryLight,
+                onSurface = IceTypeColors.onSurfaceLight,
+                surfaceVariant = IceTypeColors.surfaceVariantLight
+            )
+            Type.Normal -> M3LightColors.copy(
+                primary = NormalTypeColors.primaryLight,
+                surface = NormalTypeColors.surfaceLight,
+                onSurface = NormalTypeColors.onSurfaceLight,
+                surfaceVariant = NormalTypeColors.surfaceVariantLight
+            )
+            Type.Poison -> M3LightColors.copy(
+                primary = PoisonTypeColors.primaryLight,
+                surface = PoisonTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = PoisonTypeColors.surfaceVariantLight
+            )
             Type.Psychic -> M3LightColors.copy(
                 primary = PsychicTypeColors.primaryLight,
                 surface = PsychicTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = PsychicTypeColors.surfaceVariantLight
             )
+            Type.Rock -> M3LightColors.copy(
+                primary = RockTypeColors.primaryLight,
+                surface = RockTypeColors.primaryLight,
+                onSurface = RockTypeColors.onSurfaceLight,
+                surfaceVariant = RockTypeColors.surfaceVariantLight
+            )
+            Type.Water -> M3LightColors.copy(
+                primary = WaterTypeColors.primaryLight,
+                surface = WaterTypeColors.primaryLight,
+                onSurface = Color.White,
+                surfaceVariant = WaterTypeColors.surfaceVariantLight
+            )
             else -> M3LightColors
         }
     } else {
         return when (Type.valueOf(firstType)) {
-            Type.Grass -> M3DarkColors.copy(
-                primary = GrassTypeColors.primaryDark,
-                surface = GrassTypeColors.surfaceDark,
-                onSurface = GrassTypeColors.onSurfaceDark,
-                surfaceVariant = GrassTypeColors.surfaceVariantDark
+            Type.Bug -> M3DarkColors.copy(
+                primary = BugTypeColors.primaryDark,
+                surface = BugTypeColors.surfaceDark,
+                onSurface = BugTypeColors.onSurfaceDark,
+                surfaceVariant = BugTypeColors.surfaceVariantDark
             )
-            Type.Fire -> M3DarkColors.copy(
-                primary = FireTypeColors.primaryDark,
-                surface = FireTypeColors.surfaceDark,
-                onSurface = FireTypeColors.onSurfaceDark,
-                surfaceVariant = FireTypeColors.surfaceVariantDark
-            )
-            Type.Water -> M3DarkColors.copy(
-                primary = WaterTypeColors.primaryDark,
-                surface = WaterTypeColors.surfaceDark,
-                onSurface = WaterTypeColors.onSurfaceDark,
-                surfaceVariant = WaterTypeColors.surfaceVariantDark
+            Type.Dark -> M3DarkColors.copy(
+                primary = DarkTypeColors.primaryDark,
+                surface = DarkTypeColors.surfaceDark,
+                onSurface = DarkTypeColors.onSurfaceDark,
+                surfaceVariant = DarkTypeColors.surfaceVariantDark
             )
             Type.Dragon -> M3DarkColors.copy(
                 primary = DragonTypeColors.primaryDark,
@@ -187,11 +241,77 @@ private fun mapTypeToColorScheme(
                 onSurface = ElectricTypeColors.onSurfaceDark,
                 surfaceVariant = ElectricTypeColors.surfaceVariantDark
             )
+            Type.Fighting -> M3DarkColors.copy(
+                primary = FightingTypeColors.primaryDark,
+                surface = FightingTypeColors.surfaceDark,
+                onSurface = FightingTypeColors.onSurfaceDark,
+                surfaceVariant = FightingTypeColors.surfaceVariantDark
+            )
+            Type.Fire -> M3DarkColors.copy(
+                primary = FireTypeColors.primaryDark,
+                surface = FireTypeColors.surfaceDark,
+                onSurface = FireTypeColors.onSurfaceDark,
+                surfaceVariant = FireTypeColors.surfaceVariantDark
+            )
+            Type.Flying -> M3DarkColors.copy(
+                primary = FlyingTypeColors.primaryDark,
+                surface = FlyingTypeColors.surfaceDark,
+                onSurface = FlyingTypeColors.onSurfaceDark,
+                surfaceVariant = FlyingTypeColors.surfaceVariantDark
+            )
+            Type.Ghost -> M3DarkColors.copy(
+                primary = GhostTypeColors.primaryDark,
+                surface = GhostTypeColors.surfaceDark,
+                onSurface = GhostTypeColors.onSurfaceDark,
+                surfaceVariant = GhostTypeColors.surfaceVariantDark
+            )
+            Type.Grass -> M3DarkColors.copy(
+                primary = GrassTypeColors.primaryDark,
+                surface = GrassTypeColors.surfaceDark,
+                onSurface = GrassTypeColors.onSurfaceDark,
+                surfaceVariant = GrassTypeColors.surfaceVariantDark
+            )
+            Type.Ground -> M3DarkColors.copy(
+                primary = GroundTypeColors.primaryDark,
+                surface = GroundTypeColors.surfaceDark,
+                onSurface = GroundTypeColors.onSurfaceDark,
+                surfaceVariant = GroundTypeColors.surfaceVariantDark
+            )
+            Type.Ice -> M3DarkColors.copy(
+                primary = IceTypeColors.primaryDark,
+                surface = IceTypeColors.surfaceDark,
+                onSurface = IceTypeColors.onSurfaceDark,
+                surfaceVariant = IceTypeColors.surfaceVariantDark
+            )
+            Type.Normal -> M3DarkColors.copy(
+                primary = NormalTypeColors.primaryDark,
+                surface = NormalTypeColors.surfaceDark,
+                onSurface = NormalTypeColors.onSurfaceDark,
+                surfaceVariant = NormalTypeColors.surfaceVariantDark
+            )
+            Type.Poison -> M3DarkColors.copy(
+                primary = PoisonTypeColors.primaryDark,
+                surface = PoisonTypeColors.surfaceDark,
+                onSurface = PoisonTypeColors.onSurfaceDark,
+                surfaceVariant = PoisonTypeColors.surfaceVariantDark
+            )
             Type.Psychic -> M3DarkColors.copy(
                 primary = PsychicTypeColors.primaryDark,
                 surface = PsychicTypeColors.surfaceDark,
                 onSurface = PsychicTypeColors.onSurfaceDark,
                 surfaceVariant = PsychicTypeColors.surfaceVariantDark
+            )
+            Type.Rock -> M3DarkColors.copy(
+                primary = RockTypeColors.primaryDark,
+                surface = RockTypeColors.surfaceDark,
+                onSurface = RockTypeColors.onSurfaceDark,
+                surfaceVariant = RockTypeColors.surfaceVariantDark
+            )
+            Type.Water -> M3DarkColors.copy(
+                primary = WaterTypeColors.primaryDark,
+                surface = WaterTypeColors.surfaceDark,
+                onSurface = WaterTypeColors.onSurfaceDark,
+                surfaceVariant = WaterTypeColors.surfaceVariantDark
             )
             else -> M3DarkColors
         }
