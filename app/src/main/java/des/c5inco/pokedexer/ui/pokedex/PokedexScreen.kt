@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -29,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
@@ -132,10 +132,13 @@ fun PokedexScreen(
                 pokemon = pokemon,
                 onPokemonSelected = onPokemonSelected
             )
+
+            val navBarCollapsedColor = M3Theme.colorScheme.surfaceColorAtElevation(3.dp)
+
             NavigationTopAppBar(
                 modifier = Modifier
                     .drawBehind {
-                        drawRect(color = Color.LightGray, alpha = backgroundRevealProgress)
+                        drawRect(color = navBarCollapsedColor, alpha = backgroundRevealProgress)
                     }
                     .statusBarsPadding()
                     .padding(top = 16.dp)
