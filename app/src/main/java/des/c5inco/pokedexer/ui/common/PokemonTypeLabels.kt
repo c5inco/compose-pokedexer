@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import des.c5inco.pokedexer.model.mapTypeToColor
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 data class TypeLabelMetrics(
     val cornerRadius: Dp,
@@ -48,22 +48,24 @@ fun PokemonTypeLabel(
     colored: Boolean = false,
     metrics: TypeLabelMetrics
 ) {
-    Surface(
-        modifier = modifier,
-        color = if (colored) mapTypeToColor(text) else Color(0x38FFFFFF),
-        shape = RoundedCornerShape(metrics.cornerRadius)
-    ) {
-        Text(
-            text = text,
-            fontSize = metrics.fontSize,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(
-                start = metrics.horizontalPadding,
-                end = metrics.horizontalPadding,
-                top = metrics.verticalPadding,
-                bottom = metrics.verticalPadding
-            ),
-        )
+    PokemonTypesTheme(types = listOf(text)) {
+        Surface(
+            modifier = modifier,
+            color = if (colored) MaterialTheme.colorScheme.surface else Color(0x38FFFFFF),
+            shape = RoundedCornerShape(metrics.cornerRadius)
+        ) {
+            Text(
+                text = text,
+                fontSize = metrics.fontSize,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(
+                    start = metrics.horizontalPadding,
+                    end = metrics.horizontalPadding,
+                    top = metrics.verticalPadding,
+                    bottom = metrics.verticalPadding
+                ),
+            )
+        }
     }
 }
