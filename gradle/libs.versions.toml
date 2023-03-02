@@ -12,6 +12,7 @@ junit = "4.13.2"
 junitExt = "1.1.5"
 kotlin = "1.7.20"
 kotlinCompilerExtension = "1.3.2"
+kotlinKsp = "1.7.20-1.0.8"
 landscapist = "2.1.0"
 lifecycleRuntimeKtx = "2.5.1"
 navigationCompose = "2.5.3"
@@ -62,5 +63,6 @@ androidApplication = { id = "com.android.application", version.ref = "androidGra
 androidLibrary = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 daggerHiltAndroidGradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKsp" }
 apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
