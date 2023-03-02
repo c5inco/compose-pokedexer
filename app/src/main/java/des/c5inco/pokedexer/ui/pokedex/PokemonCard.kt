@@ -73,7 +73,7 @@ private fun PokeDexCardContent(
         ) {
             PokemonName(pokemon.name)
             Spacer(Modifier.height(8.dp))
-            PokemonTypeLabels(pokemon.typeOfPokemon, TypeLabelMetrics.SMALL)
+            PokemonTypeLabels(types = pokemon.typeOfPokemon, metrics = TypeLabelMetrics.SMALL)
         }
         Text(
             text = formatId(pokemon.id),
