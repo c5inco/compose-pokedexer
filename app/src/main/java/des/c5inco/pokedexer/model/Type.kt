@@ -28,6 +28,7 @@ fun mapTypeToColor(type: String): Color {
     return when (Type.valueOf(type)) {
         Type.Grass -> PokemonColors.Grass
         Type.Bug -> PokemonColors.Bug
+        Type.Fairy -> PokemonColors.Fairy
         Type.Fire -> PokemonColors.Fire
         Type.Flying -> PokemonColors.Flying
         Type.Water -> PokemonColors.Water

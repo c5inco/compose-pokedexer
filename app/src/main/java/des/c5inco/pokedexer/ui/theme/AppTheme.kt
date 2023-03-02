@@ -141,6 +141,12 @@ private fun mapTypeToColorScheme(
                 onSurface = ElectricTypeColors.onSurfaceLight,
                 surfaceVariant = ElectricTypeColors.surfaceVariantLight
             )
+            Type.Fairy -> M3LightColors.copy(
+                primary = FairyTypeColors.primaryLight,
+                surface = FairyTypeColors.primaryLight,
+                onSurface = FairyTypeColors.onSurfaceLight,
+                surfaceVariant = FairyTypeColors.surfaceVariantLight
+            )
             Type.Fighting -> M3LightColors.copy(
                 primary = FightingTypeColors.primaryLight,
                 surface = FightingTypeColors.primaryLight,
@@ -240,6 +246,12 @@ private fun mapTypeToColorScheme(
                 surface = ElectricTypeColors.surfaceDark,
                 onSurface = ElectricTypeColors.onSurfaceDark,
                 surfaceVariant = ElectricTypeColors.surfaceVariantDark
+            )
+            Type.Fairy -> M3DarkColors.copy(
+                primary = FairyTypeColors.primaryDark,
+                surface = FairyTypeColors.primaryDark,
+                onSurface = FairyTypeColors.onSurfaceDark,
+                surfaceVariant = FairyTypeColors.surfaceVariantDark
             )
             Type.Fighting -> M3DarkColors.copy(
                 primary = FightingTypeColors.primaryDark,

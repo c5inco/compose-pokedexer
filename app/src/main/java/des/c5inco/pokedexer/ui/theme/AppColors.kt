@@ -92,6 +92,7 @@ class PokemonColors {
         val Dark = Color(0xff775544)
         val Dragon = Color(0xff7766EE)
         val Electric = Color(0xffF0C03E)
+        val Fairy = Color(0xffee99ee)
         val Fighting = Color(0xffbb5544)
         val Fire = Color(0xffff4422)
         val Flying = Color(0xff8899ff)
@@ -155,6 +156,17 @@ val ElectricTypeColors = TypeColors(
     onSurfaceLight = Color(0xff4C3900),
     surfaceVariantDark = Color(0xA8251A00),
     surfaceVariantLight = Color(0x26251A00),
+)
+
+
+val FairyTypeColors = TypeColors(
+    primaryDark = Color(0xffC473C5),
+    primaryLight = Color(0xffE18EE2),
+    surfaceDark = Color(0xff702875),
+    onSurfaceDark = Color(0xffFFD6FA),
+    onSurfaceLight = Color(0xff631B69),
+    surfaceVariantDark = Color(0x6636003C),
+    surfaceVariantLight = Color(0x4036003C),
 )
 
 val FightingTypeColors = TypeColors(
