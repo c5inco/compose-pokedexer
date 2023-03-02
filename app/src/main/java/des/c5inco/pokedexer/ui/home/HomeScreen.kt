@@ -1,32 +1,34 @@
 package des.c5inco.pokedexer.ui.home
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
-import des.c5inco.pokedexer.ui.theme.PokemonColors
+import des.c5inco.pokedexer.ui.theme.AppTheme
 
 sealed class MenuItem(
     val label: String,
-    val color: Color
+    val typeColor: Type
 ) {
-    object Pokedex : MenuItem("Pokedex", PokemonColors.Teal)
-    object Moves : MenuItem("Moves", PokemonColors.Red)
-    object Abilities : MenuItem("Abilities", PokemonColors.LightBlue)
-    object Items : MenuItem("Items", PokemonColors.Yellow)
-    object Locations : MenuItem("Locations", PokemonColors.Purple)
-    object TypeCharts : MenuItem("Type charts", PokemonColors.Brown)
+    object Pokedex : MenuItem("Pokedex", Type.Grass)
+    object Moves : MenuItem("Moves", Type.Fire)
+    object Abilities : MenuItem("Abilities", Type.Water)
+    object Items : MenuItem("Items", Type.Electric)
+    object Locations : MenuItem("Locations", Type.Dragon)
+    object TypeCharts : MenuItem("Type charts", Type.Psychic)
 }
 
 @Composable
@@ -37,7 +39,7 @@ fun HomeScreen(
 
     Surface(
         Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        color = MaterialTheme.colorScheme.background
     ) {
         Column {
             MainAppBar(
@@ -75,5 +77,14 @@ fun HomeScreen(
                 }
             },
         )
+    }
+}
+
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Preview
+@Composable
+fun HomeScreenPreview() {
+    AppTheme {
+        HomeScreen()
     }
 }

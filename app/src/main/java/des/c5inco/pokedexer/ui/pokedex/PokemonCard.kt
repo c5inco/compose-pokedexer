@@ -1,5 +1,6 @@
 package des.c5inco.pokedexer.ui.pokedex
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +15,9 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,13 +33,13 @@ import com.skydoves.landscapist.coil.CoilImage
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
 import des.c5inco.pokedexer.ui.common.artworkUrl
 import des.c5inco.pokedexer.ui.common.formatId
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
 fun PokeDexCard(
@@ -45,17 +47,18 @@ fun PokeDexCard(
     pokemon: Pokemon,
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
-    Surface(
-        modifier = modifier,
-        color = pokemon.color(),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        PokeDexCardContent(
-            modifier = Modifier.clickable {
-                onPokemonSelected(pokemon)
-            },
-            pokemon = pokemon
-        )
+    PokemonTypesTheme(types = pokemon.typeOfPokemon) {
+        Surface(
+            modifier = modifier,
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            PokeDexCardContent(
+                modifier = Modifier.clickable {
+                    onPokemonSelected(pokemon)
+                },
+                pokemon = pokemon
+            )
+        }
     }
 }
 
@@ -76,12 +79,13 @@ private fun PokeDexCardContent(
             text = formatId(pokemon.id),
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 10.dp, end = 12.dp)
                 .graphicsLayer {
-                    alpha = 0.1f
-                }
+                    alpha = 0.5f
+                },
         )
         PokeBall(
             Modifier
@@ -117,14 +121,15 @@ private fun PokemonName(name: String?) {
         text = name ?: "",
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
-        color = Color.White,
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Preview
 @Composable
 private fun PokeDexCardPreview() {
-    PokedexerTheme {
+    AppTheme {
         Surface {
             Column(
                 Modifier.width(200.dp),

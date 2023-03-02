@@ -26,11 +26,12 @@ enum class Type {
 
 fun mapTypeToColor(type: String): Color {
     return when (Type.valueOf(type)) {
-        Type.Grass -> PokemonColors.LightTeal
+        Type.Grass -> PokemonColors.Grass
         Type.Bug -> PokemonColors.Bug
+        Type.Fairy -> PokemonColors.Fairy
         Type.Fire -> PokemonColors.Fire
         Type.Flying -> PokemonColors.Flying
-        Type.Water -> PokemonColors.Blue
+        Type.Water -> PokemonColors.Water
         Type.Ice -> PokemonColors.Ice
         Type.Dragon -> PokemonColors.Dragon
         Type.Normal -> PokemonColors.Normal
@@ -38,9 +39,10 @@ fun mapTypeToColor(type: String): Color {
         Type.Electric -> PokemonColors.Electric
         Type.Psychic -> PokemonColors.Psychic
         Type.Poison -> PokemonColors.Poison
-        Type.Ghost -> PokemonColors.LightPurple
-        Type.Ground, Type.Rock -> PokemonColors.LightBrown
+        Type.Ghost -> PokemonColors.Ghost
+        Type.Ground -> PokemonColors.Ground
+        Type.Rock -> PokemonColors.Rock
         Type.Dark -> PokemonColors.Dark
-        else -> return PokemonColors.LightBlue
+        else -> return Color.Magenta
     }
 }

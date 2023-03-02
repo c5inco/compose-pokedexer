@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import des.c5inco.pokedexer.ui.theme.PokemonColors
 
 @Entity
 data class Pokemon(
@@ -33,5 +32,5 @@ data class Pokemon(
 
 fun Pokemon.color(): Color {
     val type = typeOfPokemon.elementAtOrNull(0)
-    return type?.let { mapTypeToColor(it) } ?: PokemonColors.LightBlue
+    return type?.let { mapTypeToColor(it) } ?: Color.Magenta
 }

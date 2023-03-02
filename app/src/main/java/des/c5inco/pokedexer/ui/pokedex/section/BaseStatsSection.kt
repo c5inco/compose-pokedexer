@@ -1,5 +1,6 @@
 package des.c5inco.pokedexer.ui.pokedex.section
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Column
@@ -7,23 +8,25 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlinx.coroutines.delay
 
 data class Stat(
@@ -47,12 +50,8 @@ fun BaseStatsSection(
         Stat("Sp. Def", pokemon.specialDefense),
         Stat("Speed", pokemon.speed),
     )
+    val trackColor = MaterialTheme.colorScheme.surfaceVariant
 
-    StatsTable(stats)
-}
-
-@Composable
-private fun StatsTable(stats: List<Stat>) {
     Column(Modifier.fillMaxWidth()) {
         stats.forEachIndexed { idx, stat ->
             val statValue = remember { Animatable(0f) }
@@ -78,6 +77,7 @@ private fun StatsTable(stats: List<Stat>) {
                     text = stat.label,
                     modifier = Modifier
                         .weight(1f)
+                        .graphicsLayer { alpha = 0.7f }
                 )
                 Text(
                     "${stat.value}",
@@ -86,22 +86,27 @@ private fun StatsTable(stats: List<Stat>) {
                         .padding(end = 16.dp)
                         .weight(0.6f)
                 )
-                LinearProgressIndicator(
-                    progress = statValue.value,
-                    color = Color.Red,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(100))
-                        .weight(2.5f)
-                )
+                PokemonTypesTheme(
+                    types = pokemon.typeOfPokemon
+                ) {
+                    LinearProgressIndicator(
+                        progress = statValue.value,
+                        trackColor = trackColor,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(100))
+                            .weight(2.5f)
+                    )
+                }
             }
         }
     }
 }
 
 @Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun BaseStatsSectionPreview() {
-    PokedexerTheme {
+    AppTheme {
         Surface(Modifier.fillMaxWidth()) {
             BaseStatsSection(pokemon = SamplePokemonData[0])
         }

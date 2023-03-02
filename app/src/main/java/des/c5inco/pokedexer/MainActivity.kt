@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
@@ -17,7 +17,7 @@ import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import des.c5inco.pokedexer.ui.home.RootViewModel
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsViewModel
-import des.c5inco.pokedexer.ui.theme.PokedexerTheme
+import des.c5inco.pokedexer.ui.theme.AppTheme
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,13 +37,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             // Update the system bars to be translucent
             val systemUiController = rememberSystemUiController()
-            val useDarkIcons = MaterialTheme.colors.isLight
+            val useDarkIcons = !isSystemInDarkTheme()
+
             SideEffect {
                 systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = useDarkIcons)
             }
 
             CompositionLocalProvider(LocalCoilImageLoader provides viewModel.imageLoader) {
-                PokedexerTheme {
+                AppTheme {
                     PokedexerApp()
                 }
             }
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun DefaultPreview() {
-    PokedexerTheme {
+    AppTheme {
         PokedexerApp()
     }
 }
