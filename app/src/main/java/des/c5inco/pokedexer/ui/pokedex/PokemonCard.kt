@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,8 +40,6 @@ import des.c5inco.pokedexer.ui.common.artworkUrl
 import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
-import androidx.compose.material3.Surface as M3Surface
-import androidx.compose.material3.Text as M3Text
 
 @Composable
 fun PokeDexCard(
@@ -48,7 +48,7 @@ fun PokeDexCard(
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
     PokemonTypesTheme(types = pokemon.typeOfPokemon) {
-        M3Surface(
+        Surface(
             modifier = modifier,
             shape = RoundedCornerShape(16.dp)
         ) {
@@ -75,7 +75,7 @@ private fun PokeDexCardContent(
             Spacer(Modifier.height(8.dp))
             PokemonTypeLabels(pokemon.typeOfPokemon, TypeLabelMetrics.SMALL)
         }
-        M3Text(
+        Text(
             text = formatId(pokemon.id),
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
@@ -117,7 +117,7 @@ private fun PokeDexCardContent(
 
 @Composable
 private fun PokemonName(name: String?) {
-    M3Text(
+    Text(
         text = name ?: "",
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
@@ -130,7 +130,7 @@ private fun PokemonName(name: String?) {
 @Composable
 private fun PokeDexCardPreview() {
     AppTheme {
-        M3Surface {
+        Surface {
             Column(
                 Modifier.width(200.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp)

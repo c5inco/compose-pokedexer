@@ -22,6 +22,10 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -39,10 +43,6 @@ import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import androidx.compose.material3.CircularProgressIndicator as M3CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme as M3Theme
-import androidx.compose.material3.Surface as M3Surface
-import androidx.compose.material3.Text as M3Text
 
 @Composable
 fun PokedexScreenRoute(
@@ -101,7 +101,7 @@ fun PokedexScreen(
         }
     }
 
-    M3Surface {
+    Surface {
         Box(
             Modifier.fillMaxSize()
         ) {
@@ -109,16 +109,16 @@ fun PokedexScreen(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .offset(x = 90.dp, y = (-70).dp),
-                tint = M3Theme.colorScheme.primary.copy(alpha = 0.05f)
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
             )
             PokemonList(
                 modifier = Modifier.statusBarsPadding(),
                 listState = listState,
                 loading = loading,
                 title = {
-                    M3Text(
+                    Text(
                         text = "Pokedex",
-                        style = M3Theme.typography.headlineMedium,
+                        style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier
                             .padding(
                                 top = 16.dp,
@@ -133,7 +133,7 @@ fun PokedexScreen(
                 onPokemonSelected = onPokemonSelected
             )
 
-            val navBarCollapsedColor = M3Theme.colorScheme.surfaceColorAtElevation(3.dp)
+            val navBarCollapsedColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
 
             NavigationTopAppBar(
                 modifier = Modifier
@@ -144,7 +144,7 @@ fun PokedexScreen(
                     .padding(top = 16.dp)
                 ,
                 title = {
-                    M3Text(
+                    Text(
                         text = "Pokedex",
                         modifier = Modifier.graphicsLayer {
                             alpha = topAppBarTitleRevealProgress
@@ -184,8 +184,8 @@ fun PokemonList(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        M3CircularProgressIndicator(
-                            color = M3Theme.colorScheme.primary,
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                                 .size(48.dp)
                                 .padding(vertical = 24.dp)
