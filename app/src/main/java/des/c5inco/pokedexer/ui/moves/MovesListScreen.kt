@@ -20,10 +20,11 @@ import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.categoryIcon
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
-import des.c5inco.pokedexer.ui.common.PokemonTypeLabel
+import des.c5inco.pokedexer.ui.common.TypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonColors
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
 fun MovesListScreenRoute(
@@ -142,12 +143,14 @@ private fun MovesList(
                     },
                     Modifier.weight(1f)
                 )
-                PokemonTypeLabel(
-                    modifier = Modifier.requiredWidth(75.dp),
-                    text = move.type,
-                    colored = true,
-                    metrics = MEDIUM
-                )
+                PokemonTypesTheme(types = listOf(move.type)) {
+                    TypeLabel(
+                        modifier = Modifier.requiredWidth(75.dp),
+                        text = move.type,
+                        colored = true,
+                        metrics = MEDIUM
+                    )
+                }
                 CategoryIcon(
                     modifier = Modifier.requiredWidth(48.dp),
                     move = move

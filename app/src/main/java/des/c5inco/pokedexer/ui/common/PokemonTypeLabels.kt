@@ -37,14 +37,14 @@ fun PokemonTypeLabels(
 ) {
     PokemonTypesTheme(types = listOf(types[0])) {
         types.forEach {
-            PokemonTypeLabel(text = it, metrics = metrics)
+            TypeLabel(text = it, metrics = metrics)
             Spacer(modifier = Modifier.size(metrics.elementSpacing))
         }
     }
 }
 
 @Composable
-fun PokemonTypeLabel(
+fun TypeLabel(
     modifier: Modifier = Modifier,
     text: String,
     colored: Boolean = false,
