@@ -12,6 +12,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -220,7 +221,8 @@ internal fun PokemonDetailsScreen(
     ) {
         val pokemonTypeColor by animateColorAsState(
             targetValue = MaterialTheme.colorScheme.surface,
-            animationSpec = tween(durationMillis = 500)
+            animationSpec = tween(durationMillis = 500),
+            label = "pokemonTypeSurfaceColor"
         )
 
         Surface(
@@ -261,15 +263,24 @@ internal fun PokemonDetailsScreen(
                             orientation = Orientation.Vertical
                         )
                 ) {
+                    val textFadeInTransition = fadeIn(tween(durationMillis = 600))
+                    val textFadeOutTransition = fadeOut(tween(durationMillis = 300))
+
                     AnimatedContent(
                         modifier = Modifier
                             .padding(top = 24.dp)
                             .graphicsLayer { alpha = textAlphaTarget },
                         targetState = pokemon,
                         transitionSpec = {
-                            fadeIn(tween(durationMillis = 600))
-                                .with(fadeOut(tween(durationMillis = 300)))
-                                .using(SizeTransform(clip = false))
+                            if (initialState.id < targetState.id) {
+                                textFadeInTransition +
+                                    slideInHorizontally(initialOffsetX = { with(density) { 16.dp.roundToPx() } }, animationSpec = tween(600)) with
+                                textFadeOutTransition
+                            } else {
+                                textFadeInTransition +
+                                    slideInHorizontally(initialOffsetX = { with(density) { -16.dp.roundToPx() } }, animationSpec = tween(600)) with
+                                textFadeOutTransition
+                            }.using(SizeTransform(clip = false))
                         }
                     ) { targetPokemon ->
                         Header(pokemon = targetPokemon)
