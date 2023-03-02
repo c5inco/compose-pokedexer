@@ -53,6 +53,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -380,7 +381,7 @@ private fun CardContent(
         modifier.fillMaxSize()
     ) {
         val sectionTitles = Sections.values().map { it.title }
-        var section by remember { mutableStateOf(Sections.About) }
+        var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
 
         PokemonTypesTheme(types = pokemon.typeOfPokemon) {
             TabRow(
