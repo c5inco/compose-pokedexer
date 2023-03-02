@@ -32,7 +32,7 @@ import kotlinx.coroutines.delay
 data class Stat(
     val label: String,
     val value: Int?,
-    val max: Int = 100
+    val max: Int = 200
 ) {
     val progress: Float =
         1f * (value ?: 0) / max
