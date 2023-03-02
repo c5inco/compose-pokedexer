@@ -32,12 +32,14 @@ data class TypeLabelMetrics(
 
 @Composable
 fun PokemonTypeLabels(
-    types: List<String>?,
+    types: List<String>,
     metrics: TypeLabelMetrics
 ) {
-    types?.forEach {
-        PokemonTypeLabel(text = it, metrics = metrics)
-        Spacer(modifier = Modifier.size(metrics.elementSpacing))
+    PokemonTypesTheme(types = listOf(types[0])) {
+        types.forEach {
+            PokemonTypeLabel(text = it, metrics = metrics)
+            Spacer(modifier = Modifier.size(metrics.elementSpacing))
+        }
     }
 }
 
@@ -48,24 +50,22 @@ fun PokemonTypeLabel(
     colored: Boolean = false,
     metrics: TypeLabelMetrics
 ) {
-    PokemonTypesTheme(types = listOf(text)) {
-        Surface(
-            modifier = modifier,
-            color = if (colored) MaterialTheme.colorScheme.surface else Color(0x38FFFFFF),
-            shape = RoundedCornerShape(metrics.cornerRadius)
-        ) {
-            Text(
-                text = text,
-                fontSize = metrics.fontSize,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(
-                    start = metrics.horizontalPadding,
-                    end = metrics.horizontalPadding,
-                    top = metrics.verticalPadding,
-                    bottom = metrics.verticalPadding
-                ),
-            )
-        }
+    Surface(
+        modifier = modifier,
+        color = if (colored) MaterialTheme.colorScheme.surface else Color(0x38FFFFFF),
+        shape = RoundedCornerShape(metrics.cornerRadius)
+    ) {
+        Text(
+            text = text,
+            fontSize = metrics.fontSize,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(
+                start = metrics.horizontalPadding,
+                end = metrics.horizontalPadding,
+                top = metrics.verticalPadding,
+                bottom = metrics.verticalPadding
+            ),
+        )
     }
 }
