@@ -5,7 +5,9 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -262,8 +264,8 @@ internal fun PokemonDetailsScreen(
                             orientation = Orientation.Vertical
                         )
                 ) {
-                    val textFadeInTransition = fadeIn(tween(durationMillis = 600))
-                    val textFadeOutTransition = fadeOut(tween(durationMillis = 300))
+                    val textFadeInTransition = fadeIn(tween(durationMillis = 210, delayMillis = 90, easing = LinearOutSlowInEasing))
+                    val textFadeOutTransition = fadeOut(tween(durationMillis = 90, easing = FastOutLinearInEasing))
 
                     AnimatedContent(
                         modifier = Modifier
@@ -273,11 +275,11 @@ internal fun PokemonDetailsScreen(
                         transitionSpec = {
                             if (initialState.id < targetState.id) {
                                 textFadeInTransition +
-                                    slideInHorizontally(initialOffsetX = { with(density) { 16.dp.roundToPx() } }, animationSpec = tween(600)) with
+                                    slideInHorizontally(initialOffsetX = { with(density) { 16.dp.roundToPx() } }, animationSpec = tween(300)) with
                                 textFadeOutTransition
                             } else {
                                 textFadeInTransition +
-                                    slideInHorizontally(initialOffsetX = { with(density) { -16.dp.roundToPx() } }, animationSpec = tween(600)) with
+                                    slideInHorizontally(initialOffsetX = { with(density) { -16.dp.roundToPx() } }, animationSpec = tween(300)) with
                                 textFadeOutTransition
                             }.using(SizeTransform(clip = false))
                         }
