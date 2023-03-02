@@ -88,7 +88,10 @@ private fun MovesList(
         stickyHeader {
             val textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
 
-            CompositionLocalProvider(LocalTextStyle provides textStyle) {
+            CompositionLocalProvider(
+                LocalTextStyle provides textStyle,
+                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant
+            ) {
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -97,7 +100,8 @@ private fun MovesList(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        "Move", Modifier.weight(1f)
+                        text = "Move",
+                        modifier = Modifier.weight(1f),
                     )
                     Box(
                         Modifier.requiredWidth(75.dp),
