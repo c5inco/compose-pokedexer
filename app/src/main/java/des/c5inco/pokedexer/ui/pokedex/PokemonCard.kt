@@ -121,6 +121,7 @@ private fun PokemonName(name: String?) {
         text = name ?: "",
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 

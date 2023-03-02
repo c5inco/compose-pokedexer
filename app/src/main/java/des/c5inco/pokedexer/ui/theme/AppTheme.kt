@@ -138,7 +138,7 @@ private fun mapTypeToColorScheme(
             Type.Electric -> M3LightColors.copy(
                 primary = ElectricTypeColors.primaryLight,
                 surface = ElectricTypeColors.primaryLight,
-                onSurface = Color.White,
+                onSurface = ElectricTypeColors.onSurfaceLight,
                 surfaceVariant = ElectricTypeColors.surfaceVariantLight
             )
             Type.Fighting -> M3LightColors.copy(

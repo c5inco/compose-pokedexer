@@ -91,7 +91,7 @@ class PokemonColors {
         val Bug = Color(0xffaabb22)
         val Dark = Color(0xff775544)
         val Dragon = Color(0xff7766EE)
-        val Electric = Color(0xffFFCE4B)
+        val Electric = Color(0xffF0C03E)
         val Fighting = Color(0xffbb5544)
         val Fire = Color(0xffff4422)
         val Flying = Color(0xff8899ff)
@@ -123,9 +123,9 @@ val BugTypeColors = TypeColors(
     primaryLight = Color(0xff5A6400),
     surfaceDark = Color(0xff434B00),
     surfaceLight = PokemonColors.Bug,
-    onSurfaceDark = Color(0xffBFD039),
+    onSurfaceDark = Color(0xffF8FFB9),
     onSurfaceLight = Color(0xff5A6400),
-    surfaceVariantDark = Color(0x66002019),
+    surfaceVariantDark = Color(0x661A1E00),
     surfaceVariantLight = Color(0x26002019),
 )
 
@@ -148,10 +148,11 @@ val DragonTypeColors = TypeColors(
 )
 
 val ElectricTypeColors = TypeColors(
-    primaryDark = Color(0xffB48B00),
+    primaryDark = Color(0xffF0C03E),
     primaryLight = PokemonColors.Electric,
-    surfaceDark = Color(0xff765A00),
+    surfaceDark = Color(0xFFB48B00),
     onSurfaceDark = Color(0xffFFF8F1),
+    onSurfaceLight = Color(0xff4C3900),
     surfaceVariantDark = Color(0xA8251A00),
     surfaceVariantLight = Color(0x26251A00),
 )
@@ -161,8 +162,8 @@ val FightingTypeColors = TypeColors(
     primaryLight = PokemonColors.Fighting,
     surfaceDark = Color(0xff80291C),
     onSurfaceDark = Color(0xffFFDAD4),
-    surfaceVariantDark = Color(0x66400200),
-    surfaceVariantLight = Color(0x26400200),
+    surfaceVariantDark = Color(0x662B1B1A),
+    surfaceVariantLight = Color(0x402B1B1A),
 )
 
 val FireTypeColors = TypeColors(
@@ -205,19 +206,19 @@ val GroundTypeColors = TypeColors(
     primaryDark = Color(0xffEAC248),
     primaryLight = PokemonColors.Ground,
     surfaceDark = Color(0xff574500),
-    onSurfaceDark = Color(0xffFFE089),
+    onSurfaceDark = Color(0xffFFEFCC),
     surfaceVariantDark = Color(0x66241A00),
-    surfaceVariantLight = Color(0x26241A00),
+    surfaceVariantLight = Color(0x40241A00),
 )
 
 val IceTypeColors = TypeColors(
     primaryDark = Color(0xff79D1FF),
-    primaryLight = PokemonColors.Ice,
+    primaryLight = Color(0xff4AB6E8),
     surfaceDark = Color(0xff004C68),
     onSurfaceDark = Color(0xffC3E8FF),
-    onSurfaceLight = Color(0xff003549),
+    onSurfaceLight = Color(0xff004C68),
     surfaceVariantDark = Color(0x66001E2C),
-    surfaceVariantLight = Color(0x26001E2C),
+    surfaceVariantLight = Color(0x40001E2C),
 )
 
 val NormalTypeColors = TypeColors(
@@ -226,9 +227,9 @@ val NormalTypeColors = TypeColors(
     surfaceDark = Color(0xff47483B),
     surfaceLight = PokemonColors.Normal,
     onSurfaceDark = Color(0xffC8C7B7),
-    onSurfaceLight = Color(0xff5E6145),
-    surfaceVariantDark = Color(0x661A1E00),
-    surfaceVariantLight = Color(0x261A1E00),
+    onSurfaceLight = Color(0xFF39400A),
+    surfaceVariantDark = Color(0x66181B03),
+    surfaceVariantLight = Color(0x40191C03),
 )
 
 val PoisonTypeColors = TypeColors(
@@ -246,15 +247,15 @@ val PsychicTypeColors = TypeColors(
     surfaceDark = Color(0xff8E0049),
     onSurfaceDark = Color(0xffFFD9E2),
     surfaceVariantDark = Color(0x663E001D),
-    surfaceVariantLight = Color(0x263E001D),
+    surfaceVariantLight = Color(0x403E001D),
 )
 
 val RockTypeColors = TypeColors(
     primaryDark = Color(0xffE1C64B),
     primaryLight = PokemonColors.Rock,
     surfaceDark = Color(0xff534600),
-    onSurfaceDark = Color(0xffFFE264),
-    onSurfaceLight = Color(0xff3A3000),
+    onSurfaceDark = Color(0xffFFF0BF),
+    onSurfaceLight = Color(0xff463B00),
     surfaceVariantDark = Color(0x66221B00),
     surfaceVariantLight = Color(0x26221B00),
 )
@@ -263,7 +264,7 @@ val WaterTypeColors = TypeColors(
     primaryDark = Color(0xff037BCB),
     primaryLight = PokemonColors.Water,
     surfaceDark = Color(0xff00497C),
-    onSurfaceDark = Color(0xffD1E4FF),
+    onSurfaceDark = Color(0xffE9F1FF),
     surfaceVariantDark = Color(0x66001D36),
-    surfaceVariantLight = Color(0x26001D36),
+    surfaceVariantLight = Color(0x33001D36),
 )

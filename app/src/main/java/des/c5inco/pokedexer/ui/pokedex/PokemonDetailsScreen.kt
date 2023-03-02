@@ -352,11 +352,11 @@ internal fun PokemonDetailsScreen(
                             Icon(
                                 imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
-                                tint = Color.White
+//                                tint = Color.White
                             )
                         }
                     },
-                    contentColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
                     onBackClick = onBackClick
                 )
             }
@@ -484,13 +484,13 @@ private fun HeaderRight(
             text = formatId(pokemon.id),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = pokemon.category,
             fontSize = 12.sp,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
