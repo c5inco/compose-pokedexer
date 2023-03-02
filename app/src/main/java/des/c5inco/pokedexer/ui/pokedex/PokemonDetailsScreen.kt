@@ -16,11 +16,13 @@ import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -35,6 +37,7 @@ import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -43,6 +46,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -63,7 +67,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
@@ -71,6 +74,7 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.ui.common.Emphasis
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
@@ -268,22 +272,7 @@ internal fun PokemonDetailsScreen(
                                 .using(SizeTransform(clip = false))
                         }
                     ) { targetPokemon ->
-                        HeaderLeft(pokemon = targetPokemon)
-                    }
-
-                    AnimatedContent(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(top = 24.dp)
-                            .graphicsLayer { alpha = textAlphaTarget },
-                        targetState = pokemon,
-                        transitionSpec = {
-                            fadeIn(tween(durationMillis = 600))
-                                .with(fadeOut(tween(durationMillis = 300)))
-                                .using(SizeTransform(clip = false))
-                        }
-                    ) { targetPokemon ->
-                        HeaderRight(pokemon = targetPokemon)
+                        Header(pokemon = targetPokemon)
                     }
 
                     AppTheme {
@@ -352,7 +341,6 @@ internal fun PokemonDetailsScreen(
                             Icon(
                                 imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
-//                                tint = Color.White
                             )
                         }
                     },
@@ -381,7 +369,7 @@ private fun CardContent(
         modifier.fillMaxSize()
     ) {
         val sectionTitles = Sections.values().map { it.title }
-        var section by remember { mutableStateOf(Sections.BaseStats) }
+        var section by remember { mutableStateOf(Sections.About) }
 
         PokemonTypesTheme(types = pokemon.typeOfPokemon) {
             TabRow(
@@ -450,48 +438,41 @@ private fun DottedDecoration(
 }
 
 @Composable
-private fun HeaderLeft(
+private fun Header(
     modifier: Modifier = Modifier,
     pokemon: Pokemon
 ) {
     Column(
         modifier.padding(top = 40.dp, bottom = 32.dp, start = 24.dp, end = 24.dp)
     ) {
-        Text(
-            text = pokemon.name,
-            style = MaterialTheme.typography.displaySmall,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(Modifier.height(8.dp))
-        pokemon.typeOfPokemon.let {
-            Row {
-                PokemonTypeLabels(it, MEDIUM)
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = pokemon.name,
+                    style = MaterialTheme.typography.displaySmall,
+                    modifier = Modifier.alignByBaseline()
+                )
+                Text(
+                    text = formatId(pokemon.id),
+                    style = MaterialTheme.typography.displaySmall,
+                    modifier = Modifier
+                        .alignByBaseline()
+                        .graphicsLayer { alpha = Emphasis.Medium.alpha }
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(
+                Modifier.fillMaxWidth(),
+            ) {
+                PokemonTypeLabels(
+                    types = pokemon.typeOfPokemon,
+                    metrics = MEDIUM,
+                )
             }
         }
-    }
-}
-
-@Composable
-private fun HeaderRight(
-    modifier: Modifier = Modifier,
-    pokemon: Pokemon
-) {
-    Column(
-        modifier.padding(top = 52.dp, bottom = 32.dp, start = 24.dp, end = 24.dp),
-        horizontalAlignment = Alignment.End
-    ) {
-        Text(
-            text = formatId(pokemon.id),
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        Spacer(modifier = Modifier.height(6.dp))
-        Text(
-            text = pokemon.category,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
     }
 }
 
