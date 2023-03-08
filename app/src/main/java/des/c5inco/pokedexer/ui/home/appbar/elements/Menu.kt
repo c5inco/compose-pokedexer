@@ -66,7 +66,8 @@ fun MenuItemButton(
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        color = PokemonTypesTheme.colorScheme.surface
     ) {
         Box(
             modifier = Modifier

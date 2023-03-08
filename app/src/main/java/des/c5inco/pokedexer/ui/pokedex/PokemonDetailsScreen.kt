@@ -38,7 +38,6 @@ import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -47,7 +46,6 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -221,7 +219,7 @@ internal fun PokemonDetailsScreen(
         types = pokemon.typeOfPokemon
     ) {
         val pokemonTypeColor by animateColorAsState(
-            targetValue = MaterialTheme.colorScheme.surface,
+            targetValue = PokemonTypesTheme.colorScheme.surface,
             animationSpec = tween(durationMillis = 500),
             label = "pokemonTypeSurfaceColor"
         )
@@ -251,7 +249,7 @@ internal fun PokemonDetailsScreen(
                         .padding(top = 164.dp)
                         .size(180.dp)
                         .graphicsLayer { alpha = textAlphaTarget },
-                    tint = MaterialTheme.colorScheme.surfaceVariant
+                    tint = PokemonTypesTheme.colorScheme.surfaceVariant
                 )
                 Box(
                     Modifier
@@ -319,7 +317,7 @@ internal fun PokemonDetailsScreen(
                             .graphicsLayer { alpha = imageAlphaTarget },
                         loading = loading,
                         pokemonList = pokemonSet,
-                        backgroundColor = MaterialTheme.colorScheme.surface,
+                        backgroundColor = PokemonTypesTheme.colorScheme.surface,
                         enabled = swipeableState.currentValue == 1,
                         pagerState = pagerState,
                     ) { it, progress, tint ->
@@ -392,7 +390,7 @@ private fun CardContent(
                         modifier = Modifier
                             .tabIndicatorOffset(tabPositions[section.ordinal])
                             .clip(RoundedCornerShape(100)),
-                        color = MaterialTheme.colorScheme.primary
+                        color = PokemonTypesTheme.colorScheme.primary
                     )
                 },
             ) {
@@ -400,6 +398,7 @@ private fun CardContent(
                     val active = index == section.ordinal
                     Tab(
                         selected = active,
+                        selectedContentColor = PokemonTypesTheme.colorScheme.primary,
                         unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         onClick = { section = Sections.values()[index] },
                     ) {
@@ -457,33 +456,31 @@ private fun Header(
     Column(
         modifier.padding(top = 40.dp, bottom = 32.dp, start = 24.dp, end = 24.dp)
     ) {
-        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = pokemon.name,
-                    style = MaterialTheme.typography.displaySmall,
-                    modifier = Modifier.alignByBaseline()
-                )
-                Text(
-                    text = formatId(pokemon.id),
-                    style = MaterialTheme.typography.displaySmall,
-                    modifier = Modifier
-                        .alignByBaseline()
-                        .graphicsLayer { alpha = Emphasis.Medium.alpha }
-                )
-            }
-            Spacer(Modifier.height(8.dp))
-            Row(
-                Modifier.fillMaxWidth(),
-            ) {
-                PokemonTypeLabels(
-                    types = pokemon.typeOfPokemon,
-                    metrics = MEDIUM,
-                )
-            }
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = pokemon.name,
+                style = MaterialTheme.typography.displaySmall,
+                modifier = Modifier.alignByBaseline()
+            )
+            Text(
+                text = formatId(pokemon.id),
+                style = MaterialTheme.typography.displaySmall,
+                modifier = Modifier
+                    .alignByBaseline()
+                    .graphicsLayer { alpha = Emphasis.Medium.alpha }
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(
+            Modifier.fillMaxWidth(),
+        ) {
+            PokemonTypeLabels(
+                types = pokemon.typeOfPokemon,
+                metrics = MEDIUM,
+            )
         }
     }
 }

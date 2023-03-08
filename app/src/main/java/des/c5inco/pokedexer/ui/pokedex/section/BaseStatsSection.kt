@@ -50,7 +50,6 @@ fun BaseStatsSection(
         Stat("Sp. Def", pokemon.specialDefense),
         Stat("Speed", pokemon.speed),
     )
-    val trackColor = MaterialTheme.colorScheme.surfaceVariant
 
     Column(Modifier.fillMaxWidth()) {
         stats.forEachIndexed { idx, stat ->
@@ -91,7 +90,8 @@ fun BaseStatsSection(
                 ) {
                     LinearProgressIndicator(
                         progress = statValue.value,
-                        trackColor = trackColor,
+                        color = PokemonTypesTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier
                             .clip(RoundedCornerShape(100))
                             .weight(2.5f)

@@ -1,11 +1,12 @@
 package des.c5inco.pokedexer.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import des.c5inco.pokedexer.model.Type
 
@@ -100,232 +101,238 @@ fun PokemonTypesTheme(
 ) {
     val extendedTypesColors = mapTypeToColorScheme(types = types, isDark = useDarkTheme)
 
-    MaterialTheme(
-        colorScheme = extendedTypesColors,
-        typography = AppTypography,
-        shapes = AppShapes,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalPokemonTypeColorScheme provides extendedTypesColors,
+        LocalContentColor provides extendedTypesColors.onSurface
+    ) {
+        content()
+    }
+}
+
+object PokemonTypesTheme {
+    val colorScheme: PokemonTypeColorScheme
+        @Composable
+        get() = LocalPokemonTypeColorScheme.current
 }
 
 @Composable
 private fun mapTypeToColorScheme(
     types: List<String>,
     isDark: Boolean
-): ColorScheme {
+): PokemonTypeColorScheme {
     val firstType = types[0]
 
     if (!isDark) {
         return when (Type.valueOf(firstType)) {
-            Type.Bug -> M3LightColors.copy(
+            Type.Bug -> PokemonTypeColorScheme(
                 primary = BugTypeColors.primaryLight,
                 surface = BugTypeColors.surfaceLight,
                 onSurface = BugTypeColors.onSurfaceLight,
                 surfaceVariant = BugTypeColors.surfaceVariantLight
             )
-            Type.Dark -> M3LightColors.copy(
+            Type.Dark -> PokemonTypeColorScheme(
                 primary = DarkTypeColors.primaryLight,
                 surface = DarkTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = DarkTypeColors.surfaceVariantLight
             )
-            Type.Dragon -> M3LightColors.copy(
+            Type.Dragon -> PokemonTypeColorScheme(
                 primary = DragonTypeColors.primaryLight,
                 surface = DragonTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = DragonTypeColors.surfaceVariantLight
             )
-            Type.Electric -> M3LightColors.copy(
+            Type.Electric -> PokemonTypeColorScheme(
                 primary = ElectricTypeColors.primaryLight,
                 surface = ElectricTypeColors.primaryLight,
                 onSurface = ElectricTypeColors.onSurfaceLight,
                 surfaceVariant = ElectricTypeColors.surfaceVariantLight
             )
-            Type.Fairy -> M3LightColors.copy(
+            Type.Fairy -> PokemonTypeColorScheme(
                 primary = FairyTypeColors.primaryLight,
                 surface = FairyTypeColors.primaryLight,
                 onSurface = FairyTypeColors.onSurfaceLight,
                 surfaceVariant = FairyTypeColors.surfaceVariantLight
             )
-            Type.Fighting -> M3LightColors.copy(
+            Type.Fighting -> PokemonTypeColorScheme(
                 primary = FightingTypeColors.primaryLight,
                 surface = FightingTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = FightingTypeColors.surfaceVariantLight
             )
-            Type.Fire -> M3LightColors.copy(
+            Type.Fire -> PokemonTypeColorScheme(
                 primary = FireTypeColors.primaryLight,
                 surface = FireTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = FireTypeColors.surfaceVariantLight
             )
-            Type.Flying -> M3LightColors.copy(
+            Type.Flying -> PokemonTypeColorScheme(
                 primary = FlyingTypeColors.primaryLight,
                 surface = FireTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = FireTypeColors.surfaceVariantLight
             )
-            Type.Ghost -> M3LightColors.copy(
+            Type.Ghost -> PokemonTypeColorScheme(
                 primary = GhostTypeColors.primaryLight,
                 surface = GhostTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = GhostTypeColors.surfaceVariantLight
             )
-            Type.Grass -> M3LightColors.copy(
+            Type.Grass -> PokemonTypeColorScheme(
                 primary = GrassTypeColors.primaryLight,
                 surface = GrassTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = GrassTypeColors.surfaceVariantLight
             )
-            Type.Ground -> M3LightColors.copy(
+            Type.Ground -> PokemonTypeColorScheme(
                 primary = GroundTypeColors.primaryLight,
                 surface = GroundTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = GroundTypeColors.surfaceVariantLight
             )
-            Type.Ice -> M3LightColors.copy(
+            Type.Ice -> PokemonTypeColorScheme(
                 primary = IceTypeColors.primaryLight,
                 surface = IceTypeColors.primaryLight,
                 onSurface = IceTypeColors.onSurfaceLight,
                 surfaceVariant = IceTypeColors.surfaceVariantLight
             )
-            Type.Normal -> M3LightColors.copy(
+            Type.Normal -> PokemonTypeColorScheme(
                 primary = NormalTypeColors.primaryLight,
                 surface = NormalTypeColors.surfaceLight,
                 onSurface = NormalTypeColors.onSurfaceLight,
                 surfaceVariant = NormalTypeColors.surfaceVariantLight
             )
-            Type.Poison -> M3LightColors.copy(
+            Type.Poison -> PokemonTypeColorScheme(
                 primary = PoisonTypeColors.primaryLight,
                 surface = PoisonTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = PoisonTypeColors.surfaceVariantLight
             )
-            Type.Psychic -> M3LightColors.copy(
+            Type.Psychic -> PokemonTypeColorScheme(
                 primary = PsychicTypeColors.primaryLight,
                 surface = PsychicTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = PsychicTypeColors.surfaceVariantLight
             )
-            Type.Rock -> M3LightColors.copy(
+            Type.Rock -> PokemonTypeColorScheme(
                 primary = RockTypeColors.primaryLight,
                 surface = RockTypeColors.primaryLight,
                 onSurface = RockTypeColors.onSurfaceLight,
                 surfaceVariant = RockTypeColors.surfaceVariantLight
             )
-            Type.Water -> M3LightColors.copy(
+            Type.Water -> PokemonTypeColorScheme(
                 primary = WaterTypeColors.primaryLight,
                 surface = WaterTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = WaterTypeColors.surfaceVariantLight
             )
-            else -> M3LightColors
+            else -> LocalPokemonTypeColorScheme.current
         }
     } else {
         return when (Type.valueOf(firstType)) {
-            Type.Bug -> M3DarkColors.copy(
+            Type.Bug -> PokemonTypeColorScheme(
                 primary = BugTypeColors.primaryDark,
                 surface = BugTypeColors.surfaceDark,
                 onSurface = BugTypeColors.onSurfaceDark,
                 surfaceVariant = BugTypeColors.surfaceVariantDark
             )
-            Type.Dark -> M3DarkColors.copy(
+            Type.Dark -> PokemonTypeColorScheme(
                 primary = DarkTypeColors.primaryDark,
                 surface = DarkTypeColors.surfaceDark,
                 onSurface = DarkTypeColors.onSurfaceDark,
                 surfaceVariant = DarkTypeColors.surfaceVariantDark
             )
-            Type.Dragon -> M3DarkColors.copy(
+            Type.Dragon -> PokemonTypeColorScheme(
                 primary = DragonTypeColors.primaryDark,
                 surface = DragonTypeColors.surfaceDark,
                 onSurface = DragonTypeColors.onSurfaceDark,
                 surfaceVariant = DragonTypeColors.surfaceVariantDark
             )
-            Type.Electric -> M3DarkColors.copy(
+            Type.Electric -> PokemonTypeColorScheme(
                 primary = ElectricTypeColors.primaryDark,
                 surface = ElectricTypeColors.surfaceDark,
                 onSurface = ElectricTypeColors.onSurfaceDark,
                 surfaceVariant = ElectricTypeColors.surfaceVariantDark
             )
-            Type.Fairy -> M3DarkColors.copy(
+            Type.Fairy -> PokemonTypeColorScheme(
                 primary = FairyTypeColors.primaryDark,
                 surface = FairyTypeColors.primaryDark,
                 onSurface = FairyTypeColors.onSurfaceDark,
                 surfaceVariant = FairyTypeColors.surfaceVariantDark
             )
-            Type.Fighting -> M3DarkColors.copy(
+            Type.Fighting -> PokemonTypeColorScheme(
                 primary = FightingTypeColors.primaryDark,
                 surface = FightingTypeColors.surfaceDark,
                 onSurface = FightingTypeColors.onSurfaceDark,
                 surfaceVariant = FightingTypeColors.surfaceVariantDark
             )
-            Type.Fire -> M3DarkColors.copy(
+            Type.Fire -> PokemonTypeColorScheme(
                 primary = FireTypeColors.primaryDark,
                 surface = FireTypeColors.surfaceDark,
                 onSurface = FireTypeColors.onSurfaceDark,
                 surfaceVariant = FireTypeColors.surfaceVariantDark
             )
-            Type.Flying -> M3DarkColors.copy(
+            Type.Flying -> PokemonTypeColorScheme(
                 primary = FlyingTypeColors.primaryDark,
                 surface = FlyingTypeColors.surfaceDark,
                 onSurface = FlyingTypeColors.onSurfaceDark,
                 surfaceVariant = FlyingTypeColors.surfaceVariantDark
             )
-            Type.Ghost -> M3DarkColors.copy(
+            Type.Ghost -> PokemonTypeColorScheme(
                 primary = GhostTypeColors.primaryDark,
                 surface = GhostTypeColors.surfaceDark,
                 onSurface = GhostTypeColors.onSurfaceDark,
                 surfaceVariant = GhostTypeColors.surfaceVariantDark
             )
-            Type.Grass -> M3DarkColors.copy(
+            Type.Grass -> PokemonTypeColorScheme(
                 primary = GrassTypeColors.primaryDark,
                 surface = GrassTypeColors.surfaceDark,
                 onSurface = GrassTypeColors.onSurfaceDark,
                 surfaceVariant = GrassTypeColors.surfaceVariantDark
             )
-            Type.Ground -> M3DarkColors.copy(
+            Type.Ground -> PokemonTypeColorScheme(
                 primary = GroundTypeColors.primaryDark,
                 surface = GroundTypeColors.surfaceDark,
                 onSurface = GroundTypeColors.onSurfaceDark,
                 surfaceVariant = GroundTypeColors.surfaceVariantDark
             )
-            Type.Ice -> M3DarkColors.copy(
+            Type.Ice -> PokemonTypeColorScheme(
                 primary = IceTypeColors.primaryDark,
                 surface = IceTypeColors.surfaceDark,
                 onSurface = IceTypeColors.onSurfaceDark,
                 surfaceVariant = IceTypeColors.surfaceVariantDark
             )
-            Type.Normal -> M3DarkColors.copy(
+            Type.Normal -> PokemonTypeColorScheme(
                 primary = NormalTypeColors.primaryDark,
                 surface = NormalTypeColors.surfaceDark,
                 onSurface = NormalTypeColors.onSurfaceDark,
                 surfaceVariant = NormalTypeColors.surfaceVariantDark
             )
-            Type.Poison -> M3DarkColors.copy(
+            Type.Poison -> PokemonTypeColorScheme(
                 primary = PoisonTypeColors.primaryDark,
                 surface = PoisonTypeColors.surfaceDark,
                 onSurface = PoisonTypeColors.onSurfaceDark,
                 surfaceVariant = PoisonTypeColors.surfaceVariantDark
             )
-            Type.Psychic -> M3DarkColors.copy(
+            Type.Psychic -> PokemonTypeColorScheme(
                 primary = PsychicTypeColors.primaryDark,
                 surface = PsychicTypeColors.surfaceDark,
                 onSurface = PsychicTypeColors.onSurfaceDark,
                 surfaceVariant = PsychicTypeColors.surfaceVariantDark
             )
-            Type.Rock -> M3DarkColors.copy(
+            Type.Rock -> PokemonTypeColorScheme(
                 primary = RockTypeColors.primaryDark,
                 surface = RockTypeColors.surfaceDark,
                 onSurface = RockTypeColors.onSurfaceDark,
                 surfaceVariant = RockTypeColors.surfaceVariantDark
             )
-            Type.Water -> M3DarkColors.copy(
+            Type.Water -> PokemonTypeColorScheme(
                 primary = WaterTypeColors.primaryDark,
                 surface = WaterTypeColors.surfaceDark,
                 onSurface = WaterTypeColors.onSurfaceDark,
                 surfaceVariant = WaterTypeColors.surfaceVariantDark
             )
-            else -> M3DarkColors
+            else -> LocalPokemonTypeColorScheme.current
         }
     }
 }

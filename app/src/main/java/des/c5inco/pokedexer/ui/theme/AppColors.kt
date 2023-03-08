@@ -1,5 +1,7 @@
 package des.c5inco.pokedexer.ui.theme
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 val Grey100 = Color(0xfff5f5f5)
@@ -108,6 +110,24 @@ class PokemonColors {
     }
 }
 
+@Immutable
+data class PokemonTypeColorScheme(
+    val primary: Color,
+    val surface: Color,
+    val onSurface: Color,
+    val surfaceVariant: Color
+)
+
+val LocalPokemonTypeColorScheme = staticCompositionLocalOf {
+    PokemonTypeColorScheme(
+        primary = Color.Magenta,
+        surface = Color.Magenta,
+        onSurface = Color.Magenta,
+        surfaceVariant = Color.Magenta
+    )
+}
+
+@Immutable
 data class TypeColors(
     val primaryDark: Color,
     val primaryLight: Color,

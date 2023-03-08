@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,7 +49,8 @@ fun PokeDexCard(
     PokemonTypesTheme(types = pokemon.typeOfPokemon) {
         Surface(
             modifier = modifier,
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            color = PokemonTypesTheme.colorScheme.surface
         ) {
             PokeDexCardContent(
                 modifier = Modifier.clickable {
@@ -79,7 +79,6 @@ private fun PokeDexCardContent(
             text = formatId(pokemon.id),
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 10.dp, end = 12.dp)
@@ -121,7 +120,6 @@ private fun PokemonName(name: String?) {
         text = name ?: "",
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
-        color = MaterialTheme.colorScheme.onSurface
     )
 }
 

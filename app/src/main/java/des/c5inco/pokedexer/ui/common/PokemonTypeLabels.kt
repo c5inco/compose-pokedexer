@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,14 +65,13 @@ fun TypeLabel(
 ) {
     Surface(
         modifier = modifier,
-        color = if (colored) MaterialTheme.colorScheme.surface else Color(0x38FFFFFF),
+        color = if (colored) PokemonTypesTheme.colorScheme.surface else Color(0x38FFFFFF),
         shape = RoundedCornerShape(metrics.cornerRadius)
     ) {
         Text(
             text = text,
             fontSize = metrics.fontSize,
             fontWeight = metrics.fontWeight,
-            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(
                 start = metrics.horizontalPadding,
