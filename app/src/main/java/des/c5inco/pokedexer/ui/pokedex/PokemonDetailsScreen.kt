@@ -356,7 +356,6 @@ internal fun PokemonDetailsScreen(
                             )
                         }
                     },
-                    contentColor = MaterialTheme.colorScheme.onSurface,
                     onBackClick = onBackClick
                 )
             }
@@ -509,6 +508,7 @@ private fun RotatingPokeBall(
 }
 
 @Preview(uiMode = UI_MODE_NIGHT_YES)
+@Preview
 @Composable
 private fun PokemonDetailsPreview() {
     var activePokemon by remember { mutableStateOf(SamplePokemonData.first { it.name == "Pikachu" }) }
