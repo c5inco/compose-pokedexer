@@ -21,5 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <profileable
+            android:shell="true"
+            tools:targetApi="33"
+            />
     </application>
 </manifest>
