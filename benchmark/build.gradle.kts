@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.c5inco.pokedexer.benchmark"
+    namespace = "des.c5inco.pokedexer.benchmark"
     compileSdk = 33
 
     compileOptions {
