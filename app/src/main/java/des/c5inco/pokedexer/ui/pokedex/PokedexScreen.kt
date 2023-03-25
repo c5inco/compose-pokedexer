@@ -32,10 +32,14 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
@@ -58,6 +62,7 @@ fun PokedexScreenRoute(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PokedexScreen(
     loading: Boolean,
@@ -103,7 +108,11 @@ fun PokedexScreen(
 
     Surface {
         Box(
-            Modifier.fillMaxSize()
+            Modifier
+                .fillMaxSize()
+                .semantics {
+                    testTagsAsResourceId = true
+                }
         ) {
             PokeBallBackground(
                 modifier = Modifier
@@ -169,7 +178,7 @@ fun PokemonList(
     val loaded = remember { MutableTransitionState(!loading) }
 
     LazyVerticalGrid(
-        modifier = modifier,
+        modifier = modifier.testTag("PokedexLazyGrid"),
         columns = GridCells.Fixed(2),
         state = listState,
         verticalArrangement = Arrangement.spacedBy(8.dp),
