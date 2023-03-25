@@ -1,5 +1,6 @@
 package des.c5inco.pokedexer.benchmark
 
+import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
@@ -16,10 +17,18 @@ class PokedexListScrollBenchmark{
     val benchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun scroll() = benchmarkRule.measureRepeated(
+    fun scrollCompilationNone() = scroll(CompilationMode.None())
+
+    @Test
+    fun scrollCompilationPartial() = scroll(CompilationMode.Partial())
+
+    fun scroll(
+        compilationMode: CompilationMode
+    ) = benchmarkRule.measureRepeated(
         packageName = "des.c5inco.pokedexer",
         metrics = listOf(FrameTimingMetric()),
         iterations = 5,
+        compilationMode = compilationMode,
         startupMode = StartupMode.COLD,
         setupBlock = {
             pressHome()

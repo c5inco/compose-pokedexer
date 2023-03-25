@@ -1,5 +1,6 @@
 package des.c5inco.pokedexer.benchmark
 
+import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
@@ -26,10 +27,18 @@ class StartupBenchmark {
     val benchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun startup() = benchmarkRule.measureRepeated(
+    fun startupCompilationNone() = startup(CompilationMode.None())
+
+    @Test
+    fun startupCompilationPartial() = startup(CompilationMode.Partial())
+
+    fun startup(
+        compilationMode: CompilationMode
+    ) = benchmarkRule.measureRepeated(
         packageName = "des.c5inco.pokedexer",
         metrics = listOf(StartupTimingMetric()),
         iterations = 5,
+        compilationMode = compilationMode,
         startupMode = StartupMode.COLD
     ) {
         pressHome()
