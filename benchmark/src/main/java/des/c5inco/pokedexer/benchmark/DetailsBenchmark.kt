@@ -2,12 +2,12 @@ package des.c5inco.pokedexer.benchmark
 
 import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.FrameTimingMetric
-import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
+import androidx.test.uiautomator.Until
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,8 +25,12 @@ class DetailsBenchmark{
 
     fun pagePokemon(
         compilationMode: CompilationMode
-    ) = measure(
+    ) = benchmarkRule.measureRepeated(
+        packageName = "des.c5inco.pokedexer",
+        metrics = listOf(FrameTimingMetric()),
+        iterations = 5,
         compilationMode = compilationMode,
+        startupMode = StartupMode.COLD,
         setupBlock = {
             pressHome()
             startActivityAndWait()
@@ -36,36 +40,30 @@ class DetailsBenchmark{
 
             device.waitForIdle()
 
-            val firstPokemon = device.findObject(By.text("Bulbasaur"))
+            val firstPokemon = device.wait(Until.findObject(By.text("Bulbasaur")), 5000)
             firstPokemon.click()
+
+            device.waitForIdle()
         }
     ) {
-        device.waitForIdle()
+        val pager = device.wait(Until.findObject(By.res("PokemonPager")), 5000)
 
-        val pager = device.findObject(By.res("PokemonPager"))
-        if (pager != null) {
+        pager?.let {
             pager.setGestureMargin(device.displayWidth / 5)
-            repeat(4) {
-                pager.swipe(Direction.LEFT, 0.2f)
-            }
+
+            device.wait(Until.findObject(By.text("Bulbasaur")), 5000)
+            pager.fling(Direction.RIGHT, 1500)
+
+            device.wait(Until.findObject(By.text("Ivysaur")), 5000)
+            pager.fling(Direction.RIGHT, 1500)
+
+            device.wait(Until.findObject(By.text("Venusaur")), 5000)
+            pager.fling(Direction.RIGHT, 1500)
+
+            device.wait(Until.findObject(By.text("Charmander")), 1000)
+            pager.fling(Direction.RIGHT, 1500)
         }
 
         device.waitForIdle()
-    }
-
-    private fun measure(
-        compilationMode: CompilationMode,
-        setupBlock: MacrobenchmarkScope.() -> Unit,
-        measureBlock: MacrobenchmarkScope.() -> Unit
-    ) {
-        return benchmarkRule.measureRepeated(
-            packageName = "des.c5inco.pokedexer",
-            metrics = listOf(FrameTimingMetric()),
-            iterations = 5,
-            compilationMode = compilationMode,
-            startupMode = StartupMode.COLD,
-            setupBlock = setupBlock,
-            measureBlock = measureBlock
-        )
     }
 }

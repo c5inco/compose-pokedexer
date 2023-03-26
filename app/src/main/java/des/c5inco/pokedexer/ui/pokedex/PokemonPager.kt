@@ -116,9 +116,7 @@ fun PokemonPager(
     )
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .testTag("PokemonPager"),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.BottomCenter
     ) {
         if (!loading) {
@@ -128,6 +126,7 @@ fun PokemonPager(
                 key = { it },
                 contentPadding = PaddingValues(horizontal = 92.dp),
                 userScrollEnabled = enabled,
+                modifier = Modifier.testTag("PokemonPager"),
             ) { page ->
                 val pokemon = pokemonList[page]
                 val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
