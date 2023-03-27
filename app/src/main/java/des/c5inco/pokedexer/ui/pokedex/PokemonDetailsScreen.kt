@@ -292,8 +292,7 @@ internal fun PokemonDetailsScreen(
                             .align(Alignment.TopCenter)
                             .offset {
                                 IntOffset(
-                                    x = 0,
-                                    y = swipeableState.offset.value.roundToInt()
+                                    x = 0, y = swipeableState.offset.value.roundToInt()
                                 )
                             },
                         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
@@ -381,6 +380,12 @@ private fun CardContent(
         var section by rememberSaveable { mutableStateOf(Sections.About) }
 
         PokemonTypesTheme(types = pokemon.typeOfPokemon) {
+            val tabIndicatorColor by animateColorAsState(
+                targetValue = PokemonTypesTheme.colorScheme.primary,
+                tween(durationMillis = 500),
+                label = "tabIndicatorColor"
+            )
+
             TabRow(
                 containerColor = Color.Transparent,
                 selectedTabIndex = section.ordinal,
@@ -389,7 +394,7 @@ private fun CardContent(
                         modifier = Modifier
                             .tabIndicatorOffset(tabPositions[section.ordinal])
                             .clip(RoundedCornerShape(100)),
-                        color = PokemonTypesTheme.colorScheme.primary
+                        color = tabIndicatorColor
                     )
                 },
             ) {

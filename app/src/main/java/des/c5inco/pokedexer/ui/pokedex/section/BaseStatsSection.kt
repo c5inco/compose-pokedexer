@@ -1,8 +1,10 @@
 package des.c5inco.pokedexer.ui.pokedex.section
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -88,9 +91,15 @@ fun BaseStatsSection(
                 PokemonTypesTheme(
                     types = pokemon.typeOfPokemon
                 ) {
+                    val indicatorColor by animateColorAsState(
+                        targetValue = PokemonTypesTheme.colorScheme.primary,
+                        tween(durationMillis = 500),
+                        label = "statsProgressIndicatorColor"
+                    )
+
                     LinearProgressIndicator(
                         progress = statValue.value,
-                        color = PokemonTypesTheme.colorScheme.primary,
+                        color = indicatorColor,
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier
                             .clip(RoundedCornerShape(100))
