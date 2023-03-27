@@ -11,8 +11,8 @@ query PokemonOriginalMoves {
     category: pokemon_v2_movedamageclass {
       name
     }
-    description: pokemon_v2_moveflavortexts(where: {version_group_id: {_eq: 14}}) {
-      flavor_text
+    description: pokemon_v2_moveflavortexts(where: {version_group_id: {_eq: 7}}) {
+      flavorText: flavor_text
     }
     pp
     power
