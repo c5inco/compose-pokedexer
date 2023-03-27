@@ -15,9 +15,11 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
 import des.c5inco.pokedexer.data.Result
+import des.c5inco.pokedexer.data.moves.MovesRepository
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
 import des.c5inco.pokedexer.di.ViewModelFactoryProvider
+import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -49,8 +51,14 @@ data class PokemonDetailsEvolutions(
     val targetLevel: Int
 )
 
+data class PokemonDetailsMoves(
+    val move: Move,
+    val targetLevel: Int
+)
+
 class PokemonDetailsViewModel @AssistedInject constructor(
     private val pokemonRepository: PokemonRepository,
+    private val movesRepository: MovesRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
     @Assisted private val pokemon: Pokemon
 ): ViewModel() {
@@ -59,6 +67,9 @@ class PokemonDetailsViewModel @AssistedInject constructor(
         private set
 
     var evolutions by mutableStateOf(listOf<PokemonDetailsEvolutions>())
+        private set
+
+    var moves by mutableStateOf(listOf<PokemonDetailsMoves>())
         private set
 
     var isFavorite by mutableStateOf(false)
@@ -86,6 +97,8 @@ class PokemonDetailsViewModel @AssistedInject constructor(
 
     fun refresh(incomingPokemon: Pokemon) {
         viewModelScope.launch {
+            details = incomingPokemon
+
             val ev = mutableListOf<PokemonDetailsEvolutions>()
             incomingPokemon.evolutionChain.map {
                 launch {
@@ -100,10 +113,26 @@ class PokemonDetailsViewModel @AssistedInject constructor(
                     }
                 }
             }.joinAll()
-
-            details = incomingPokemon
             evolutions = ev
                 .sortedBy { it.pokemon.id }
+                .toList()
+
+            val mv = mutableListOf<PokemonDetailsMoves>()
+            incomingPokemon.movesList.map {
+                launch {
+                    when (val result = movesRepository.getMoveById(it.id)) {
+                        is Result.Success -> {
+                            mv.add(PokemonDetailsMoves(result.data, it.targetLevel))
+                        }
+                        is Result.Error -> {
+                            // TODO: Moves only queried from local database which currently limited to gen 1 moves
+                            println(result.exception)
+                        }
+                    }
+                }
+            }.joinAll()
+            moves = mv
+                .sortedBy { it.targetLevel }
                 .toList()
 
             userPreferencesFlow.collect {

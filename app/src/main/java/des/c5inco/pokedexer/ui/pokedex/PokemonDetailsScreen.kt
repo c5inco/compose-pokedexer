@@ -75,6 +75,7 @@ import com.google.accompanist.pager.rememberPagerState
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
+import des.c5inco.pokedexer.data.pokemon.mapSampleMovesToDetailsList
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Emphasis
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
@@ -101,6 +102,7 @@ fun PokemonDetailsScreenRoute(
         pokemonSet = viewModel.uiState.pokemon,
         pokemon = detailsViewModel.details,
         evolutions = detailsViewModel.evolutions,
+        moves = detailsViewModel.moves,
         isFavorite = detailsViewModel.isFavorite,
         onPage = {
             detailsViewModel.refresh(it)
@@ -119,6 +121,7 @@ internal fun PokemonDetailsScreen(
     pokemonSet: List<Pokemon>,
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>,
+    moves: List<PokemonDetailsMoves>,
     isFavorite: Boolean = false,
     onPage: (Pokemon) -> Unit = {},
     onFavoriteClick: (Int) -> Unit = { _ -> },
@@ -306,6 +309,7 @@ internal fun PokemonDetailsScreen(
                             },
                             pokemon = pokemon,
                             evolutions = evolutions,
+                            moves = moves,
                         )
                     }
 
@@ -371,13 +375,14 @@ private enum class Sections(val title: String) {
 private fun CardContent(
     modifier: Modifier,
     pokemon: Pokemon,
-    evolutions: List<PokemonDetailsEvolutions>
+    evolutions: List<PokemonDetailsEvolutions>,
+    moves: List<PokemonDetailsMoves>,
 ) {
     Column(
         modifier.fillMaxSize()
     ) {
         val sectionTitles = Sections.values().map { it.title }
-        var section by rememberSaveable { mutableStateOf(Sections.About) }
+        var section by rememberSaveable { mutableStateOf(Sections.Moves) }
 
         PokemonTypesTheme(types = pokemon.typeOfPokemon) {
             val tabIndicatorColor by animateColorAsState(
@@ -423,7 +428,7 @@ private fun CardContent(
                 Sections.About -> AboutSection(pokemon)
                 Sections.BaseStats -> BaseStatsSection(pokemon)
                 Sections.Evolution -> EvolutionSection(evolutions = evolutions)
-                else -> MovesSection(pokemon)
+                else -> MovesSection(pokemon = pokemon, moves = moves)
             }
         }
     }
@@ -525,6 +530,7 @@ private fun PokemonDetailsPreview() {
                 evolutions = mapSampleEvolutionsToList(
                     activePokemon.evolutionChain
                 ),
+                moves = mapSampleMovesToDetailsList(),
                 onPage = {
                     activePokemon = it
                 })
