@@ -287,29 +287,27 @@ internal fun PokemonDetailsScreen(
                         Header(pokemon = targetPokemon)
                     }
 
-                    AppTheme {
-                        Surface(
-                            modifier = Modifier
-                                .align(Alignment.TopCenter)
-                                .offset {
-                                    IntOffset(
-                                        x = 0,
-                                        y = swipeableState.offset.value.roundToInt()
-                                    )
-                                },
-                            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
-                        ) {
-                            CardContent(
-                                modifier = Modifier.offset {
-                                    IntOffset(
-                                        x = 0,
-                                        y = cardPaddingTarget
-                                    )
-                                },
-                                pokemon = pokemon,
-                                evolutions = evolutions,
-                            )
-                        }
+                    Surface(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .offset {
+                                IntOffset(
+                                    x = 0,
+                                    y = swipeableState.offset.value.roundToInt()
+                                )
+                            },
+                        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+                    ) {
+                        CardContent(
+                            modifier = Modifier.offset {
+                                IntOffset(
+                                    x = 0,
+                                    y = cardPaddingTarget
+                                )
+                            },
+                            pokemon = pokemon,
+                            evolutions = evolutions,
+                        )
                     }
 
                     PokemonPager(
@@ -380,7 +378,7 @@ private fun CardContent(
         modifier.fillMaxSize()
     ) {
         val sectionTitles = Sections.values().map { it.title }
-        var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
+        var section by rememberSaveable { mutableStateOf(Sections.About) }
 
         PokemonTypesTheme(types = pokemon.typeOfPokemon) {
             TabRow(
