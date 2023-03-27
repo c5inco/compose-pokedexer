@@ -6,6 +6,7 @@ import des.c5inco.pokedexer.PokemonOriginalQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.model.Evolution
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.model.PokemonMove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -33,7 +34,6 @@ class RemotePokemonRepository @Inject constructor(
                     val pokemonFromServer = response.data!!.pokemon.map { model ->
                         val detail = model.detail.first()
                         val stats = detail.stats.map { it.baseStat }
-                        val evolutions = model.evolutionChain?.evolutions ?: emptyList()
 
                         Pokemon(
                             id = model.id,
@@ -51,7 +51,8 @@ class RemotePokemonRepository @Inject constructor(
                             specialAttack = stats[3],
                             specialDefense = stats[4],
                             speed = stats[5],
-                            evolutionChain = transformEvolutionChain(evolutions)
+                            evolutionChain = transformEvolutionChain(model.evolutionChain?.evolutions ?: emptyList()),
+                            movesList = transformMoves(detail.moves)
                         )
                     }
 
@@ -100,6 +101,15 @@ private fun transformEvolutionChain(
                 -1
             }
             Evolution(it.id, targetLevel)
+        }
+}
+
+private fun transformMoves(
+    list: List<PokemonOriginalQuery.Move>
+): List<PokemonMove> {
+    return list
+        .map {
+            PokemonMove(it.id!!, it.level)
         }
 }
 

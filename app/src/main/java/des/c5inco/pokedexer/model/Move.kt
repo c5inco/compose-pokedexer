@@ -43,3 +43,8 @@ enum class MoveCategory {
     Special,
     Status
 }
+
+data class PokemonMove(
+    val id: Int,
+    val targetLevel: Int
+)

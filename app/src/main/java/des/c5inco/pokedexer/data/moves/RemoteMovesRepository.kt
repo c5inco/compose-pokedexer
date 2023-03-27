@@ -33,7 +33,7 @@ class RemoteMovesRepository @Inject constructor(
                             name = model.name.split("-").joinToString(" ") { part ->
                                 part.replaceFirstChar { it.uppercase() }
                             },
-                            description = model.description.first().flavor_text,
+                            description = model.description.first().flavorText,
                             category = model.category!!.name,
                             type = model.type!!.name.replaceFirstChar { it.uppercase() },
                             pp = model.pp!!,
@@ -52,5 +52,17 @@ class RemoteMovesRepository @Inject constructor(
                 }
             }
         }
+    }
+
+    override suspend fun getMoveById(id: Int): Result<Move> {
+        movesDao.findById(id)?.let {
+            return Result.Success(it)
+        }
+        return Result.Error(
+            Exception("Move with ID: $id not found in local DB!")
+        )
+    }
+    override suspend fun getMovesByIds(ids: List<Int>): Result<List<Move>> {
+        return Result.Success(movesDao.findByIds(ids))
     }
 }

@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import des.c5inco.pokedexer.data.PokemonDatabase
 import des.c5inco.pokedexer.data.pokemon.PokemonDao
-import des.c5inco.pokedexer.data.pokemon.PokemonDatabase
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import kotlinx.coroutines.runBlocking
 import org.junit.After

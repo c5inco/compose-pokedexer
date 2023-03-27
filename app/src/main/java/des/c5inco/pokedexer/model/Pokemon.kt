@@ -28,6 +28,8 @@ data class Pokemon(
     val speed: Int,
     @ColumnInfo(name = "evolutions", defaultValue = "")
     val evolutionChain: List<Evolution> = listOf(),
+    @ColumnInfo(name = "moves", defaultValue = "")
+    val movesList: List<PokemonMove> = listOf(),
 )
 
 fun Pokemon.color(): Color {
