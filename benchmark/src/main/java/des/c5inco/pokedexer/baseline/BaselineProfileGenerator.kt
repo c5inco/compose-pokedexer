@@ -1,4 +1,4 @@
-package des.c5inco.pokedexer.benchmark
+package des.c5inco.pokedexer.baseline
 
 import androidx.benchmark.macro.ExperimentalBaselineProfilesApi
 import androidx.benchmark.macro.junit4.BaselineProfileRule
