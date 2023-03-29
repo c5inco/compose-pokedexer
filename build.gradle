@@ -1,15 +1,9 @@
-//import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-//subprojects {
-//    tasks.withType(KotlinCompile).configureEach {
-//        kotlinOptions {
-//            // Treat all Kotlin warnings as errors (disabled by default)
-//            allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
-//
-//            jvmTarget = "1.8"
-//
-//            // Use experimental APIs
-//            freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-//        }
-//    }
-//}
+plugins {
+    alias(libs.plugins.androidApplication).apply(false)
+    alias(libs.plugins.kotlinAndroid).apply(false)
+    alias(libs.plugins.androidTest).apply(false)
+    alias(libs.plugins.kapt).apply(false)
+    alias(libs.plugins.ksp).apply(false)
+    alias(libs.plugins.apollo).apply(false)
+    alias(libs.plugins.daggerHiltAndroidGradle).apply(false)
+}

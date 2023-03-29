@@ -57,6 +57,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
@@ -112,7 +113,9 @@ fun PokemonDetailsScreenRoute(
     )
 }
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class, ExperimentalAnimationApi::class,
+    ExperimentalComposeUiApi::class
+)
 @Composable
 internal fun PokemonDetailsScreen(
     loading: Boolean,
@@ -227,9 +230,10 @@ internal fun PokemonDetailsScreen(
         )
 
         Surface(
-            modifier = Modifier.drawBehind {
-                drawRect(pokemonTypeColor)
-            },
+            modifier = Modifier
+                .drawBehind {
+                    drawRect(pokemonTypeColor)
+                },
             color = Color.Transparent
         ) {
             Box(Modifier.fillMaxSize()) {

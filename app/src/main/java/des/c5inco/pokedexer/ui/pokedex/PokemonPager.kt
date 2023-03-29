@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
@@ -125,6 +126,7 @@ fun PokemonPager(
                 key = { it },
                 contentPadding = PaddingValues(horizontal = 92.dp),
                 userScrollEnabled = enabled,
+                modifier = Modifier.testTag("PokemonPager"),
             ) { page ->
                 val pokemon = pokemonList[page]
                 val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
