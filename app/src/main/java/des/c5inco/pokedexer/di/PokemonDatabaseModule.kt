@@ -23,10 +23,13 @@ object PokemonDatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context): PokemonDatabase {
-        return Room.databaseBuilder(
-            appContext,
-            PokemonDatabase::class.java,
-            "pokemon.db"
-        ).build()
+        return Room
+            .databaseBuilder(
+                appContext,
+                PokemonDatabase::class.java,
+                "pokemon.db"
+            )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }
