@@ -131,9 +131,7 @@ class PokemonDetailsViewModel @AssistedInject constructor(
                     }
                 }
             }.joinAll()
-            moves = mv
-                .sortedBy { it.targetLevel }
-                .toList()
+            moves = mv.sortedBy { it.targetLevel }
 
             userPreferencesFlow.collect {
                 isFavorite = it.favorites.contains(incomingPokemon.id)

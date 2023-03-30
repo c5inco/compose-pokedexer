@@ -16,6 +16,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.with
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -383,6 +384,7 @@ private enum class Sections(val title: String) {
     Moves("Moves")
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CardContent(
     modifier: Modifier,
@@ -402,10 +404,10 @@ private fun CardContent(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
     ) {
-        item {
+        stickyHeader {
             PokemonTypesTheme(types = pokemon.typeOfPokemon) {
                 TabRow(
-                    containerColor = Color.Transparent,
+                    containerColor = MaterialTheme.colorScheme.surface,
                     selectedTabIndex = section.ordinal,
                     indicator = { tabPositions ->
                         TabRowDefaults.Indicator(
