@@ -4,8 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import des.c5inco.pokedexer.data.PokemonDatabase
 import des.c5inco.pokedexer.data.moves.MovesDao
-import des.c5inco.pokedexer.data.pokemon.PokemonDatabase
 
 @InstallIn(SingletonComponent::class)
 @Module

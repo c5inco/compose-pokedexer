@@ -15,7 +15,8 @@ object RemotePokemonRepositoryModule {
 
     @Provides
     fun providePokemonRepository(
-        pokemonDao: PokemonDao, apolloClient: ApolloClient
+        pokemonDao: PokemonDao,
+        apolloClient: ApolloClient
     ): PokemonRepository {
         return RemotePokemonRepository(pokemonDao, apolloClient)
     }

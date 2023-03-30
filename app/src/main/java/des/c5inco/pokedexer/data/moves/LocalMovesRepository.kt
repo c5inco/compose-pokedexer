@@ -20,6 +20,14 @@ class LocalMovesRepository(
         }
     }
 
+    override suspend fun getMoveById(id: Int): Result<Move> {
+        return Result.Success(localMovesDataSource.fetchMoves().first())
+    }
+
+    override suspend fun getMovesByIds(ids: List<Int>): Result<List<Move>> {
+        return Result.Success(localMovesDataSource.fetchMoves().take(3))
+    }
+
     // used to drive "random" failure in a predictable pattern, making the first request always
     // succeed
     private var requestCount = 0

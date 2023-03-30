@@ -25,6 +25,10 @@ query PokemonOriginal {
         }
         height
         weight
+        moves: pokemon_v2_pokemonmoves(where: {move_learn_method_id: {_eq: 1}, version_group_id: {_eq: 7}}, order_by: {level: asc}) {
+          level
+          id: move_id
+        }
       }
       genderRate: gender_rate
       evolutionChain: pokemon_v2_evolutionchain {

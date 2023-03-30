@@ -7,8 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import des.c5inco.pokedexer.data.PokemonDatabase
 import des.c5inco.pokedexer.data.pokemon.PokemonDao
-import des.c5inco.pokedexer.data.pokemon.PokemonDatabase
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -23,10 +23,13 @@ object PokemonDatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context): PokemonDatabase {
-        return Room.databaseBuilder(
-            appContext,
-            PokemonDatabase::class.java,
-            "pokemon.db"
-        ).build()
+        return Room
+            .databaseBuilder(
+                appContext,
+                PokemonDatabase::class.java,
+                "pokemon.db"
+            )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }
