@@ -55,6 +55,7 @@ fun PokedexScreenRoute(
     PokedexScreen(
         loading = viewModel.uiState.loading,
         pokemon = viewModel.uiState.pokemon,
+        favorites = viewModel.favorites,
         onPokemonSelected = onPokemonSelected,
         onBackClick = onBackClick
     )
@@ -65,6 +66,7 @@ fun PokedexScreenRoute(
 fun PokedexScreen(
     loading: Boolean,
     pokemon: List<Pokemon>,
+    favorites: List<Pokemon>,
     onPokemonSelected: (Pokemon) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
@@ -133,6 +135,7 @@ fun PokedexScreen(
                     )
                 },
                 pokemon = pokemon,
+                favorites = favorites,
                 onPokemonSelected = onPokemonSelected
             )
 
@@ -167,6 +170,7 @@ fun PokemonList(
     loading: Boolean = false,
     title: @Composable () -> Unit,
     pokemon: List<Pokemon>,
+    favorites: List<Pokemon>,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
     val loaded = remember { MutableTransitionState(!loading) }
@@ -217,6 +221,7 @@ fun PokemonList(
                     ) {
                         PokeDexCard(
                             pokemon = p,
+                            isFavorite = favorites.contains(p),
                             onPokemonSelected = onPokemonSelected
                         )
                     }
@@ -233,7 +238,8 @@ private fun PokedexScreenPreview() {
     AppTheme {
         PokedexScreen(
             loading = false,
-            pokemon = SamplePokemonData
+            pokemon = SamplePokemonData,
+            favorites = emptyList()
         )
     }
 }
