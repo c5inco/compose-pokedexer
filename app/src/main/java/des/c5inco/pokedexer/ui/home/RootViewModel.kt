@@ -1,15 +1,13 @@
 package des.c5inco.pokedexer.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import des.c5inco.pokedexer.data.Result
+import des.c5inco.pokedexer.data.items.ItemsRepository
 import des.c5inco.pokedexer.data.moves.MovesRepository
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
-import des.c5inco.pokedexer.model.Move
-import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,7 +15,8 @@ import javax.inject.Inject
 class RootViewModel @Inject constructor(
     val imageLoader: ImageLoader,
     private val pokemonRepository: PokemonRepository,
-    private val movesRepository: MovesRepository
+    private val movesRepository: MovesRepository,
+    private val itemsRepository: ItemsRepository,
 ): ViewModel() {
     init {
         viewModelScope.launch {
@@ -38,6 +37,15 @@ class RootViewModel @Inject constructor(
                 }
                 is Result.Error -> {
                     throw movesResults.exception
+                }
+            }
+
+            when(val itemsResults = itemsRepository.getAllItems()) {
+                is Result.Success -> {
+                    println("Items database: ${itemsResults.data.size}")
+                }
+                is Result.Error -> {
+                    throw itemsResults.exception
                 }
             }
         }

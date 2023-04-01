@@ -1,24 +1,28 @@
 package des.c5inco.pokedexer.data
 
 import androidx.room.*
+import des.c5inco.pokedexer.data.items.ItemsDao
 import des.c5inco.pokedexer.data.moves.MovesDao
 import des.c5inco.pokedexer.data.pokemon.PokemonDao
 import des.c5inco.pokedexer.model.Evolution
+import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.PokemonMove
 
 @Database(
-    version = 3,
-    entities = [Pokemon::class, Move::class],
+    version = 4,
+    entities = [Pokemon::class, Move::class, Item::class],
     autoMigrations = [
-        AutoMigration(from = 1, to = 3),
+        AutoMigration(from = 1, to = 4),
     ]
 )
 @TypeConverters(Converters::class)
 abstract class PokemonDatabase : RoomDatabase() {
     abstract fun pokemonDao(): PokemonDao
     abstract fun movesDao(): MovesDao
+
+    abstract fun itemsDao(): ItemsDao
 }
 
 class Converters {
