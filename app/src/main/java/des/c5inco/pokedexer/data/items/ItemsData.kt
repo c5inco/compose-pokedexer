@@ -45,5 +45,4 @@ val SampleItems = listOf(
         description = "A somewhat different BALL that works especially well on POKéMON deep in the sea.",
         sprite = "dive-ball"
     ),
-
 )
