@@ -44,7 +44,7 @@ fun NavigationTopAppBar(
             modifier = Modifier.align(Alignment.Center),
         ) {
             ProvideTextStyle(
-                value = MaterialTheme.typography.titleLarge,
+                value = MaterialTheme.typography.titleMedium,
                 content = title
             )
         }

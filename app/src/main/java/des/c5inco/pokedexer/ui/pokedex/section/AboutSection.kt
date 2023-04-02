@@ -71,7 +71,7 @@ private fun BreedingDetails(
     Column(modifier) {
         Text(
             "Breeding",
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
         )
         Spacer(Modifier.height(24.dp))
         Row(Modifier.fillMaxWidth()) {

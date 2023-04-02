@@ -43,7 +43,7 @@ fun EvolutionSection(
     Column(modifier) {
         Text(
             "Evolution chain",
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
         )
 
         evolutions.forEachIndexed { idx, evo ->

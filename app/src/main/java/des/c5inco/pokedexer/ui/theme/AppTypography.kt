@@ -37,7 +37,10 @@ val AppTypography = Typography(
         fontSize = 24.sp,
         fontFamily = appFontFamily
     ),
-    titleLarge = TextStyle(
+    titleLarge = defaultTypography.titleLarge.copy(
+        fontFamily = appFontFamily
+    ),
+    titleMedium = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         fontFamily = appFontFamily
@@ -70,6 +73,9 @@ fun AppTypographyPreview() {
             )
             Text("titleLarge",
                 style = MaterialTheme.typography.titleLarge
+            )
+            Text("titleMedium",
+                style = MaterialTheme.typography.titleMedium
             )
             Text("bodyLarge",
                 style = MaterialTheme.typography.bodyLarge
