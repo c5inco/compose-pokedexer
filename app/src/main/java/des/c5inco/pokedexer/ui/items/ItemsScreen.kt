@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -104,7 +103,7 @@ private fun ItemCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(20.dp)
+        shape = MaterialTheme.shapes.large,
     ) {
         Column(
             modifier = Modifier.padding(20.dp)
