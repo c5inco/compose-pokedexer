@@ -45,4 +45,10 @@ val SampleItems = listOf(
         description = "A somewhat different BALL that works especially well on POKéMON deep in the sea.",
         sprite = "dive-ball"
     ),
+    Item(
+        id = 83,
+        name = "Thunder Stone",
+        description = "A peculiar stone that makes certain species of POKéMON evolve. It has a thunderbolt pattern.",
+        sprite = "thunder-stone"
+    ),
 )

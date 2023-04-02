@@ -58,11 +58,15 @@ class ItemsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getItemById(id: Int): Result<Item> {
-        TODO("Not yet implemented")
+        itemsDao.findById(id)?.let {
+            return Result.Success(it)
+        }
+        return Result.Error(
+            Exception("Item with ID: $id not found in local DB!")
+        )
     }
 
     override suspend fun getItemByIds(ids: List<Int>): Result<List<Item>> {
         TODO("Not yet implemented")
     }
-
 }

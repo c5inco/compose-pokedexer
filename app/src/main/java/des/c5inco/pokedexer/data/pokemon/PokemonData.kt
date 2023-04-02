@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.data.pokemon
 
 import des.c5inco.pokedexer.R
+import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Evolution
 import des.c5inco.pokedexer.model.EvolutionTrigger
@@ -563,8 +564,10 @@ fun mapSampleEvolutionsToList(
 ): List<PokemonDetailsEvolutions> {
     return sample.map {
         PokemonDetailsEvolutions(
-            SamplePokemonData.first { p -> it.id == p.id },
-            it.targetLevel
+            pokemon = SamplePokemonData.first { p -> it.id == p.id },
+            targetLevel = it.targetLevel,
+            trigger = it.trigger,
+            item = SampleItems.firstOrNull { i -> it.itemId == i.id}
         )
     }
 }
