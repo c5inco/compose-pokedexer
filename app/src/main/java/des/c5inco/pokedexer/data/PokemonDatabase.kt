@@ -5,6 +5,7 @@ import des.c5inco.pokedexer.data.items.ItemsDao
 import des.c5inco.pokedexer.data.moves.MovesDao
 import des.c5inco.pokedexer.data.pokemon.PokemonDao
 import des.c5inco.pokedexer.model.Evolution
+import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
@@ -43,7 +44,13 @@ class Converters {
         if (str.isNotBlank()) {
             str.split("|").map {
                 val evo = it.split(",")
-                list.add(Evolution(evo[0].toInt(), evo[1].toInt()))
+                list.add(
+                    Evolution(
+                        id = evo[0].toInt(),
+                        targetLevel = evo[1].toInt(),
+                        trigger = EvolutionTrigger.fromInt(evo[2].toInt()),
+                        itemId = evo[3].toInt()
+                    ))
             }
         }
 
@@ -53,7 +60,7 @@ class Converters {
     @TypeConverter
     fun evolutionListToString(list: List<Evolution>): String {
         return list.joinToString(separator = "|") {
-            val data = listOf(it.id, it.targetLevel)
+            val data = listOf(it.id, it.targetLevel, it.trigger.value, it.itemId)
             data.joinToString(",")
         }
     }

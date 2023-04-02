@@ -5,6 +5,7 @@ import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.PokemonOriginalQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.model.Evolution
+import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.PokemonMove
 import kotlinx.coroutines.Dispatchers
@@ -95,12 +96,22 @@ private fun transformEvolutionChain(
 ): List<Evolution> {
     return list
         .map {
-            val targetLevel = if (it.targetLevels.isNotEmpty()) {
-                it.targetLevels.first().level ?: -1
+            if (it.targetLevels.isNotEmpty()) {
+                val target = it.targetLevels.first()
+
+                Evolution(
+                    id = it.id,
+                    targetLevel = target.level ?: -1,
+                    trigger = when (target.triggerType) {
+                        3 -> EvolutionTrigger.UseItem
+                        2 -> EvolutionTrigger.Trade
+                        else -> EvolutionTrigger.LevelUp
+                    },
+                    itemId = target.itemId ?: -1
+                )
             } else {
-                -1
+                Evolution(id = it.id)
             }
-            Evolution(it.id, targetLevel)
         }
 }
 

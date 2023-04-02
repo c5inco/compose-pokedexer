@@ -36,6 +36,8 @@ query PokemonOriginal {
           id
           targetLevels: pokemon_v2_pokemonevolutions {
             level: min_level
+            triggerType: evolution_trigger_id
+            itemId: evolution_item_id
           }
         }
       }

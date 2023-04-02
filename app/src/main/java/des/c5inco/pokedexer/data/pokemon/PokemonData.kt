@@ -3,6 +3,7 @@ package des.c5inco.pokedexer.data.pokemon
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Evolution
+import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsEvolutions
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsMoves
@@ -531,7 +532,7 @@ val SamplePokemonData = listOf(
         speed = 90,
         evolutionChain = listOf(
             Evolution(25, -1),
-            Evolution(26, -1),
+            Evolution(26, -1, EvolutionTrigger.UseItem, 83),
         )
     ),
     Pokemon(
@@ -552,7 +553,7 @@ val SamplePokemonData = listOf(
         speed = 110,
         evolutionChain = listOf(
             Evolution(25, -1),
-            Evolution(26, -1),
+            Evolution(26, -1, EvolutionTrigger.UseItem, 83),
         )
     ),
 )
