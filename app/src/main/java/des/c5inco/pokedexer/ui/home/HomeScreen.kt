@@ -46,7 +46,8 @@ fun HomeScreen(
                 onMenuItemSelected = {
                     when (it) {
                         MenuItem.Moves,
-                        MenuItem.Pokedex ->
+                        MenuItem.Pokedex,
+                        MenuItem.Items ->
                             onMenuItemSelected(it)
                         else ->
                             openAlertDialog = true

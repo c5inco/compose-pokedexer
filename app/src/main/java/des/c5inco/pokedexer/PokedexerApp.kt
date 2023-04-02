@@ -19,6 +19,7 @@ import dagger.hilt.android.HiltAndroidApp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
+import des.c5inco.pokedexer.ui.items.ItemsScreenRoute
 import des.c5inco.pokedexer.ui.moves.MovesListScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.PokedexScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsScreenRoute
@@ -48,6 +49,9 @@ fun PokedexerApp() {
                 if (it == MenuItem.Moves) {
                     navController.navigate("moves")
                 }
+                if (it == MenuItem.Items) {
+                    navController.navigate("items")
+                }
             }
         }
         navigation(startDestination = "list", route = "pokedex") {
@@ -71,6 +75,12 @@ fun PokedexerApp() {
         }
         composable(route = "moves") {
             MovesListScreenRoute(
+                viewModel = hiltViewModel(),
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        composable(route = "items") {
+            ItemsScreenRoute(
                 viewModel = hiltViewModel(),
                 onBackClick = { navController.popBackStack() }
             )
