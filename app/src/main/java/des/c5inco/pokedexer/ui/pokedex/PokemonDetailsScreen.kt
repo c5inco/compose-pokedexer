@@ -397,7 +397,7 @@ private fun CardContent(
     moves: List<PokemonDetailsMoves>,
 ) {
     val sectionTitles = Sections.values().map { it.title }
-    var section by rememberSaveable { mutableStateOf(Sections.Evolution) }
+    var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
 
     val tabIndicatorColor by animateColorAsState(
         targetValue = PokemonTypesTheme.colorScheme.primary,
