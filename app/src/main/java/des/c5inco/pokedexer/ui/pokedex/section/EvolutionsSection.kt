@@ -29,7 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
+import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.ui.common.ItemImage
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsEvolutions
@@ -41,44 +43,68 @@ fun EvolutionSection(
     evolutions: List<PokemonDetailsEvolutions> = listOf(),
 ) {
     Column(modifier) {
-        Text(
-            "Evolution chain",
-            style = MaterialTheme.typography.titleMedium,
-        )
+        if (evolutions.size > 1) {
+            Text(
+                "Evolution chain",
+                style = MaterialTheme.typography.titleMedium,
+            )
 
-        evolutions.forEachIndexed { idx, evo ->
-            if (idx < evolutions.size - 1) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    val e1 = evo
-                    val e2 = evolutions[idx + 1]
-
-                    EvolutionCard(e1.pokemon)
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+            evolutions.forEachIndexed { idx, evo ->
+                if (idx < evolutions.size - 1) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowForward,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.surfaceTint
-                        )
-                        Spacer(Modifier.height(4.dp))
-                        Text(
-                            "Lvl ${e2.targetLevel}",
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Bold
-                        )
+                        val e1 = evo
+                        val e2 = evolutions[idx + 1]
+
+                        EvolutionCard(e1.pokemon)
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowForward,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.surfaceTint
+                            )
+                            Spacer(Modifier.height(4.dp))
+
+                            e2.item?.let {
+                                ItemImage(
+                                    item = e2.item,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    text = e2.item.name,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            } ?: run {
+                                Text(
+                                    text = when (e2.trigger) {
+                                        EvolutionTrigger.Trade ->
+                                            "Trade"
+
+                                        else ->
+                                            "Lvl ${e2.targetLevel}"
+                                    },
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        EvolutionCard(e2.pokemon)
                     }
-                    EvolutionCard(e2.pokemon)
                 }
+                if (idx < evolutions.size - 2)
+                    Divider()
             }
-            if (idx < evolutions.size - 2)
-                Divider()
+        } else {
+            Text(text = "No evolutions found")
         }
     }
 }
@@ -93,7 +119,7 @@ fun EvolutionsSectionPreview() {
                 EvolutionSection(
                     modifier = Modifier.padding(vertical = 32.dp),
                     evolutions = mapSampleEvolutionsToList(
-                        SamplePokemonData.first().evolutionChain
+                        SamplePokemonData.first { it.name == "Pikachu" }.evolutionChain
                     )
                 )
                 EvolutionSection(

@@ -15,10 +15,13 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
 import des.c5inco.pokedexer.data.Result
+import des.c5inco.pokedexer.data.items.ItemsRepository
 import des.c5inco.pokedexer.data.moves.MovesRepository
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
 import des.c5inco.pokedexer.di.ViewModelFactoryProvider
+import des.c5inco.pokedexer.model.EvolutionTrigger
+import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.joinAll
@@ -48,7 +51,9 @@ data class PokemonDetailsBaseStatsUiState(
 
 data class PokemonDetailsEvolutions(
     val pokemon: Pokemon,
-    val targetLevel: Int
+    val trigger: EvolutionTrigger,
+    val targetLevel: Int,
+    val item: Item?
 )
 
 data class PokemonDetailsMoves(
@@ -59,6 +64,7 @@ data class PokemonDetailsMoves(
 class PokemonDetailsViewModel @AssistedInject constructor(
     private val pokemonRepository: PokemonRepository,
     private val movesRepository: MovesRepository,
+    private val itemsRepository: ItemsRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
     @Assisted private val pokemon: Pokemon
 ): ViewModel() {
@@ -104,7 +110,19 @@ class PokemonDetailsViewModel @AssistedInject constructor(
                 launch {
                     when (val result = pokemonRepository.getPokemonById(it.id)) {
                         is Result.Success -> {
-                            ev.add(PokemonDetailsEvolutions(result.data, it.targetLevel))
+                            ev.add(PokemonDetailsEvolutions(
+                                pokemon = result.data,
+                                targetLevel = it.targetLevel,
+                                trigger = it.trigger,
+                                item = when (val itemResult = itemsRepository.getItemById(it.itemId)) {
+                                    is Result.Success ->
+                                        itemResult.data
+                                    is Result.Error -> {
+                                        println(itemResult.exception)
+                                        null
+                                    }
+                                }
+                            ))
                         }
                         is Result.Error -> {
                             // TODO: Pokemon only queried from local database which currently limited to original 151
