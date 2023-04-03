@@ -223,11 +223,11 @@ fun PokedexScreen(
 
             Column(
                 verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.End,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
+                    .align(Alignment.BottomCenter)
                     .padding(WindowInsets.navigationBars.asPaddingValues())
-                    .padding(bottom = 24.dp, end = 24.dp)
+                    .padding(bottom = 24.dp)
             ) {
                 FilterMenu(
                     visible = showFilterMenu,
@@ -359,7 +359,7 @@ private fun FilterMenu(
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.End,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 FilterMenuItem(
                     index = 0,
@@ -403,19 +403,11 @@ private fun AnimatedVisibilityScope.FilterMenuItem(
         onClick = onClick,
         modifier = modifier
             .animateEnterExit(
-                enter = fadeIn(
-                    animationSpec = tween(
-                        durationMillis = 200,
-                        delayMillis = index * 15 + 60
-                    )
-                ) +
-                        slideInVertically(
-                            initialOffsetY = { it / 2 },
-                            animationSpec = tween(
-                                durationMillis = 240,
-                                delayMillis = index * 50 + 60
-                            )
-                        ),
+                enter = fadeIn(animationSpec = tween(durationMillis = 200, delayMillis = index * 15 + 60)) +
+                    slideInVertically(
+                        initialOffsetY = { it / 2 },
+                        animationSpec = tween(durationMillis = 240, delayMillis = index * 50 + 60)
+                    ),
                 exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)) +
                         slideOutVertically(targetOffsetY = { it / 2 }),
                 label = "Filter menu item"
