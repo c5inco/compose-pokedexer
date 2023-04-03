@@ -16,12 +16,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -33,19 +31,20 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
@@ -60,7 +59,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
@@ -333,6 +331,7 @@ private fun FilterMenu(
                     onClick = onMenuItemClick
                 ) {
                     Text("Favorite Pokemon")
+                    Spacer(Modifier.width(12.dp))
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = null,
@@ -344,6 +343,7 @@ private fun FilterMenu(
                     onClick = onMenuItemClick
                 ) {
                     Text("All types")
+                    Spacer(Modifier.width(12.dp))
                     Icon(
                         painter = painterResource(id = R.drawable.ic_genetics),
                         contentDescription = null,
@@ -363,9 +363,9 @@ private fun AnimatedVisibilityScope.FilterMenuItem(
     onClick: () -> Unit = {},
     content: @Composable RowScope.() -> Unit = {}
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    FilledTonalButton(
+        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp),
+        onClick = onClick,
         modifier = modifier
             .animateEnterExit(
                 enter = fadeIn(
@@ -385,11 +385,6 @@ private fun AnimatedVisibilityScope.FilterMenuItem(
                         slideOutVertically(targetOffsetY = { it / 2 }),
                 label = "Filter menu item"
             )
-            .clip(RoundedCornerShape(100))
-            .clickable { onClick() }
-            .background(MaterialTheme.colorScheme.surface)
-            .height(36.dp)
-            .padding(horizontal = 18.dp)
     ) {
         content()
     }
