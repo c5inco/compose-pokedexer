@@ -365,25 +365,25 @@ private fun FilterMenu(
                     index = 0,
                     onClick = { onMenuItemClick(FilterMenuItem.Favorites) }
                 ) {
-                    Text(if (showFavorites) "Show all" else "Show favorites")
-                    Spacer(Modifier.width(12.dp))
                     Icon(
                         imageVector = if (showFavorites) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp)
                     )
+                    Spacer(Modifier.width(8.dp))
+                    Text(if (showFavorites) "Show all" else "Show favorites")
                 }
                 FilterMenuItem(
                     index = 1,
                     onClick = { onMenuItemClick(FilterMenuItem.Types) }
                 ) {
-                    Text("All types")
-                    Spacer(Modifier.width(12.dp))
                     Icon(
                         painter = painterResource(id = R.drawable.ic_genetics),
                         contentDescription = null,
                         modifier = Modifier.size(18.dp)
                     )
+                    Spacer(Modifier.width(8.dp))
+                    Text("All types")
                 }
             }
         }
