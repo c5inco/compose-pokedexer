@@ -16,6 +16,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +42,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
@@ -57,7 +60,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.graphicsLayer
@@ -85,18 +87,30 @@ fun PokedexScreenRoute(
         loading = viewModel.uiState.loading,
         pokemon = viewModel.uiState.pokemon,
         favorites = viewModel.favorites,
+        showFavorites = viewModel.showFavorites,
         onPokemonSelected = onPokemonSelected,
+        onMenuItemClick = {
+            when (it) {
+                FilterMenuItem.Favorites -> {
+                    viewModel.toggleFavorites()
+                }
+                FilterMenuItem.Types ->
+                    Unit
+            }
+        },
         onBackClick = onBackClick
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PokedexScreen(
     loading: Boolean,
     pokemon: List<Pokemon>,
     favorites: List<Pokemon>,
+    showFavorites: Boolean = false,
     onPokemonSelected: (Pokemon) -> Unit = {},
+    onMenuItemClick: (FilterMenuItem) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
     val listState = rememberLazyGridState()
@@ -164,7 +178,7 @@ fun PokedexScreen(
                             }
                     )
                 },
-                pokemon = pokemon,
+                pokemon = if (showFavorites) favorites else pokemon,
                 favorites = favorites,
                 onPokemonSelected = onPokemonSelected
             )
@@ -197,7 +211,13 @@ fun PokedexScreen(
                 modifier = Modifier.matchParentSize()
             ) {
                 Box(
-                    Modifier.background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                    Modifier
+                        .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                        .clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = null,
+                            onClick = { showFilterMenu = false }
+                        ),
                 )
             }
 
@@ -209,7 +229,16 @@ fun PokedexScreen(
                     .padding(WindowInsets.navigationBars.asPaddingValues())
                     .padding(bottom = 24.dp, end = 24.dp)
             ) {
-                FilterMenu(visible = showFilterMenu)
+                FilterMenu(
+                    visible = showFilterMenu,
+                    showFavorites = showFavorites,
+                    onMenuItemClick = {
+                        onMenuItemClick(it)
+                        if (it == FilterMenuItem.Types) {
+                            showFilterMenu = false
+                        }
+                    }
+                )
                 Spacer(Modifier.height(16.dp))
                 FloatingActionButton(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -304,11 +333,17 @@ fun PokemonList(
     )
 }
 
+enum class FilterMenuItem {
+    Favorites,
+    Types
+}
+
 @Composable
 private fun FilterMenu(
     modifier: Modifier = Modifier,
     visible: Boolean,
-    onMenuItemClick: () -> Unit = {},
+    showFavorites: Boolean,
+    onMenuItemClick: (FilterMenuItem) -> Unit = {},
 ) {
     AnimatedVisibility(
         visible = visible,
@@ -328,19 +363,19 @@ private fun FilterMenu(
             ) {
                 FilterMenuItem(
                     index = 0,
-                    onClick = onMenuItemClick
+                    onClick = { onMenuItemClick(FilterMenuItem.Favorites) }
                 ) {
-                    Text("Favorite Pokemon")
+                    Text(if (showFavorites) "Show all" else "Show favorites")
                     Spacer(Modifier.width(12.dp))
                     Icon(
-                        imageVector = Icons.Default.Favorite,
+                        imageVector = if (showFavorites) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp)
                     )
                 }
                 FilterMenuItem(
                     index = 1,
-                    onClick = onMenuItemClick
+                    onClick = { onMenuItemClick(FilterMenuItem.Types) }
                 ) {
                     Text("All types")
                     Spacer(Modifier.width(12.dp))
@@ -394,11 +429,24 @@ private fun AnimatedVisibilityScope.FilterMenuItem(
 @Preview
 @Composable
 private fun PokedexScreenPreview() {
+    var pokemon by remember { mutableStateOf(SamplePokemonData) }
+    val favorites by remember { mutableStateOf(SamplePokemonData.take(5)) }
+    var showFavorites by remember { mutableStateOf(false) }
+
     AppTheme {
         PokedexScreen(
             loading = false,
-            pokemon = SamplePokemonData,
-            favorites = emptyList()
+            pokemon = pokemon,
+            favorites = favorites,
+            showFavorites = showFavorites,
+            onMenuItemClick = {
+                showFavorites = !showFavorites
+                pokemon = if (showFavorites) {
+                    favorites.toList()
+                } else {
+                    SamplePokemonData.toList()
+                }
+            }
         )
     }
 }

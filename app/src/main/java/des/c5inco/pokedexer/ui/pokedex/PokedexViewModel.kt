@@ -32,6 +32,7 @@ class PokedexViewModel @Inject constructor(
 
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
     var favorites = mutableStateListOf<Pokemon>()
+    var showFavorites by mutableStateOf(false)
 
     init {
         refresh()
@@ -69,5 +70,9 @@ class PokedexViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun toggleFavorites() {
+        showFavorites = !showFavorites
     }
 }
