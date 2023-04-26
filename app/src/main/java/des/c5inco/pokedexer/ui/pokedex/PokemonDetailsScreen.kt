@@ -16,7 +16,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.with
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -32,8 +31,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -294,10 +291,9 @@ internal fun PokemonDetailsScreen(
                         Header(pokemon = targetPokemon)
                     }
 
-                    val scrollState = rememberScrollState()
                     val nestedScrollConnection = nestedScrollConnection(
-                        scrollState = scrollState,
-                        swipeableState = swipeableState
+                        swipeableState = swipeableState,
+                        minAnchor = topAnchorMin
                     )
 
                     Surface(
@@ -309,24 +305,14 @@ internal fun PokemonDetailsScreen(
                                 orientation = Orientation.Vertical
                             )
                             .nestedScroll(nestedScrollConnection)
-                            .offset {
-                                IntOffset(
-                                    x = 0, y = swipeableState.offset.value.roundToInt()
-                                )
-                            },
+                            .offset { IntOffset(x = 0, y = swipeableState.offset.value.roundToInt()) },
                         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
                     ) {
                         CardContent(
                             pokemon = pokemon,
                             evolutions = evolutions,
                             moves = moves,
-                            modifier = Modifier
-                                .offset {
-                                    IntOffset(
-                                        x = 0,
-                                        y = cardPaddingTarget
-                                    )
-                                },
+                            modifier = Modifier.offset { IntOffset(x = 0, y = cardPaddingTarget) },
                         )
                     }
 
@@ -388,7 +374,6 @@ private enum class Sections(val title: String) {
     Moves("Moves")
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CardContent(
     modifier: Modifier,
@@ -405,56 +390,49 @@ private fun CardContent(
         label = "tabIndicatorColor"
     )
 
-    LazyColumn(
+    Column(
         modifier = modifier.fillMaxSize(),
     ) {
-        stickyHeader {
-            PokemonTypesTheme(types = pokemon.typeOfPokemon) {
-                TabRow(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    selectedTabIndex = section.ordinal,
-                    indicator = { tabPositions ->
-                        TabRowDefaults.Indicator(
-                            modifier = Modifier
-                                .tabIndicatorOffset(tabPositions[section.ordinal])
-                                .clip(RoundedCornerShape(100)),
-                            color = tabIndicatorColor
+        PokemonTypesTheme(types = pokemon.typeOfPokemon) {
+            TabRow(
+                containerColor = MaterialTheme.colorScheme.surface,
+                selectedTabIndex = section.ordinal,
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        modifier = Modifier
+                            .tabIndicatorOffset(tabPositions[section.ordinal])
+                            .clip(RoundedCornerShape(100)),
+                        color = tabIndicatorColor
+                    )
+                },
+            ) {
+                sectionTitles.forEachIndexed { index, text ->
+                    val active = index == section.ordinal
+                    Tab(
+                        selected = active,
+                        selectedContentColor = PokemonTypesTheme.colorScheme.primary,
+                        unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        onClick = { section = Sections.values()[index] },
+                    ) {
+                        Text(
+                            text = text,
+                            fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
+                            modifier = Modifier.padding(vertical = 20.dp)
                         )
-                    },
-                ) {
-                    sectionTitles.forEachIndexed { index, text ->
-                        val active = index == section.ordinal
-                        Tab(
-                            selected = active,
-                            selectedContentColor = PokemonTypesTheme.colorScheme.primary,
-                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            onClick = { section = Sections.values()[index] },
-                        ) {
-                            Text(
-                                text = text,
-                                fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
-                                modifier = Modifier.padding(vertical = 20.dp)
-                            )
-                        }
                     }
                 }
             }
         }
 
-        if (section != Sections.Moves) {
-            item {
-                Box(
-                    modifier = Modifier.padding(24.dp)
-                ) {
-                    when (section) {
-                        Sections.About -> AboutSection(pokemon)
-                        Sections.BaseStats -> BaseStatsSection(pokemon)
-                        else -> EvolutionSection(evolutions = evolutions)
-                    }
-                }
+        Box(
+            modifier = Modifier.padding(24.dp)
+        ) {
+            when (section) {
+                Sections.About -> AboutSection(pokemon)
+                Sections.BaseStats -> BaseStatsSection(pokemon)
+                Sections.Evolution -> EvolutionSection(evolutions = evolutions)
+                else -> MovesSection(moves = moves)
             }
-        } else {
-            MovesSection(pokemon = pokemon, moves = moves)
         }
     }
 }

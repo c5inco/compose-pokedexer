@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.ui.common
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
@@ -13,17 +12,16 @@ import androidx.compose.ui.unit.Velocity
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun nestedScrollConnection(
-    scrollState: ScrollState,
     swipeableState: SwipeableState<Int>,
+    minAnchor: Float,
 ) = remember {
     object : NestedScrollConnection {
-
         override fun onPreScroll(
             available: Offset,
             source: NestedScrollSource
         ): Offset {
             val delta = available.y
-            return if (delta < 0) {
+            return if (delta < 0 && source == NestedScrollSource.Drag) {
                 swipeableState.performDrag(delta).toOffset()
             } else {
                 Offset.Zero
@@ -35,13 +33,19 @@ fun nestedScrollConnection(
             available: Offset,
             source: NestedScrollSource
         ): Offset {
-            val delta = available.y
-            return swipeableState.performDrag(delta).toOffset()
+            return if (source == NestedScrollSource.Drag) {
+                swipeableState.performDrag(available.y).toOffset()
+            } else {
+                Offset.Zero
+            }
         }
 
         override suspend fun onPreFling(available: Velocity): Velocity {
-            return if (available.y < 0 && scrollState.value == 0) {
-                swipeableState.performFling(available.y)
+            val toFling = available.y
+            val currentOffset = swipeableState.offset
+            return if (toFling < 0 && currentOffset.value > minAnchor) {
+                swipeableState.performFling(velocity = toFling)
+                // since we go to the anchor with tween settling, consume all for the best UX
                 available
             } else {
                 Velocity.Zero
