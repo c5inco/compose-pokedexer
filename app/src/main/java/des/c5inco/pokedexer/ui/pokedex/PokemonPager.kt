@@ -3,6 +3,7 @@ package des.c5inco.pokedexer.ui.pokedex
 import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
 import android.os.Build
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -12,6 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -27,11 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.core.graphics.ColorUtils
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.calculateCurrentOffsetForPage
-import com.google.accompanist.pager.rememberPagerState
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.PokemonImage
@@ -97,7 +96,7 @@ fun PagerPokemonImage(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PokemonPager(
     modifier: Modifier = Modifier,
@@ -121,7 +120,7 @@ fun PokemonPager(
     ) {
         if (!loading) {
             HorizontalPager(
-                count = pokemonList.size,
+                pageCount = pokemonList.size,
                 state = pagerState,
                 key = { it },
                 contentPadding = PaddingValues(horizontal = 92.dp),
@@ -129,7 +128,7 @@ fun PokemonPager(
                 modifier = Modifier.testTag("PokemonPager"),
             ) { page ->
                 val pokemon = pokemonList[page]
-                val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                val pageOffset = ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
                 val progress = pageOffset.coerceIn(0f, 1f)
                 val scale = lerp(
                     start = 0.5f, stop = 1f, fraction = 1f - progress
@@ -154,7 +153,7 @@ fun PokemonPager(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun PokemonPagerPreview() {
