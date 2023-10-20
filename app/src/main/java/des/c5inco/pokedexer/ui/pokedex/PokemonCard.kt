@@ -142,7 +142,8 @@ private fun PokeDexCardPreview() {
                 )
                 PokeDexCard(
                     modifier = Modifier.fillMaxWidth(),
-                    pokemon = SamplePokemonData[3]
+                    pokemon = SamplePokemonData[3],
+                    isFavorite = true
                 )
                 PokeDexCard(
                     modifier = Modifier.fillMaxWidth(),
