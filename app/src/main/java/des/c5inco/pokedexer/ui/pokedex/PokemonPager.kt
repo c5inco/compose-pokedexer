@@ -104,7 +104,7 @@ fun PokemonPager(
     pokemonList: List<Pokemon>,
     backgroundColor: Color,
     enabled: Boolean = true,
-    pagerState: PagerState = rememberPagerState(),
+    pagerState: PagerState,
     pagerContent: @Composable BoxScope.(Pokemon, Float, Color) -> Unit
 ) {
     val foregroundTint = Color(
@@ -120,7 +120,6 @@ fun PokemonPager(
     ) {
         if (!loading) {
             HorizontalPager(
-                pageCount = pokemonList.size,
                 state = pagerState,
                 key = { it },
                 contentPadding = PaddingValues(horizontal = 92.dp),
@@ -165,7 +164,8 @@ fun PokemonPagerPreview() {
             ) {
                 PokemonPager(
                     pokemonList = SamplePokemonData,
-                    backgroundColor = MaterialTheme.colorScheme.surface
+                    backgroundColor = MaterialTheme.colorScheme.surface,
+                    pagerState = rememberPagerState { SamplePokemonData.size }
                 ) { it, progress, tint ->
                     PagerPokemonImage(
                         image = it.image,

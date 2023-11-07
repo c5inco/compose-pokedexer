@@ -133,7 +133,9 @@ internal fun PokemonDetailsScreen(
 ) {
     val density = LocalDensity.current
 
-    val pagerState = rememberPagerState(initialPage = pokemon.id - 1)
+    val pagerState = rememberPagerState(initialPage = pokemon.id - 1) {
+        pokemonSet.size
+    }
 
     val swipeableState = rememberSwipeableState(initialValue = 1)
     val topAnchorMin = with(density) { (16 + 16 + 48).dp.toPx() }
