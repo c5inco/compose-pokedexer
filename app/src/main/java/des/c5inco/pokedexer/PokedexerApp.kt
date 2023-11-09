@@ -21,12 +21,6 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.HiltAndroidApp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.common.Material3Transitions
-import des.c5inco.pokedexer.ui.common.SharedXAxisEnterTransition
-import des.c5inco.pokedexer.ui.common.SharedXAxisExitTransition
-import des.c5inco.pokedexer.ui.common.SharedXAxisPopEnterTransition
-import des.c5inco.pokedexer.ui.common.SharedXAxisPopExitTransition
-import des.c5inco.pokedexer.ui.common.SharedZAxisEnterTransition
-import des.c5inco.pokedexer.ui.common.SharedZAxisExitTransition
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.items.ItemsScreenRoute
