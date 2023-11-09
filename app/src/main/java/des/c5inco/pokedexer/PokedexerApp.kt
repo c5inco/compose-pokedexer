@@ -1,6 +1,8 @@
 package des.c5inco.pokedexer
 
 import android.app.Application
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -17,6 +20,12 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.HiltAndroidApp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.ui.common.SharedXAxisEnterTransition
+import des.c5inco.pokedexer.ui.common.SharedXAxisExitTransition
+import des.c5inco.pokedexer.ui.common.SharedXAxisPopEnterTransition
+import des.c5inco.pokedexer.ui.common.SharedXAxisPopExitTransition
+import des.c5inco.pokedexer.ui.common.SharedZAxisEnterTransition
+import des.c5inco.pokedexer.ui.common.SharedZAxisExitTransition
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.items.ItemsScreenRoute
@@ -32,6 +41,7 @@ class PokedexerApplication : Application()
 @Composable
 fun PokedexerApp() {
     val navController = rememberNavController()
+    val density = LocalDensity.current
     var pokemon by remember { mutableStateOf(SamplePokemonData.first()) }
 
     NavHost(
@@ -39,9 +49,13 @@ fun PokedexerApp() {
         startDestination = "home",
         modifier = Modifier.semantics {
             testTagsAsResourceId = true
-        }
+        },
+        enterTransition = { SharedXAxisEnterTransition(density) },
+        popEnterTransition =  { SharedXAxisPopEnterTransition(density) },
+        exitTransition = { SharedXAxisExitTransition(density) },
+        popExitTransition = { SharedXAxisPopExitTransition(density) }
     ) {
-        composable("home") {
+        composable(route = "home") {
             HomeScreen {
                 if (it == MenuItem.Pokedex) {
                     navController.navigate("pokedex")
@@ -54,8 +68,15 @@ fun PokedexerApp() {
                 }
             }
         }
-        navigation(startDestination = "list", route = "pokedex") {
-            composable("list") {
+        navigation(
+            startDestination = "list",
+            route = "pokedex",
+        ) {
+            composable(
+                route = "list",
+                popEnterTransition =  { fadeIn() },
+                exitTransition = { fadeOut() }
+            ) {
                 PokedexScreenRoute(
                     viewModel = hiltViewModel(),
                     onPokemonSelected = {
@@ -65,7 +86,11 @@ fun PokedexerApp() {
                     onBackClick = { navController.popBackStack() }
                 )
             }
-            composable("details") {
+            composable(
+                route = "details",
+                enterTransition = { SharedZAxisEnterTransition },
+                exitTransition = { SharedZAxisExitTransition },
+            ) {
                 PokemonDetailsScreenRoute(
                     viewModel = hiltViewModel(),
                     detailsViewModel = pokemonDetailsViewModel(pokemon),
