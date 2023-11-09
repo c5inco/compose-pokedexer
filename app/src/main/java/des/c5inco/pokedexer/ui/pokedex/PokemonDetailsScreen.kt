@@ -2,9 +2,12 @@ package des.c5inco.pokedexer.ui.pokedex
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.ExperimentalTransitionApi
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -79,6 +82,7 @@ import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.data.pokemon.mapSampleMovesToDetailsList
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Emphasis
+import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
@@ -94,7 +98,7 @@ import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlin.math.roundToInt
 
 @Composable
-fun PokemonDetailsScreenRoute(
+fun AnimatedContentScope.PokemonDetailsScreenRoute(
     viewModel: PokedexViewModel,
     detailsViewModel: PokemonDetailsViewModel,
     onBackClick: () -> Unit,
@@ -116,11 +120,9 @@ fun PokemonDetailsScreenRoute(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class,
-    ExperimentalFoundationApi::class
-)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
 @Composable
-internal fun PokemonDetailsScreen(
+fun AnimatedContentScope.PokemonDetailsScreen(
     loading: Boolean,
     pokemonSet: List<Pokemon>,
     pokemon: Pokemon,
@@ -299,6 +301,10 @@ internal fun PokemonDetailsScreen(
 
                     Surface(
                         modifier = Modifier
+                            .animateEnterExit(
+                                enter = Material3Transitions.SharedYAxisEnterTransition(density),
+                                exit = ExitTransition.None
+                            )
                             .align(Alignment.TopCenter)
                             .swipeable(
                                 state = swipeableState,
@@ -306,7 +312,12 @@ internal fun PokemonDetailsScreen(
                                 orientation = Orientation.Vertical
                             )
                             .nestedScroll(nestedScrollConnection)
-                            .offset { IntOffset(x = 0, y = swipeableState.offset.value.roundToInt()) },
+                            .offset {
+                                IntOffset(
+                                    x = 0,
+                                    y = swipeableState.offset.value.roundToInt()
+                                )
+                            },
                         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
                     ) {
                         CardContent(
@@ -519,6 +530,7 @@ private fun RotatingPokeBall(
     )
 }
 
+@OptIn(ExperimentalAnimationApi::class, ExperimentalTransitionApi::class)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Preview
 @Composable
@@ -527,17 +539,21 @@ private fun PokemonDetailsPreview() {
 
     AppTheme {
         Surface(Modifier.fillMaxSize()) {
-            PokemonDetailsScreen(
-                loading = false,
-                pokemonSet = SamplePokemonData,
-                pokemon = activePokemon,
-                evolutions = mapSampleEvolutionsToList(
-                    activePokemon.evolutionChain
-                ),
-                moves = mapSampleMovesToDetailsList(),
-                onPage = {
-                    activePokemon = it
-                })
+            AnimatedContent(
+                targetState = true
+            ) {
+                PokemonDetailsScreen(
+                    loading = false,
+                    pokemonSet = SamplePokemonData,
+                    pokemon = activePokemon,
+                    evolutions = mapSampleEvolutionsToList(
+                        activePokemon.evolutionChain
+                    ),
+                    moves = mapSampleMovesToDetailsList(),
+                    onPage = {
+                        activePokemon = it
+                    })
+            }
         }
     }
 }
