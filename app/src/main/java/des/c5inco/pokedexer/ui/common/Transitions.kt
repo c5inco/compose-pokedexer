@@ -12,6 +12,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.TransformOrigin
@@ -97,6 +98,7 @@ val DurationLong1 = 450
 val DurationLong2 = 500
 val EmphasizedEasing = PathEasing(pathForAnimation)
 val EmphasizedAccelerateEasing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+val EmphasizedDecelerateEasing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
 
 object Material3Transitions {
     val SharedXAxisEnterTransition: (Density) -> EnterTransition = { density ->
@@ -140,6 +142,15 @@ object Material3Transitions {
             animationSpec = tween(durationMillis = DurationMedium2, easing = EmphasizedAccelerateEasing)
         ) {
             with(density) { 30.dp.roundToPx() }
+        }
+    }
+
+    val SharedYAxisEnterTransition: (Density) -> EnterTransition = { density ->
+        fadeIn(
+            animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedDecelerateEasing)
+        ) +
+        slideInVertically(animationSpec = tween(durationMillis = DurationLong2, easing = EmphasizedDecelerateEasing)) {
+            it / 2
         }
     }
 
