@@ -20,6 +20,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.HiltAndroidApp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.common.SharedXAxisEnterTransition
 import des.c5inco.pokedexer.ui.common.SharedXAxisExitTransition
 import des.c5inco.pokedexer.ui.common.SharedXAxisPopEnterTransition
@@ -50,10 +51,10 @@ fun PokedexerApp() {
         modifier = Modifier.semantics {
             testTagsAsResourceId = true
         },
-        enterTransition = { SharedXAxisEnterTransition(density) },
-        popEnterTransition =  { SharedXAxisPopEnterTransition(density) },
-        exitTransition = { SharedXAxisExitTransition(density) },
-        popExitTransition = { SharedXAxisPopExitTransition(density) }
+        enterTransition = { Material3Transitions.SharedXAxisEnterTransition(density) },
+        popEnterTransition =  { Material3Transitions.SharedXAxisPopEnterTransition(density) },
+        exitTransition = { Material3Transitions.SharedXAxisExitTransition(density) },
+        popExitTransition = { Material3Transitions.SharedXAxisPopExitTransition(density) }
     ) {
         composable(route = "home") {
             HomeScreen {
@@ -88,8 +89,8 @@ fun PokedexerApp() {
             }
             composable(
                 route = "details",
-                enterTransition = { SharedZAxisEnterTransition },
-                exitTransition = { SharedZAxisExitTransition },
+                enterTransition = { Material3Transitions.SharedZAxisEnterTransition },
+                exitTransition = { Material3Transitions.SharedZAxisExitTransition },
             ) {
                 PokemonDetailsScreenRoute(
                     viewModel = hiltViewModel(),
