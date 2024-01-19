@@ -214,7 +214,7 @@ fun PokedexScreen(
                     Modifier
                         .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
                         .clickable(
-                            interactionSource = MutableInteractionSource(),
+                            interactionSource = remember { MutableInteractionSource() },
                             indication = null,
                             onClick = { showFilterMenu = false }
                         ),
