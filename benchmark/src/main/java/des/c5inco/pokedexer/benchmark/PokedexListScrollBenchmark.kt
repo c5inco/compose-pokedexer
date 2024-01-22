@@ -7,6 +7,7 @@ import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
+import androidx.test.uiautomator.Until
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,9 +37,12 @@ class PokedexListScrollBenchmark{
 
             val button = device.findObject(By.text("Pokedex"))
             button.click()
+
+            device.waitForIdle()
         }
     ) {
-        val list = device.findObject(By.res("PokedexLazyGrid"))
+        val list = device.wait(Until.findObject(By.res("PokedexLazyGrid")), 5000)
+
         if (list != null) {
             list.setGestureMargin(device.displayWidth / 5)
             list.fling(Direction.DOWN)
