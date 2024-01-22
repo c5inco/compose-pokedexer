@@ -19,15 +19,13 @@ fun ItemImage(
     CoilImage(
         imageModel = { itemAssetsUri(item.sprite) },
         previewPlaceholder = R.drawable.item_flame_orb,
-        success = { imageState ->
-            imageState.drawable?.let {
-                Image(
-                    bitmap = it.toBitmap().asImageBitmap(),
-                    contentScale = ContentScale.Inside,
-                    contentDescription = null,
-                    modifier = Modifier.matchParentSize()
-                )
-            }
+        success = { _, painter ->
+            Image(
+                painter = painter,
+                contentScale = ContentScale.Inside,
+                contentDescription = null,
+                modifier = Modifier.matchParentSize()
+            )
         },
         failure = {
             PokeBall(

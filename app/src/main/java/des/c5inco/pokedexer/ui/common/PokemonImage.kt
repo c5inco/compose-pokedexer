@@ -24,15 +24,13 @@ fun PokemonImage(
         loading = {
             CircularProgressIndicator()
         },
-        success = { imageState ->
-            imageState.drawable?.let { img ->
-                Image(
-                    bitmap = img.toBitmap().asImageBitmap(),
-                    contentDescription = description,
-                    modifier = Modifier.matchParentSize(),
-                    colorFilter = tint?.let { ColorFilter.tint(it) }
-                )
-            }
+        success = { _, painter ->
+            Image(
+                painter = painter,
+                contentDescription = description,
+                modifier = Modifier.matchParentSize(),
+                colorFilter = tint?.let { ColorFilter.tint(it) }
+            )
         },
         modifier = modifier
     )

@@ -90,13 +90,11 @@ fun PokeDexCard(
                 CoilImage(
                     imageModel = { artworkUrl(pokemon.image) },
                     previewPlaceholder = placeholderPokemonImage(pokemon.image),
-                    success = { imageState ->
-                        imageState.drawable?.let {
-                            Image(
-                                bitmap = it.toBitmap().asImageBitmap(),
-                                contentDescription = pokemon.name,
-                            )
-                        }
+                    success = { _, painter ->
+                        Image(
+                            painter = painter,
+                            contentDescription = pokemon.name,
+                        )
                     },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
