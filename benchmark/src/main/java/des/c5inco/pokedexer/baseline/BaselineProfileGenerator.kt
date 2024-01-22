@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.baseline
 
-import androidx.benchmark.macro.ExperimentalBaselineProfilesApi
 import androidx.benchmark.macro.junit4.BaselineProfileRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.uiautomator.By
@@ -10,7 +9,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@OptIn(ExperimentalBaselineProfilesApi::class)
 @RunWith(AndroidJUnit4ClassRunner::class)
 class BaselineProfileGenerator {
 
@@ -18,7 +16,7 @@ class BaselineProfileGenerator {
     val rule = BaselineProfileRule()
 
     @Test
-    fun generate() = rule.collectBaselineProfile(
+    fun generate() = rule.collect(
         packageName = "des.c5inco.pokedexer",
     ) {
         startActivityAndWait()
