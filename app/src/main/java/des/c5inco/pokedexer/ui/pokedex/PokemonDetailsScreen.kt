@@ -289,7 +289,8 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                                     slideInHorizontally(initialOffsetX = { with(density) { -16.dp.roundToPx() } }, animationSpec = tween(300)) with
                                 textFadeOutTransition
                             }.using(SizeTransform(clip = false))
-                        }
+                        },
+                        label = "headerTransition"
                     ) { targetPokemon ->
                         Header(pokemon = targetPokemon)
                     }
@@ -393,7 +394,7 @@ private fun CardContent(
     evolutions: List<PokemonDetailsEvolutions>,
     moves: List<PokemonDetailsMoves>,
 ) {
-    val sectionTitles = Sections.values().map { it.title }
+    val sectionTitles = Sections.entries.map { it.title }
     var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
 
     val tabIndicatorColor by animateColorAsState(
@@ -424,7 +425,7 @@ private fun CardContent(
                         selected = active,
                         selectedContentColor = PokemonTypesTheme.colorScheme.primary,
                         unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        onClick = { section = Sections.values()[index] },
+                        onClick = { section = Sections.entries.toTypedArray()[index] },
                     ) {
                         Text(
                             text = text,
@@ -516,9 +517,12 @@ private fun RotatingPokeBall(
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val angle by infiniteTransition.animateFloat(
-        initialValue = 0f, targetValue = 360f, animationSpec = infiniteRepeatable(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 4000, easing = LinearEasing)
-        )
+        ),
+        label = "rotatingAngle"
     )
 
     PokeBall(
@@ -540,10 +544,11 @@ private fun PokemonDetailsPreview() {
     AppTheme {
         Surface(Modifier.fillMaxSize()) {
             AnimatedContent(
-                targetState = true
-            ) {
+                targetState = true,
+                label = ""
+            ) { targetState ->
                 PokemonDetailsScreen(
-                    loading = false,
+                    loading = !targetState,
                     pokemonSet = SamplePokemonData,
                     pokemon = activePokemon,
                     evolutions = mapSampleEvolutionsToList(
