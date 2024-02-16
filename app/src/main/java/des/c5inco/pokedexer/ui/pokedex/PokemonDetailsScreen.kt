@@ -14,6 +14,7 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -22,7 +23,10 @@ import androidx.compose.animation.with
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,12 +41,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.rememberSwipeableState
-import androidx.compose.material.swipeable
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -87,8 +88,8 @@ import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBall
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
+import des.c5inco.pokedexer.ui.common.consumeSwipeNestedScrollConnection
 import des.c5inco.pokedexer.ui.common.formatId
-import des.c5inco.pokedexer.ui.common.nestedScrollConnection
 import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
@@ -120,7 +121,9 @@ fun AnimatedContentScope.PokemonDetailsScreenRoute(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
+enum class DragValue { Start, Center, End }
+
+@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AnimatedContentScope.PokemonDetailsScreen(
     loading: Boolean,
@@ -139,27 +142,45 @@ fun AnimatedContentScope.PokemonDetailsScreen(
         pokemonSet.size
     }
 
-    val swipeableState = rememberSwipeableState(initialValue = 1)
-    val topAnchorMin = with(density) { (16 + 16 + 48).dp.toPx() }
-    val topAnchorMax = with(density) { 324.dp.toPx() }
-
-    val anchors = mapOf(topAnchorMin to 0, topAnchorMax to 1)
-    val swipeableProgress by remember {
+    val draggableAnchors = with(density) {
+        DraggableAnchors {
+            DragValue.Start at 324.dp.toPx()
+            DragValue.End at (16 + 16 + 48).dp.toPx()
+        }
+    }
+    val anchorDraggableState = remember {
+        AnchoredDraggableState(
+            initialValue = DragValue.Start,
+            anchors = draggableAnchors,
+            positionalThreshold = { distance -> distance * 0.5f },
+            velocityThreshold = { with(density) { 100.dp.toPx() } },
+            animationSpec = spring()
+        )
+    }
+    val anchorDraggableProgress by remember {
         derivedStateOf {
-            swipeableState.progress
+            anchorDraggableState.progress
         }
     }
 
     val scaleTarget by remember {
         derivedStateOf {
-            if (swipeableProgress.to == 1) {
-                if (swipeableProgress.fraction > 0.7f) {
-                    swipeableProgress.fraction
+            if (anchorDraggableState.currentValue == DragValue.End) {
+                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.Start) {
+                    0f
+                } else if (anchorDraggableProgress > 0.7f) {
+                    anchorDraggableProgress
                 } else {
                     0f
                 }
             } else {
-                1f - swipeableProgress.fraction
+                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.End) {
+                    1f
+                } else if (anchorDraggableProgress < 0.7f) {
+                    1f - anchorDraggableProgress
+                } else {
+                    0f
+                }
             }
         }
     }
@@ -170,24 +191,38 @@ fun AnimatedContentScope.PokemonDetailsScreen(
 
     val textAlphaTarget by remember {
         derivedStateOf {
-            if (swipeableProgress.to == 1) {
-                swipeableProgress.fraction
+            if (anchorDraggableState.currentValue == DragValue.End) {
+                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.Start) {
+                    0f
+                } else {
+                    anchorDraggableProgress
+                }
             } else {
-                1f - (swipeableProgress.fraction)
+                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.End) {
+                    1f
+                } else {
+                    1f - anchorDraggableProgress
+                }
             }
         }
     }
 
     val imageAlphaTarget by remember {
         derivedStateOf {
-            if (swipeableProgress.to == 1) {
-                if (swipeableProgress.fraction > 0.6f) {
-                    swipeableProgress.fraction
+            if (anchorDraggableState.currentValue == DragValue.End) {
+                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.Start) {
+                    0f
+                } else if (anchorDraggableProgress > 0.6f) {
+                    anchorDraggableProgress
                 } else {
                     0f
                 }
             } else {
-                1f - (swipeableProgress.fraction * 4f)
+                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.End) {
+                    1f
+                } else {
+                    1f - anchorDraggableProgress * 4f
+                }
             }
         }
     }
@@ -198,10 +233,18 @@ fun AnimatedContentScope.PokemonDetailsScreen(
             val max = with(density) { 40.dp.toPx() }
             val min = max / 4
 
-            val resolvedValue = if (swipeableProgress.to == 1) {
-                swipeableProgress.fraction * max
+            val resolvedValue = if (anchorDraggableState.currentValue == DragValue.End) {
+                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.Start) {
+                    min
+                } else {
+                    anchorDraggableProgress * max
+                }
             } else {
-                (1 - swipeableProgress.fraction) * max
+                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.End) {
+                    max
+                } else {
+                    (1f - anchorDraggableProgress) * max
+                }
             }
 
             resolvedValue
@@ -212,10 +255,10 @@ fun AnimatedContentScope.PokemonDetailsScreen(
 
     val pagerZIndex by remember {
         derivedStateOf {
-            if (swipeableProgress.from == 0 && swipeableProgress.to == 0) {
-                -1f
+            if (anchorDraggableState.targetValue == DragValue.Start) {
+                0f
             } else {
-               0f
+                -1f
             }
         }
     }
@@ -295,9 +338,9 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                         Header(pokemon = targetPokemon)
                     }
 
-                    val nestedScrollConnection = nestedScrollConnection(
-                        swipeableState = swipeableState,
-                        minAnchor = topAnchorMin
+                    val nestedScrollConnection = consumeSwipeNestedScrollConnection(
+                        state = anchorDraggableState,
+                        orientation = Orientation.Vertical
                     )
 
                     Surface(
@@ -307,18 +350,16 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                                 exit = ExitTransition.None
                             )
                             .align(Alignment.TopCenter)
-                            .swipeable(
-                                state = swipeableState,
-                                anchors = anchors,
-                                orientation = Orientation.Vertical
-                            )
                             .nestedScroll(nestedScrollConnection)
                             .offset {
                                 IntOffset(
                                     x = 0,
-                                    y = swipeableState.offset.value.roundToInt()
+                                    y = anchorDraggableState
+                                        .requireOffset()
+                                        .roundToInt()
                                 )
-                            },
+                            }
+                            .anchoredDraggable(anchorDraggableState, Orientation.Vertical),
                         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
                     ) {
                         CardContent(
@@ -337,7 +378,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                         loading = loading,
                         pokemonList = pokemonSet,
                         backgroundColor = PokemonTypesTheme.colorScheme.surface,
-                        enabled = swipeableState.currentValue == 1,
+                        enabled = anchorDraggableState.currentValue == DragValue.Start,
                         pagerState = pagerState,
                     ) { it, progress, tint ->
                         PagerPokemonImage(
