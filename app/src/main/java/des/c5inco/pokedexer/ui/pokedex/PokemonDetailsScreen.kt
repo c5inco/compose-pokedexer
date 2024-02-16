@@ -43,6 +43,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,7 +51,6 @@ import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -387,6 +387,7 @@ private enum class Sections(val title: String) {
     Moves("Moves")
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CardContent(
     modifier: Modifier,
@@ -410,10 +411,10 @@ private fun CardContent(
             SecondaryTabRow(
                 containerColor = MaterialTheme.colorScheme.surface,
                 selectedTabIndex = section.ordinal,
-                indicator = { tabPositions ->
+                indicator = {
                     SecondaryIndicator(
                         modifier = Modifier
-                            .tabIndicatorOffset(tabPositions[section.ordinal])
+                            .tabIndicatorOffset(section.ordinal)
                             .clip(RoundedCornerShape(100)),
                         color = tabIndicatorColor
                     )
