@@ -74,8 +74,7 @@ dependencies {
 
     // Compose
     implementation(libs.activity.compose)
-    api(platform("dev.chrisbanes.compose:compose-bom:2023.11.00-alpha02"))
-    //implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.material2)
     implementation(libs.androidx.compose.material3)
