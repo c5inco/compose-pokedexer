@@ -47,7 +47,8 @@ fun RoundedSearchBar() {
                     .weight(1f)
                     .padding(horizontal = 12.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
             )
         }
     }
