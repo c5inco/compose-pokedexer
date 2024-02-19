@@ -52,7 +52,7 @@ fun MovesSection(
                     Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surface)
-                        .padding(vertical = 12.dp, horizontal = 24.dp),
+                        .padding(bottom = 12.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
