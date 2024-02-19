@@ -19,7 +19,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -323,15 +323,17 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                             .graphicsLayer { alpha = textAlphaTarget },
                         targetState = pokemon,
                         transitionSpec = {
-                            if (initialState.id < targetState.id) {
-                                textFadeInTransition +
-                                    slideInHorizontally(initialOffsetX = { with(density) { 16.dp.roundToPx() } }, animationSpec = tween(300)) with
+                            (textFadeInTransition +
+                                slideInHorizontally(
+                                    initialOffsetX = {
+                                        val offset = if (initialState.id < targetState.id) 16 else -16
+                                        with(density) { offset.dp.roundToPx() }
+                                    },
+                                    animationSpec = tween(300)
+                                ))
+                            .togetherWith(
                                 textFadeOutTransition
-                            } else {
-                                textFadeInTransition +
-                                    slideInHorizontally(initialOffsetX = { with(density) { -16.dp.roundToPx() } }, animationSpec = tween(300)) with
-                                textFadeOutTransition
-                            }.using(SizeTransform(clip = false))
+                            ).using(SizeTransform(clip = false))
                         },
                         label = "headerTransition"
                     ) { targetPokemon ->
