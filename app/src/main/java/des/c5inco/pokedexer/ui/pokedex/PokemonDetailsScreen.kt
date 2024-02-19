@@ -443,7 +443,7 @@ private fun CardContent(
 
     val tabIndicatorColor by animateColorAsState(
         targetValue = PokemonTypesTheme.colorScheme.primary,
-        tween(durationMillis = 500),
+        animationSpec = tween(durationMillis = 500),
         label = "tabIndicatorColor"
     )
 
