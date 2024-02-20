@@ -52,7 +52,10 @@ fun MainAppBar(onMenuItemSelected: (MenuItem) -> Unit) {
                 )
                 RoundedSearchBar()
                 Spacer(modifier = Modifier.height(32.dp))
-                Menu(onMenuItemSelected)
+                Menu(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    onMenuItemSelected = onMenuItemSelected
+                )
             }
         }
     }
