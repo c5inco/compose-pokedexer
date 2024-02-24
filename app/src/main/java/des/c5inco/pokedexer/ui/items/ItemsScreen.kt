@@ -2,25 +2,24 @@ package des.c5inco.pokedexer.ui.items
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,14 +73,18 @@ fun ItemsScreen(
                 if (loading) {
                     CircularProgressIndicator()
                 } else {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        contentPadding = WindowInsets.navigationBars.asPaddingValues()
-                    ) {
-                        items(items) {
-                            ItemCard(item = it)
-                        }
-                    }
+                    LazyVerticalStaggeredGrid(
+                        columns = StaggeredGridCells.Adaptive(120.dp),
+                        verticalItemSpacing = 4.dp,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+                        content = {
+                            items(items) {
+                                ItemCard(item = it)
+                            }
+                        },
+                    )
+
                 }
             }
         }
@@ -98,28 +101,25 @@ private fun ItemCard(
         shape = MaterialTheme.shapes.large,
     ) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier.padding(20.dp),
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                ItemImage(
-                    item = item,
-                    modifier = Modifier.size(48.dp)
-                )
-                Spacer(Modifier.width(12.dp))
-                Text(
-                    text = item.name,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
-                        )
-                    ),
-                )
-            }
+            ItemImage(
+                item = item,
+                modifier = Modifier.size(48.dp)
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = item.name,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false
+                    )
+                ),
+            )
+            Spacer(Modifier.height(8.dp))
             Text(
                 text = item.description,
-                modifier = Modifier.padding(start = 60.dp)
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }
