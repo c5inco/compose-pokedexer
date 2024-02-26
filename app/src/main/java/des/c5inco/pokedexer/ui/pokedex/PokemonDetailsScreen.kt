@@ -402,7 +402,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                             text = pokemon.name,
                             modifier = Modifier.graphicsLayer {
                                 // TODO: Look into collapsing toolbar behavior later
-                                alpha = 1f - textAlphaTarget
+                                alpha = 1f - (textAlphaTarget * 2.5f)
                             }
                         )
                     },
