@@ -82,6 +82,18 @@ class RemotePokemonRepository @Inject constructor(
         return Result.Success(pokemonDao.findByIds(ids))
     }
 
+    override suspend fun getPokemonByName(name: String): Result<List<Pokemon>> {
+        val results = pokemonDao.findByName(name)
+
+        return if (results.isNotEmpty()) {
+            Result.Success(results)
+        } else {
+            Result.Error(
+                Exception("Pokemon with name: $name not found in local DB!")
+            )
+        }
+    }
+
     override suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon> {
         TODO("Not yet implemented")
     }

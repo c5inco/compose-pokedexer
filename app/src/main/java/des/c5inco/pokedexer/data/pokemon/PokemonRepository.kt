@@ -16,6 +16,8 @@ interface PokemonRepository {
 
     suspend fun getPokemonByIds(ids: List<Int>): Result<List<Pokemon>>
 
+    suspend fun getPokemonByName(name: String): Result<List<Pokemon>>
+
     suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon>
 
     suspend fun deleteAllPokemon(): Result<Int>

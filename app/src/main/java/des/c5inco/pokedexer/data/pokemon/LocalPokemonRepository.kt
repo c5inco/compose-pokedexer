@@ -28,6 +28,10 @@ class LocalPokemonRepository(
         return Result.Success(localPokemonDataSource.getPokemonByIds())
     }
 
+    override suspend fun getPokemonByName(name: String): Result<List<Pokemon>> {
+        TODO("Not yet implemented")
+    }
+
     // used to drive "random" failure in a predictable pattern, making the first request always
     // succeed
     private var requestCount = 0

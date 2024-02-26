@@ -1,6 +1,10 @@
 package des.c5inco.pokedexer.data.pokemon
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import des.c5inco.pokedexer.model.Pokemon
 
 @Dao
@@ -14,8 +18,8 @@ interface PokemonDao {
     @Query("SELECT * FROM pokemon WHERE id IN (:ids)")
     suspend fun findByIds(ids: List<Int>): List<Pokemon>
 
-    @Query("SELECT * FROM pokemon WHERE name LIKE :name LIMIT 1")
-    suspend fun findByName(name: String): Pokemon?
+    @Query("SELECT * FROM pokemon WHERE name LIKE :name")
+    suspend fun findByName(name: String): List<Pokemon>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(pokemon: Pokemon)
