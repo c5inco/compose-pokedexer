@@ -18,7 +18,7 @@ interface PokemonDao {
     @Query("SELECT * FROM pokemon WHERE id IN (:ids)")
     suspend fun findByIds(ids: List<Int>): List<Pokemon>
 
-    @Query("SELECT * FROM pokemon WHERE name LIKE :name")
+    @Query("SELECT * FROM pokemon WHERE name LIKE '%' || :name || '%'")
     suspend fun findByName(name: String): List<Pokemon>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

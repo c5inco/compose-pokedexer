@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.home.appbar
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text2.input.TextFieldState
+import androidx.compose.foundation.text2.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,8 +27,12 @@ import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
 import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainAppBar(onMenuItemSelected: (MenuItem) -> Unit) {
+fun MainAppBar(
+    searchText: TextFieldState = rememberTextFieldState(),
+    onMenuItemSelected: (MenuItem) -> Unit
+) {
     Surface(
         shape = RoundedCornerShape(
             bottomStart = 32.dp,
@@ -50,7 +57,9 @@ fun MainAppBar(onMenuItemSelected: (MenuItem) -> Unit) {
                         top = 64.dp, bottom = 32.dp
                     )
                 )
-                RoundedSearchBar()
+                RoundedSearchBar(
+                    searchText = searchText
+                )
                 Spacer(modifier = Modifier.height(32.dp))
                 Menu(
                     modifier = Modifier.padding(bottom = 16.dp),
@@ -61,10 +70,11 @@ fun MainAppBar(onMenuItemSelected: (MenuItem) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
-fun PreviewMainAppBar() {
+fun MainAppBarPreview() {
     AppTheme {
         Surface(
             Modifier.fillMaxSize(),
