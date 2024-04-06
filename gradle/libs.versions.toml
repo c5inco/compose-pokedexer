@@ -1,9 +1,9 @@
 [versions]
 accompanist = "0.30.1"
 activityCompose = "1.8.2"
-androidGradlePlugin = "8.2.2"
+androidGradlePlugin = "8.3.1"
 apollo = "3.7.1"
-composeBom = "2024.02.01"
+composeBom = "2024.04.00"
 composeCompiler = "1.5.3"
 coreKtx = "1.12.0"
 espressoCore = "3.5.1"
