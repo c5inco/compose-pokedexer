@@ -1,11 +1,11 @@
 [versions]
 accompanist = "0.30.1"
-activityCompose = "1.8.2"
-androidGradlePlugin = "8.3.1"
+activityCompose = "1.9.0"
+androidGradlePlugin = "8.3.2"
 apollo = "3.7.1"
-composeBom = "2024.04.00"
+composeBom = "2024.04.01"
 composeCompiler = "1.5.3"
-coreKtx = "1.12.0"
+coreKtx = "1.13.0"
 espressoCore = "3.5.1"
 uiAutomator = "2.3.0"
 hilt = "2.49"
@@ -20,7 +20,7 @@ landscapist = "2.2.11"
 lifecycleRuntimeKtx = "2.7.0"
 navigationCompose = "2.7.7"
 room = "2.5.0"
-dataStore = "1.0.0"
+dataStore = "1.1.0"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
