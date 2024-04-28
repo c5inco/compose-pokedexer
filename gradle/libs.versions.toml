@@ -16,7 +16,7 @@ benchmarkMacroJunit = "1.2.3"
 profileInstaller = "1.3.1"
 kotlin = "1.9.10"
 kotlinKsp = "1.9.10-1.0.13"
-landscapist = "2.2.11"
+coil = "2.6.0"
 lifecycleRuntimeKtx = "2.7.0"
 navigationCompose = "2.7.7"
 room = "2.5.0"
@@ -41,7 +41,7 @@ androidx-compose-ui-util = { module = "androidx.compose.ui:ui-util" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 
 apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo" }
-landscapist-coil = { module = "com.github.skydoves:landscapist-coil", version.ref = "landscapist" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }

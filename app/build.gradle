@@ -108,8 +108,8 @@ dependencies {
     // Apollo
     implementation(libs.apollo.runtime)
 
-    // Landscapist
-    implementation(libs.landscapist.coil)
+    // Coil
+    implementation(libs.coil.compose)
 
     // Benchmark
     implementation(libs.androidx.profile.installer)

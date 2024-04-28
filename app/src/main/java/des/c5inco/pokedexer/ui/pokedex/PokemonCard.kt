@@ -1,7 +1,6 @@
 package des.c5inco.pokedexer.ui.pokedex
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,14 +23,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
-import com.skydoves.landscapist.coil.CoilImage
+import coil.compose.AsyncImage
+import coil.imageLoader
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 import des.c5inco.pokedexer.model.Pokemon
@@ -56,9 +56,10 @@ fun PokeDexCard(
             shape = MaterialTheme.shapes.large,
             color = PokemonTypesTheme.colorScheme.surface
         ) {
-            Box(modifier
-                .height(120.dp)
-                .clickable { onPokemonSelected(pokemon) }
+            Box(
+                modifier
+                    .height(120.dp)
+                    .clickable { onPokemonSelected(pokemon) }
             ) {
                 Column(
                     Modifier.padding(top = 24.dp, start = 12.dp)
@@ -87,20 +88,17 @@ fun PokeDexCard(
                     0.25f
                 )
 
-                CoilImage(
-                    imageModel = { artworkUrl(pokemon.image) },
-                    previewPlaceholder = placeholderPokemonImage(pokemon.image),
-                    success = { _, painter ->
-                        Image(
-                            painter = painter,
-                            contentDescription = pokemon.name,
-                        )
-                    },
+                AsyncImage(
+                    model = artworkUrl(pokemon.image),
+                    placeholder = painterResource(id = placeholderPokemonImage(pokemon.image)),
+                    contentDescription = pokemon.name,
+                    imageLoader = LocalContext.current.imageLoader,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(bottom = 6.dp, end = 6.dp)
                         .size(80.dp)
                 )
+
                 if (isFavorite) {
                     Icon(
                         imageVector = Icons.Default.Favorite,

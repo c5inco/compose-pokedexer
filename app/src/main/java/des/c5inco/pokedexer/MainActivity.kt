@@ -6,14 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import des.c5inco.pokedexer.ui.home.RootViewModel
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsViewModel
@@ -43,10 +41,8 @@ class MainActivity : ComponentActivity() {
                 systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = useDarkIcons)
             }
 
-            CompositionLocalProvider(LocalCoilImageLoader provides viewModel.imageLoader) {
-                AppTheme {
-                    PokedexerApp()
-                }
+            AppTheme {
+                PokedexerApp()
             }
         }
     }

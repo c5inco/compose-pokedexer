@@ -2,7 +2,6 @@ package des.c5inco.pokedexer.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.items.ItemsRepository
@@ -13,7 +12,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RootViewModel @Inject constructor(
-    val imageLoader: ImageLoader,
     private val pokemonRepository: PokemonRepository,
     private val movesRepository: MovesRepository,
     private val itemsRepository: ItemsRepository,
