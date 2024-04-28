@@ -27,15 +27,15 @@ data class TypeLabelMetrics(
 ) {
     companion object {
         val SMALL = TypeLabelMetrics(24.dp,
-            fontSize = 9.sp,
-            verticalPadding = 3.dp,
-            horizontalPadding = 8.dp,
+            fontSize = 10.sp,
+            verticalPadding = 0.dp,
+            horizontalPadding = 10.dp,
             elementSpacing = 8.dp
         )
         val MEDIUM = TypeLabelMetrics(24.dp,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            verticalPadding = 4.dp,
+            verticalPadding = 0.dp,
             horizontalPadding = 12.dp,
             elementSpacing = 8.dp
         )
