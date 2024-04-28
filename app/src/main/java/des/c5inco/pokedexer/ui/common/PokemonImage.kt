@@ -1,13 +1,11 @@
 package des.c5inco.pokedexer.ui.common
 
 import androidx.compose.foundation.Image
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.core.graphics.drawable.toBitmap
 import com.skydoves.landscapist.coil.CoilImage
 import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 
