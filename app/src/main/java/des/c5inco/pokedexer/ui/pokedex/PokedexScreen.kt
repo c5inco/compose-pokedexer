@@ -47,9 +47,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -66,8 +64,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.R
@@ -352,39 +348,33 @@ private fun FilterMenu(
         label = "Filter menu",
         modifier = modifier
     ) {
-        ProvideTextStyle(
-            value = LocalTextStyle.current.merge(
-                TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
-            )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            FilterMenuItem(
+                index = 0,
+                onClick = { onMenuItemClick(FilterMenuItem.Favorites) }
             ) {
-                FilterMenuItem(
-                    index = 0,
-                    onClick = { onMenuItemClick(FilterMenuItem.Favorites) }
-                ) {
-                    Icon(
-                        imageVector = if (showFavorites) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(if (showFavorites) "Show all" else "Show favorites")
-                }
-                FilterMenuItem(
-                    index = 1,
-                    onClick = { onMenuItemClick(FilterMenuItem.Types) }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_genetics),
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text("All types")
-                }
+                Icon(
+                    imageVector = if (showFavorites) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(if (showFavorites) "Show all" else "Show favorites")
+            }
+            FilterMenuItem(
+                index = 1,
+                onClick = { onMenuItemClick(FilterMenuItem.Types) }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_genetics),
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(8.dp))
+                Text("All types")
             }
         }
     }
