@@ -98,7 +98,7 @@ fun BaseStatsSection(
                     )
 
                     LinearProgressIndicator(
-                        progress = statValue.value,
+                        progress = { statValue.value },
                         color = indicatorColor,
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier
