@@ -3,7 +3,6 @@ package des.c5inco.pokedexer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -13,15 +12,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
-import des.c5inco.pokedexer.ui.home.RootViewModel
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsViewModel
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: RootViewModel by viewModels()
-
     @Inject
     lateinit var pokemonDetailsViewModelFactory: PokemonDetailsViewModel.PokemonDetailsViewModelFactory
 
