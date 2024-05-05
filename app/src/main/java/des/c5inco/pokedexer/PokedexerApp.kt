@@ -23,6 +23,7 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
+import des.c5inco.pokedexer.ui.home.RootViewModel
 import des.c5inco.pokedexer.ui.items.ItemsScreenRoute
 import des.c5inco.pokedexer.ui.moves.MovesListScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.PokedexScreenRoute
@@ -34,7 +35,9 @@ class PokedexerApplication : Application()
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun PokedexerApp() {
+fun PokedexerApp(
+    viewModel: RootViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
     val density = LocalDensity.current
     var pokemon by remember { mutableStateOf(SamplePokemonData.first()) }
