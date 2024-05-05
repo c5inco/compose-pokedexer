@@ -4,17 +4,18 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -40,7 +41,6 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.ui.common.Material3Transitions.SharedYAxisEnterTransition
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.home.HomeViewModel
 import des.c5inco.pokedexer.ui.home.MenuItem
@@ -63,13 +63,14 @@ fun MainAppBar(
     onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
 ) {
     val searchResults = viewModel.foundPokemon.collectAsState()
+    val density = LocalDensity.current
 
     Surface(
         shape = RoundedCornerShape(
             bottomStart = 32.dp,
             bottomEnd = 32.dp
         ),
-        tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp
+        tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp,
     ) {
         Box(
             Modifier.padding(bottom = 16.dp)
@@ -81,7 +82,7 @@ fun MainAppBar(
                 tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
             )
             Column(
-                modifier = Modifier.padding(vertical = 32.dp)
+                modifier = Modifier.padding(top = 32.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(horizontal = 32.dp)
@@ -95,9 +96,11 @@ fun MainAppBar(
                     )
                     RoundedSearchBar(searchText = viewModel.searchText)
                 }
-                Spacer(modifier = Modifier.height(32.dp))
                 AnimatedContent(
                     targetState = searchResults.value,
+                    transitionSpec = {
+                        fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false))
+                    },
                 ) {searchResults ->
                     if (searchResults.isNotEmpty()) {
                         SearchResults(
@@ -105,15 +108,12 @@ fun MainAppBar(
                             onSelected = onSearchResultSelected,
                             modifier = Modifier
                                 .height(320.dp)
+                                .padding(top = 32.dp, bottom = 16.dp)
                         )
                     } else {
                         Menu(
                             modifier = Modifier
-                                .animateEnterExit(
-                                    enter = SharedYAxisEnterTransition(LocalDensity.current),
-                                    exit = fadeOut()
-                                )
-                                .padding(horizontal = 32.dp),
+                                .padding(32.dp),
                             onMenuItemSelected = onMenuItemSelected
                         )
                     }
