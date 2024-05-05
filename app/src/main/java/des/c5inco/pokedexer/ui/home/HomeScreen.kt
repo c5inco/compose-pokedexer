@@ -6,22 +6,18 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.rememberTextFieldState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -39,22 +35,7 @@ sealed class MenuItem(
 }
 
 @Composable
-fun HomeScreenRoute(
-    viewModel: HomeViewModel,
-    onMenuItemSelected: (MenuItem) -> Unit = {}
-) {
-    HomeScreen(
-        searchText = viewModel.searchText,
-        searchResults = viewModel.searchResults.collectAsState().value,
-        onMenuItemSelected = onMenuItemSelected
-    )
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
 fun HomeScreen(
-    searchText: TextFieldState = rememberTextFieldState(),
-    searchResults: List<Pokemon> = emptyList(),
     onMenuItemSelected: (MenuItem) -> Unit = {}
 ) {
     var openAlertDialog by remember { mutableStateOf(false) }
@@ -65,7 +46,6 @@ fun HomeScreen(
     ) {
         Column {
             MainAppBar(
-                searchText = searchText,
                 onMenuItemSelected = {
                     when (it) {
                         MenuItem.Moves,
@@ -77,13 +57,6 @@ fun HomeScreen(
                     }
                 }
             )
-            if (searchText.text.isNotEmpty() && searchResults.isNotEmpty()) {
-                Column {
-                    searchResults.forEach {
-                        Text(it.name)
-                    }
-                }
-            }
         }
     }
 

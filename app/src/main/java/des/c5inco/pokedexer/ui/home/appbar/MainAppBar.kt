@@ -11,17 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
+import des.c5inco.pokedexer.ui.home.HomeViewModel
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
 import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
@@ -30,9 +31,11 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainAppBar(
-    searchText: TextFieldState = rememberTextFieldState(),
+    viewModel: HomeViewModel = hiltViewModel(),
     onMenuItemSelected: (MenuItem) -> Unit
 ) {
+    val searchResults = viewModel.foundPokemon.collectAsState()
+
     Surface(
         shape = RoundedCornerShape(
             bottomStart = 32.dp,
@@ -57,8 +60,11 @@ fun MainAppBar(
                         top = 64.dp, bottom = 32.dp
                     )
                 )
+                if (searchResults.value.isNotEmpty()) {
+                    Text(text = "Found ${searchResults.value.size}")
+                }
                 RoundedSearchBar(
-                    searchText = searchText
+                    searchText = viewModel.searchText,
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 Menu(
@@ -70,11 +76,10 @@ fun MainAppBar(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
-fun MainAppBarPreview() {
+fun PreviewMainAppBar() {
     AppTheme {
         Surface(
             Modifier.fillMaxSize(),

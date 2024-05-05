@@ -21,7 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.HiltAndroidApp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.common.Material3Transitions
-import des.c5inco.pokedexer.ui.home.HomeScreenRoute
+import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.RootViewModel
 import des.c5inco.pokedexer.ui.items.ItemsScreenRoute
@@ -54,9 +54,7 @@ fun PokedexerApp(
         popExitTransition = { Material3Transitions.SharedXAxisPopExitTransition(density) }
     ) {
         composable(route = "home") {
-            HomeScreenRoute(
-                viewModel = hiltViewModel()
-            ) {
+            HomeScreen {
                 if (it == MenuItem.Pokedex) {
                     navController.navigate("pokedex")
                 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text2.BasicTextField2
 import androidx.compose.foundation.text2.input.TextFieldLineLimits
 import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -26,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
@@ -39,13 +37,15 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RoundedSearchBar(
-    searchText: TextFieldState = rememberTextFieldState(),
+    modifier: Modifier = Modifier,
+    searchText: TextFieldState,
 ) {
     var showPlaceholder by remember { mutableStateOf(true) }
 
     Surface(
         shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier
     ) {
         BasicTextField2(
             modifier = Modifier.onFocusEvent {
@@ -98,6 +98,8 @@ fun RoundedSearchBar(
 @Composable
 fun RoundedSearchBarPreview() {
     AppTheme {
-        RoundedSearchBar()
+        RoundedSearchBar(
+            searchText = TextFieldState()
+        )
     }
 }
