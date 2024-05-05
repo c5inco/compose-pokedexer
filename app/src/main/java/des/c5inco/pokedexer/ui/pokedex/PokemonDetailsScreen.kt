@@ -7,7 +7,6 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.ExperimentalTransitionApi
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -578,7 +577,6 @@ private fun RotatingPokeBall(
     )
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalTransitionApi::class)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Preview
 @Composable

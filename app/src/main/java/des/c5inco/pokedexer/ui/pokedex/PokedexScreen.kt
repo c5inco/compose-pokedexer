@@ -99,7 +99,6 @@ fun PokedexScreenRoute(
     )
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PokedexScreen(
     loading: Boolean,
