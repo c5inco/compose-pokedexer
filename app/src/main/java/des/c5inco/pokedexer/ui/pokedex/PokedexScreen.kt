@@ -40,6 +40,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -237,6 +238,7 @@ fun PokedexScreen(
                 )
                 Spacer(Modifier.height(16.dp))
                 FloatingActionButton(
+                    shape = CircleShape,
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = { showFilterMenu = !showFilterMenu },
                 ) {
