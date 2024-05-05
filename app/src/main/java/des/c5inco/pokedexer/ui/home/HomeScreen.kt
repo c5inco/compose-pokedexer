@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
+import des.c5inco.pokedexer.ui.home.appbar.SearchResult
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 sealed class MenuItem(
@@ -36,7 +37,8 @@ sealed class MenuItem(
 
 @Composable
 fun HomeScreen(
-    onMenuItemSelected: (MenuItem) -> Unit = {}
+    onMenuItemSelected: (MenuItem) -> Unit = { _ -> },
+    onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
 ) {
     var openAlertDialog by remember { mutableStateOf(false) }
 
@@ -55,7 +57,8 @@ fun HomeScreen(
                         else ->
                             openAlertDialog = true
                     }
-                }
+                },
+                onSearchResultSelected = onSearchResultSelected
             )
         }
     }

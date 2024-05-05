@@ -1,15 +1,29 @@
 package des.c5inco.pokedexer.ui.home.appbar
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -18,21 +32,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.model.Item
+import des.c5inco.pokedexer.model.Move
+import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.ui.common.Material3Transitions.SharedYAxisEnterTransition
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.home.HomeViewModel
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
 import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
+import des.c5inco.pokedexer.ui.pokedex.PokedexCard
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
-@OptIn(ExperimentalFoundationApi::class)
+sealed class SearchResult {
+    data class PokemonEvent(val pokemon: Pokemon) : SearchResult()
+    data class MoveEvent(val move: Move) : SearchResult()
+    data class ItemEvent(val item: Item) : SearchResult()
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun MainAppBar(
     viewModel: HomeViewModel = hiltViewModel(),
-    onMenuItemSelected: (MenuItem) -> Unit
+    onMenuItemSelected: (MenuItem) -> Unit = { _ -> },
+    onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
 ) {
     val searchResults = viewModel.foundPokemon.collectAsState()
 
@@ -43,7 +71,9 @@ fun MainAppBar(
         ),
         tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp
     ) {
-        Box {
+        Box(
+            Modifier.padding(bottom = 16.dp)
+        ) {
             PokeBallBackground(
                 Modifier
                     .align(Alignment.TopEnd)
@@ -51,26 +81,89 @@ fun MainAppBar(
                 tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
             )
             Column(
-                modifier = Modifier.padding(32.dp)
+                modifier = Modifier.padding(vertical = 32.dp)
             ) {
-                Text(
-                    text = "What Pokémon\nare you looking for?",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(
-                        top = 64.dp, bottom = 32.dp
+                Column(
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                ) {
+                    Text(
+                        text = "What Pokémon\nare you looking for?",
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(
+                            top = 64.dp, bottom = 32.dp
+                        )
                     )
-                )
-                if (searchResults.value.isNotEmpty()) {
-                    Text(text = "Found ${searchResults.value.size}")
+                    RoundedSearchBar(searchText = viewModel.searchText)
                 }
-                RoundedSearchBar(
-                    searchText = viewModel.searchText,
-                )
                 Spacer(modifier = Modifier.height(32.dp))
-                Menu(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    onMenuItemSelected = onMenuItemSelected
-                )
+                AnimatedContent(
+                    targetState = searchResults.value,
+                ) {searchResults ->
+                    if (searchResults.isNotEmpty()) {
+                        SearchResults(
+                            results = searchResults,
+                            onSelected = onSearchResultSelected,
+                            modifier = Modifier
+                                .height(320.dp)
+                        )
+                    } else {
+                        Menu(
+                            modifier = Modifier
+                                .animateEnterExit(
+                                    enter = SharedYAxisEnterTransition(LocalDensity.current),
+                                    exit = fadeOut()
+                                )
+                                .padding(horizontal = 32.dp),
+                            onMenuItemSelected = onMenuItemSelected
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+private fun AnimatedContentScope.SearchResults(
+    modifier: Modifier = Modifier,
+    results: List<Pokemon> = SamplePokemonData.take(10),
+    onSelected: (SearchResult) -> Unit = { _ ->}
+) {
+    val gridState = rememberLazyGridState()
+    LazyHorizontalGrid(
+        state = gridState,
+        rows = GridCells.Fixed(2),
+        contentPadding = PaddingValues(horizontal = 32.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier
+    ) {
+        itemsIndexed(items = results, key = { _, it -> it.id }) { idx, it ->
+            PokedexCard(
+                pokemon = it,
+                onPokemonSelected = { onSelected(SearchResult.PokemonEvent(it)) },
+                modifier = Modifier
+                    .width(200.dp)
+                    .animateEnterExit(
+                        enter = fadeIn(tween(durationMillis = 300, delayMillis = idx / 2 * 100)) +
+                                slideInHorizontally(tween(durationMillis = 300, delayMillis = idx / 2 * 100)) { it / 2 },
+                        exit = fadeOut()
+                    )
+            )
+        }
+    }
+}
+
+@Preview(heightDp = 320)
+@Composable
+private fun SearchResultsPreview() {
+    AppTheme {
+        Surface {
+            AnimatedContent(
+                targetState = true,
+            ) { _ ->
+                SearchResults()
             }
         }
     }
@@ -86,7 +179,7 @@ fun PreviewMainAppBar() {
             color = MaterialTheme.colorScheme.background
         ) {
             Column {
-                MainAppBar(onMenuItemSelected = {})
+                MainAppBar()
             }
         }
     }

@@ -24,6 +24,7 @@ import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.home.HomeScreen
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.RootViewModel
+import des.c5inco.pokedexer.ui.home.appbar.SearchResult
 import des.c5inco.pokedexer.ui.items.ItemsScreenRoute
 import des.c5inco.pokedexer.ui.moves.MovesListScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.PokedexScreenRoute
@@ -54,17 +55,29 @@ fun PokedexerApp(
         popExitTransition = { Material3Transitions.SharedXAxisPopExitTransition(density) }
     ) {
         composable(route = "home") {
-            HomeScreen {
-                if (it == MenuItem.Pokedex) {
-                    navController.navigate("pokedex")
+            HomeScreen(
+                onMenuItemSelected = {
+                    if (it == MenuItem.Pokedex) {
+                        navController.navigate("pokedex")
+                    }
+                    if (it == MenuItem.Moves) {
+                        navController.navigate("moves")
+                    }
+                    if (it == MenuItem.Items) {
+                        navController.navigate("items")
+                    }
+                },
+                onSearchResultSelected = {
+                    when(it) {
+                        is SearchResult.PokemonEvent -> {
+                            pokemon = it.pokemon
+                            navController.navigate("details")
+                        }
+                        is SearchResult.ItemEvent -> TODO()
+                        is SearchResult.MoveEvent -> TODO()
+                    }
                 }
-                if (it == MenuItem.Moves) {
-                    navController.navigate("moves")
-                }
-                if (it == MenuItem.Items) {
-                    navController.navigate("items")
-                }
-            }
+            )
         }
         navigation(
             startDestination = "list",
