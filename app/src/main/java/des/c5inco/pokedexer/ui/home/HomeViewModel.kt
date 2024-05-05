@@ -30,7 +30,7 @@ class HomeViewModel @Inject constructor(
 
     val foundPokemon: StateFlow<List<Pokemon>> =
         searchText.textAsFlow()
-            .debounce(500)
+            .debounce(200)
             .mapLatest {
                 val textContent = it.toString()
                 if (textContent.isEmpty()) {
