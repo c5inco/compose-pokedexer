@@ -44,7 +44,7 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
-fun PokeDexCard(
+fun PokedexCard(
     modifier: Modifier = Modifier,
     pokemon: Pokemon,
     isFavorite: Boolean = false,
@@ -57,7 +57,7 @@ fun PokeDexCard(
             color = PokemonTypesTheme.colorScheme.surface
         ) {
             Box(
-                modifier
+                Modifier
                     .height(120.dp)
                     .clickable { onPokemonSelected(pokemon) }
             ) {
@@ -125,23 +125,23 @@ private fun PokemonName(name: String?) {
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Preview
 @Composable
-private fun PokeDexCardPreview() {
+private fun PokedexCardPreview() {
     AppTheme {
         Surface {
             Column(
                 Modifier.width(200.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                PokeDexCard(
+                PokedexCard(
                     modifier = Modifier.fillMaxWidth(),
                     pokemon = SamplePokemonData[0]
                 )
-                PokeDexCard(
+                PokedexCard(
                     modifier = Modifier.fillMaxWidth(),
                     pokemon = SamplePokemonData[3],
                     isFavorite = true
                 )
-                PokeDexCard(
+                PokedexCard(
                     modifier = Modifier.fillMaxWidth(),
                     pokemon = SamplePokemonData[6]
                 )

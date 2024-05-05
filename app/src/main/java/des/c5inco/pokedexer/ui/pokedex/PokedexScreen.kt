@@ -301,7 +301,7 @@ fun PokemonList(
             } else {
                 loaded.targetState = true
 
-                itemsIndexed(pokemon) { idx, p ->
+                itemsIndexed(items = pokemon, key = { _, p -> p.id }) { idx, p ->
                     AnimatedVisibility(
                         visibleState = loaded,
                         enter = slideInVertically(
@@ -318,7 +318,7 @@ fun PokemonList(
                         ),
                         exit = ExitTransition.None
                     ) {
-                        PokeDexCard(
+                        PokedexCard(
                             pokemon = p,
                             isFavorite = favorites.contains(p),
                             onPokemonSelected = onPokemonSelected
