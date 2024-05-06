@@ -1,4 +1,4 @@
-package des.c5inco.pokedexer.ui.home
+package des.c5inco.pokedexer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
