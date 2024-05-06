@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -34,6 +35,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,14 +61,14 @@ sealed class SearchResult {
     data class ItemEvent(val item: Item) : SearchResult()
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainAppBar(
     viewModel: HomeViewModel = hiltViewModel(),
     onMenuItemSelected: (MenuItem) -> Unit = { _ -> },
     onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
 ) {
-    val searchResults = viewModel.foundPokemon.collectAsState()
+    val searchResponse = viewModel.foundPokemon.collectAsState()
     val density = LocalDensity.current
 
     Surface(
@@ -97,18 +103,33 @@ fun MainAppBar(
                     RoundedSearchBar(searchText = viewModel.searchText)
                 }
                 AnimatedContent(
-                    targetState = searchResults.value,
+                    targetState = searchResponse.value,
                     transitionSpec = {
                         fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false))
                     },
-                ) {searchResults ->
-                    if (searchResults.isNotEmpty()) {
+                ) {response  ->
+                    if (response.foundPokemon.isNotEmpty()) {
                         SearchResults(
-                            results = searchResults,
+                            results = response.foundPokemon,
                             onSelected = onSearchResultSelected,
                             modifier = Modifier
                                 .height(320.dp)
                                 .padding(top = 32.dp, bottom = 16.dp)
+                        )
+                    } else if (response.currentText.isNotEmpty()) {
+                        val annotatedString = buildAnnotatedString {
+                            append("No results found for ")
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(response.currentText)
+                            }
+                        }
+
+                        Text(
+                            text = annotatedString,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp)
                         )
                     } else {
                         Menu(

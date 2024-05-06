@@ -40,7 +40,7 @@ fun RoundedSearchBar(
     modifier: Modifier = Modifier,
     searchText: TextFieldState,
 ) {
-    var showPlaceholder by remember { mutableStateOf(true) }
+    var showPlaceholder by remember { mutableStateOf(searchText.text.isEmpty()) }
 
     Surface(
         shape = RoundedCornerShape(24.dp),
