@@ -1,6 +1,10 @@
 package des.c5inco.pokedexer.data
 
-import androidx.room.*
+import androidx.room.AutoMigration
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import des.c5inco.pokedexer.data.items.ItemsDao
 import des.c5inco.pokedexer.data.moves.MovesDao
 import des.c5inco.pokedexer.data.pokemon.PokemonDao
