@@ -17,8 +17,8 @@ interface ItemsDao {
     @Query("SELECT * FROM item WHERE id IN (:ids)")
     suspend fun findByIds(ids: List<Int>): List<Item>
 
-    @Query("SELECT * FROM item WHERE name LIKE :name LIMIT 1")
-    suspend fun findByName(name: String): Item?
+    @Query("SELECT * FROM item WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
+    suspend fun findByName(name: String): List<Item>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: Item)

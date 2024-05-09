@@ -28,6 +28,10 @@ class LocalMovesRepository(
         return Result.Success(localMovesDataSource.fetchMoves().take(3))
     }
 
+    override suspend fun getMovesByName(name: String): Result<List<Move>> {
+        TODO("Not yet implemented")
+    }
+
     // used to drive "random" failure in a predictable pattern, making the first request always
     // succeed
     private var requestCount = 0

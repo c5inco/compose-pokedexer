@@ -15,6 +15,7 @@ interface ItemsRepository {
     suspend fun getAllItems(): Result<List<Item>>
     suspend fun getItemById(id: Int): Result<Item>
     suspend fun getItemByIds(ids: List<Int>): Result<List<Item>>
+    suspend fun getItemsByName(name: String): Result<List<Item>>
 }
 
 class ItemsRepositoryImpl @Inject constructor(
@@ -68,5 +69,9 @@ class ItemsRepositoryImpl @Inject constructor(
 
     override suspend fun getItemByIds(ids: List<Int>): Result<List<Item>> {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun getItemsByName(name: String): Result<List<Item>> {
+        return Result.Success(itemsDao.findByName(name))
     }
 }

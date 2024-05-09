@@ -7,4 +7,5 @@ interface MovesRepository {
     suspend fun getAllMoves(): Result<List<Move>>
     suspend fun getMoveById(id: Int): Result<Move>
     suspend fun getMovesByIds(ids: List<Int>): Result<List<Move>>
+    suspend fun getMovesByName(name: String): Result<List<Move>>
 }

@@ -65,4 +65,8 @@ class RemoteMovesRepository @Inject constructor(
     override suspend fun getMovesByIds(ids: List<Int>): Result<List<Move>> {
         return Result.Success(movesDao.findByIds(ids))
     }
+
+    override suspend fun getMovesByName(name: String): Result<List<Move>> {
+        return Result.Success(movesDao.findByName(name))
+    }
 }

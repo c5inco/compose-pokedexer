@@ -11,3 +11,8 @@ sealed class Result<out R> {
 fun <T> Result<T>.successOr(fallback: T): T {
     return (this as? Result.Success<T>)?.data ?: fallback
 }
+
+fun <T> Result<T>.dataOrThrow(): T = when (this) {
+    is Result.Success -> data
+    is Result.Error -> throw exception
+}
