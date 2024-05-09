@@ -3,6 +3,7 @@ package des.c5inco.pokedexer.ui.home.appbar
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
@@ -11,6 +12,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,8 +27,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -43,6 +47,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import des.c5inco.pokedexer.data.items.SampleItems
+import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
@@ -108,13 +114,13 @@ fun MainAppBar(
                         fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false))
                     },
                 ) {response  ->
-                    if (response.foundPokemon.isNotEmpty()) {
+                    if (response.foundPokemon.isNotEmpty() || response.foundMoves.isNotEmpty() || response.foundItems.isNotEmpty()) {
                         SearchResults(
-                            results = response.foundPokemon,
+                            pokemonResults = response.foundPokemon,
+                            movesResults = response.foundMoves,
+                            itemsResults = response.foundItems,
                             onSelected = onSearchResultSelected,
-                            modifier = Modifier
-                                .height(320.dp)
-                                .padding(top = 32.dp, bottom = 16.dp)
+                            modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
                         )
                     } else if (response.currentText.isNotEmpty()) {
                         val annotatedString = buildAnnotatedString {
@@ -144,39 +150,125 @@ fun MainAppBar(
     }
 }
 
+private fun slideAndFadeEnterTransition(index: Int): EnterTransition {
+    return fadeIn(
+            tween(durationMillis = 300, delayMillis = index / 2 * 100)
+        ) +
+        slideInHorizontally(
+            tween(durationMillis = 300, delayMillis = index / 2 * 100)
+        ) { it / 2 }
+}
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun AnimatedContentScope.SearchResults(
     modifier: Modifier = Modifier,
-    results: List<Pokemon> = SamplePokemonData.take(10),
+    pokemonResults: List<Pokemon> = SamplePokemonData.take(10),
+    movesResults: List<Move> = SampleMoves.take(10),
+    itemsResults: List<Item> = SampleItems.take(10),
     onSelected: (SearchResult) -> Unit = { _ ->}
 ) {
-    val gridState = rememberLazyGridState()
-    LazyHorizontalGrid(
-        state = gridState,
-        rows = GridCells.Fixed(2),
-        contentPadding = PaddingValues(horizontal = 32.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+    val scrollState = rememberScrollState()
+
+    Column(
         modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        itemsIndexed(items = results, key = { _, it -> it.id }) { idx, it ->
-            PokedexCard(
-                pokemon = it,
-                onPokemonSelected = { onSelected(SearchResult.PokemonEvent(it)) },
-                modifier = Modifier
-                    .width(200.dp)
-                    .animateEnterExit(
-                        enter = fadeIn(tween(durationMillis = 300, delayMillis = idx / 2 * 100)) +
-                                slideInHorizontally(tween(durationMillis = 300, delayMillis = idx / 2 * 100)) { it / 2 },
-                        exit = fadeOut()
-                    )
+        if (pokemonResults.isNotEmpty()) {
+            Text(
+                text = "Pokemon (${pokemonResults.size})",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 32.dp)
             )
+            LazyHorizontalGrid(
+                rows = GridCells.Fixed(2),
+                contentPadding = PaddingValues(horizontal = 32.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .height(200.dp)
+                    .padding(bottom = 16.dp)
+            ) {
+                itemsIndexed(items = pokemonResults, key = { _, it -> it.id }) { idx, it ->
+                    PokedexCard(
+                        pokemon = it,
+                        onPokemonSelected = { onSelected(SearchResult.PokemonEvent(it)) },
+                        modifier = Modifier
+                            .height(60.dp)
+                            .width(200.dp)
+                            .animateEnterExit(
+                                enter = slideAndFadeEnterTransition(idx),
+                                exit = fadeOut()
+                            )
+                    )
+                }
+            }
+        }
+
+        if (movesResults.isNotEmpty()) {
+            Text(
+                text = "Moves (${movesResults.size})",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+            LazyHorizontalGrid(
+                rows = GridCells.Fixed(4),
+                contentPadding = PaddingValues(horizontal = 32.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .height(200.dp)
+                    .padding(bottom = 16.dp)
+            ) {
+                itemsIndexed(items = movesResults, key = { _, it -> it.id }) { idx, it ->
+                    Text(
+                        text = it.name,
+                        modifier = Modifier
+                            .width(200.dp)
+                            .animateEnterExit(
+                                enter = slideAndFadeEnterTransition(idx),
+                                exit = fadeOut()
+                            )
+                    )
+                }
+            }
+        }
+
+        if (itemsResults.isNotEmpty()) {
+            Text(
+                text = "Items (${itemsResults.size})",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+            LazyHorizontalGrid(
+                rows = GridCells.Fixed(4),
+                contentPadding = PaddingValues(horizontal = 32.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .height(200.dp)
+                    .padding(bottom = 16.dp)
+            ) {
+                itemsIndexed(items = itemsResults, key = { _, it -> it.id }) { idx, it ->
+                    Text(
+                        text = it.name,
+                        modifier = Modifier
+                            .width(200.dp)
+                            .background(Color.Red)
+                            .animateEnterExit(
+                                enter = slideAndFadeEnterTransition(idx),
+                                exit = fadeOut()
+                            )
+                    )
+                }
+            }
         }
     }
 }
 
-@Preview(heightDp = 320)
+@Preview
 @Composable
 private fun SearchResultsPreview() {
     AppTheme {

@@ -8,12 +8,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import des.c5inco.pokedexer.data.Result
+import des.c5inco.pokedexer.data.dataOrThrow
+import des.c5inco.pokedexer.data.items.ItemsRepository
+import des.c5inco.pokedexer.data.moves.MovesRepository
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
@@ -31,7 +35,9 @@ data class SearchResponse(
 @OptIn(ExperimentalFoundationApi::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val pokemonRepository: PokemonRepository
+    private val pokemonRepository: PokemonRepository,
+    private val movesRepository: MovesRepository,
+    private val itemsRepository: ItemsRepository,
 ): ViewModel() {
     val searchText = TextFieldState()
 
@@ -48,17 +54,17 @@ class HomeViewModel @Inject constructor(
                         foundPokemon = emptyList()
                     )
                 } else {
-                    when (val result = pokemonRepository.getPokemonByName(textContent)) {
-                        is Result.Success -> {
-                            SearchResponse(
-                                currentText = textContent,
-                                foundPokemon = result.data
-                            )
-                        }
+                    coroutineScope {
+                        val pokemonResults = async { pokemonRepository.getPokemonByName(textContent) }
+                        val movesResults = async { movesRepository.getMovesByName(textContent) }
+                        val itemsResults = async { itemsRepository.getItemsByName(textContent) }
 
-                        is Result.Error -> {
-                            throw result.exception
-                        }
+                        SearchResponse(
+                            currentText = textContent,
+                            foundPokemon = pokemonResults.await().dataOrThrow(),
+                            foundMoves = movesResults.await().dataOrThrow(),
+                            foundItems = itemsResults.await().dataOrThrow()
+                        )
                     }
                 }
             }
