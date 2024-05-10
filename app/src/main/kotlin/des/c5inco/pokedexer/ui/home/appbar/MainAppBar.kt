@@ -17,13 +17,19 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -84,9 +90,7 @@ fun MainAppBar(
         ),
         tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp,
     ) {
-        Box(
-            Modifier.padding(bottom = 16.dp)
-        ) {
+        Box {
             PokeBallBackground(
                 Modifier
                     .align(Alignment.TopEnd)
@@ -110,17 +114,15 @@ fun MainAppBar(
                 }
                 AnimatedContent(
                     targetState = searchResponse.value,
-                    transitionSpec = {
-                        fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false))
-                    },
-                ) {response  ->
+                    transitionSpec = { fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false)) },
+                ) { response  ->
                     if (response.foundPokemon.isNotEmpty() || response.foundMoves.isNotEmpty() || response.foundItems.isNotEmpty()) {
                         SearchResults(
                             pokemonResults = response.foundPokemon,
                             movesResults = response.foundMoves,
                             itemsResults = response.foundItems,
                             onSelected = onSearchResultSelected,
-                            modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
+                            modifier = Modifier.padding(top = 32.dp)
                         )
                     } else if (response.currentText.isNotEmpty()) {
                         val annotatedString = buildAnnotatedString {
@@ -159,7 +161,7 @@ private fun slideAndFadeEnterTransition(index: Int): EnterTransition {
         ) { it / 2 }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalLayoutApi::class)
 @Composable
 private fun AnimatedContentScope.SearchResults(
     modifier: Modifier = Modifier,
@@ -173,98 +175,103 @@ private fun AnimatedContentScope.SearchResults(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .imePadding()
             .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
         if (pokemonResults.isNotEmpty()) {
-            Text(
-                text = "Pokemon (${pokemonResults.size})",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-            LazyHorizontalGrid(
-                rows = GridCells.Fixed(2),
-                contentPadding = PaddingValues(horizontal = 32.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .height(200.dp)
-                    .padding(bottom = 16.dp)
-            ) {
-                itemsIndexed(items = pokemonResults, key = { _, it -> it.id }) { idx, it ->
-                    PokedexCard(
-                        pokemon = it,
-                        onPokemonSelected = { onSelected(SearchResult.PokemonEvent(it)) },
-                        modifier = Modifier
-                            .height(60.dp)
-                            .width(200.dp)
-                            .animateEnterExit(
-                                enter = slideAndFadeEnterTransition(idx),
-                                exit = fadeOut()
-                            )
-                    )
+            Column {
+                Text(
+                    text = "Pokemon (${pokemonResults.size})",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+                Spacer(Modifier.height(16.dp))
+                LazyHorizontalGrid(
+                    rows = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(horizontal = 32.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.height(200.dp)
+                ) {
+                    itemsIndexed(items = pokemonResults, key = { _, it -> it.id }) { idx, it ->
+                        PokedexCard(
+                            pokemon = it,
+                            onPokemonSelected = { onSelected(SearchResult.PokemonEvent(it)) },
+                            modifier = Modifier
+                                .height(60.dp)
+                                .width(200.dp)
+                                .animateEnterExit(
+                                    enter = slideAndFadeEnterTransition(idx),
+                                    exit = fadeOut()
+                                )
+                        )
+                    }
                 }
             }
         }
 
         if (movesResults.isNotEmpty()) {
-            Text(
-                text = "Moves (${movesResults.size})",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-            LazyHorizontalGrid(
-                rows = GridCells.Fixed(4),
-                contentPadding = PaddingValues(horizontal = 32.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .height(200.dp)
-                    .padding(bottom = 16.dp)
-            ) {
-                itemsIndexed(items = movesResults, key = { _, it -> it.id }) { idx, it ->
-                    Text(
-                        text = it.name,
-                        modifier = Modifier
-                            .width(200.dp)
-                            .animateEnterExit(
-                                enter = slideAndFadeEnterTransition(idx),
-                                exit = fadeOut()
-                            )
-                    )
+            Column {
+                Text(
+                    text = "Moves (${movesResults.size})",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+                Spacer(Modifier.height(16.dp))
+                LazyHorizontalGrid(
+                    rows = GridCells.Fixed(4),
+                    contentPadding = PaddingValues(horizontal = 32.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.height(200.dp)
+                ) {
+                    itemsIndexed(items = movesResults, key = { _, it -> it.id }) { idx, it ->
+                        Text(
+                            text = it.name,
+                            modifier = Modifier
+                                .width(200.dp)
+                                .animateEnterExit(
+                                    enter = slideAndFadeEnterTransition(idx),
+                                    exit = fadeOut()
+                                )
+                        )
+                    }
                 }
             }
         }
 
         if (itemsResults.isNotEmpty()) {
-            Text(
-                text = "Items (${itemsResults.size})",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-            LazyHorizontalGrid(
-                rows = GridCells.Fixed(4),
-                contentPadding = PaddingValues(horizontal = 32.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .height(200.dp)
-                    .padding(bottom = 16.dp)
-            ) {
-                itemsIndexed(items = itemsResults, key = { _, it -> it.id }) { idx, it ->
-                    Text(
-                        text = it.name,
-                        modifier = Modifier
-                            .width(200.dp)
-                            .background(Color.Red)
-                            .animateEnterExit(
-                                enter = slideAndFadeEnterTransition(idx),
-                                exit = fadeOut()
-                            )
-                    )
+            Column {
+                Text(
+                    text = "Items (${itemsResults.size})",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+                Spacer(Modifier.height(16.dp))
+                LazyHorizontalGrid(
+                    rows = GridCells.Fixed(4),
+                    contentPadding = PaddingValues(horizontal = 32.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.height(200.dp)
+                ) {
+                    itemsIndexed(items = itemsResults, key = { _, it -> it.id }) { idx, it ->
+                        Text(
+                            text = it.name,
+                            modifier = Modifier
+                                .width(200.dp)
+                                .background(Color.Red)
+                                .animateEnterExit(
+                                    enter = slideAndFadeEnterTransition(idx),
+                                    exit = fadeOut()
+                                )
+                        )
+                    }
                 }
             }
         }
+        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }
 }
 
