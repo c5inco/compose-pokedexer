@@ -16,7 +16,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -63,6 +62,7 @@ import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
 import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
 import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultCard
+import des.c5inco.pokedexer.ui.home.appbar.search.MoveResultCard
 import des.c5inco.pokedexer.ui.pokedex.PokedexCard
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
@@ -160,7 +160,7 @@ private fun slideAndFadeEnterTransition(index: Int): EnterTransition {
         ) { it / 2 }
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun AnimatedContentScope.SearchResults(
     modifier: Modifier = Modifier,
@@ -226,8 +226,8 @@ private fun AnimatedContentScope.SearchResults(
                     modifier = Modifier.height(200.dp)
                 ) {
                     itemsIndexed(items = movesResults, key = { _, it -> it.id }) { idx, it ->
-                        Text(
-                            text = it.name,
+                        MoveResultCard(
+                            move = it,
                             modifier = Modifier
                                 .width(200.dp)
                                 .animateEnterExit(
@@ -269,6 +269,8 @@ private fun AnimatedContentScope.SearchResults(
                 }
             }
         }
+
+        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }
 }
 
