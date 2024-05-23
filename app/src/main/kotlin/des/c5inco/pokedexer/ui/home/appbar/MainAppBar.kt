@@ -12,7 +12,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,7 +42,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -64,6 +62,7 @@ import des.c5inco.pokedexer.ui.home.HomeViewModel
 import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
 import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
+import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultCard
 import des.c5inco.pokedexer.ui.pokedex.PokedexCard
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
@@ -190,7 +189,7 @@ private fun AnimatedContentScope.SearchResults(
                 LazyHorizontalGrid(
                     rows = GridCells.Fixed(2),
                     contentPadding = PaddingValues(horizontal = 32.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.height(200.dp)
                 ) {
@@ -222,7 +221,7 @@ private fun AnimatedContentScope.SearchResults(
                 LazyHorizontalGrid(
                     rows = GridCells.Fixed(4),
                     contentPadding = PaddingValues(horizontal = 32.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.height(200.dp)
                 ) {
@@ -250,18 +249,17 @@ private fun AnimatedContentScope.SearchResults(
                 )
                 Spacer(Modifier.height(16.dp))
                 LazyHorizontalGrid(
-                    rows = GridCells.Fixed(4),
+                    rows = GridCells.Fixed(3),
                     contentPadding = PaddingValues(horizontal = 32.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.height(200.dp)
+                    modifier = Modifier.height(240.dp)
                 ) {
                     itemsIndexed(items = itemsResults, key = { _, it -> it.id }) { idx, it ->
-                        Text(
-                            text = it.name,
+                        ItemResultCard(
+                            item = it,
                             modifier = Modifier
                                 .width(200.dp)
-                                .background(Color.Red)
                                 .animateEnterExit(
                                     enter = slideAndFadeEnterTransition(idx),
                                     exit = fadeOut()
@@ -271,7 +269,6 @@ private fun AnimatedContentScope.SearchResults(
                 }
             }
         }
-        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }
 }
 
