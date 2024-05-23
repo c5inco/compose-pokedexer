@@ -63,7 +63,7 @@ import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
 import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
 import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultCard
 import des.c5inco.pokedexer.ui.home.appbar.search.MoveResultCard
-import des.c5inco.pokedexer.ui.pokedex.PokedexCard
+import des.c5inco.pokedexer.ui.home.appbar.search.PokemonResultCard
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 sealed class SearchResult {
@@ -194,12 +194,10 @@ private fun AnimatedContentScope.SearchResults(
                     modifier = Modifier.height(200.dp)
                 ) {
                     itemsIndexed(items = pokemonResults, key = { _, it -> it.id }) { idx, it ->
-                        PokedexCard(
+                        PokemonResultCard(
                             pokemon = it,
                             onPokemonSelected = { onSelected(SearchResult.PokemonEvent(it)) },
                             modifier = Modifier
-                                .height(60.dp)
-                                .width(200.dp)
                                 .animateEnterExit(
                                     enter = slideAndFadeEnterTransition(idx),
                                     exit = fadeOut()
