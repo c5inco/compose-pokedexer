@@ -13,9 +13,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text2.BasicTextField2
 import androidx.compose.foundation.text2.input.TextFieldLineLimits
 import androidx.compose.foundation.text2.input.TextFieldState
+import androidx.compose.foundation.text2.input.clearText
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -45,50 +48,67 @@ fun RoundedSearchBar(
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier
     ) {
-        BasicTextField2(
-            modifier = Modifier.onFocusEvent {
-                if (searchText.text.isEmpty()) {
-                    showPlaceholder = !it.isFocused
-                }
-            },
-            state = searchText,
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                color = contentColorFor(backgroundColor = MaterialTheme.colorScheme.surfaceVariant),
-            ),
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.onPrimaryContainer),
-            lineLimits = TextFieldLineLimits.SingleLine,
-            decorator = { innerTextField ->
-                Row(
-                    modifier = Modifier
-                        .height(48.dp)
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    if (showPlaceholder) {
-                        Text(
-                            "Search Pokemon, Move, Ability, etc",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 12.dp),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
+        Row(
+            modifier = Modifier
+                .height(48.dp)
+                .fillMaxWidth()
+                .padding(start = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            BasicTextField2(
+                modifier = Modifier
+                    .weight(1f)
+                    .onFocusEvent {
+                        if (searchText.text.isEmpty()) {
+                            showPlaceholder = !it.isFocused
+                        }
+                    },
+                state = searchText,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    color = contentColorFor(backgroundColor = MaterialTheme.colorScheme.surfaceVariant),
+                ),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.onPrimaryContainer),
+                lineLimits = TextFieldLineLimits.SingleLine,
+                decorator = { innerTextField ->
+                    Row(
+                        modifier = Modifier.padding(end = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.outline,
+                            modifier = Modifier.size(24.dp)
                         )
-                    } else {
-                        innerTextField()
+                        Spacer(Modifier.width(8.dp))
+                        if (showPlaceholder) {
+                            Text(
+                                "Search Pokemon, Move, Ability, etc",
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 12.dp),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        } else {
+                            innerTextField()
+                        }
                     }
                 }
+            )
+            if (searchText.text.isNotEmpty()) {
+                IconButton(
+                    onClick = { searchText.clearText() },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Clear Search",
+                    )
+                }
             }
-        )
+        }
     }
 }
 
