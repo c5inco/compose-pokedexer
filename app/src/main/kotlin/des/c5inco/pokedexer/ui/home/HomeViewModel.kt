@@ -43,7 +43,7 @@ class HomeViewModel @Inject constructor(
 
     val loading by mutableStateOf(false)
 
-    val foundPokemon: StateFlow<SearchResponse> =
+    val searchResponses: StateFlow<SearchResponse> =
         snapshotFlow { searchText.text }
             .debounce(200)
             .mapLatest {
@@ -51,7 +51,6 @@ class HomeViewModel @Inject constructor(
                 if (textContent.isEmpty()) {
                     SearchResponse(
                         currentText = textContent,
-                        foundPokemon = emptyList()
                     )
                 } else {
                     coroutineScope {

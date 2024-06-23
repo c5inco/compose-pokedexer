@@ -42,6 +42,7 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 fun RoundedSearchBar(
     modifier: Modifier = Modifier,
     searchText: TextFieldState,
+    onTextClear: () -> Unit = {}
 ) {
     var showPlaceholder by remember { mutableStateOf(searchText.text.isEmpty()) }
 
@@ -100,7 +101,7 @@ fun RoundedSearchBar(
             )
             if (searchText.text.isNotEmpty()) {
                 IconButton(
-                    onClick = { searchText.clearText() },
+                    onClick = { onTextClear() },
                 ) {
                     Icon(
                         imageVector = Icons.Default.Clear,

@@ -79,7 +79,7 @@ fun MainAppBar(
     onMenuItemSelected: (MenuItem) -> Unit = { _ -> },
     onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
 ) {
-    val searchResponse = viewModel.foundPokemon.collectAsState()
+    val searchResponse = viewModel.searchResponses.collectAsState()
     val density = LocalDensity.current
 
     Surface(
@@ -109,7 +109,12 @@ fun MainAppBar(
                             top = 64.dp, bottom = 32.dp
                         )
                     )
-                    RoundedSearchBar(searchText = viewModel.searchText)
+                    RoundedSearchBar(
+                        searchText = viewModel.searchText,
+                        onTextClear = {
+                            viewModel.searchText.clearText()
+                        }
+                    )
                 }
                 AnimatedContent(
                     targetState = searchResponse.value,
