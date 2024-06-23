@@ -57,7 +57,7 @@ fun PokedexCard(
             color = PokemonTypesTheme.colorScheme.surface
         ) {
             Box(
-                Modifier
+                modifier
                     .height(120.dp)
                     .clickable { onPokemonSelected(pokemon) }
             ) {
@@ -98,7 +98,6 @@ fun PokedexCard(
                         .padding(bottom = 6.dp, end = 6.dp)
                         .size(80.dp)
                 )
-
                 if (isFavorite) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
