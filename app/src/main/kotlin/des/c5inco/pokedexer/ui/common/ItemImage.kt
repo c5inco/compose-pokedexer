@@ -13,6 +13,7 @@ import des.c5inco.pokedexer.model.Item
 @Composable
 fun ItemImage(
     modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Inside,
     item: Item
 ) {
     AsyncImage(
@@ -20,7 +21,7 @@ fun ItemImage(
         placeholder = painterResource(id = R.drawable.item_flame_orb),
         imageLoader = LocalContext.current.imageLoader,
         contentDescription = null,
-        contentScale = ContentScale.Inside,
+        contentScale = contentScale,
         modifier = modifier
     )
 }
