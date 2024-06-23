@@ -1,10 +1,9 @@
 package des.c5inco.pokedexer.ui.home
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.textAsFlow
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +15,7 @@ import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,7 +32,7 @@ data class SearchResponse(
     val foundItems: List<Item> = emptyList(),
 )
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val pokemonRepository: PokemonRepository,
@@ -44,7 +44,7 @@ class HomeViewModel @Inject constructor(
     val loading by mutableStateOf(false)
 
     val foundPokemon: StateFlow<SearchResponse> =
-        searchText.textAsFlow()
+        snapshotFlow { searchText.text }
             .debounce(200)
             .mapLatest {
                 val textContent = it.toString()

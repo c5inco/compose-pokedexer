@@ -4,7 +4,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -17,6 +16,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -122,7 +122,7 @@ fun AnimatedContentScope.PokemonDetailsScreenRoute(
 
 enum class DragValue { Start, Center, End }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AnimatedContentScope.PokemonDetailsScreen(
     loading: Boolean,
@@ -147,39 +147,30 @@ fun AnimatedContentScope.PokemonDetailsScreen(
             DragValue.End at (16 + 16 + 48).dp.toPx()
         }
     }
+
+    val defaultDecayAnimationSpec = rememberSplineBasedDecay<Float>()
     val anchorDraggableState = remember {
         AnchoredDraggableState(
             initialValue = DragValue.Start,
             anchors = draggableAnchors,
             positionalThreshold = { distance -> distance * 0.5f },
             velocityThreshold = { with(density) { 100.dp.toPx() } },
-            animationSpec = spring()
+            snapAnimationSpec = spring(),
+            decayAnimationSpec = defaultDecayAnimationSpec
         )
     }
     val anchorDraggableProgress by remember {
         derivedStateOf {
-            anchorDraggableState.progress
+            anchorDraggableState.progress(DragValue.Start, DragValue.End)
         }
     }
 
     val scaleTarget by remember {
         derivedStateOf {
-            if (anchorDraggableState.currentValue == DragValue.End) {
-                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.Start) {
-                    0f
-                } else if (anchorDraggableProgress > 0.7f) {
-                    anchorDraggableProgress
-                } else {
-                    0f
-                }
+            if (anchorDraggableProgress < 0.7f) {
+                1f - anchorDraggableProgress
             } else {
-                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.End) {
-                    1f
-                } else if (anchorDraggableProgress < 0.7f) {
-                    1f - anchorDraggableProgress
-                } else {
-                    0f
-                }
+                0f
             }
         }
     }
@@ -190,39 +181,13 @@ fun AnimatedContentScope.PokemonDetailsScreen(
 
     val textAlphaTarget by remember {
         derivedStateOf {
-            if (anchorDraggableState.currentValue == DragValue.End) {
-                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.Start) {
-                    0f
-                } else {
-                    anchorDraggableProgress
-                }
-            } else {
-                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.End) {
-                    1f
-                } else {
-                    1f - anchorDraggableProgress
-                }
-            }
+            1f - anchorDraggableProgress
         }
     }
 
     val imageAlphaTarget by remember {
         derivedStateOf {
-            if (anchorDraggableState.currentValue == DragValue.End) {
-                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.Start) {
-                    0f
-                } else if (anchorDraggableProgress > 0.6f) {
-                    anchorDraggableProgress
-                } else {
-                    0f
-                }
-            } else {
-                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.End) {
-                    1f
-                } else {
-                    1f - anchorDraggableProgress * 4f
-                }
-            }
+            1f - anchorDraggableProgress * 4f
         }
     }
 
@@ -232,19 +197,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
             val max = with(density) { 40.dp.toPx() }
             val min = max / 4
 
-            val resolvedValue = if (anchorDraggableState.currentValue == DragValue.End) {
-                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.Start) {
-                    min
-                } else {
-                    anchorDraggableProgress * max
-                }
-            } else {
-                if (anchorDraggableProgress == 1f && anchorDraggableState.targetValue != DragValue.End) {
-                    max
-                } else {
-                    (1f - anchorDraggableProgress) * max
-                }
-            }
+            val resolvedValue = (1f - anchorDraggableProgress) * max
 
             resolvedValue
                 .coerceIn(min, max)
@@ -254,7 +207,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
 
     val pagerZIndex by remember {
         derivedStateOf {
-            if (anchorDraggableState.targetValue == DragValue.Start) {
+            if (anchorDraggableProgress < 1f) {
                 0f
             } else {
                 -1f

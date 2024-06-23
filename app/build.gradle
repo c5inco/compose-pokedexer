@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(platform(libs.androidx.compose.bom))
+    implementation('androidx.compose.foundation:foundation:1.7.0-beta03')
     implementation(libs.androidx.compose.material2)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
