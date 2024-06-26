@@ -5,6 +5,8 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,7 +61,6 @@ fun SharedTransitionScope.ItemResultCard(
             .sharedBounds(
                 sharedContentState = rememberSharedContentState(key = "item-${item.id}-bounds"),
                 animatedVisibilityScope = animatedVisibilityScope,
-                //clipInOverlayDuringTransition = OverlayClip(shapeForSharedElement)
             ),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
@@ -76,6 +77,10 @@ fun SharedTransitionScope.ItemResultCard(
             Text(
                 text = item.name,
                 style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.sharedBounds(
+                    sharedContentState = rememberSharedContentState(key = "item-name-${item.id}"),
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
             )
             ItemImage(
                 item = item,
@@ -153,7 +158,11 @@ fun SharedTransitionScope.ItemResultCardExpanded(
                     text = item.name,
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.sharedBounds(
+                        sharedContentState = rememberSharedContentState(key = "item-name-${item.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(

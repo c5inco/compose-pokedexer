@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -89,16 +90,17 @@ fun HomeScreen(
                 }
             }
         }
-        AnimatedVisibility(
-            visible = expandSearchResult,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
+        AnimatedContent(
+            targetState = searchResult,
+            transitionSpec = {
+                fadeIn() togetherWith fadeOut()
+            },
+        ) { targetResult ->
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                searchResult?.let {
+                targetResult?.let {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -113,7 +115,7 @@ fun HomeScreen(
                         is SearchResult.ItemEvent -> {
                             ItemResultCardExpanded(
                                 item = it.item,
-                                animatedVisibilityScope = this@AnimatedVisibility
+                                animatedVisibilityScope = this@AnimatedContent
                             )
                         }
 
@@ -122,13 +124,6 @@ fun HomeScreen(
                 }
             }
         }
-
-        // SearchResultExpanded(
-        //     result = searchResult,
-        //     onDismiss = {
-        //         expandSearchResult = false
-        //     }
-        // )
     }
 
 
@@ -153,46 +148,6 @@ fun HomeScreen(
                 }
             },
         )
-    }
-}
-
-@OptIn(ExperimentalSharedTransitionApi::class)
-@Composable
-private fun SharedTransitionScope.SearchResultExpanded(
-    modifier: Modifier = Modifier,
-    result: SearchResult?,
-    onDismiss: () -> Unit = { }
-) {
-    AnimatedContent(
-        modifier = modifier,
-        targetState = result,
-        transitionSpec = {
-            fadeIn() togetherWith fadeOut()
-        },
-    ) { targetResult ->
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            targetResult?.let {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { onDismiss() }
-                        .background(Color.Black.copy(alpha = 0.5f))
-                )
-                when (it) {
-                    is SearchResult.PokemonEvent -> TODO()
-                    is SearchResult.ItemEvent -> {
-                        ItemResultCardExpanded(
-                            item = it.item,
-                            animatedVisibilityScope = this@AnimatedContent
-                        )
-                    }
-                    is SearchResult.MoveEvent -> TODO()
-                }
-            }
-        }
     }
 }
 

@@ -270,20 +270,15 @@ private fun AnimatedContentScope.SearchResults(
                     itemsIndexed(items = itemsResults, key = { _, it -> it.id }) { idx, it ->
                         with (sharedTransitionScope) {
                             AnimatedVisibility(
-                                visible = if (selectedSearchResult is SearchResult.ItemEvent) {
-                                    it != selectedSearchResult.item
-                                } else {
-                                    true
-                                },
+                                visible = it != (selectedSearchResult as? SearchResult.ItemEvent)?.item,
+                                modifier = Modifier.animateEnterExit(
+                                    enter = slideAndFadeEnterTransition(idx),
+                                    exit = fadeOut()
+                                )
                             ) {
                                 ItemResultCard(
                                     item = it,
-                                    modifier = Modifier
-                                        .width(200.dp)
-                                        .animateEnterExit(
-                                            enter = slideAndFadeEnterTransition(idx),
-                                            exit = fadeOut()
-                                        ),
+                                    modifier = Modifier.width(200.dp),
                                     animatedVisibilityScope = this,
                                     onSelected = { onSelected(SearchResult.ItemEvent(it)) }
                                 )
