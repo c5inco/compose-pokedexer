@@ -5,8 +5,10 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +16,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,7 +36,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +44,6 @@ import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.ui.common.ItemImage
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import kotlin.math.exp
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -61,6 +60,7 @@ fun SharedTransitionScope.ItemResultCard(
             .sharedBounds(
                 sharedContentState = rememberSharedContentState(key = "item-${item.id}-bounds"),
                 animatedVisibilityScope = animatedVisibilityScope,
+                boundsTransform = containerBoundsTransform
             ),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
@@ -79,14 +79,16 @@ fun SharedTransitionScope.ItemResultCard(
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.sharedBounds(
                     sharedContentState = rememberSharedContentState(key = "item-name-${item.id}"),
-                    animatedVisibilityScope = animatedVisibilityScope
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = textBoundsTransform
                 )
             )
             ItemImage(
                 item = item,
                 modifier = Modifier.sharedElement(
                     state = rememberSharedContentState(key = "image-${item.id}"),
-                    animatedVisibilityScope = animatedVisibilityScope
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = imageBoundsTransform
                 )
             )
         }
@@ -142,7 +144,7 @@ fun SharedTransitionScope.ItemResultCardExpanded(
                 .sharedBounds(
                     sharedContentState = rememberSharedContentState(key = "item-${item.id}-bounds"),
                     animatedVisibilityScope = animatedVisibilityScope,
-                    //clipInOverlayDuringTransition = OverlayClip(shapeForSharedElement)
+                    boundsTransform = containerBoundsTransform
                 ),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(
@@ -161,15 +163,22 @@ fun SharedTransitionScope.ItemResultCardExpanded(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.sharedBounds(
                         sharedContentState = rememberSharedContentState(key = "item-name-${item.id}"),
-                        animatedVisibilityScope = animatedVisibilityScope
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = textBoundsTransform
                     )
                 )
                 Spacer(Modifier.height(4.dp))
-                Text(
-                    text = item.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
-                )
+                with (animatedVisibilityScope) {
+                    Text(
+                        text = item.description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.animateEnterExit(
+                            enter = fadeIn(tween(400)) + slideInVertically(tween(300)) { -it / 2 },
+                            exit = fadeOut()
+                        )
+                    )
+                }
             }
         }
         ItemImage(
@@ -181,7 +190,8 @@ fun SharedTransitionScope.ItemResultCardExpanded(
                 .offset(y = -24.dp)
                 .sharedElement(
                     state = rememberSharedContentState(key = "image-${item.id}"),
-                    animatedVisibilityScope = animatedVisibilityScope
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = imageBoundsTransform
                 )
         )
     }
