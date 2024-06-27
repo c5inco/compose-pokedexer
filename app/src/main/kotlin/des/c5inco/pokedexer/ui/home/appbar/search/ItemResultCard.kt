@@ -134,7 +134,7 @@ fun ItemResultCardPreview() {
 @Composable
 fun SharedTransitionScope.ItemResultCardExpanded(
     modifier: Modifier = Modifier,
-    item: Item = SampleItems.last(),
+    item: Item = SampleItems.first(),
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     Box {
@@ -202,6 +202,7 @@ fun SharedTransitionScope.ItemResultCardExpanded(
 @Composable
 private fun ItemResultCardExpandedPreview() {
     var expanded by remember { mutableStateOf(false) }
+    val sampleItem = SampleItems.last()
 
     AppTheme {
         SharedTransitionLayout {
@@ -213,16 +214,19 @@ private fun ItemResultCardExpandedPreview() {
             ) {
                 AnimatedContent(
                     targetState = expanded,
+                    modifier = Modifier.fillMaxSize(0.5f),
                 ) { targetState ->
                     if (targetState) {
                         ItemResultCardExpanded(
+                            item = sampleItem,
                             modifier = Modifier.clickable { expanded = false },
                             animatedVisibilityScope = this@AnimatedContent
                         )
                     } else {
                         ItemResultCard(
-                            modifier = Modifier.clickable { expanded = true },
-                            animatedVisibilityScope = this@AnimatedContent
+                            item = sampleItem,
+                            animatedVisibilityScope = this@AnimatedContent,
+                            onSelected = { expanded = !expanded }
                         )
                     }
                 }
