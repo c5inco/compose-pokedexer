@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
 import des.c5inco.pokedexer.ui.home.appbar.SearchResult
-import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultCardExpanded
+import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultExpandedCard
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 sealed class MenuItem(
@@ -113,7 +113,7 @@ fun HomeScreen(
                     when (it) {
                         is SearchResult.PokemonEvent -> TODO()
                         is SearchResult.ItemEvent -> {
-                            ItemResultCardExpanded(
+                            ItemResultExpandedCard(
                                 item = it.item,
                                 animatedVisibilityScope = this@AnimatedContent
                             )

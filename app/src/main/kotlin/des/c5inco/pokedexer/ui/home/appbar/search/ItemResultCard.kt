@@ -132,7 +132,7 @@ fun ItemResultCardPreview() {
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.ItemResultCardExpanded(
+fun SharedTransitionScope.ItemResultExpandedCard(
     modifier: Modifier = Modifier,
     item: Item = SampleItems.first(),
     animatedVisibilityScope: AnimatedVisibilityScope
@@ -200,7 +200,7 @@ fun SharedTransitionScope.ItemResultCardExpanded(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
-private fun ItemResultCardExpandedPreview() {
+private fun ItemResultExpandedCardPreview() {
     var expanded by remember { mutableStateOf(false) }
     val sampleItem = SampleItems.last()
 
@@ -217,7 +217,7 @@ private fun ItemResultCardExpandedPreview() {
                     modifier = Modifier.fillMaxSize(0.5f),
                 ) { targetState ->
                     if (targetState) {
-                        ItemResultCardExpanded(
+                        ItemResultExpandedCard(
                             item = sampleItem,
                             modifier = Modifier.clickable { expanded = false },
                             animatedVisibilityScope = this@AnimatedContent
@@ -233,5 +233,4 @@ private fun ItemResultCardExpandedPreview() {
             }
         }
     }
-
 }
