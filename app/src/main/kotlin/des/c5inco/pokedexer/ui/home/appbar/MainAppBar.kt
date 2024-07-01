@@ -238,15 +238,22 @@ private fun AnimatedContentScope.SearchResults(
                     modifier = Modifier.height(200.dp)
                 ) {
                     itemsIndexed(items = movesResults, key = { _, it -> it.id }) { idx, it ->
-                        MoveResultCard(
-                            move = it,
-                            modifier = Modifier
-                                .width(200.dp)
-                                .animateEnterExit(
+                        with (sharedTransitionScope) {
+                            AnimatedVisibility(
+                                visible = it != (selectedSearchResult as? SearchResult.MoveEvent)?.move,
+                                modifier = Modifier.animateEnterExit(
                                     enter = slideAndFadeEnterTransition(idx),
                                     exit = fadeOut()
                                 )
-                        )
+                            ) {
+                                MoveResultCard(
+                                    move = it,
+                                    animatedVisibilityScope = this,
+                                    modifier = Modifier.width(200.dp),
+                                    onSelected = { onSelected(SearchResult.MoveEvent(it)) }
+                                )
+                            }
+                        }
                     }
                 }
             }
