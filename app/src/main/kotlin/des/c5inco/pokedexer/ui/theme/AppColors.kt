@@ -329,23 +329,26 @@ data class MoveCategoryColors(
 val PhysicalColors = MoveCategoryColors(
     primaryDark = Color(0xffE3300E),
     primaryLight = PokemonColors.Fire,
-    surfaceDark = Color(0x663E0400),
-    surfaceLight = Color(0x263E0400),
-    onSurfaceDark = Color(0xffFFDAD3)
+    surfaceDark = Color(0xff561F14),
+    surfaceLight = Color(0xffFFDAD3),
+    onSurfaceDark = Color(0xffFFDAD3),
+    onSurfaceLight = Color(0xff3A0A03)
 )
 
 val SpecialColors = MoveCategoryColors(
     primaryDark = Color(0xffC7BFFF),
     primaryLight = PokemonColors.Dragon,
-    surfaceDark = Color(0x66180065),
-    surfaceLight = Color(0x26180065),
-    onSurfaceDark = Color(0xffE4DFFF)
+    surfaceDark = Color(0xff2F295F),
+    surfaceLight = Color(0xffE4DFFF),
+    onSurfaceDark = Color(0xffE4DFFF),
+    onSurfaceLight = Color(0xff1A1249)
 )
 
 val StatusColors = MoveCategoryColors(
     primaryDark = Color(0xffFFB691),
     primaryLight = PokemonColors.Dark,
-    surfaceDark = Color(0x66341100),
-    surfaceLight = Color(0x26341100),
-    onSurfaceDark = Color(0xffFFDBCB)
+    surfaceDark = Color(0xff542102),
+    surfaceLight = Color(0xffFFDBCB),
+    onSurfaceDark = Color(0xffFFDBCB),
+    onSurfaceLight = Color(0xff341100)
 )
