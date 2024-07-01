@@ -78,9 +78,13 @@ fun HomeScreen(
                             }
                         },
                         onSearchResultSelected = {
-                            expandSearchResult = true
-                            searchResult = it
-                            //onSearchResultSelected(it)
+                            // TODO: Build Pokemon expanded result card later, for now navigate to details
+                            if (it is SearchResult.PokemonEvent) {
+                                onSearchResultSelected(it)
+                            } else {
+                                expandSearchResult = true
+                                searchResult = it
+                            }
                         }
                     )
                 }
