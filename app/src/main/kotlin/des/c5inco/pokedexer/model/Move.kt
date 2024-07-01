@@ -17,7 +17,7 @@ data class Move(
 )
 
 fun Move.category(): MoveCategory {
-    return when(category) {
+    return when(category.lowercase()) {
         "physical" -> MoveCategory.Physical
         "special" -> MoveCategory.Special
         else -> MoveCategory.Status

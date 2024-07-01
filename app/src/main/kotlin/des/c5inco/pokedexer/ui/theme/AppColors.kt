@@ -300,3 +300,52 @@ val WaterTypeColors = TypeColors(
     surfaceVariantDark = Color(0x66001D36),
     surfaceVariantLight = Color(0x33001D36),
 )
+
+@Immutable
+data class MoveCategoryColorScheme(
+    val primary: Color,
+    val surface: Color,
+    val onSurface: Color,
+)
+
+val LocalMoveCategoryColorScheme = staticCompositionLocalOf {
+    MoveCategoryColorScheme(
+        primary = Color.Magenta,
+        surface = Color.Magenta,
+        onSurface = Color.Magenta,
+    )
+}
+
+@Immutable
+data class MoveCategoryColors(
+    val primaryDark: Color,
+    val primaryLight: Color,
+    val surfaceDark: Color,
+    val surfaceLight: Color,
+    val onSurfaceDark: Color = Color.Unspecified,
+    val onSurfaceLight: Color = Color.Unspecified,
+)
+
+val PhysicalColors = MoveCategoryColors(
+    primaryDark = Color(0xffE3300E),
+    primaryLight = PokemonColors.Fire,
+    surfaceDark = Color(0x663E0400),
+    surfaceLight = Color(0x263E0400),
+    onSurfaceDark = Color(0xffFFDAD3)
+)
+
+val SpecialColors = MoveCategoryColors(
+    primaryDark = Color(0xffC7BFFF),
+    primaryLight = PokemonColors.Dragon,
+    surfaceDark = Color(0x66180065),
+    surfaceLight = Color(0x26180065),
+    onSurfaceDark = Color(0xffE4DFFF)
+)
+
+val StatusColors = MoveCategoryColors(
+    primaryDark = Color(0xffFFB691),
+    primaryLight = PokemonColors.Dark,
+    surfaceDark = Color(0x66341100),
+    surfaceLight = Color(0x26341100),
+    onSurfaceDark = Color(0xffFFDBCB)
+)

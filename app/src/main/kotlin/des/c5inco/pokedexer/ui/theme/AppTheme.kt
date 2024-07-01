@@ -3,11 +3,13 @@ package des.c5inco.pokedexer.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import des.c5inco.pokedexer.model.MoveCategory
 import des.c5inco.pokedexer.model.Type
 
 private val M3LightColors = lightColorScheme(
@@ -333,6 +335,82 @@ private fun mapTypeToColorScheme(
                 surfaceVariant = WaterTypeColors.surfaceVariantDark
             )
             else -> LocalPokemonTypeColorScheme.current
+        }
+    }
+}
+
+@Composable
+fun MoveCategoryTheme(
+    category: MoveCategory,
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
+) {
+    val extendedCategoryColors = mapCategoryToColorScheme(category = category, isDark = useDarkTheme)
+
+    CompositionLocalProvider(
+        LocalMoveCategoryColorScheme provides extendedCategoryColors,
+        LocalContentColor provides if (extendedCategoryColors.onSurface != Color.Unspecified) {
+            extendedCategoryColors.onSurface
+        } else {
+            contentColorFor(extendedCategoryColors.surface)
+        }
+    ) {
+        content()
+    }
+}
+
+object MoveCategoryTheme {
+    val colorScheme: MoveCategoryColorScheme
+        @Composable
+        get() = LocalMoveCategoryColorScheme.current
+}
+
+@Composable
+private fun mapCategoryToColorScheme(
+    category: MoveCategory,
+    isDark: Boolean
+): MoveCategoryColorScheme {
+    if (!isDark) {
+        return when (category) {
+            MoveCategory.Physical ->
+                MoveCategoryColorScheme(
+                    primary = PhysicalColors.primaryLight,
+                    surface = PhysicalColors.surfaceLight,
+                    onSurface = PhysicalColors.onSurfaceLight
+                )
+            MoveCategory.Special ->
+                MoveCategoryColorScheme(
+                    primary = SpecialColors.primaryLight,
+                    surface = SpecialColors.surfaceLight,
+                    onSurface = SpecialColors.onSurfaceLight
+                )
+            MoveCategory.Status ->
+                MoveCategoryColorScheme(
+                    primary = StatusColors.primaryLight,
+                    surface = StatusColors.surfaceLight,
+                    onSurface = StatusColors.onSurfaceLight
+                )
+        }
+    } else {
+        return when (category) {
+            MoveCategory.Physical ->
+                MoveCategoryColorScheme(
+                    primary = PhysicalColors.primaryDark,
+                    surface = PhysicalColors.surfaceDark,
+                    onSurface = PhysicalColors.onSurfaceDark
+                )
+            MoveCategory.Special ->
+                MoveCategoryColorScheme(
+                    primary = SpecialColors.primaryDark,
+                    surface = SpecialColors.surfaceDark,
+                    onSurface = SpecialColors.onSurfaceDark
+                )
+            MoveCategory.Status ->
+                MoveCategoryColorScheme(
+                    primary = StatusColors.primaryDark,
+                    surface = StatusColors.surfaceDark,
+                    onSurface = StatusColors.onSurfaceDark
+                )
         }
     }
 }
