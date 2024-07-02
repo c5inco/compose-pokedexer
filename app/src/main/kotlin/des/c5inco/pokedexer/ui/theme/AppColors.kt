@@ -107,6 +107,7 @@ class PokemonColors {
         val Psychic = Color(0xffff5599)
         val Rock = Color(0xffBBAA66)
         val Water = Color(0xff429BED)
+        val Steel = Color(0xffaaaabb)
     }
 }
 
@@ -290,6 +291,16 @@ val RockTypeColors = TypeColors(
     onSurfaceLight = Color(0xff463B00),
     surfaceVariantDark = Color(0x66221B00),
     surfaceVariantLight = Color(0x26221B00),
+)
+
+val SteelTypeColors = TypeColors(
+    primaryDark = Color(0xffBCC3FF),
+    primaryLight = PokemonColors.Steel,
+    surfaceDark = Color(0xff3B4279),
+    onSurfaceDark = Color(0xffDFE0FF),
+    onSurfaceLight = Color(0xff463B00),
+    surfaceVariantDark = Color(0xff47464A),
+    surfaceVariantLight = Color(0xffE4E1E6),
 )
 
 val WaterTypeColors = TypeColors(

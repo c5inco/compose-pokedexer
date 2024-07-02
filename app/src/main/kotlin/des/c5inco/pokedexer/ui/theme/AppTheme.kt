@@ -222,6 +222,12 @@ private fun mapTypeToColorScheme(
                 onSurface = RockTypeColors.onSurfaceLight,
                 surfaceVariant = RockTypeColors.surfaceVariantLight
             )
+            Type.Steel -> PokemonTypeColorScheme(
+                primary = SteelTypeColors.primaryLight,
+                surface = SteelTypeColors.primaryLight,
+                onSurface = SteelTypeColors.onSurfaceLight,
+                surfaceVariant = SteelTypeColors.surfaceVariantLight
+            )
             Type.Water -> PokemonTypeColorScheme(
                 primary = WaterTypeColors.primaryLight,
                 surface = WaterTypeColors.primaryLight,
@@ -327,6 +333,12 @@ private fun mapTypeToColorScheme(
                 surface = RockTypeColors.surfaceDark,
                 onSurface = RockTypeColors.onSurfaceDark,
                 surfaceVariant = RockTypeColors.surfaceVariantDark
+            )
+            Type.Steel -> PokemonTypeColorScheme(
+                primary = SteelTypeColors.primaryDark,
+                surface = SteelTypeColors.surfaceDark,
+                onSurface = SteelTypeColors.onSurfaceDark,
+                surfaceVariant = SteelTypeColors.surfaceVariantDark
             )
             Type.Water -> PokemonTypeColorScheme(
                 primary = WaterTypeColors.primaryDark,

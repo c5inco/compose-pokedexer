@@ -43,6 +43,7 @@ fun mapTypeToColor(type: String): Color {
         Type.Ground -> PokemonColors.Ground
         Type.Rock -> PokemonColors.Rock
         Type.Dark -> PokemonColors.Dark
+        Type.Steel -> PokemonColors.Steel
         else -> return Color.Magenta
     }
 }
