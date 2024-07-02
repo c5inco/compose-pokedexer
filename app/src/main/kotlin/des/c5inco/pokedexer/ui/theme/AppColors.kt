@@ -107,6 +107,7 @@ class PokemonColors {
         val Psychic = Color(0xffff5599)
         val Rock = Color(0xffBBAA66)
         val Water = Color(0xff429BED)
+        val Steel = Color(0xffaaaabb)
     }
 }
 
@@ -292,6 +293,16 @@ val RockTypeColors = TypeColors(
     surfaceVariantLight = Color(0x26221B00),
 )
 
+val SteelTypeColors = TypeColors(
+    primaryDark = Color(0xffBCC3FF),
+    primaryLight = PokemonColors.Steel,
+    surfaceDark = Color(0xff3B4279),
+    onSurfaceDark = Color(0xffDFE0FF),
+    onSurfaceLight = Color(0xff463B00),
+    surfaceVariantDark = Color(0xff47464A),
+    surfaceVariantLight = Color(0xffE4E1E6),
+)
+
 val WaterTypeColors = TypeColors(
     primaryDark = Color(0xff037BCB),
     primaryLight = PokemonColors.Water,
@@ -299,4 +310,56 @@ val WaterTypeColors = TypeColors(
     onSurfaceDark = Color(0xffE9F1FF),
     surfaceVariantDark = Color(0x66001D36),
     surfaceVariantLight = Color(0x33001D36),
+)
+
+@Immutable
+data class MoveCategoryColorScheme(
+    val primary: Color,
+    val surface: Color,
+    val onSurface: Color,
+)
+
+val LocalMoveCategoryColorScheme = staticCompositionLocalOf {
+    MoveCategoryColorScheme(
+        primary = Color.Magenta,
+        surface = Color.Magenta,
+        onSurface = Color.Magenta,
+    )
+}
+
+@Immutable
+data class MoveCategoryColors(
+    val primaryDark: Color,
+    val primaryLight: Color,
+    val surfaceDark: Color,
+    val surfaceLight: Color,
+    val onSurfaceDark: Color = Color.Unspecified,
+    val onSurfaceLight: Color = Color.Unspecified,
+)
+
+val PhysicalColors = MoveCategoryColors(
+    primaryDark = Color(0xffE3300E),
+    primaryLight = PokemonColors.Fire,
+    surfaceDark = Color(0xff561F14),
+    surfaceLight = Color(0xffFFDAD3),
+    onSurfaceDark = Color(0xffFFDAD3),
+    onSurfaceLight = Color(0xff3A0A03)
+)
+
+val SpecialColors = MoveCategoryColors(
+    primaryDark = Color(0xffC7BFFF),
+    primaryLight = PokemonColors.Dragon,
+    surfaceDark = Color(0xff2F295F),
+    surfaceLight = Color(0xffE4DFFF),
+    onSurfaceDark = Color(0xffE4DFFF),
+    onSurfaceLight = Color(0xff1A1249)
+)
+
+val StatusColors = MoveCategoryColors(
+    primaryDark = Color(0xffFFB691),
+    primaryLight = PokemonColors.Dark,
+    surfaceDark = Color(0xff542102),
+    surfaceLight = Color(0xffFFDBCB),
+    onSurfaceDark = Color(0xffFFDBCB),
+    onSurfaceLight = Color(0xff341100)
 )
