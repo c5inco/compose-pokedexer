@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
+import androidx.graphics.shapes.rectangle
 import androidx.graphics.shapes.toPath
 import kotlin.math.max
 
@@ -27,13 +28,11 @@ fun RoundedPolygon.getBounds() = calculateBounds().let { Rect(it[0], it[1], it[2
 
 class SuperEllipse(
     private var matrix: Matrix = Matrix(),
-    private var rotation: Float = 45f
 ) : Shape {
     private var path = Path()
-    private val polygon = RoundedPolygon(
-        numVertices = 4,
+    private val polygon = RoundedPolygon.rectangle(
         rounding = CornerRounding(
-            radius = 0.4f,
+            radius = 0.6f,
             smoothing = 1f
         )
     )
@@ -50,7 +49,6 @@ class SuperEllipse(
         val maxDimension = max(bounds.width, bounds.height)
         matrix.scale(size.width / maxDimension, size.height / maxDimension)
         matrix.translate(-bounds.left, -bounds.top)
-        matrix.rotateZ(rotation)
 
         path.transform(matrix)
         return Outline.Generic(path)
