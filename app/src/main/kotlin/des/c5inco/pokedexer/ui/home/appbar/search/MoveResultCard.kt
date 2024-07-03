@@ -12,6 +12,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -74,7 +76,7 @@ fun SharedTransitionScope.MoveResultCard(
                 ),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
             )
         ) {
             Row(
@@ -113,14 +115,13 @@ fun SharedTransitionScope.MoveResultCard(
 @Composable
 fun MoveResultCardPreview() {
     AppTheme {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(vertical = 20.dp)
+        Surface(
+            tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp,
         ) {
             SharedTransitionLayout {
                 AnimatedVisibility(
-                    visible = true
+                    visible = true,
+                    modifier = Modifier.padding(vertical = 20.dp)
                 ) {
                     LazyHorizontalGrid(
                         rows = GridCells.Fixed(4),
@@ -270,7 +271,7 @@ private fun MoveResultExpandedCardPreview() {
             ) {
                 Column(
                     modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(20.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
