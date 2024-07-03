@@ -6,13 +6,14 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +27,7 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
+import des.c5inco.pokedexer.ui.theme.SuperEllipse
 
 data class TypeLabelMetrics(
     val cornerRadius: Dp,
@@ -124,11 +126,12 @@ fun TypeIconLabel(
     modifier: Modifier = Modifier,
     type: Type
 ) {
+    val shape = remember { SuperEllipse() }
+
     PokemonTypesTheme(types = listOf(type.toString())) {
         Surface(
-            modifier = modifier,
+            modifier = modifier.clip(shape),
             color = PokemonTypesTheme.colorScheme.surface,
-            shape = CircleShape
         ) {
             Icon(
                 painter = painterResource(id = mapTypeToIcon(type)),
