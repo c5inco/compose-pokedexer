@@ -101,6 +101,10 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    // Shapes
+    implementation(libs.androidx.graphics.shapes)
+    implementation(libs.androidx.graphics.shapes.android)
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
