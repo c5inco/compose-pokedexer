@@ -49,6 +49,8 @@ import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.category
 import des.c5inco.pokedexer.model.categoryIcon
+import des.c5inco.pokedexer.model.type
+import des.c5inco.pokedexer.ui.common.TypeIconLabel
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.MoveCategoryTheme
 
@@ -74,7 +76,7 @@ fun SharedTransitionScope.MoveResultCard(
                 ),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             )
         ) {
             Row(
@@ -158,7 +160,7 @@ fun SharedTransitionScope.MoveResultExpandedCard(
     ) {
         Card(
             modifier = modifier
-                .width(240.dp)
+                .width(260.dp)
                 .sharedBounds(
                     sharedContentState = rememberSharedContentState(key = "move-${move.id}-bounds"),
                     animatedVisibilityScope = animatedVisibilityScope,
@@ -167,7 +169,7 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                 ),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             )
         ) {
             Box {
@@ -185,7 +187,7 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                             boundsTransform = textBoundsTransform
                         )
                     )
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(6.dp))
                     with(animatedVisibilityScope) {
                         Column(
                             Modifier.animateEnterExit(
@@ -194,8 +196,11 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                                 )
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
+                                TypeIconLabel(type = move.type())
+                                Spacer(Modifier.width(6.dp))
                                 ValuesText(
                                     label = "PP",
                                     value = move.pp,
@@ -210,7 +215,7 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                                     value = move.accuracy ?: -1,
                                 )
                             }
-                            Spacer(Modifier.height(8.dp))
+                            Spacer(Modifier.height(12.dp))
                             Text(
                                 text = move.description,
                                 style = MaterialTheme.typography.bodyMedium,

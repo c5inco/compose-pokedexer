@@ -25,9 +25,7 @@ fun Move.category(): MoveCategory {
 }
 
 fun Move.type(): Type {
-    return when(type) {
-        else -> Type.Normal
-    }
+    return Type.valueOf(type)
 }
 
 fun Move.categoryIcon(): Int {
