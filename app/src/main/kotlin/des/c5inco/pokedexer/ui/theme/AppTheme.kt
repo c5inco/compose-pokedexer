@@ -170,7 +170,7 @@ private fun mapTypeToColorScheme(
             )
             Type.Flying -> PokemonTypeColorScheme(
                 primary = FlyingTypeColors.primaryLight,
-                surface = FireTypeColors.primaryLight,
+                surface = FlyingTypeColors.primaryLight,
                 onSurface = Color.White,
                 surfaceVariant = FireTypeColors.surfaceVariantLight
             )
@@ -234,7 +234,6 @@ private fun mapTypeToColorScheme(
                 onSurface = Color.White,
                 surfaceVariant = WaterTypeColors.surfaceVariantLight
             )
-            else -> LocalPokemonTypeColorScheme.current
         }
     } else {
         return when (Type.valueOf(firstType)) {
@@ -346,7 +345,6 @@ private fun mapTypeToColorScheme(
                 onSurface = WaterTypeColors.onSurfaceDark,
                 surfaceVariant = WaterTypeColors.surfaceVariantDark
             )
-            else -> LocalPokemonTypeColorScheme.current
         }
     }
 }
