@@ -235,7 +235,7 @@ private fun AnimatedContentScope.SearchResults(
                     contentPadding = PaddingValues(horizontal = 32.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.height(200.dp)
+                    modifier = Modifier.height(240.dp)
                 ) {
                     itemsIndexed(items = movesResults, key = { _, it -> it.id }) { idx, it ->
                         with (sharedTransitionScope) {
