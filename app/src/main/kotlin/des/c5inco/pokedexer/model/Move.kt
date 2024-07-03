@@ -17,11 +17,7 @@ data class Move(
 )
 
 fun Move.category(): MoveCategory {
-    return when(category.lowercase()) {
-        "physical" -> MoveCategory.Physical
-        "special" -> MoveCategory.Special
-        else -> MoveCategory.Status
-    }
+    return MoveCategory.valueOf(category)
 }
 
 fun Move.type(): Type {
@@ -29,9 +25,9 @@ fun Move.type(): Type {
 }
 
 fun Move.categoryIcon(): Int {
-    return when(category.lowercase()) {
-        "physical" -> R.drawable.ic_move_physical
-        "special" -> R.drawable.ic_move_special
+    return when(category) {
+        "Physical" -> R.drawable.ic_move_physical
+        "Special" -> R.drawable.ic_move_special
         else -> R.drawable.ic_move_status
     }
 }

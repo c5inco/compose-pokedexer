@@ -30,7 +30,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,15 +40,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.category
-import des.c5inco.pokedexer.model.categoryIcon
 import des.c5inco.pokedexer.model.type
+import des.c5inco.pokedexer.ui.common.CategoryIcon
 import des.c5inco.pokedexer.ui.common.TypeIconLabel
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.MoveCategoryTheme
@@ -95,14 +93,12 @@ fun SharedTransitionScope.MoveResultCard(
                         boundsTransform = textBoundsTransform,
                     )
                 )
-                Icon(
-                    painter = painterResource(id = move.categoryIcon()),
-                    contentDescription = move.category,
-                    tint = MoveCategoryTheme.colorScheme.primary.copy(alpha = 1f),
+                CategoryIcon(
+                    move = move,
                     modifier = Modifier
                         .size(36.dp)
-                        .sharedElement(
-                            state = rememberSharedContentState(key = "category-icon-${move.id}"),
+                        .sharedBounds(
+                            sharedContentState = rememberSharedContentState(key = "category-icon-${move.id}"),
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = imageBoundsTransform,
                         )
@@ -223,16 +219,15 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                         }
                     }
                 }
-                Icon(
-                    painter = painterResource(id = move.categoryIcon()),
-                    contentDescription = move.category,
-                    tint = MoveCategoryTheme.colorScheme.primary.copy(alpha = 0.4f),
+                CategoryIcon(
+                    move = move,
                     modifier = Modifier
+                        .graphicsLayer { alpha = 0.4f }
                         .size(64.dp)
                         .align(Alignment.TopEnd)
-                        .offset(x = 20.dp, y = (-20).dp)
-                        .sharedElement(
-                            state = rememberSharedContentState(key = "category-icon-${move.id}"),
+                        .offset(x = 16.dp, y = (-16).dp)
+                        .sharedBounds(
+                            sharedContentState = rememberSharedContentState(key = "category-icon-${move.id}"),
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = imageBoundsTransform,
                         )

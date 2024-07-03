@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.categoryIcon
+import des.c5inco.pokedexer.ui.common.CategoryIcon
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.TypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
@@ -168,10 +170,15 @@ private fun MovesList(
                         metrics = MEDIUM
                     )
                 }
-                CategoryIcon(
-                    modifier = Modifier.requiredWidth(48.dp),
-                    move = move
-                )
+                Box(
+                    Modifier.requiredWidth(48.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CategoryIcon(
+                        modifier = Modifier.size(24.dp),
+                        move = move
+                    )
+                }
                 Text(
                     "${move.power ?: "—"}",
                     textAlign = TextAlign.End,
@@ -184,29 +191,6 @@ private fun MovesList(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun CategoryIcon(
-    modifier: Modifier = Modifier,
-    move: Move
-) {
-    Box(
-        modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(painter = painterResource(id = move.categoryIcon()),
-            contentDescription = move.category,
-            tint = when (move.category.lowercase()) {
-                "physical" -> PokemonColors.Fire
-                "special" -> PokemonColors.Dragon
-                else -> PokemonColors.Dark
-            },
-            modifier = Modifier.graphicsLayer {
-                rotationX = 40f
-                rotationY = -15f
-            })
     }
 }
 

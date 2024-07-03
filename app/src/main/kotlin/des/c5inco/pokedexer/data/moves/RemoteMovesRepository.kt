@@ -34,7 +34,7 @@ class RemoteMovesRepository @Inject constructor(
                                 part.replaceFirstChar { it.uppercase() }
                             },
                             description = model.description.first().flavorText,
-                            category = model.category!!.name,
+                            category = model.category!!.name.replaceFirstChar { it.uppercase() },
                             type = model.type!!.name.replaceFirstChar { it.uppercase() },
                             pp = model.pp!!,
                             power = model.power,
