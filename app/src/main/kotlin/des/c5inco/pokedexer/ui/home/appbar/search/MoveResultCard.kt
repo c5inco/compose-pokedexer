@@ -222,7 +222,6 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                 CategoryIcon(
                     move = move,
                     modifier = Modifier
-                        .graphicsLayer { alpha = 0.4f }
                         .size(64.dp)
                         .align(Alignment.TopEnd)
                         .offset(x = 16.dp, y = (-16).dp)
@@ -231,6 +230,7 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = imageBoundsTransform,
                         )
+                        .graphicsLayer { alpha = 0.4f }
                 )
             }
         }

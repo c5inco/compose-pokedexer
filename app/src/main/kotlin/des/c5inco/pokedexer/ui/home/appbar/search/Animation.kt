@@ -13,7 +13,7 @@ import androidx.compose.animation.core.spring
 internal val containerBoundsTransform = BoundsTransform { _, _ ->
     spring(
         dampingRatio = DampingRatioMediumBouncy,
-        stiffness = 800f
+        stiffness = 1200f
     )
 }
 
