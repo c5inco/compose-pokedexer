@@ -1,18 +1,14 @@
 package des.c5inco.pokedexer.ui.home.appbar
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -44,13 +40,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,6 +62,7 @@ import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
 import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultCard
 import des.c5inco.pokedexer.ui.home.appbar.search.MoveResultCard
 import des.c5inco.pokedexer.ui.home.appbar.search.PokemonResultCard
+import des.c5inco.pokedexer.ui.home.appbar.search.slideAndFadeEnterTransition
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 sealed class SearchResult {
@@ -86,7 +81,6 @@ fun MainAppBar(
     onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
 ) {
     val searchResponse = viewModel.searchResponses.collectAsState()
-    val density = LocalDensity.current
 
     Surface(
         shape = RoundedCornerShape(
@@ -125,6 +119,7 @@ fun MainAppBar(
                 AnimatedContent(
                     targetState = searchResponse.value,
                     transitionSpec = { fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false)) },
+                    label = "searchResultsTransition",
                 ) { response  ->
                     if (response.foundPokemon.isNotEmpty() || response.foundMoves.isNotEmpty() || response.foundItems.isNotEmpty()) {
                         SearchResults(
@@ -162,15 +157,6 @@ fun MainAppBar(
             }
         }
     }
-}
-
-private fun slideAndFadeEnterTransition(index: Int): EnterTransition {
-    return fadeIn(
-            tween(durationMillis = 300, delayMillis = index / 2 * 100)
-        ) +
-        slideInHorizontally(
-            tween(durationMillis = 300, delayMillis = index / 2 * 100)
-        ) { it / 2 }
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
