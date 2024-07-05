@@ -11,6 +11,7 @@ import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.model.Type
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,10 +30,12 @@ class PokedexViewModel @Inject constructor(
 ): ViewModel() {
     var uiState by mutableStateOf(PokedexUiState(loading = true))
         private set
+    private val pokemonList = mutableStateListOf<Pokemon>()
 
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
     var favorites = mutableStateListOf<Pokemon>()
     var showFavorites by mutableStateOf(false)
+    var typeFilter by mutableStateOf<Type?>(null)
 
     init {
         refresh()
@@ -46,9 +49,10 @@ class PokedexViewModel @Inject constructor(
             // TODO: Handle error/exception better
             when (val result = pokemonRepository.getAllPokemon()) {
                 is Result.Success -> {
+                    pokemonList.addAll(result.data)
                     uiState = uiState.copy(
                         loading = false,
-                        pokemon = result.data
+                        pokemon = pokemonList.toList()
                     )
                 }
                 is Result.Error -> {
@@ -74,5 +78,20 @@ class PokedexViewModel @Inject constructor(
 
     fun toggleFavorites() {
         showFavorites = !showFavorites
+    }
+
+    fun filterByType(
+        typeToFilter: Type?
+    ) {
+        typeFilter = if (typeFilter != typeToFilter) typeToFilter else null
+
+        uiState = PokedexUiState(
+            loading = false,
+            pokemon = if (typeFilter != null) {
+                pokemonList.filter { it.typeOfPokemon.contains(typeFilter.toString()) }
+            } else {
+                pokemonList.toList()
+            }
+        )
     }
 }
