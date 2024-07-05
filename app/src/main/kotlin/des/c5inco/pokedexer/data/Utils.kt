@@ -1,6 +1,6 @@
 package des.c5inco.pokedexer.data
 
-fun formatFlavorText(
+fun cleanupDescriptionText(
     text: String,
 ): String {
     return text

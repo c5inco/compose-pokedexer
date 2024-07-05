@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.PokemonOriginalQuery
 import des.c5inco.pokedexer.data.Result
+import des.c5inco.pokedexer.data.cleanupDescriptionText
 import des.c5inco.pokedexer.model.Evolution
 import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Pokemon
@@ -39,7 +40,8 @@ class RemotePokemonRepository @Inject constructor(
                         Pokemon(
                             id = model.id,
                             name = formatName(model.name),
-                            description = formatFlavorText(model.description.first().flavorText, model.name),
+                            description = cleanupDescriptionText(model.description.first().flavorText)
+                                .replace(model.name.uppercase(), formatName(model.name)),
                             typeOfPokemon = detail.types.map { formatName(it.type!!.name) },
                             category = model.species[0].genus,
                             image = model.id,
@@ -132,15 +134,4 @@ private fun formatName(
     name: String
 ): String {
     return name.replaceFirstChar { it.uppercase() }
-}
-
-private fun formatFlavorText(
-    text: String,
-    pokemonName: String,
-): String {
-    return text
-        .replace("\n", " ")
-        .replace("\u000c", " ")
-        .replace("POKéMON", "pokemon")
-        .replace(pokemonName.uppercase(), formatName(pokemonName))
 }

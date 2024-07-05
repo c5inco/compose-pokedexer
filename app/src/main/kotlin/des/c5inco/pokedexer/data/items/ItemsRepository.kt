@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.ItemsQuery
 import des.c5inco.pokedexer.data.Result
-import des.c5inco.pokedexer.data.formatFlavorText
+import des.c5inco.pokedexer.data.cleanupDescriptionText
 import des.c5inco.pokedexer.model.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -41,7 +41,7 @@ class ItemsRepositoryImpl @Inject constructor(
                             name = model.name.split("-").joinToString(" ") { part ->
                                 part.replaceFirstChar { it.uppercase() }
                             },
-                            description = formatFlavorText(model.flavorText.first().text),
+                            description = cleanupDescriptionText(model.flavorText.first().text),
                             sprite = model.name,
                         )
                     }

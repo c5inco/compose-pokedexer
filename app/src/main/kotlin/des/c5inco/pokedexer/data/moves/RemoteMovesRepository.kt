@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.PokemonOriginalMovesQuery
 import des.c5inco.pokedexer.data.Result
+import des.c5inco.pokedexer.data.cleanupDescriptionText
 import des.c5inco.pokedexer.model.Move
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -33,7 +34,7 @@ class RemoteMovesRepository @Inject constructor(
                             name = model.name.split("-").joinToString(" ") { part ->
                                 part.replaceFirstChar { it.uppercase() }
                             },
-                            description = model.description.first().flavorText,
+                            description = cleanupDescriptionText(model.description.first().flavorText),
                             category = model.category!!.name.replaceFirstChar { it.uppercase() },
                             type = model.type!!.name.replaceFirstChar { it.uppercase() },
                             pp = model.pp!!,
