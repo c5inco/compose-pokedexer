@@ -16,7 +16,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -66,9 +65,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -81,7 +78,6 @@ import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
-import des.c5inco.pokedexer.ui.common.TypeLabel
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
@@ -179,7 +175,9 @@ fun PokedexScreen(
                 tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
             )
             PokemonList(
-                modifier = Modifier.statusBarsPadding(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding(),
                 listState = listState,
                 loading = loading,
                 title = {
@@ -199,6 +197,7 @@ fun PokedexScreen(
                 pokemon = pokemon,
                 favorites = favorites,
                 showFavorites = showFavorites,
+                typeFilter = typeFilter,
                 onPokemonSelected = onPokemonSelected
             )
 
@@ -307,7 +306,7 @@ fun PokedexScreen(
 }
 
 @Composable
-fun PokemonList(
+private fun PokemonList(
     modifier: Modifier = Modifier,
     listState: LazyGridState,
     loading: Boolean = false,
@@ -315,9 +314,11 @@ fun PokemonList(
     pokemon: List<Pokemon>,
     favorites: List<Pokemon>,
     showFavorites: Boolean = false,
+    typeFilter: Type? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
     val loaded = remember { MutableTransitionState(!loading) }
+    val pokemonToShow = if (showFavorites) favorites else pokemon
 
     LazyVerticalGrid(
         modifier = modifier.testTag("PokedexLazyGrid"),
@@ -346,29 +347,64 @@ fun PokemonList(
             } else {
                 loaded.targetState = true
 
-                itemsIndexed(items = if (showFavorites) favorites else pokemon, key = { _, p -> p.id }) { idx, p ->
-                    AnimatedVisibility(
-                        visibleState = loaded,
-                        enter = slideInVertically(
-                            animationSpec = tween(
-                                durationMillis = 500,
-                                delayMillis = idx / 2 * 120
+                if (pokemonToShow.isEmpty()) {
+                    item(span = { GridItemSpan(2) }) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Bottom,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                        ) {
+                            Text(
+                                text = "No Pokemon match the following:",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                if (showFavorites) {
+                                    Text(
+                                        text = "Favorites",
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                }
+                                if (typeFilter != null) {
+                                    Text(
+                                        text = "Type: $typeFilter",
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    itemsIndexed(items = pokemonToShow, key = { _, p -> p.id }) { idx, p ->
+                        AnimatedVisibility(
+                            visibleState = loaded,
+                            enter = slideInVertically(
+                                animationSpec = tween(
+                                    durationMillis = 500,
+                                    delayMillis = idx / 2 * 120
+                                ),
+                                initialOffsetY = { it / 2 }
+                            ) + fadeIn(
+                                animationSpec = tween(
+                                    durationMillis = 400,
+                                    delayMillis = idx / 2 * 150
+                                ),
                             ),
-                            initialOffsetY = { it / 2 }
-                        ) + fadeIn(
-                            animationSpec = tween(
-                                durationMillis = 400,
-                                delayMillis = idx / 2 * 150
-                            ),
-                        ),
-                        exit = ExitTransition.None,
-                        label = "pokemonCardTransition"
-                    ) {
-                        PokedexCard(
-                            pokemon = p,
-                            isFavorite = favorites.contains(p),
-                            onPokemonSelected = onPokemonSelected
-                        )
+                            exit = ExitTransition.None,
+                            label = "pokemonCardTransition"
+                        ) {
+                            PokedexCard(
+                                pokemon = p,
+                                isFavorite = favorites.contains(p),
+                                onPokemonSelected = onPokemonSelected
+                            )
+                        }
                     }
                 }
             }
