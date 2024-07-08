@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.common
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
@@ -39,18 +40,28 @@ data class TypeLabelMetrics(
     val elementSpacing: Dp
 ) {
     companion object {
-        val SMALL = TypeLabelMetrics(24.dp,
+        val SMALL = TypeLabelMetrics(
+            cornerRadius = 24.dp,
             fontSize = 10.sp,
             verticalPadding = 0.dp,
             horizontalPadding = 10.dp,
             elementSpacing = 8.dp
         )
-        val MEDIUM = TypeLabelMetrics(24.dp,
+        val MEDIUM = TypeLabelMetrics(
+            cornerRadius = 24.dp,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             verticalPadding = 0.dp,
             horizontalPadding = 12.dp,
             elementSpacing = 8.dp
+        )
+        val LARGE = TypeLabelMetrics(
+            cornerRadius = 24.dp,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            verticalPadding = 4.dp,
+            horizontalPadding = 16.dp,
+            elementSpacing = 12.dp
         )
     }
 }
@@ -102,19 +113,58 @@ fun TypeLabel(
 private fun PokemonTypeLabelsPreview() {
     AppTheme {
         Surface {
-            FlowRow(
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.padding(8.dp)
+            Column(
+                modifier = Modifier.padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Type.entries.forEach {
-                    PokemonTypesTheme(
-                        types = listOf(it.toString())
-                    ) {
-                        TypeLabel(
-                            text = it.toString(),
-                            colored = true
-                        )
+                Text("Small")
+                FlowRow(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Type.entries.forEach {
+                        PokemonTypesTheme(
+                            types = listOf(it.toString())
+                        ) {
+                            TypeLabel(
+                                text = it.toString(),
+                                colored = true,
+                                metrics = TypeLabelMetrics.SMALL
+                            )
+                        }
+                    }
+                }
+                Text("Medium")
+                FlowRow(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Type.entries.forEach {
+                        PokemonTypesTheme(
+                            types = listOf(it.toString())
+                        ) {
+                            TypeLabel(
+                                text = it.toString(),
+                                colored = true
+                            )
+                        }
+                    }
+                }
+                Text("Large")
+                FlowRow(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Type.entries.forEach {
+                        PokemonTypesTheme(
+                            types = listOf(it.toString())
+                        ) {
+                            TypeLabel(
+                                text = it.toString(),
+                                colored = true,
+                                metrics = TypeLabelMetrics.LARGE
+                            )
+                        }
                     }
                 }
             }
@@ -145,7 +195,7 @@ fun TypeIconLabel(
     }
 }
 
-private fun mapTypeToIcon(type: Type): Int {
+fun mapTypeToIcon(type: Type): Int {
     return when (type) {
         Type.Normal -> return R.drawable.ic_type_normal
         Type.Fire -> R.drawable.ic_type_fire
