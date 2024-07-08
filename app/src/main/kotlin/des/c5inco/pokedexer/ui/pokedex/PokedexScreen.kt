@@ -542,7 +542,7 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)
-                    .graphicsLayer { alpha = 0.4f }
+                    .graphicsLayer { alpha = if (selected) 1f else 0.4f }
             )
             Spacer(Modifier.width(4.dp))
             Text("$type")
