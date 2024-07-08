@@ -4,24 +4,24 @@ import androidx.compose.ui.graphics.Color
 import des.c5inco.pokedexer.ui.theme.PokemonColors
 
 enum class Type {
-    Normal,
-    Fire,
-    Fighting,
-    Water,
-    Flying,
-    Grass,
-    Poison,
+    Bug,
+    Dark,
+    Dragon,
     Electric,
+    Fairy,
+    Fighting,
+    Fire,
+    Flying,
+    Ghost,
+    Grass,
     Ground,
+    Ice,
+    Normal,
+    Poison,
     Psychic,
     Rock,
-    Ice,
-    Bug,
-    Dragon,
-    Ghost,
-    Dark,
     Steel,
-    Fairy,
+    Water,
 }
 
 fun mapTypeToColor(type: String): Color {
