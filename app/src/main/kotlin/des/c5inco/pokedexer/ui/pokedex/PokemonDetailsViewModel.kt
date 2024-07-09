@@ -27,28 +27,6 @@ import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
-/**
- * UI state for the Pokemon details screen
- */
-data class PokemonDetailsUiState(
-    val pokemon: Pokemon?,
-    val isFavorite: Boolean = false,
-    val loading: Boolean = false,
-)
-
-data class PokemonDetailsAboutUiState(
-    val description: String
-)
-
-data class PokemonDetailsBaseStatsUiState(
-    val hp: Int,
-    val attack: Int,
-    val defense: Int,
-    val specialAttack: Int,
-    val specialDefense: Int,
-    val speed: Int,
-)
-
 data class PokemonDetailsEvolutions(
     val pokemon: Pokemon,
     val trigger: EvolutionTrigger,

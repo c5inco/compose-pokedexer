@@ -12,15 +12,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
-import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsViewModel
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject
-    lateinit var pokemonDetailsViewModelFactory: PokemonDetailsViewModel.PokemonDetailsViewModelFactory
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
