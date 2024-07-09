@@ -1,7 +1,6 @@
 package des.c5inco.pokedexer.ui.home.appbar.elements
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.clearText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -24,31 +22,24 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RoundedSearchBar(
     modifier: Modifier = Modifier,
     searchText: TextFieldState,
     onTextClear: () -> Unit = {}
 ) {
-    var showPlaceholder by remember { mutableStateOf(searchText.text.isEmpty()) }
-
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier
@@ -58,13 +49,7 @@ fun RoundedSearchBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             BasicTextField(
-                modifier = Modifier
-                    .weight(1f)
-                    .onFocusEvent {
-                        if (searchText.text.isEmpty()) {
-                            showPlaceholder = !it.isFocused
-                        }
-                    },
+                modifier = Modifier.weight(1f),
                 state = searchText,
                 textStyle = MaterialTheme.typography.bodyMedium.copy(
                     color = contentColorFor(backgroundColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -73,7 +58,6 @@ fun RoundedSearchBar(
                 lineLimits = TextFieldLineLimits.SingleLine,
                 decorator = { innerTextField ->
                     Row(
-                        modifier = Modifier.padding(end = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
@@ -83,18 +67,19 @@ fun RoundedSearchBar(
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(Modifier.width(8.dp))
-                        if (showPlaceholder) {
-                            Text(
-                                "Search Pokemon, Move, Ability, etc",
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 12.dp),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        } else {
+                        Box {
                             innerTextField()
+
+                            if (searchText.text.isEmpty()) {
+                                Text(
+                                    text = "Search Pokemon, Move, Item, etc",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.outline,
+                                    modifier = Modifier.padding(end = 12.dp),
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
                         }
                     }
                 }
@@ -113,9 +98,7 @@ fun RoundedSearchBar(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Preview
+@PreviewLightDark
 @Composable
 fun RoundedSearchBarPreview() {
     AppTheme {
