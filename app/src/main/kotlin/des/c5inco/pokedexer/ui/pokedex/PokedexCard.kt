@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.ui.pokedex
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,21 +23,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.imageLoader
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
-import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.PokeBall
+import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
-import des.c5inco.pokedexer.ui.common.artworkUrl
 import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
@@ -88,11 +82,9 @@ fun PokedexCard(
                     0.25f
                 )
 
-                AsyncImage(
-                    model = artworkUrl(pokemon.image),
-                    placeholder = painterResource(id = placeholderPokemonImage(pokemon.image)),
-                    contentDescription = pokemon.name,
-                    imageLoader = LocalContext.current.imageLoader,
+                PokemonImage(
+                    image = pokemon.image,
+                    description = pokemon.name,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(bottom = 6.dp, end = 6.dp)
@@ -121,8 +113,7 @@ private fun PokemonName(name: String?) {
     )
 }
 
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Preview
+@PreviewLightDark
 @Composable
 private fun PokedexCardPreview() {
     AppTheme {

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,17 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.imageLoader
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
-import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.PokeBall
-import des.c5inco.pokedexer.ui.common.artworkUrl
+import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
@@ -82,11 +78,9 @@ fun PokemonResultCard(
                     0.25f
                 )
 
-                AsyncImage(
-                    model = artworkUrl(pokemon.image),
-                    placeholder = painterResource(id = placeholderPokemonImage(pokemon.image)),
-                    contentDescription = pokemon.name,
-                    imageLoader = LocalContext.current.imageLoader,
+                PokemonImage(
+                    image = pokemon.image,
+                    description = pokemon.name,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(bottom = 2.dp, end = 6.dp)
@@ -115,20 +109,10 @@ fun PokemonResultCardPreview() {
                     .height(200.dp)
                     .fillMaxWidth()
             ) {
-                item {
-                    PokemonResultCard()
-                }
-                item {
-                    PokemonResultCard()
-                }
-                item {
-                    PokemonResultCard()
-                }
-                item {
-                    PokemonResultCard()
-                }
-                item {
-                    PokemonResultCard()
+                items(SamplePokemonData.take(5)) {
+                    PokemonResultCard(
+                        pokemon = it
+                    )
                 }
             }
         }

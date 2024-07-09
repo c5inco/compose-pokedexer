@@ -5,9 +5,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import coil.imageLoader
+import coil.request.ImageRequest
 import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 
 @Composable
@@ -18,9 +20,15 @@ fun PokemonImage(
     tint: Color? = null
 ) {
     AsyncImage(
-        model = artworkUrl(image),
-        placeholder = painterResource(id = placeholderPokemonImage(image)),
-        imageLoader = LocalContext.current.imageLoader,
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(artworkUrl(image))
+            .crossfade(300)
+            .build(),
+        placeholder = if (LocalInspectionMode.current) {
+            painterResource(id = placeholderPokemonImage(image))
+        } else {
+            null
+        },
         contentDescription = description,
         colorFilter = tint?.let { ColorFilter.tint(it) },
         modifier = modifier,
