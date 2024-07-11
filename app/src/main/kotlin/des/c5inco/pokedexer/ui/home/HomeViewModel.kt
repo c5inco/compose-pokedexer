@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 data class SearchResponse(
-    val currentText: String,
+    val currentText: String = "",
     val foundPokemon: List<Pokemon> = emptyList(),
     val foundMoves: List<Move> = emptyList(),
     val foundItems: List<Item> = emptyList(),

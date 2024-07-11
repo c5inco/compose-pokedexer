@@ -31,6 +31,7 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -57,6 +58,7 @@ import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
 import des.c5inco.pokedexer.ui.home.HomeViewModel
 import des.c5inco.pokedexer.ui.home.MenuItem
+import des.c5inco.pokedexer.ui.home.SearchResponse
 import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
 import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
 import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultCard
@@ -74,14 +76,13 @@ sealed class SearchResult {
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainAppBar(
-    viewModel: HomeViewModel = hiltViewModel(),
+    searchText: TextFieldState,
+    searchResponse: SearchResponse,
     selectedSearchResult: SearchResult? = null,
     sharedTransitionScope: SharedTransitionScope,
     onMenuItemSelected: (MenuItem) -> Unit = { _ -> },
     onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
 ) {
-    val searchResponse = viewModel.searchResponses.collectAsState()
-
     Surface(
         shape = RoundedCornerShape(
             bottomStart = 32.dp,
@@ -110,14 +111,14 @@ fun MainAppBar(
                         )
                     )
                     RoundedSearchBar(
-                        searchText = viewModel.searchText,
+                        searchText = searchText,
                         onTextClear = {
-                            viewModel.searchText.clearText()
+                            searchText.clearText()
                         }
                     )
                 }
                 AnimatedContent(
-                    targetState = searchResponse.value,
+                    targetState = searchResponse,
                     transitionSpec = { fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false)) },
                     label = "searchResultsTransition",
                 ) { response  ->
@@ -323,6 +324,8 @@ fun PreviewMainAppBar() {
                 ) { _ ->
                     Column {
                         MainAppBar(
+                            searchText = TextFieldState(),
+                            searchResponse = SearchResponse(),
                             sharedTransitionScope = this@SharedTransitionLayout,
                         )
                     }
