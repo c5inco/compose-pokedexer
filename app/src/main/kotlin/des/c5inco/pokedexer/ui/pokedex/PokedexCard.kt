@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.ui.common.PokeBall
+import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
@@ -67,28 +67,26 @@ fun PokedexCard(
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
+                        .graphicsLayer { alpha = 0.5f }
                         .padding(top = 10.dp, end = 12.dp)
-                        .graphicsLayer {
-                            alpha = 0.5f
-                        },
+                        .align(Alignment.TopEnd)
                 )
-                PokeBall(
-                    Modifier
+                Pokeball(
+                    tint = Color.White,
+                    modifier = Modifier
+                        .requiredSize(120.dp)
+                        .graphicsLayer { alpha = 0.25f }
                         .align(Alignment.BottomEnd)
-                        .offset(x = 5.dp, y = 10.dp)
-                        .requiredSize(96.dp),
-                    Color.White,
-                    0.25f
+                        .offset(x = 14.dp, y = 24.dp)
                 )
 
                 PokemonImage(
                     image = pokemon.image,
                     description = pokemon.name,
                     modifier = Modifier
-                        .align(Alignment.BottomEnd)
                         .padding(bottom = 6.dp, end = 6.dp)
                         .size(80.dp)
+                        .align(Alignment.BottomEnd)
                 )
                 if (isFavorite) {
                     Icon(

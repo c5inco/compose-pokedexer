@@ -84,7 +84,7 @@ import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Emphasis
 import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
-import des.c5inco.pokedexer.ui.common.PokeBall
+import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
 import des.c5inco.pokedexer.ui.common.consumeSwipeNestedScrollConnection
@@ -255,8 +255,8 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                         .align(Alignment.TopCenter)
                         .statusBarsPadding()
                         .padding(top = 16.dp)
-                        .padding(top = 164.dp)
-                        .size(180.dp)
+                        .padding(top = 140.dp)
+                        .size(240.dp)
                         .graphicsLayer { alpha = textAlphaTarget },
                     tint = PokemonTypesTheme.colorScheme.surfaceVariant
                 )
@@ -511,7 +511,7 @@ private fun RotatingPokeBall(
     modifier: Modifier = Modifier,
     tint: Color = Color(0x40F5F5F5)
 ) {
-    val infiniteTransition = rememberInfiniteTransition()
+    val infiniteTransition = rememberInfiniteTransition(label = "rotatingPokeball")
     val angle by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 360f,
@@ -521,12 +521,9 @@ private fun RotatingPokeBall(
         label = "rotatingAngle"
     )
 
-    PokeBall(
-        modifier = modifier
-            .graphicsLayer {
-                rotationZ = angle
-            },
+    Pokeball(
         tint = tint,
+        modifier = modifier.graphicsLayer { rotationZ = angle },
     )
 }
 

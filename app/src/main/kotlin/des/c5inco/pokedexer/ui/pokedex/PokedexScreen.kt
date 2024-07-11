@@ -77,7 +77,7 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
-import des.c5inco.pokedexer.ui.common.PokeBallBackground
+import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
@@ -168,11 +168,12 @@ fun PokedexScreen(
         Box(
             Modifier.fillMaxSize()
         ) {
-            PokeBallBackground(
+            Pokeball(
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
                 modifier = Modifier
+                    .size(256.dp)
                     .align(Alignment.TopEnd)
-                    .offset(x = 90.dp, y = (-70).dp),
-                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                    .offset(x = 90.dp, y = (-72).dp)
             )
             PokemonList(
                 modifier = Modifier

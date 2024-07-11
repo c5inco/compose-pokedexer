@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
@@ -53,7 +54,7 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.ui.common.PokeBallBackground
+import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.home.SearchResponse
 import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
 import des.c5inco.pokedexer.ui.home.appbar.elements.MenuItem
@@ -88,11 +89,12 @@ fun MainAppBar(
         tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp,
     ) {
         Box {
-            PokeBallBackground(
-                Modifier
+            Pokeball(
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                modifier = Modifier
+                    .size(240.dp)
                     .align(Alignment.TopEnd)
-                    .offset(x = 90.dp, y = (-70).dp),
-                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                    .offset(x = 90.dp, y = (-72).dp)
             )
             Column(
                 modifier = Modifier.padding(top = 32.dp)

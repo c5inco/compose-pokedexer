@@ -32,7 +32,7 @@ import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.ItemImage
-import des.c5inco.pokedexer.ui.common.PokeBall
+import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsEvolutions
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -141,7 +141,6 @@ private fun EvolutionCard(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .clickable {}
             .width(128.dp)
             .padding(horizontal = 8.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -149,19 +148,17 @@ private fun EvolutionCard(
         Box(
             contentAlignment = Alignment.Center
         ) {
-            PokeBall(
-                modifier = Modifier.size(80.dp),
+            Pokeball(
                 tint = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                modifier = Modifier.size(80.dp),
             )
             PokemonImage(
-                modifier = Modifier.size(72.dp),
-                image = pokemon.id
+                image = pokemon.id,
+                modifier = Modifier.size(72.dp)
             )
         }
         Spacer(Modifier.height(4.dp))
-        Text(
-            pokemon.name
-        )
+        Text(pokemon.name)
         Spacer(Modifier.height(4.dp))
     }
 }

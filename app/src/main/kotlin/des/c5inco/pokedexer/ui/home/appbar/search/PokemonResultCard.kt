@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.ui.common.PokeBall
+import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -69,15 +69,14 @@ fun PokemonResultCard(
                             },
                     )
                 }
-                PokeBall(
-                    Modifier
+                Pokeball(
+                    tint = Color.White,
+                    modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .offset(x = 5.dp, y = 10.dp)
-                        .requiredSize(96.dp),
-                    Color.White,
-                    0.25f
+                        .offset(x = 16.dp, y = 12.dp)
+                        .requiredSize(120.dp)
+                        .graphicsLayer { alpha = 0.25f },
                 )
-
                 PokemonImage(
                     image = pokemon.image,
                     description = pokemon.name,
