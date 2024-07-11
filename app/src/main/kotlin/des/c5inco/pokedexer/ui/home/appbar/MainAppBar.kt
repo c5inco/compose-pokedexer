@@ -38,7 +38,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
@@ -48,7 +47,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
@@ -56,10 +54,9 @@ import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.PokeBallBackground
-import des.c5inco.pokedexer.ui.home.HomeViewModel
-import des.c5inco.pokedexer.ui.home.MenuItem
 import des.c5inco.pokedexer.ui.home.SearchResponse
 import des.c5inco.pokedexer.ui.home.appbar.elements.Menu
+import des.c5inco.pokedexer.ui.home.appbar.elements.MenuItem
 import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
 import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultCard
 import des.c5inco.pokedexer.ui.home.appbar.search.MoveResultCard

@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.ui.home
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -27,28 +26,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.hilt.navigation.compose.hiltViewModel
-import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
 import des.c5inco.pokedexer.ui.home.appbar.SearchResult
+import des.c5inco.pokedexer.ui.home.appbar.elements.MenuItem
 import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultExpandedCard
-import des.c5inco.pokedexer.ui.home.appbar.search.MoveResultCard
 import des.c5inco.pokedexer.ui.home.appbar.search.MoveResultExpandedCard
 import des.c5inco.pokedexer.ui.theme.AppTheme
-
-sealed class MenuItem(
-    val label: String,
-    val typeColor: Type
-) {
-    object Pokedex : MenuItem("Pokedex", Type.Grass)
-    object Moves : MenuItem("Moves", Type.Fire)
-    object Abilities : MenuItem("Abilities", Type.Water)
-    object Items : MenuItem("Items", Type.Electric)
-    object Locations : MenuItem("Locations", Type.Dragon)
-    object TypeCharts : MenuItem("Type charts", Type.Psychic)
-}
 
 @Composable
 fun HomeScreenRoute(
