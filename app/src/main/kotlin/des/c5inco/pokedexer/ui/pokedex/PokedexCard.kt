@@ -52,7 +52,7 @@ fun PokedexCard(
         ) {
             Box(
                 modifier
-                    .height(120.dp)
+                    .height(124.dp)
                     .clickable { onPokemonSelected(pokemon) }
             ) {
                 Column(
@@ -68,16 +68,16 @@ fun PokedexCard(
                     fontSize = 14.sp,
                     modifier = Modifier
                         .graphicsLayer { alpha = 0.5f }
-                        .padding(top = 10.dp, end = 12.dp)
+                        .padding(top = 8.dp, end = 12.dp)
                         .align(Alignment.TopEnd)
                 )
                 Pokeball(
                     tint = Color.White,
                     modifier = Modifier
-                        .requiredSize(120.dp)
+                        .requiredSize(88.dp)
                         .graphicsLayer { alpha = 0.25f }
                         .align(Alignment.BottomEnd)
-                        .offset(x = 14.dp, y = 24.dp)
+                        .offset(x = 0.dp, y = 0.dp)
                 )
 
                 PokemonImage(

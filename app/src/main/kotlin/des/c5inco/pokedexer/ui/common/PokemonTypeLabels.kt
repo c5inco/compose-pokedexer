@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -45,7 +44,7 @@ data class TypeLabelMetrics(
             fontSize = 10.sp,
             verticalPadding = 0.dp,
             horizontalPadding = 10.dp,
-            elementSpacing = 8.dp
+            elementSpacing = 4.dp
         )
         val MEDIUM = TypeLabelMetrics(
             cornerRadius = 24.dp,
