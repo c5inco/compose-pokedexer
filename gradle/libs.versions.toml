@@ -22,6 +22,7 @@ navigationCompose = "2.7.7"
 room = "2.6.1"
 dataStore = "1.1.1"
 shapes = "1.0.0-beta01"
+materialKolor = "1.7.0"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -63,6 +64,8 @@ androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", vers
 androidx-ui-automator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiAutomator" }
 androidx-benchmark-macro = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "benchmarkMacroJunit" }
 androidx-profile-installer = { module = "androidx.profileinstaller:profileinstaller", version.ref = "profileInstaller" }
+
+material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor"}
 
 [bundles]
 accompanist = ["accompanist-systemuicontroller"]
