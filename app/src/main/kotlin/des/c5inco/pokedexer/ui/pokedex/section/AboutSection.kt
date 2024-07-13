@@ -25,7 +25,7 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
 fun AboutSection(
@@ -146,7 +146,7 @@ fun AboutSectionPreview() {
     val pokemon = SamplePokemonData[0]
 
     AppTheme {
-        PokemonTypesKolorTheme(
+        PokemonTypesTheme(
             types = pokemon.typeOfPokemon
         ) {
             Surface(Modifier.fillMaxWidth()) {

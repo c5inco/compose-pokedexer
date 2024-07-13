@@ -32,7 +32,6 @@ import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
@@ -41,7 +40,7 @@ fun PokemonResultCard(
     pokemon: Pokemon = SamplePokemonData.first(),
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
-    PokemonTypesKolorTheme(types = pokemon.typeOfPokemon) {
+    PokemonTypesTheme(types = pokemon.typeOfPokemon) {
         Surface(
             modifier = modifier.width(200.dp),
             shape = MaterialTheme.shapes.large,

@@ -96,7 +96,6 @@ import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
 import des.c5inco.pokedexer.ui.pokedex.section.MovesSection
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypeColorOverlay
-import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlin.math.roundToInt
 
@@ -226,7 +225,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
         }
     }
 
-    PokemonTypesKolorTheme(
+    PokemonTypesTheme(
         types = pokemon.typeOfPokemon
     ) {
         val pokemonTypeColor by animateColorAsState(

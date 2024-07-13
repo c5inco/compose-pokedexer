@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 sealed class MenuItem(
@@ -61,7 +60,7 @@ fun Menu(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                PokemonTypesKolorTheme(types = listOf(menuItems[i].typeColor.name)) {
+                PokemonTypesTheme(types = listOf(menuItems[i].typeColor.name)) {
                     MenuItemButton(
                         modifier = Modifier.weight(1f),
                         item = menuItems[i]
@@ -69,7 +68,7 @@ fun Menu(
                         onMenuItemSelected(menuItems[i])
                     }
                 }
-                PokemonTypesKolorTheme(types = listOf(menuItems[i + 1].typeColor.name)) {
+                PokemonTypesTheme(types = listOf(menuItems[i + 1].typeColor.name)) {
                     MenuItemButton(
                         modifier = Modifier.weight(1f),
                         item = menuItems[i + 1]

@@ -30,7 +30,7 @@ import des.c5inco.pokedexer.ui.common.CategoryIcon
 import des.c5inco.pokedexer.ui.common.TypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsMoves
-import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -113,7 +113,7 @@ fun MovesSection(
                     },
                     Modifier.weight(1f)
                 )
-                PokemonTypesKolorTheme(types = listOf(move.type)) {
+                PokemonTypesTheme(types = listOf(move.type)) {
                     TypeLabel(
                         modifier = Modifier.requiredWidth(75.dp),
                         text = move.type,

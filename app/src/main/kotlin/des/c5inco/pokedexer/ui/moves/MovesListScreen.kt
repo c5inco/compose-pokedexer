@@ -38,7 +38,7 @@ import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.TypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
 fun MovesListScreenRoute(
@@ -157,7 +157,7 @@ private fun MovesList(
                     },
                     Modifier.weight(1f)
                 )
-                PokemonTypesKolorTheme(types = listOf(move.type)) {
+                PokemonTypesTheme(types = listOf(move.type)) {
                     TypeLabel(
                         modifier = Modifier.requiredWidth(75.dp),
                         text = move.type,

@@ -35,7 +35,6 @@ import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
 import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
@@ -45,7 +44,7 @@ fun PokedexCard(
     isFavorite: Boolean = false,
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
-    PokemonTypesKolorTheme(types = pokemon.typeOfPokemon) {
+    PokemonTypesTheme(types = pokemon.typeOfPokemon) {
         Surface(
             modifier = modifier,
             shape = MaterialTheme.shapes.large,
