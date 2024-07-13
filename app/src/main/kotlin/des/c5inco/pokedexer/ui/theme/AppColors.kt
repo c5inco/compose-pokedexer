@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -404,34 +403,13 @@ fun PokemonTypeColorOverlay(
                     .padding(16.dp)
                     .align(Alignment.BottomCenter)
             ) {
-                Row (
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier =Modifier.fillMaxWidth(),
-                ) {
-                    ColorSwatch(PokemonTypesTheme.colorScheme.primary)
-                    ColorSwatch(PokemonTypesTheme.colorScheme.surface)
-                    ColorSwatch(PokemonTypesTheme.colorScheme.onSurface)
-                    ColorSwatch(PokemonTypesTheme.colorScheme.surfaceVariant)
-                }
-                ColorSwatch(MaterialTheme.colorScheme.background)
-                ColorSwatch(MaterialTheme.colorScheme.onBackground)
-                ColorSwatch(MaterialTheme.colorScheme.surface)
-                ColorSwatch(MaterialTheme.colorScheme.onSurface)
-                ColorSwatch(MaterialTheme.colorScheme.surfaceVariant)
-                ColorSwatch(MaterialTheme.colorScheme.onSurfaceVariant)
-                ColorSwatch(MaterialTheme.colorScheme.inverseSurface)
-                ColorSwatch(MaterialTheme.colorScheme.inverseOnSurface)
-                ColorSwatch(MaterialTheme.colorScheme.outline)
-                ColorSwatch(MaterialTheme.colorScheme.primary)
-                ColorSwatch(MaterialTheme.colorScheme.inversePrimary)
+                ColorSwatch(PokemonTypesTheme.colorScheme.primary)
+                ColorSwatch(PokemonTypesTheme.colorScheme.surface)
+                ColorSwatch(PokemonTypesTheme.colorScheme.onSurface)
+                ColorSwatch(PokemonTypesTheme.colorScheme.surfaceVariant)
                 ColorSwatch(MaterialTheme.colorScheme.secondary)
-                ColorSwatch(MaterialTheme.colorScheme.onSecondary)
-                ColorSwatch(MaterialTheme.colorScheme.onTertiary)
-                ColorSwatch(MaterialTheme.colorScheme.tertiary)
-                ColorSwatch(MaterialTheme.colorScheme.surfaceTint)
-                ColorSwatch(MaterialTheme.colorScheme.onPrimary)
                 ColorSwatch(MaterialTheme.colorScheme.primaryContainer)
-                ColorSwatch(MaterialTheme.colorScheme.onPrimaryContainer)
+                ColorSwatch(MaterialTheme.colorScheme.secondaryContainer)
             }
         }
     }
@@ -443,7 +421,7 @@ private fun ColorSwatch(
 ) {
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(40.dp)
             .background(color, CircleShape)
     )
 }

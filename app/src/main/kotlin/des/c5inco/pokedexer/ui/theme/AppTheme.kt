@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import com.materialkolor.PaletteStyle
+import com.materialkolor.ktx.contrastRatio
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import com.materialkolor.rememberDynamicColorScheme
@@ -378,7 +379,11 @@ fun PokemonTypesKolorTheme(
             PokemonTypeColorScheme(
                 primary = seedColor.lighten(0.7f),
                 surface = seedColor,
-                onSurface = kolorScheme.onSecondary,
+                onSurface = if (seedColor.contrastRatio(kolorScheme.onSecondary) > 2.2) {
+                        kolorScheme.onSecondary
+                    } else {
+                        kolorScheme.onSecondaryContainer
+                    },
                 surfaceVariant = seedColor.lighten(0.7f)
             )
         }
