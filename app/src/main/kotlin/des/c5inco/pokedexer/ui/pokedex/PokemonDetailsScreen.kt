@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.ui.pokedex
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExitTransition
@@ -72,7 +71,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -94,6 +95,8 @@ import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
 import des.c5inco.pokedexer.ui.pokedex.section.MovesSection
 import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypeColorOverlay
+import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlin.math.roundToInt
 
@@ -223,7 +226,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
         }
     }
 
-    PokemonTypesTheme(
+    PokemonTypesKolorTheme(
         types = pokemon.typeOfPokemon
     ) {
         val pokemonTypeColor by animateColorAsState(
@@ -393,42 +396,40 @@ private fun CardContent(
     val sectionTitles = Sections.entries.map { it.title }
     var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
 
-    val tabIndicatorColor by animateColorAsState(
-        targetValue = PokemonTypesTheme.colorScheme.primary,
-        animationSpec = tween(durationMillis = 500),
-        label = "tabIndicatorColor"
-    )
-
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
-        PokemonTypesTheme(types = pokemon.typeOfPokemon) {
-            SecondaryTabRow(
-                containerColor = MaterialTheme.colorScheme.surface,
-                selectedTabIndex = section.ordinal,
-                indicator = {
-                    SecondaryIndicator(
-                        modifier = Modifier
-                            .tabIndicatorOffset(section.ordinal)
-                            .clip(RoundedCornerShape(100)),
-                        color = tabIndicatorColor
+        val tabIndicatorColor by animateColorAsState(
+            targetValue = PokemonTypesTheme.colorScheme.primary,
+            animationSpec = tween(durationMillis = 500),
+            label = "tabIndicatorColor"
+        )
+
+        SecondaryTabRow(
+            containerColor = MaterialTheme.colorScheme.surface,
+            selectedTabIndex = section.ordinal,
+            indicator = {
+                SecondaryIndicator(
+                    modifier = Modifier
+                        .tabIndicatorOffset(section.ordinal)
+                        .clip(RoundedCornerShape(100)),
+                    color = tabIndicatorColor
+                )
+            },
+        ) {
+            sectionTitles.forEachIndexed { index, text ->
+                val active = index == section.ordinal
+                Tab(
+                    selected = active,
+                    selectedContentColor = PokemonTypesTheme.colorScheme.primary,
+                    unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    onClick = { section = Sections.entries.toTypedArray()[index] },
+                ) {
+                    Text(
+                        text = text,
+                        fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
+                        modifier = Modifier.padding(vertical = 20.dp)
                     )
-                },
-            ) {
-                sectionTitles.forEachIndexed { index, text ->
-                    val active = index == section.ordinal
-                    Tab(
-                        selected = active,
-                        selectedContentColor = PokemonTypesTheme.colorScheme.primary,
-                        unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        onClick = { section = Sections.entries.toTypedArray()[index] },
-                    ) {
-                        Text(
-                            text = text,
-                            fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
-                            modifier = Modifier.padding(vertical = 20.dp)
-                        )
-                    }
                 }
             }
         }
@@ -527,30 +528,45 @@ private fun RotatingPokeBall(
     )
 }
 
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Preview
+@PreviewLightDark
 @Composable
-private fun PokemonDetailsPreview() {
-    var activePokemon by remember { mutableStateOf(SamplePokemonData.first { it.name == "Pikachu" }) }
+private fun PokemonDetailsPreview(
+    @PreviewParameter(PokemonPreviewProvider::class) pokemon: Pokemon
+) {
+    var activePokemon by remember { mutableStateOf(pokemon) }
 
     AppTheme {
-        Surface(Modifier.fillMaxSize()) {
+        Surface {
             AnimatedContent(
                 targetState = true,
                 label = ""
             ) { targetState ->
-                PokemonDetailsScreen(
-                    loading = !targetState,
-                    pokemonSet = SamplePokemonData,
-                    pokemon = activePokemon,
-                    evolutions = mapSampleEvolutionsToList(
-                        activePokemon.evolutionChain
-                    ),
-                    moves = mapSampleMovesToDetailsList(),
-                    onPage = {
-                        activePokemon = it
-                    })
+                PokemonTypeColorOverlay(
+                    pokemon = activePokemon
+                ) {
+                    PokemonDetailsScreen(
+                        loading = !targetState,
+                        pokemonSet = SamplePokemonData,
+                        pokemon = activePokemon,
+                        evolutions = mapSampleEvolutionsToList(
+                            activePokemon.evolutionChain
+                        ),
+                        moves = mapSampleMovesToDetailsList(),
+                        onPage = {
+                            activePokemon = it
+                        }
+                    )
+                }
             }
         }
     }
+}
+
+class PokemonPreviewProvider : PreviewParameterProvider<Pokemon> {
+    override val values = sequenceOf(
+        SamplePokemonData[0],
+        SamplePokemonData[3],
+        SamplePokemonData[6],
+        SamplePokemonData.last(),
+    )
 }

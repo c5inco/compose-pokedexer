@@ -1,8 +1,25 @@
 package des.c5inco.pokedexer.ui.theme
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.model.Pokemon
 
 val Grey100 = Color(0xfff5f5f5)
 val Indigo500 = Color(0xff6C79db)
@@ -363,3 +380,70 @@ val StatusColors = MoveCategoryColors(
     onSurfaceDark = Color(0xffFFDBCB),
     onSurfaceLight = Color(0xff341100)
 )
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun PokemonTypeColorOverlay(
+    modifier: Modifier = Modifier,
+    pokemon: Pokemon,
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        content()
+        PokemonTypesKolorTheme(
+            types = pokemon.typeOfPokemon
+        ) {
+            FlowRow(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .align(Alignment.BottomCenter)
+            ) {
+                Row (
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier =Modifier.fillMaxWidth(),
+                ) {
+                    ColorSwatch(PokemonTypesTheme.colorScheme.primary)
+                    ColorSwatch(PokemonTypesTheme.colorScheme.surface)
+                    ColorSwatch(PokemonTypesTheme.colorScheme.onSurface)
+                    ColorSwatch(PokemonTypesTheme.colorScheme.surfaceVariant)
+                }
+                ColorSwatch(MaterialTheme.colorScheme.background)
+                ColorSwatch(MaterialTheme.colorScheme.onBackground)
+                ColorSwatch(MaterialTheme.colorScheme.surface)
+                ColorSwatch(MaterialTheme.colorScheme.onSurface)
+                ColorSwatch(MaterialTheme.colorScheme.surfaceVariant)
+                ColorSwatch(MaterialTheme.colorScheme.onSurfaceVariant)
+                ColorSwatch(MaterialTheme.colorScheme.inverseSurface)
+                ColorSwatch(MaterialTheme.colorScheme.inverseOnSurface)
+                ColorSwatch(MaterialTheme.colorScheme.outline)
+                ColorSwatch(MaterialTheme.colorScheme.primary)
+                ColorSwatch(MaterialTheme.colorScheme.inversePrimary)
+                ColorSwatch(MaterialTheme.colorScheme.secondary)
+                ColorSwatch(MaterialTheme.colorScheme.onSecondary)
+                ColorSwatch(MaterialTheme.colorScheme.onTertiary)
+                ColorSwatch(MaterialTheme.colorScheme.tertiary)
+                ColorSwatch(MaterialTheme.colorScheme.surfaceTint)
+                ColorSwatch(MaterialTheme.colorScheme.onPrimary)
+                ColorSwatch(MaterialTheme.colorScheme.primaryContainer)
+                ColorSwatch(MaterialTheme.colorScheme.onPrimaryContainer)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ColorSwatch(
+    color: Color
+) {
+    Box(
+        modifier = Modifier
+            .size(48.dp)
+            .background(color, CircleShape)
+    )
+}

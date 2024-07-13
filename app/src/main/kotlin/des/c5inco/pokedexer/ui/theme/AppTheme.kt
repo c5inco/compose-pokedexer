@@ -9,6 +9,10 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import com.materialkolor.PaletteStyle
+import com.materialkolor.ktx.darken
+import com.materialkolor.ktx.lighten
+import com.materialkolor.rememberDynamicColorScheme
 import des.c5inco.pokedexer.model.MoveCategory
 import des.c5inco.pokedexer.model.Type
 
@@ -346,6 +350,75 @@ private fun mapTypeToColorScheme(
                 surfaceVariant = WaterTypeColors.surfaceVariantDark
             )
         }
+    }
+}
+
+@Composable
+fun PokemonTypesKolorTheme(
+    types: List<String>,
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
+) {
+    val seedColor = mapTypeToSeedColor(types = types)
+
+    val kolorScheme = rememberDynamicColorScheme(
+        seedColor = seedColor,
+        isDark = useDarkTheme,
+        style = PaletteStyle.Rainbow
+    )
+
+    val extendedTypesColors = if (useDarkTheme) {
+            PokemonTypeColorScheme(
+                primary = kolorScheme.primaryContainer.darken(0.5f),
+                surface = kolorScheme.primaryContainer,
+                onSurface = kolorScheme.onSurface,
+                surfaceVariant = kolorScheme.onPrimary
+            )
+        } else {
+            PokemonTypeColorScheme(
+                primary = seedColor.lighten(0.7f),
+                surface = seedColor,
+                onSurface = kolorScheme.onSecondary,
+                surfaceVariant = seedColor.lighten(0.7f)
+            )
+        }
+
+    CompositionLocalProvider(
+        LocalPokemonTypeColorScheme provides extendedTypesColors,
+        LocalContentColor provides extendedTypesColors.onSurface
+    ) {
+        MaterialTheme(
+            colorScheme = kolorScheme
+        ) {
+            content()
+        }
+    }
+}
+
+private fun mapTypeToSeedColor(
+    types: List<String>,
+): Color {
+    val firstType = types[0]
+
+    return when (Type.valueOf(firstType)) {
+        Type.Bug -> PokemonColors.Bug
+        Type.Dark -> PokemonColors.Dark
+        Type.Dragon -> PokemonColors.Dragon
+        Type.Electric -> PokemonColors.Electric
+        Type.Fairy -> PokemonColors.Fairy
+        Type.Fighting -> PokemonColors.Fighting
+        Type.Fire -> PokemonColors.Fire
+        Type.Flying -> PokemonColors.Flying
+        Type.Ghost -> PokemonColors.Ghost
+        Type.Grass -> PokemonColors.Grass
+        Type.Ground -> PokemonColors.Ground
+        Type.Ice -> PokemonColors.Ice
+        Type.Normal -> PokemonColors.Normal
+        Type.Poison -> PokemonColors.Poison
+        Type.Psychic -> PokemonColors.Psychic
+        Type.Rock -> PokemonColors.Rock
+        Type.Steel -> PokemonColors.Steel
+        Type.Water -> PokemonColors.Water
     }
 }
 
