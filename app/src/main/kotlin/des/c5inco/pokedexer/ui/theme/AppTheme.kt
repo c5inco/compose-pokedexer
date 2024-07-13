@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.contentColorFor
@@ -357,36 +358,16 @@ private fun mapTypeToColorScheme(
 @Composable
 fun PokemonTypesKolorTheme(
     types: List<String>,
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val seedColor = mapTypeToSeedColor(types = types)
 
-    val kolorScheme = rememberDynamicColorScheme(
-        seedColor = seedColor,
-        isDark = useDarkTheme,
-        style = PaletteStyle.Rainbow
-    )
+    val kolorScheme = getDynamicColorScheme(seedColor)
 
-    val extendedTypesColors = if (useDarkTheme) {
-            PokemonTypeColorScheme(
-                primary = kolorScheme.primaryContainer.darken(0.5f),
-                surface = kolorScheme.primaryContainer,
-                onSurface = kolorScheme.onSurface,
-                surfaceVariant = kolorScheme.onPrimary
-            )
-        } else {
-            PokemonTypeColorScheme(
-                primary = seedColor.lighten(0.7f),
-                surface = seedColor,
-                onSurface = if (seedColor.contrastRatio(kolorScheme.onSecondary) > 2.2) {
-                        kolorScheme.onSecondary
-                    } else {
-                        kolorScheme.onSecondaryContainer
-                    },
-                surfaceVariant = seedColor.lighten(0.7f)
-            )
-        }
+    val extendedTypesColors = mapDynamicPokemonColorScheme(
+        seedColor = seedColor,
+        colorScheme = kolorScheme,
+    )
 
     CompositionLocalProvider(
         LocalPokemonTypeColorScheme provides extendedTypesColors,
@@ -400,7 +381,44 @@ fun PokemonTypesKolorTheme(
     }
 }
 
-private fun mapTypeToSeedColor(
+@Composable
+fun getDynamicColorScheme(
+    seedColor: Color,
+    isDark: Boolean = isSystemInDarkTheme()
+) = rememberDynamicColorScheme(
+    seedColor = seedColor,
+    isDark = isDark,
+    style = PaletteStyle.Rainbow
+)
+
+@Composable
+fun mapDynamicPokemonColorScheme(
+    seedColor: Color,
+    colorScheme: ColorScheme,
+    useDarkTheme: Boolean = isSystemInDarkTheme()
+): PokemonTypeColorScheme {
+    return if (useDarkTheme) {
+        PokemonTypeColorScheme(
+            primary = colorScheme.primaryContainer.darken(0.5f),
+            surface = colorScheme.primaryContainer,
+            onSurface = colorScheme.onSurface,
+            surfaceVariant = colorScheme.onPrimary
+        )
+    } else {
+        PokemonTypeColorScheme(
+            primary = seedColor.lighten(0.7f),
+            surface = seedColor,
+            onSurface = if (seedColor.contrastRatio(colorScheme.onSecondary) > 2.2) {
+                colorScheme.onSecondary
+            } else {
+                colorScheme.onSecondaryContainer
+            },
+            surfaceVariant = seedColor.lighten(0.7f)
+        )
+    }
+}
+
+fun mapTypeToSeedColor(
     types: List<String>,
 ): Color {
     val firstType = types[0]
