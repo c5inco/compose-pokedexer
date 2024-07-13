@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import des.c5inco.pokedexer.ui.theme.SuperEllipse
 
@@ -71,7 +72,7 @@ fun PokemonTypeLabels(
     types: List<String>,
     metrics: TypeLabelMetrics = TypeLabelMetrics.MEDIUM
 ) {
-    PokemonTypesTheme(types = listOf(types[0])) {
+    PokemonTypesKolorTheme(types = listOf(types[0])) {
         types.forEach {
             TypeLabel(modifier = modifier, text = it, metrics = metrics)
             Spacer(modifier = Modifier.size(metrics.elementSpacing))
@@ -89,6 +90,7 @@ fun TypeLabel(
     Surface(
         modifier = modifier,
         color = if (colored) PokemonTypesTheme.colorScheme.surface else Color(0x38FFFFFF),
+        contentColor = PokemonTypesTheme.colorScheme.onSurface,
         shape = RoundedCornerShape(metrics.cornerRadius)
     ) {
         Text(
@@ -122,7 +124,7 @@ private fun PokemonTypeLabelsPreview() {
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Type.entries.forEach {
-                        PokemonTypesTheme(
+                        PokemonTypesKolorTheme(
                             types = listOf(it.toString())
                         ) {
                             TypeLabel(
@@ -139,7 +141,7 @@ private fun PokemonTypeLabelsPreview() {
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Type.entries.forEach {
-                        PokemonTypesTheme(
+                        PokemonTypesKolorTheme(
                             types = listOf(it.toString())
                         ) {
                             TypeLabel(
@@ -155,7 +157,7 @@ private fun PokemonTypeLabelsPreview() {
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Type.entries.forEach {
-                        PokemonTypesTheme(
+                        PokemonTypesKolorTheme(
                             types = listOf(it.toString())
                         ) {
                             TypeLabel(
@@ -178,10 +180,11 @@ fun TypeIconLabel(
 ) {
     val shape = remember { SuperEllipse() }
 
-    PokemonTypesTheme(types = listOf(type.toString())) {
+    PokemonTypesKolorTheme(types = listOf(type.toString())) {
         Surface(
             modifier = modifier.clip(shape),
             color = PokemonTypesTheme.colorScheme.surface,
+            contentColor = PokemonTypesTheme.colorScheme.onSurface
         ) {
             Icon(
                 painter = painterResource(id = mapTypeToIcon(type)),

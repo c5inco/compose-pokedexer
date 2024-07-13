@@ -80,6 +80,7 @@ import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
@@ -516,7 +517,7 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
     index: Int,
     onClick: () -> Unit = {},
 ) {
-    PokemonTypesTheme(
+    PokemonTypesKolorTheme(
         types = listOf(type.toString())
     ) {
         FilledTonalButton(

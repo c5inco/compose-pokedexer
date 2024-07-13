@@ -104,7 +104,7 @@ fun AppTheme(
 fun PokemonTypesTheme(
     types: List<String>,
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val extendedTypesColors = mapTypeToColorScheme(types = types, isDark = useDarkTheme)
 

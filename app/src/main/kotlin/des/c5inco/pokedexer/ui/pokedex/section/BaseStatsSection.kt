@@ -27,6 +27,7 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
 import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesKolorTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlinx.coroutines.delay
 
@@ -112,7 +113,7 @@ fun BaseStatsSectionPreview() {
 
     AppTheme {
         Surface(Modifier.fillMaxWidth()) {
-            PokemonTypesTheme(
+            PokemonTypesKolorTheme(
                 types = pokemon.typeOfPokemon
             ) {
                 BaseStatsSection(pokemon = pokemon)
