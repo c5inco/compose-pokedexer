@@ -255,10 +255,10 @@ fun PokemonTypeColorOverlay(
                 popupAlpha.animateTo(1f)
                 popupYOffset.animateTo(200f)
                 launch {
-                    popupAlpha.animateTo(0f, animationSpec = tween(300, 500))
+                    popupAlpha.animateTo(0f, animationSpec = tween(300, 1000))
                 }
                 launch {
-                    popupYOffset.animateTo(0f, animationSpec = tween(500, 500))
+                    popupYOffset.animateTo(0f, animationSpec = tween(500, 1000))
                 }
             }
 
