@@ -1,23 +1,34 @@
 package des.c5inco.pokedexer.ui.theme
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.model.Pokemon
 
 val md_theme_light_primary = Color(0xFF4855B5)
@@ -185,32 +196,68 @@ val StatusColors = MoveCategoryColors(
 @Composable
 fun PokemonTypeColorOverlay(
     modifier: Modifier = Modifier,
+    paletteStyle: PaletteStyle = PaletteStyle.Rainbow,
     pokemon: Pokemon,
     content: @Composable () -> Unit
 ) {
-    Box(
-        modifier = modifier.fillMaxSize()
+
+    PokemonTypesTheme(
+        types = pokemon.typeOfPokemon,
+        paletteStyle = paletteStyle
     ) {
-        content()
-        PokemonTypesTheme(
-            types = pokemon.typeOfPokemon
+        Box(
+            modifier = modifier.fillMaxSize()
         ) {
+            content()
+
+            val swatchColors = listOf(
+                PokemonTypesTheme.colorScheme.primary,
+                PokemonTypesTheme.colorScheme.surface,
+                PokemonTypesTheme.colorScheme.onSurface,
+                PokemonTypesTheme.colorScheme.surfaceVariant,
+                MaterialTheme.colorScheme.secondary,
+                MaterialTheme.colorScheme.primaryContainer,
+                MaterialTheme.colorScheme.secondaryContainer
+            )
+
+            val palette by remember(pokemon) {
+                derivedStateOf {
+                    swatchColors
+                }
+            }
+
             FlowRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                    .padding(16.dp)
+                    .navigationBarsPadding()
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        shape = CircleShape
+                    )
+                    .border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = CircleShape
+                    )
                     .fillMaxWidth()
                     .padding(16.dp)
                     .align(Alignment.BottomCenter)
             ) {
-                ColorSwatch(PokemonTypesTheme.colorScheme.primary)
-                ColorSwatch(PokemonTypesTheme.colorScheme.surface)
-                ColorSwatch(PokemonTypesTheme.colorScheme.onSurface)
-                ColorSwatch(PokemonTypesTheme.colorScheme.surfaceVariant)
-                ColorSwatch(MaterialTheme.colorScheme.secondary)
-                ColorSwatch(MaterialTheme.colorScheme.primaryContainer)
-                ColorSwatch(MaterialTheme.colorScheme.secondaryContainer)
+                palette.forEachIndexed { idx, color ->
+                    AnimatedContent(
+                        targetState = color,
+                        transitionSpec = {
+                            fadeIn(tween(300 + idx * 150)) togetherWith fadeOut()
+                        },
+                        label = "swatchColorTransition",
+                    ) { color ->
+                        ColorSwatch(
+                            color = color,
+                        )
+                    }
+                }
             }
         }
     }
@@ -218,10 +265,11 @@ fun PokemonTypeColorOverlay(
 
 @Composable
 private fun ColorSwatch(
-    color: Color
+    modifier: Modifier = Modifier,
+    color: Color,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(40.dp)
             .background(color, CircleShape)
     )
