@@ -1,12 +1,14 @@
 package des.c5inco.pokedexer.ui.theme
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -14,22 +16,32 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.model.Pokemon
+import kotlinx.coroutines.launch
 
 val md_theme_light_primary = Color(0xFF4855B5)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
@@ -192,6 +204,14 @@ val StatusColors = MoveCategoryColors(
     onSurfaceLight = Color(0xff341100)
 )
 
+val AppPaletteStyles = listOf(
+    PaletteStyle.Rainbow,
+    PaletteStyle.TonalSpot,
+    PaletteStyle.Vibrant,
+    PaletteStyle.Expressive,
+    PaletteStyle.Neutral
+)
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PokemonTypeColorOverlay(
@@ -200,10 +220,12 @@ fun PokemonTypeColorOverlay(
     pokemon: Pokemon,
     content: @Composable () -> Unit
 ) {
+    var activePaletteStyleIndex by remember { mutableIntStateOf(AppPaletteStyles.indexOf(paletteStyle)) }
+    val activePaletteStyle by remember(activePaletteStyleIndex) { mutableStateOf(AppPaletteStyles[activePaletteStyleIndex]) }
 
     PokemonTypesTheme(
         types = pokemon.typeOfPokemon,
-        paletteStyle = paletteStyle
+        paletteStyle = activePaletteStyle
     ) {
         Box(
             modifier = modifier.fillMaxSize()
@@ -220,11 +242,36 @@ fun PokemonTypeColorOverlay(
                 MaterialTheme.colorScheme.secondaryContainer
             )
 
-            val palette by remember(pokemon) {
+            val palette by remember(pokemon, activePaletteStyle) {
                 derivedStateOf {
                     swatchColors
                 }
             }
+
+            val popupAlpha = remember { Animatable(1f) }
+            val popupYOffset = remember { Animatable(0f) }
+
+            LaunchedEffect(activePaletteStyle) {
+                popupAlpha.animateTo(1f)
+                popupYOffset.animateTo(200f)
+                launch {
+                    popupAlpha.animateTo(0f, animationSpec = tween(300, 500))
+                }
+                launch {
+                    popupYOffset.animateTo(0f, animationSpec = tween(500, 500))
+                }
+            }
+
+            Text(
+                text = activePaletteStyle.toString(),
+                modifier = Modifier
+                    .padding(bottom = 32.dp)
+                    .navigationBarsPadding()
+                    .align(Alignment.BottomCenter)
+                    .offset { IntOffset(x = 0, y = -popupYOffset.value.toInt()) }
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(4.dp))
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            )
 
             FlowRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -242,6 +289,14 @@ fun PokemonTypeColorOverlay(
                         shape = CircleShape
                     )
                     .fillMaxWidth()
+                    .clip(CircleShape)
+                    .clickable {
+                        if (activePaletteStyleIndex < AppPaletteStyles.size - 1) {
+                            activePaletteStyleIndex++
+                        } else {
+                            activePaletteStyleIndex = 0
+                        }
+                    }
                     .padding(16.dp)
                     .align(Alignment.BottomCenter)
             ) {

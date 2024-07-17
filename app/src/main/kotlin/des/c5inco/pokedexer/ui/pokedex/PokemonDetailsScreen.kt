@@ -77,6 +77,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
@@ -94,6 +95,7 @@ import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
 import des.c5inco.pokedexer.ui.pokedex.section.MovesSection
+import des.c5inco.pokedexer.ui.theme.AppPaletteStyles
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypeColorOverlay
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
@@ -530,7 +532,7 @@ private fun RotatingPokeBall(
 @PreviewLightDark
 @Composable
 private fun PokemonDetailsPreview(
-    @PreviewParameter(PokemonPreviewProvider::class) pokemon: Pokemon
+    @PreviewParameter(PokemonPreviewProvider::class) pokemon: Pokemon,
 ) {
     var activePokemon by remember { mutableStateOf(pokemon) }
 
@@ -561,6 +563,38 @@ private fun PokemonDetailsPreview(
     }
 }
 
+@PreviewLightDark
+@Composable
+private fun PokemonDetailsPalettePreview(
+    @PreviewParameter(PaletteStyleProvider::class) paletteStyle: PaletteStyle
+) {
+    val activePokemon = SamplePokemonData.first()
+
+    AppTheme {
+        Surface {
+            AnimatedContent(
+                targetState = true,
+                label = ""
+            ) { targetState ->
+                PokemonTypeColorOverlay(
+                    pokemon = activePokemon,
+                    paletteStyle = paletteStyle
+                ) {
+                    PokemonDetailsScreen(
+                        loading = !targetState,
+                        pokemonSet = SamplePokemonData,
+                        pokemon = activePokemon,
+                        evolutions = mapSampleEvolutionsToList(
+                            activePokemon.evolutionChain
+                        ),
+                        moves = mapSampleMovesToDetailsList(),
+                    )
+                }
+            }
+        }
+    }
+}
+
 class PokemonPreviewProvider : PreviewParameterProvider<Pokemon> {
     override val values = sequenceOf(
         SamplePokemonData[0],
@@ -568,4 +602,8 @@ class PokemonPreviewProvider : PreviewParameterProvider<Pokemon> {
         SamplePokemonData[6],
         SamplePokemonData.last(),
     )
+}
+
+class PaletteStyleProvider : PreviewParameterProvider<PaletteStyle> {
+    override val values = AppPaletteStyles.asSequence()
 }

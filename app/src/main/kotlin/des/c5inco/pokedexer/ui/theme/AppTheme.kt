@@ -104,11 +104,12 @@ fun AppTheme(
 @Composable
 fun PokemonTypesTheme(
     types: List<String>,
+    paletteStyle: PaletteStyle = PaletteStyle.Rainbow,
     content: @Composable () -> Unit
 ) {
     val seedColor = mapTypeToSeedColor(types = types)
 
-    val kolorScheme = getDynamicColorScheme(seedColor)
+    val kolorScheme = getDynamicColorScheme(seedColor = seedColor, paletteStyle = paletteStyle)
 
     val extendedTypesColors = mapDynamicPokemonColorScheme(
         seedColor = seedColor,
@@ -136,11 +137,12 @@ object PokemonTypesTheme {
 @Composable
 fun getDynamicColorScheme(
     seedColor: Color,
+    paletteStyle: PaletteStyle,
     isDark: Boolean = isSystemInDarkTheme()
 ) = rememberDynamicColorScheme(
     seedColor = seedColor,
     isDark = isDark,
-    style = PaletteStyle.Rainbow
+    style = paletteStyle
 )
 
 @Composable

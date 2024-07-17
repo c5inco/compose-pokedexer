@@ -73,6 +73,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
@@ -448,7 +449,7 @@ private fun FilterMenu(
                     val selected = type == typeFilter
 
                     val seedColor = mapTypeToSeedColor(types = listOf(type.toString()))
-                    val kolorScheme = getDynamicColorScheme(seedColor)
+                    val kolorScheme = getDynamicColorScheme(seedColor, PaletteStyle.Rainbow)
                     val pokemonColorScheme = mapDynamicPokemonColorScheme(
                         seedColor = seedColor,
                         colorScheme = kolorScheme
