@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.materialkolor.PaletteStyle
-import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.launch
 
 class PokemonColors {
@@ -134,8 +132,8 @@ val StatusColors = MoveCategoryColors(
 )
 
 val AppPaletteStyles = listOf(
-    PaletteStyle.Rainbow,
     PaletteStyle.TonalSpot,
+    PaletteStyle.Rainbow,
     PaletteStyle.Vibrant,
     PaletteStyle.Expressive,
     PaletteStyle.Neutral
@@ -144,25 +142,24 @@ val AppPaletteStyles = listOf(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PokemonTypeColorOverlay(
-    modifier: Modifier = Modifier,
-    paletteStyle: PaletteStyle = PaletteStyle.Rainbow,
-    pokemon: Pokemon,
+    types: List<String>,
+    paletteStyle: PaletteStyle = PaletteStyle.TonalSpot,
     content: @Composable () -> Unit
 ) {
     var activePaletteStyleIndex by remember { mutableIntStateOf(AppPaletteStyles.indexOf(paletteStyle)) }
     val activePaletteStyle by remember(activePaletteStyleIndex) { mutableStateOf(AppPaletteStyles[activePaletteStyleIndex]) }
 
     PokemonTypesTheme(
-        types = pokemon.typeOfPokemon,
+        types = types,
         paletteStyle = activePaletteStyle
     ) {
         Box(
-            modifier = modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             content()
 
             val swatchColors = listOf(
-                mapTypeToSeedColor(pokemon.typeOfPokemon),
+                mapTypeToSeedColor(types),
                 PokemonTypesTheme.colorScheme.primary,
                 PokemonTypesTheme.colorScheme.surface,
                 PokemonTypesTheme.colorScheme.onSurface,
@@ -171,12 +168,6 @@ fun PokemonTypeColorOverlay(
                 MaterialTheme.colorScheme.primaryContainer,
                 MaterialTheme.colorScheme.secondaryContainer
             )
-
-            val palette by remember(pokemon, activePaletteStyle) {
-                derivedStateOf {
-                    swatchColors
-                }
-            }
 
             val popupAlpha = remember { Animatable(1f) }
             val popupYOffset = remember { Animatable(0f) }
@@ -235,34 +226,9 @@ fun PokemonTypeColorOverlay(
             ) {
                 QuadrantCircle(swatchColors[0], swatchColors[1], swatchColors[2], swatchColors[3])
                 QuadrantCircle(swatchColors[4], swatchColors[5], swatchColors[6], swatchColors[7])
-                // palette.forEachIndexed { idx, color ->
-                //     AnimatedContent(
-                //         targetState = color,
-                //         transitionSpec = {
-                //             fadeIn(tween(300 + idx * 150)) togetherWith fadeOut()
-                //         },
-                //         label = "swatchColorTransition",
-                //     ) { color ->
-                //         ColorSwatch(
-                //             color = color,
-                //         )
-                //     }
-                // }
             }
         }
     }
-}
-
-@Composable
-private fun ColorSwatch(
-    modifier: Modifier = Modifier,
-    color: Color,
-) {
-    Box(
-        modifier = modifier
-            .size(40.dp)
-            .background(color, CircleShape)
-    )
 }
 
 @Composable
@@ -272,7 +238,7 @@ fun QuadrantCircle(
     thirdColor: Color,
     fourthColor: Color
 ) {
-    Canvas(modifier = Modifier.size(64.dp)) {
+    Canvas(modifier = Modifier.size(40.dp)) {
         val canvasWidth = size.width
         val canvasHeight = size.height
         val radius = canvasWidth / 2
