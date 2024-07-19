@@ -1,11 +1,8 @@
 package des.c5inco.pokedexer.ui.theme
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -36,6 +32,8 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -164,6 +162,7 @@ fun PokemonTypeColorOverlay(
             content()
 
             val swatchColors = listOf(
+                mapTypeToSeedColor(pokemon.typeOfPokemon),
                 PokemonTypesTheme.colorScheme.primary,
                 PokemonTypesTheme.colorScheme.surface,
                 PokemonTypesTheme.colorScheme.onSurface,
@@ -210,7 +209,7 @@ fun PokemonTypeColorOverlay(
 
             FlowRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .padding(16.dp)
                     .navigationBarsPadding()
@@ -223,7 +222,6 @@ fun PokemonTypeColorOverlay(
                         color = MaterialTheme.colorScheme.outline,
                         shape = CircleShape
                     )
-                    .fillMaxWidth()
                     .clip(CircleShape)
                     .clickable {
                         if (activePaletteStyleIndex < AppPaletteStyles.size - 1) {
@@ -235,19 +233,21 @@ fun PokemonTypeColorOverlay(
                     .padding(16.dp)
                     .align(Alignment.BottomCenter)
             ) {
-                palette.forEachIndexed { idx, color ->
-                    AnimatedContent(
-                        targetState = color,
-                        transitionSpec = {
-                            fadeIn(tween(300 + idx * 150)) togetherWith fadeOut()
-                        },
-                        label = "swatchColorTransition",
-                    ) { color ->
-                        ColorSwatch(
-                            color = color,
-                        )
-                    }
-                }
+                QuadrantCircle(swatchColors[0], swatchColors[1], swatchColors[2], swatchColors[3])
+                QuadrantCircle(swatchColors[4], swatchColors[5], swatchColors[6], swatchColors[7])
+                // palette.forEachIndexed { idx, color ->
+                //     AnimatedContent(
+                //         targetState = color,
+                //         transitionSpec = {
+                //             fadeIn(tween(300 + idx * 150)) togetherWith fadeOut()
+                //         },
+                //         label = "swatchColorTransition",
+                //     ) { color ->
+                //         ColorSwatch(
+                //             color = color,
+                //         )
+                //     }
+                // }
             }
         }
     }
@@ -263,4 +263,53 @@ private fun ColorSwatch(
             .size(40.dp)
             .background(color, CircleShape)
     )
+}
+
+@Composable
+fun QuadrantCircle(
+    firstColor: Color,
+    secondColor: Color,
+    thirdColor: Color,
+    fourthColor: Color
+) {
+    Canvas(modifier = Modifier.size(64.dp)) {
+        val canvasWidth = size.width
+        val canvasHeight = size.height
+        val radius = canvasWidth / 2
+        val size = Size(radius * 2, radius * 2)
+        val offset = Offset(0f, 0f)
+
+        drawArc(
+            color = firstColor,
+            startAngle = 180f,
+            sweepAngle = 90f,
+            useCenter = true,
+            topLeft = offset,
+            size = size
+        )
+        drawArc(
+            color = secondColor,
+            startAngle = 90f,
+            sweepAngle = 90f,
+            useCenter = true,
+            topLeft = offset,
+            size = size
+        )
+        drawArc(
+            color = thirdColor,
+            startAngle = 270f,
+            sweepAngle = 90f,
+            useCenter = true,
+            topLeft = offset,
+            size = size
+        )
+        drawArc(
+            color = fourthColor,
+            startAngle = 0f,
+            sweepAngle = 90f,
+            useCenter = true,
+            topLeft = offset,
+            size = size
+        )
+    }
 }
