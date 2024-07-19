@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import com.materialkolor.PaletteStyle
+import com.materialkolor.ktx.contrastRatio
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import com.materialkolor.rememberDynamicColorScheme
@@ -36,12 +37,15 @@ fun AppTheme(
 @Composable
 fun PokemonTypesTheme(
     types: List<String>,
-    paletteStyle: PaletteStyle = PaletteStyle.Rainbow,
+    paletteStyle: PaletteStyle = PaletteStyle.TonalSpot,
     content: @Composable () -> Unit
 ) {
     val seedColor = mapTypeToSeedColor(types = types)
 
-    val kolorScheme = getDynamicColorScheme(seedColor = seedColor, paletteStyle = paletteStyle)
+    val kolorScheme = getDynamicColorScheme(
+        seedColor = seedColor,
+        paletteStyle = paletteStyle
+    )
 
     val extendedTypesColors = mapDynamicPokemonColorScheme(
         seedColor = seedColor,
@@ -85,27 +89,21 @@ fun mapDynamicPokemonColorScheme(
 ): PokemonTypeColorScheme {
     return if (useDarkTheme) {
         PokemonTypeColorScheme(
-            primary = colorScheme.primaryContainer.darken(0.5f),
+            primary = colorScheme.primaryContainer.darken(0.4f),
             surface = colorScheme.primaryContainer,
             onSurface = colorScheme.onSurface,
             surfaceVariant = colorScheme.onPrimary
         )
     } else {
-        // PokemonTypeColorScheme(
-        //     primary = seedColor.lighten(0.7f),
-        //     surface = seedColor,
-        //     onSurface = if (seedColor.contrastRatio(colorScheme.onSecondary) > 2.2) {
-        //         colorScheme.onSecondary
-        //     } else {
-        //         colorScheme.onSecondaryContainer
-        //     },
-        //     surfaceVariant = seedColor.lighten(0.7f)
-        // )
         PokemonTypeColorScheme(
-            primary = colorScheme.primaryContainer.lighten(0.5f),
-            surface = colorScheme.primaryContainer,
-            onSurface = colorScheme.onSurface,
-            surfaceVariant = colorScheme.onPrimary
+            primary = seedColor.lighten(0.7f),
+            surface = seedColor,
+            onSurface = if (seedColor.contrastRatio(colorScheme.onSecondary) > 2.2) {
+                colorScheme.onSecondary
+            } else {
+                colorScheme.onSecondaryContainer
+            },
+            surfaceVariant = seedColor.lighten(0.7f)
         )
     }
 }
