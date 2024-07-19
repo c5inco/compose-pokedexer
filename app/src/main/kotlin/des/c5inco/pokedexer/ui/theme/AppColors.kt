@@ -195,12 +195,16 @@ fun PokemonTypeColorOverlay(
 
             Text(
                 text = activePaletteStyle.toString(),
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .padding(bottom = 32.dp)
                     .navigationBarsPadding()
                     .align(Alignment.BottomCenter)
                     .offset { IntOffset(x = 0, y = -popupYOffset.value.toInt()) }
-                    .background(MaterialTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(4.dp))
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainerHigh,
+                        RoundedCornerShape(4.dp)
+                    )
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             )
 
