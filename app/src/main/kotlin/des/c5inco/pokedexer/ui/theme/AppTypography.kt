@@ -54,6 +54,9 @@ val AppTypography = Typography(
     bodySmall = defaultTypography.bodySmall.copy(
         fontFamily = appFontFamily
     ),
+    labelLarge = defaultTypography.labelLarge.copy(
+        fontFamily = appFontFamily
+    )
 )
 
 @Preview(showBackground = true)
