@@ -240,7 +240,6 @@ fun QuadrantCircle(
 ) {
     Canvas(modifier = Modifier.size(40.dp)) {
         val canvasWidth = size.width
-        val canvasHeight = size.height
         val radius = canvasWidth / 2
         val size = Size(radius * 2, radius * 2)
         val offset = Offset(0f, 0f)
