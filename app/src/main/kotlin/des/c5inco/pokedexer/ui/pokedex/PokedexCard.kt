@@ -48,7 +48,8 @@ fun PokedexCard(
         Surface(
             modifier = modifier,
             shape = MaterialTheme.shapes.large,
-            color = PokemonTypesTheme.colorScheme.surface
+            color = PokemonTypesTheme.colorScheme.surface,
+            contentColor = PokemonTypesTheme.colorScheme.onSurface
         ) {
             Box(
                 modifier

@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.ui.pokedex.section
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.R
@@ -26,6 +25,7 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
 import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
 fun AboutSection(
@@ -140,13 +140,18 @@ private fun BreedingDetails(
     }
 }
 
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Preview
+@PreviewLightDark
 @Composable
 fun AboutSectionPreview() {
+    val pokemon = SamplePokemonData[0]
+
     AppTheme {
-        Surface(Modifier.fillMaxWidth()) {
-            AboutSection(pokemon = SamplePokemonData[0])
+        PokemonTypesTheme(
+            types = pokemon.typeOfPokemon
+        ) {
+            Surface(Modifier.fillMaxWidth()) {
+                AboutSection(pokemon = pokemon)
+            }
         }
     }
 }

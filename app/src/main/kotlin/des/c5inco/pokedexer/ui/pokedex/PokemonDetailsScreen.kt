@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.ui.pokedex
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExitTransition
@@ -72,10 +71,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
@@ -93,7 +95,9 @@ import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
 import des.c5inco.pokedexer.ui.pokedex.section.MovesSection
+import des.c5inco.pokedexer.ui.theme.AppPaletteStyles
 import des.c5inco.pokedexer.ui.theme.AppTheme
+import des.c5inco.pokedexer.ui.theme.PokemonTypeColorOverlay
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlin.math.roundToInt
 
@@ -103,21 +107,25 @@ fun AnimatedContentScope.PokemonDetailsScreenRoute(
     detailsViewModel: PokemonDetailsViewModel,
     onBackClick: () -> Unit,
 ) {
-    PokemonDetailsScreen(
-        loading = viewModel.uiState.loading,
-        pokemonSet = viewModel.uiState.pokemon,
-        pokemon = detailsViewModel.details,
-        evolutions = detailsViewModel.evolutions,
-        moves = detailsViewModel.moves,
-        isFavorite = detailsViewModel.isFavorite,
-        onPage = {
-            detailsViewModel.refresh(it)
-        },
-        onFavoriteClick = {
-            detailsViewModel.toggleFavorite(it)
-        },
-        onBackClick = onBackClick,
-    )
+    PokemonTypesTheme(
+        types = detailsViewModel.details.typeOfPokemon
+    ) {
+        PokemonDetailsScreen(
+            loading = viewModel.uiState.loading,
+            pokemonSet = viewModel.uiState.pokemon,
+            pokemon = detailsViewModel.details,
+            evolutions = detailsViewModel.evolutions,
+            moves = detailsViewModel.moves,
+            isFavorite = detailsViewModel.isFavorite,
+            onPage = {
+                detailsViewModel.refresh(it)
+            },
+            onFavoriteClick = {
+                detailsViewModel.toggleFavorite(it)
+            },
+            onBackClick = onBackClick,
+        )
+    }
 }
 
 enum class DragValue { Start, Center, End }
@@ -223,154 +231,150 @@ fun AnimatedContentScope.PokemonDetailsScreen(
         }
     }
 
-    PokemonTypesTheme(
-        types = pokemon.typeOfPokemon
+    val pokemonTypeColor by animateColorAsState(
+        targetValue = PokemonTypesTheme.colorScheme.surface,
+        animationSpec = tween(durationMillis = 500),
+        label = "pokemonTypeSurfaceColor"
+    )
+
+    Surface(
+        modifier = Modifier
+            .drawBehind {
+                drawRect(pokemonTypeColor)
+            },
+        color = Color.Transparent
     ) {
-        val pokemonTypeColor by animateColorAsState(
-            targetValue = PokemonTypesTheme.colorScheme.surface,
-            animationSpec = tween(durationMillis = 500),
-            label = "pokemonTypeSurfaceColor"
-        )
+        Box(Modifier.fillMaxSize()) {
+            RoundedRectangleDecoration(
+                Modifier
+                    .offset(x = (-60).dp, y = (-50).dp)
+                    .rotate(-20f)
+            )
+            DottedDecoration(
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 4.dp, end = 100.dp)
+            )
+            RotatingPokeBall(
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(top = 16.dp)
+                    .padding(top = 140.dp)
+                    .size(240.dp)
+                    .graphicsLayer { alpha = textAlphaTarget },
+                tint = PokemonTypesTheme.colorScheme.surfaceVariant
+            )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(top = 16.dp)
+            ) {
+                val textFadeInTransition = fadeIn(tween(durationMillis = 210, delayMillis = 90, easing = LinearOutSlowInEasing))
+                val textFadeOutTransition = fadeOut(tween(durationMillis = 90, easing = FastOutLinearInEasing))
 
-        Surface(
-            modifier = Modifier
-                .drawBehind {
-                    drawRect(pokemonTypeColor)
-                },
-            color = Color.Transparent
-        ) {
-            Box(Modifier.fillMaxSize()) {
-                RoundedRectangleDecoration(
-                    Modifier
-                        .offset(x = (-60).dp, y = (-50).dp)
-                        .rotate(-20f)
-                )
-                DottedDecoration(
-                    Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 4.dp, end = 100.dp)
-                )
-                RotatingPokeBall(
-                    Modifier
-                        .align(Alignment.TopCenter)
-                        .statusBarsPadding()
-                        .padding(top = 16.dp)
-                        .padding(top = 140.dp)
-                        .size(240.dp)
-                        .graphicsLayer { alpha = textAlphaTarget },
-                    tint = PokemonTypesTheme.colorScheme.surfaceVariant
-                )
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding()
-                        .padding(top = 16.dp)
-                ) {
-                    val textFadeInTransition = fadeIn(tween(durationMillis = 210, delayMillis = 90, easing = LinearOutSlowInEasing))
-                    val textFadeOutTransition = fadeOut(tween(durationMillis = 90, easing = FastOutLinearInEasing))
-
-                    AnimatedContent(
-                        modifier = Modifier
-                            .padding(top = 24.dp)
-                            .graphicsLayer { alpha = textAlphaTarget },
-                        targetState = pokemon,
-                        transitionSpec = {
-                            (textFadeInTransition +
-                                slideInHorizontally(
-                                    initialOffsetX = {
-                                        val offset = if (initialState.id < targetState.id) 16 else -16
-                                        with(density) { offset.dp.roundToPx() }
-                                    },
-                                    animationSpec = tween(300)
-                                ))
-                            .togetherWith(
-                                textFadeOutTransition
-                            ).using(SizeTransform(clip = false))
-                        },
-                        label = "headerTransition"
-                    ) { targetPokemon ->
-                        Header(pokemon = targetPokemon)
-                    }
-
-                    val nestedScrollConnection = consumeSwipeNestedScrollConnection(
-                        state = anchorDraggableState,
-                        orientation = Orientation.Vertical
-                    )
-
-                    Surface(
-                        modifier = Modifier
-                            .animateEnterExit(
-                                enter = Material3Transitions.SharedYAxisEnterTransition(density),
-                                exit = ExitTransition.None
-                            )
-                            .align(Alignment.TopCenter)
-                            .nestedScroll(nestedScrollConnection)
-                            .offset {
-                                IntOffset(
-                                    x = 0,
-                                    y = anchorDraggableState
-                                        .requireOffset()
-                                        .roundToInt()
-                                )
-                            }
-                            .anchoredDraggable(anchorDraggableState, Orientation.Vertical),
-                        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
-                    ) {
-                        CardContent(
-                            pokemon = pokemon,
-                            evolutions = evolutions,
-                            moves = moves,
-                            modifier = Modifier.offset { IntOffset(x = 0, y = cardPaddingTarget) },
-                        )
-                    }
-
-                    PokemonPager(
-                        modifier = Modifier
-                            .zIndex(pagerZIndex)
-                            .padding(top = 124.dp)
-                            .graphicsLayer { alpha = imageAlphaTarget },
-                        loading = loading,
-                        pokemonList = pokemonSet,
-                        backgroundColor = PokemonTypesTheme.colorScheme.surface,
-                        enabled = anchorDraggableState.currentValue == DragValue.Start,
-                        pagerState = pagerState,
-                    ) { it, progress, tint ->
-                        PagerPokemonImage(
-                            image = it.image,
-                            description = it.name,
-                            tint = tint,
-                            progress = progress,
-                            modifier = scaleModifier.size(240.dp),
-                        )
-                    }
-                }
-                NavigationTopAppBar(
+                AnimatedContent(
                     modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(top = 16.dp)
-                    ,
-                    title = {
-                        Text(
-                            text = pokemon.name,
-                            modifier = Modifier.graphicsLayer {
-                                // TODO: Look into collapsing toolbar behavior later
-                                alpha = 1f - (textAlphaTarget * 2.5f)
-                            }
-                        )
+                        .padding(top = 24.dp)
+                        .graphicsLayer { alpha = textAlphaTarget },
+                    targetState = pokemon,
+                    transitionSpec = {
+                        (textFadeInTransition +
+                            slideInHorizontally(
+                                initialOffsetX = {
+                                    val offset = if (initialState.id < targetState.id) 16 else -16
+                                    with(density) { offset.dp.roundToPx() }
+                                },
+                                animationSpec = tween(300)
+                            ))
+                        .togetherWith(
+                            textFadeOutTransition
+                        ).using(SizeTransform(clip = false))
                     },
-                    actions = {
-                        IconButton(
-                            onClick = { onFavoriteClick(pokemon.id) }
-                        ) {
-                            Icon(
-                                imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
+                    label = "headerTransition"
+                ) { targetPokemon ->
+                    Header(pokemon = targetPokemon)
+                }
+
+                val nestedScrollConnection = consumeSwipeNestedScrollConnection(
+                    state = anchorDraggableState,
+                    orientation = Orientation.Vertical
+                )
+
+                Surface(
+                    modifier = Modifier
+                        .animateEnterExit(
+                            enter = Material3Transitions.SharedYAxisEnterTransition(density),
+                            exit = ExitTransition.None
+                        )
+                        .align(Alignment.TopCenter)
+                        .nestedScroll(nestedScrollConnection)
+                        .offset {
+                            IntOffset(
+                                x = 0,
+                                y = anchorDraggableState
+                                    .requireOffset()
+                                    .roundToInt()
                             )
                         }
-                    },
-                    onBackClick = onBackClick
-                )
+                        .anchoredDraggable(anchorDraggableState, Orientation.Vertical),
+                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+                ) {
+                    CardContent(
+                        pokemon = pokemon,
+                        evolutions = evolutions,
+                        moves = moves,
+                        modifier = Modifier.offset { IntOffset(x = 0, y = cardPaddingTarget) },
+                    )
+                }
+
+                PokemonPager(
+                    modifier = Modifier
+                        .zIndex(pagerZIndex)
+                        .padding(top = 124.dp)
+                        .graphicsLayer { alpha = imageAlphaTarget },
+                    loading = loading,
+                    pokemonList = pokemonSet,
+                    backgroundColor = PokemonTypesTheme.colorScheme.surface,
+                    enabled = anchorDraggableState.currentValue == DragValue.Start,
+                    pagerState = pagerState,
+                ) { it, progress, tint ->
+                    PagerPokemonImage(
+                        image = it.image,
+                        description = it.name,
+                        tint = tint,
+                        progress = progress,
+                        modifier = scaleModifier.size(240.dp),
+                    )
+                }
             }
+            NavigationTopAppBar(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(top = 16.dp)
+                ,
+                title = {
+                    Text(
+                        text = pokemon.name,
+                        modifier = Modifier.graphicsLayer {
+                            // TODO: Look into collapsing toolbar behavior later
+                            alpha = 1f - (textAlphaTarget * 2.5f)
+                        }
+                    )
+                },
+                actions = {
+                    IconButton(
+                        onClick = { onFavoriteClick(pokemon.id) }
+                    ) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
+                        )
+                    }
+                },
+                onBackClick = onBackClick
+            )
         }
     }
 }
@@ -393,42 +397,40 @@ private fun CardContent(
     val sectionTitles = Sections.entries.map { it.title }
     var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
 
-    val tabIndicatorColor by animateColorAsState(
-        targetValue = PokemonTypesTheme.colorScheme.primary,
-        animationSpec = tween(durationMillis = 500),
-        label = "tabIndicatorColor"
-    )
-
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
-        PokemonTypesTheme(types = pokemon.typeOfPokemon) {
-            SecondaryTabRow(
-                containerColor = MaterialTheme.colorScheme.surface,
-                selectedTabIndex = section.ordinal,
-                indicator = {
-                    SecondaryIndicator(
-                        modifier = Modifier
-                            .tabIndicatorOffset(section.ordinal)
-                            .clip(RoundedCornerShape(100)),
-                        color = tabIndicatorColor
+        val tabIndicatorColor by animateColorAsState(
+            targetValue = PokemonTypesTheme.colorScheme.primary,
+            animationSpec = tween(durationMillis = 500),
+            label = "tabIndicatorColor"
+        )
+
+        SecondaryTabRow(
+            containerColor = MaterialTheme.colorScheme.surface,
+            selectedTabIndex = section.ordinal,
+            indicator = {
+                SecondaryIndicator(
+                    modifier = Modifier
+                        .tabIndicatorOffset(section.ordinal)
+                        .clip(RoundedCornerShape(100)),
+                    color = tabIndicatorColor
+                )
+            },
+        ) {
+            sectionTitles.forEachIndexed { index, text ->
+                val active = index == section.ordinal
+                Tab(
+                    selected = active,
+                    selectedContentColor = PokemonTypesTheme.colorScheme.primary,
+                    unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    onClick = { section = Sections.entries.toTypedArray()[index] },
+                ) {
+                    Text(
+                        text = text,
+                        fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
+                        modifier = Modifier.padding(vertical = 20.dp)
                     )
-                },
-            ) {
-                sectionTitles.forEachIndexed { index, text ->
-                    val active = index == section.ordinal
-                    Tab(
-                        selected = active,
-                        selectedContentColor = PokemonTypesTheme.colorScheme.primary,
-                        unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        onClick = { section = Sections.entries.toTypedArray()[index] },
-                    ) {
-                        Text(
-                            text = text,
-                            fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
-                            modifier = Modifier.padding(vertical = 20.dp)
-                        )
-                    }
                 }
             }
         }
@@ -527,30 +529,81 @@ private fun RotatingPokeBall(
     )
 }
 
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Preview
+@PreviewLightDark
 @Composable
-private fun PokemonDetailsPreview() {
-    var activePokemon by remember { mutableStateOf(SamplePokemonData.first { it.name == "Pikachu" }) }
+private fun PokemonDetailsPreview(
+    @PreviewParameter(PokemonPreviewProvider::class) pokemon: Pokemon,
+) {
+    var activePokemon by remember { mutableStateOf(pokemon) }
 
     AppTheme {
-        Surface(Modifier.fillMaxSize()) {
+        Surface {
             AnimatedContent(
                 targetState = true,
                 label = ""
             ) { targetState ->
-                PokemonDetailsScreen(
-                    loading = !targetState,
-                    pokemonSet = SamplePokemonData,
-                    pokemon = activePokemon,
-                    evolutions = mapSampleEvolutionsToList(
-                        activePokemon.evolutionChain
-                    ),
-                    moves = mapSampleMovesToDetailsList(),
-                    onPage = {
-                        activePokemon = it
-                    })
+                PokemonTypesTheme(
+                    types = activePokemon.typeOfPokemon
+                ) {
+                    PokemonDetailsScreen(
+                        loading = !targetState,
+                        pokemonSet = SamplePokemonData,
+                        pokemon = activePokemon,
+                        evolutions = mapSampleEvolutionsToList(
+                            activePokemon.evolutionChain
+                        ),
+                        moves = mapSampleMovesToDetailsList(),
+                        onPage = {
+                            activePokemon = it
+                        }
+                    )
+                }
             }
         }
     }
+}
+
+@PreviewLightDark
+@Composable
+private fun PokemonDetailsPalettePreview(
+    @PreviewParameter(PaletteStyleProvider::class) paletteStyle: PaletteStyle
+) {
+    val activePokemon = SamplePokemonData.first()
+
+    AppTheme {
+        Surface {
+            AnimatedContent(
+                targetState = true,
+                label = ""
+            ) { targetState ->
+                PokemonTypeColorOverlay(
+                    types = activePokemon.typeOfPokemon,
+                    paletteStyle = paletteStyle
+                ) {
+                    PokemonDetailsScreen(
+                        loading = !targetState,
+                        pokemonSet = SamplePokemonData,
+                        pokemon = activePokemon,
+                        evolutions = mapSampleEvolutionsToList(
+                            activePokemon.evolutionChain
+                        ),
+                        moves = mapSampleMovesToDetailsList(),
+                    )
+                }
+            }
+        }
+    }
+}
+
+class PokemonPreviewProvider : PreviewParameterProvider<Pokemon> {
+    override val values = sequenceOf(
+        SamplePokemonData[0],
+        SamplePokemonData[3],
+        SamplePokemonData[6],
+        SamplePokemonData.last(),
+    )
+}
+
+class PaletteStyleProvider : PreviewParameterProvider<PaletteStyle> {
+    override val values = AppPaletteStyles.asSequence()
 }

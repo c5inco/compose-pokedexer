@@ -48,6 +48,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
@@ -72,6 +73,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
@@ -80,7 +82,9 @@ import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
+import des.c5inco.pokedexer.ui.theme.getDynamicColorScheme
+import des.c5inco.pokedexer.ui.theme.mapDynamicPokemonColorScheme
+import des.c5inco.pokedexer.ui.theme.mapTypeToSeedColor
 
 @Composable
 fun PokedexScreenRoute(
@@ -442,9 +446,26 @@ private fun FilterMenu(
                 modifier = Modifier.padding(horizontal = 24.dp)
             ) {
                 Type.entries.forEachIndexed { idx, type ->
+                    val selected = type == typeFilter
+
+                    val seedColor = mapTypeToSeedColor(types = listOf(type.toString()))
+                    val kolorScheme = getDynamicColorScheme(seedColor, PaletteStyle.Rainbow)
+                    val pokemonColorScheme = mapDynamicPokemonColorScheme(
+                        seedColor = seedColor,
+                        colorScheme = kolorScheme
+                    )
+
                     FilterTypeItem(
                         type = type,
-                        selected = type == typeFilter,
+                        colors = if (selected) {
+                            ButtonDefaults.filledTonalButtonColors(
+                                containerColor = pokemonColorScheme.surface,
+                                contentColor = pokemonColorScheme.onSurface
+                            )
+                        } else {
+                            ButtonDefaults.filledTonalButtonColors()
+                        },
+                        selected = selected,
                         index = idx,
                         onClick = { onMenuItemClick(FilterMenuEvent.FilterTypes(type)) },
                         modifier = Modifier.padding(horizontal = 4.dp)
@@ -512,42 +533,32 @@ private fun AnimatedVisibilityScope.FilterMenuItem(
 private fun AnimatedVisibilityScope.FilterTypeItem(
     modifier: Modifier = Modifier,
     type: Type,
+    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(),
     selected: Boolean = false,
     index: Int,
     onClick: () -> Unit = {},
 ) {
-    PokemonTypesTheme(
-        types = listOf(type.toString())
-    ) {
-        FilledTonalButton(
-            contentPadding = PaddingValues(start = 12.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
-            onClick = onClick,
-            colors = if (selected) {
-                ButtonDefaults.filledTonalButtonColors(
-                    containerColor = PokemonTypesTheme.colorScheme.surface,
-                    contentColor = PokemonTypesTheme.colorScheme.onSurface
-                )
-            } else {
-                ButtonDefaults.filledTonalButtonColors()
-            },
-            modifier = modifier
-                .animateEnterExit(
-                    enter = fadeIn(animationSpec = tween(durationMillis = 240, delayMillis = index * 15 + 60)) +
-                        slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(durationMillis = 150, delayMillis = index * 15 + 60)),
-                    exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
-                    label = "{$type}TypeTransition"
-                )
-        ) {
-            Icon(
-                painter = painterResource(id = mapTypeToIcon(type)),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(18.dp)
-                    .graphicsLayer { alpha = if (selected) 1f else 0.4f }
+    FilledTonalButton(
+        contentPadding = PaddingValues(start = 12.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+        onClick = onClick,
+        colors = colors,
+        modifier = modifier
+            .animateEnterExit(
+                enter = fadeIn(animationSpec = tween(durationMillis = 240, delayMillis = index * 15 + 60)) +
+                    slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(durationMillis = 150, delayMillis = index * 15 + 60)),
+                exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
+                label = "{$type}TypeTransition"
             )
-            Spacer(Modifier.width(4.dp))
-            Text("$type")
-        }
+    ) {
+        Icon(
+            painter = painterResource(id = mapTypeToIcon(type)),
+            contentDescription = null,
+            modifier = Modifier
+                .size(18.dp)
+                .graphicsLayer { alpha = if (selected) 1f else 0.4f }
+        )
+        Spacer(Modifier.width(4.dp))
+        Text("$type")
     }
 }
 

@@ -89,6 +89,7 @@ fun TypeLabel(
     Surface(
         modifier = modifier,
         color = if (colored) PokemonTypesTheme.colorScheme.surface else Color(0x38FFFFFF),
+        contentColor = PokemonTypesTheme.colorScheme.onSurface,
         shape = RoundedCornerShape(metrics.cornerRadius)
     ) {
         Text(
@@ -182,6 +183,7 @@ fun TypeIconLabel(
         Surface(
             modifier = modifier.clip(shape),
             color = PokemonTypesTheme.colorScheme.surface,
+            contentColor = PokemonTypesTheme.colorScheme.onSurface
         ) {
             Icon(
                 painter = painterResource(id = mapTypeToIcon(type)),

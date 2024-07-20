@@ -105,6 +105,9 @@ dependencies {
     implementation(libs.androidx.graphics.shapes)
     implementation(libs.androidx.graphics.shapes.android)
 
+    // Material Kolor
+    implementation(libs.material.kolor)
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

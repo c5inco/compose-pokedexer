@@ -44,7 +44,8 @@ fun PokemonResultCard(
         Surface(
             modifier = modifier.width(200.dp),
             shape = MaterialTheme.shapes.large,
-            color = PokemonTypesTheme.colorScheme.surface
+            color = PokemonTypesTheme.colorScheme.surface,
+            contentColor = PokemonTypesTheme.colorScheme.onSurface
         ) {
             Box(
                 Modifier
