@@ -20,11 +20,12 @@ class BaselineProfileGenerator {
         packageName = "des.c5inco.pokedexer",
     ) {
         startActivityAndWait()
-        device.wait(Until.hasObject(By.text("Pokedex")), 30_0000)
+        device.wait(Until.hasObject(By.text("Pokedex")), 10_0000)
 
         val button = device.findObject(By.text("Pokedex"))
         button.click()
 
+        device.wait(Until.hasObject(By.res("PokedexLazyGrid")), 5_000)
         val list = device.findObject(By.res("PokedexLazyGrid"))
         if (list != null) {
             list.setGestureMargin(device.displayWidth / 5)

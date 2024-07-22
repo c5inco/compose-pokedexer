@@ -32,7 +32,7 @@ class StartupBenchmark {
     @Test
     fun startupCompilationPartial() = startup(CompilationMode.Partial())
 
-    fun startup(
+    private fun startup(
         compilationMode: CompilationMode
     ) = benchmarkRule.measureRepeated(
         packageName = "des.c5inco.pokedexer",
