@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.apollo)
     alias(libs.plugins.daggerHiltAndroidGradle)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -14,7 +15,6 @@ android {
     defaultConfig {
         applicationId "des.c5inco.pokedexer"
         minSdk 28
-        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -54,9 +54,6 @@ android {
     buildFeatures {
         compose true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -76,7 +73,7 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    implementation('androidx.compose.foundation:foundation:1.7.0-beta03')
+    implementation('androidx.compose.foundation:foundation:1.7.0-beta05')
     implementation(libs.androidx.compose.material2)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
