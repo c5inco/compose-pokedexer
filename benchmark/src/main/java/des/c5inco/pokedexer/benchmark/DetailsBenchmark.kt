@@ -30,8 +30,9 @@ class DetailsBenchmark{
         metrics = listOf(FrameTimingMetric()),
         iterations = 5,
         compilationMode = compilationMode,
-        startupMode = StartupMode.COLD,
+        startupMode = null,
         setupBlock = {
+            killProcess()
             pressHome()
             startActivityAndWait()
 
