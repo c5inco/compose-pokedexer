@@ -23,7 +23,7 @@ class PokedexListScrollBenchmark{
     @Test
     fun scrollCompilationPartial() = scroll(CompilationMode.Partial())
 
-    fun scroll(
+    private fun scroll(
         compilationMode: CompilationMode
     ) = benchmarkRule.measureRepeated(
         packageName = "des.c5inco.pokedexer",
