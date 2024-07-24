@@ -2,12 +2,12 @@ package des.c5inco.pokedexer.benchmark
 
 import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.FrameTimingMetric
-import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.Until
+import junit.framework.TestCase.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,19 +36,25 @@ class PokedexListScrollBenchmark{
             pressHome()
             startActivityAndWait()
 
-            val button = device.findObject(By.text("Pokedex"))
-            button.click()
+            val textSelector = By.text("Pokedex")
+            if (!device.wait(Until.hasObject(textSelector), 5_000)) {
+                fail("Pokedex menu item not found in time")
+            }
 
+            device.findObject(textSelector).click()
             device.waitForIdle()
         }
     ) {
-        val list = device.wait(Until.findObject(By.res("PokedexLazyGrid")), 5000)
-
-        if (list != null) {
-            list.setGestureMargin(device.displayWidth / 5)
+        repeat(3) {
+            val listSelector = By.res("PokedexLazyGrid")
+            if (!device.wait(Until.hasObject(listSelector), 5_000)) {
+                fail("List not found in time")
+            }
+            val list = device.findObject(listSelector)
+            list.setGestureMarginPercentage(0.2f)
             list.fling(Direction.DOWN)
+            device.waitForIdle()
+            list.fling(Direction.UP)
         }
-
-        device.waitForIdle()
     }
 }
