@@ -76,8 +76,8 @@ fun SharedTransitionScope.MoveResultCard(
                 ),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            )
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            ),
         ) {
             Row(
                 modifier = Modifier
