@@ -88,12 +88,15 @@ fun PokedexerApp(
                 popEnterTransition =  { fadeIn() },
                 exitTransition = { fadeOut() }
             ) {
+                val pastPokemonId = it.savedStateHandle.get<Int>("pokemonId")
+
                 PokedexScreenRoute(
                     viewModel = hiltViewModel(),
                     onPokemonSelected = {
                         pokemon = it
                         navController.navigate("details")
                     },
+                    pastPokemonSelected = pastPokemonId,
                     onBackClick = { navController.popBackStack() }
                 )
             }
@@ -105,7 +108,12 @@ fun PokedexerApp(
                 PokemonDetailsScreenRoute(
                     viewModel = hiltViewModel(),
                     detailsViewModel = pokemonDetailsViewModel(pokemon),
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = {
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("pokemonId", it)
+                        navController.popBackStack()
+                    }
                 )
             }
         }

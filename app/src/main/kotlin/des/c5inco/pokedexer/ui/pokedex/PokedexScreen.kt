@@ -59,6 +59,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -90,6 +91,7 @@ import des.c5inco.pokedexer.ui.theme.mapTypeToSeedColor
 fun PokedexScreenRoute(
     viewModel: PokedexViewModel,
     onPokemonSelected: (Pokemon) -> Unit,
+    pastPokemonSelected: Int?,
     onBackClick: () -> Unit
 ) {
     PokedexScreen(
@@ -98,6 +100,7 @@ fun PokedexScreenRoute(
         favorites = viewModel.favorites,
         showFavorites = viewModel.showFavorites,
         typeFilter = viewModel.typeFilter,
+        pastPokemonSelected = pastPokemonSelected,
         onPokemonSelected = onPokemonSelected,
         onMenuItemClick = {
             when (it) {
@@ -127,6 +130,7 @@ fun PokedexScreen(
     favorites: List<Pokemon>,
     showFavorites: Boolean = false,
     typeFilter: Type? = null,
+    pastPokemonSelected: Int? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
     onBackClick: () -> Unit = {}
@@ -164,6 +168,17 @@ fun PokedexScreen(
                 (1f - (backgroundScrollThreshold - scrollOffset) / backgroundScrollThreshold).coerceIn(0f, 1f)
             } else {
                 1f
+            }
+        }
+    }
+
+    LaunchedEffect(pastPokemonSelected) {
+        pastPokemonSelected?.let {pastId ->
+            val visibleItems = listState.layoutInfo.visibleItemsInfo
+            val visible = visibleItems.filter { it.key == pastId }
+
+            if (visible.isEmpty()) {
+                listState.scrollToItem(pastId, -100)
             }
         }
     }

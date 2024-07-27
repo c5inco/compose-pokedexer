@@ -105,7 +105,7 @@ import kotlin.math.roundToInt
 fun AnimatedContentScope.PokemonDetailsScreenRoute(
     viewModel: PokedexViewModel,
     detailsViewModel: PokemonDetailsViewModel,
-    onBackClick: () -> Unit,
+    onBackClick: (Int) -> Unit,
 ) {
     PokemonTypesTheme(
         types = detailsViewModel.details.typeOfPokemon
@@ -141,7 +141,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
     isFavorite: Boolean = false,
     onPage: (Pokemon) -> Unit = {},
     onFavoriteClick: (Int) -> Unit = { _ -> },
-    onBackClick: () -> Unit = {},
+    onBackClick: (Int) -> Unit = {},
 ) {
     val density = LocalDensity.current
 
@@ -373,7 +373,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                         )
                     }
                 },
-                onBackClick = onBackClick
+                onBackClick = { onBackClick(pokemon.id) }
             )
         }
     }

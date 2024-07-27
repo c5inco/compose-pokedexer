@@ -60,7 +60,6 @@ fun SharedTransitionScope.ItemResultCard(
             .sharedBounds(
                 sharedContentState = rememberSharedContentState(key = "item-${item.id}-bounds"),
                 animatedVisibilityScope = animatedVisibilityScope,
-                // boundsTransform = containerBoundsTransform
             ),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
