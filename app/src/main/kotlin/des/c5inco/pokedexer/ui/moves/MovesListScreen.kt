@@ -75,12 +75,7 @@ fun MovesListScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
-                title = {
-                    Text(
-                        text = "Moves",
-                        style = if (collapsedFraction > 0.5f) MaterialTheme.typography.titleMedium else MaterialTheme.typography.headlineMedium,
-                    )
-                },
+                title = { Text("Moves",) },
                 navigationIcon =  {
                     IconButton(onClick = onBackClick) {
                         Icon(
