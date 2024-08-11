@@ -24,12 +24,14 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
+import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsAbilities
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
 fun AboutSection(
-    pokemon: Pokemon
+    pokemon: Pokemon,
+    abilities: List<PokemonDetailsAbilities>
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(28.dp)
@@ -150,7 +152,7 @@ fun AboutSectionPreview() {
             types = pokemon.typeOfPokemon
         ) {
             Surface(Modifier.fillMaxWidth()) {
-                AboutSection(pokemon = pokemon)
+                AboutSection(pokemon = pokemon, abilities = listOf())
             }
         }
     }

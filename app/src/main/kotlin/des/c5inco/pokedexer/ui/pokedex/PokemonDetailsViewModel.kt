@@ -15,11 +15,13 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
 import des.c5inco.pokedexer.data.Result
+import des.c5inco.pokedexer.data.abilities.AbilitiesRepository
 import des.c5inco.pokedexer.data.items.ItemsRepository
 import des.c5inco.pokedexer.data.moves.MovesRepository
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
 import des.c5inco.pokedexer.di.ViewModelFactoryProvider
+import des.c5inco.pokedexer.model.Ability
 import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
@@ -39,10 +41,16 @@ data class PokemonDetailsMoves(
     val targetLevel: Int
 )
 
+data class PokemonDetailsAbilities(
+    val ability: Ability,
+    val isHidden: Boolean,
+)
+
 class PokemonDetailsViewModel @AssistedInject constructor(
     private val pokemonRepository: PokemonRepository,
     private val movesRepository: MovesRepository,
     private val itemsRepository: ItemsRepository,
+    private val abilitiesRepository: AbilitiesRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
     @Assisted private val pokemon: Pokemon
 ): ViewModel() {
@@ -54,6 +62,9 @@ class PokemonDetailsViewModel @AssistedInject constructor(
         private set
 
     var moves by mutableStateOf(listOf<PokemonDetailsMoves>())
+        private set
+
+    var abilities by mutableStateOf(listOf<PokemonDetailsAbilities>())
         private set
 
     var isFavorite by mutableStateOf(false)
@@ -128,6 +139,22 @@ class PokemonDetailsViewModel @AssistedInject constructor(
                 }
             }.joinAll()
             moves = mv.sortedBy { it.targetLevel }
+
+            val ab = mutableListOf<PokemonDetailsAbilities>()
+            incomingPokemon.abilitiesList.map {
+                launch {
+                    when (val result = abilitiesRepository.getAbilityById(it.id)) {
+                        is Result.Success -> {
+                            ab.add(PokemonDetailsAbilities(result.data, it.isHidden))
+                        }
+                        is Result.Error -> {
+                            // TODO: Abilities only queried from local database which currently limited to gen 1 moves
+                            println(result.exception)
+                        }
+                    }
+                }
+            }.joinAll()
+            abilities = ab.sortedBy { it.ability.id }
 
             userPreferencesFlow.collect {
                 isFavorite = it.favorites.contains(incomingPokemon.id)

@@ -116,6 +116,7 @@ fun AnimatedContentScope.PokemonDetailsScreenRoute(
             pokemon = detailsViewModel.details,
             evolutions = detailsViewModel.evolutions,
             moves = detailsViewModel.moves,
+            abilities = detailsViewModel.abilities,
             isFavorite = detailsViewModel.isFavorite,
             onPage = {
                 detailsViewModel.refresh(it)
@@ -138,6 +139,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>,
     moves: List<PokemonDetailsMoves>,
+    abilities: List<PokemonDetailsAbilities>,
     isFavorite: Boolean = false,
     onPage: (Pokemon) -> Unit = {},
     onFavoriteClick: (Int) -> Unit = { _ -> },
@@ -325,6 +327,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                         pokemon = pokemon,
                         evolutions = evolutions,
                         moves = moves,
+                        abilities = abilities,
                         modifier = Modifier.offset { IntOffset(x = 0, y = cardPaddingTarget) },
                     )
                 }
@@ -393,6 +396,7 @@ private fun CardContent(
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>,
     moves: List<PokemonDetailsMoves>,
+    abilities: List<PokemonDetailsAbilities>,
 ) {
     val sectionTitles = Sections.entries.map { it.title }
     var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
@@ -439,7 +443,7 @@ private fun CardContent(
             modifier = Modifier.padding(24.dp)
         ) {
             when (section) {
-                Sections.About -> AboutSection(pokemon)
+                Sections.About -> AboutSection(pokemon, abilities)
                 Sections.BaseStats -> BaseStatsSection(pokemon)
                 Sections.Evolution -> EvolutionSection(evolutions = evolutions)
                 else -> MovesSection(moves = moves)
@@ -553,6 +557,7 @@ private fun PokemonDetailsPreview(
                             activePokemon.evolutionChain
                         ),
                         moves = mapSampleMovesToDetailsList(),
+                        abilities = listOf(),
                         onPage = {
                             activePokemon = it
                         }
@@ -588,6 +593,7 @@ private fun PokemonDetailsPalettePreview(
                             activePokemon.evolutionChain
                         ),
                         moves = mapSampleMovesToDetailsList(),
+                        abilities = listOf()
                     )
                 }
             }
