@@ -66,7 +66,7 @@ fun MovesSection(
                             .padding(end = 12.dp)
                     )
                     Text(
-                        text = "Move",
+                        text = "Name",
                         modifier = Modifier.weight(1f),
                     )
                     Text(

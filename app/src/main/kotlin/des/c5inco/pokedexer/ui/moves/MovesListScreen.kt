@@ -115,7 +115,7 @@ private fun MovesList(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Move",
+                        text = "Name",
                         modifier = Modifier.weight(1f),
                     )
                     Box(
