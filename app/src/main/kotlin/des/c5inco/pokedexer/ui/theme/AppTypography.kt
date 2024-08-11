@@ -57,6 +57,10 @@ val AppTypography = Typography(
     ),
     labelLarge = defaultTypography.labelLarge.copy(
         fontFamily = appFontFamily
+    ),
+    labelSmall = defaultTypography.labelSmall.copy(
+        fontWeight = FontWeight.Black,
+        fontFamily = appFontFamily,
     )
 )
 
@@ -89,6 +93,12 @@ fun AppTypographyPreview() {
             )
             Text("bodySmall",
                 style = MaterialTheme.typography.bodySmall
+            )
+            Text("labelLarge",
+                style = MaterialTheme.typography.labelLarge
+            )
+            Text("labelSmall",
+                style = MaterialTheme.typography.labelSmall
             )
         }
     }
