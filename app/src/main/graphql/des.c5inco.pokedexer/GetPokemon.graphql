@@ -29,6 +29,10 @@ query PokemonOriginal {
         level
         id: move_id
       }
+      abilities: pokemon_v2_pokemonabilities {
+        id: ability_id
+        isHidden: is_hidden
+      }
     }
     genderRate: gender_rate
     evolutionChain: pokemon_v2_evolutionchain {

@@ -10,3 +10,8 @@ data class Ability(
     val name: String,
     val description: String
 )
+
+data class PokemonAbility(
+    val id: Int,
+    val isHidden: Boolean
+)

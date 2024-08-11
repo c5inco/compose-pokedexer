@@ -8,6 +8,7 @@ import des.c5inco.pokedexer.data.cleanupDescriptionText
 import des.c5inco.pokedexer.model.Evolution
 import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.model.PokemonAbility
 import des.c5inco.pokedexer.model.PokemonMove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -55,7 +56,8 @@ class RemotePokemonRepository @Inject constructor(
                             specialDefense = stats[4],
                             speed = stats[5],
                             evolutionChain = transformEvolutionChain(model.evolutionChain?.evolutions ?: emptyList()),
-                            movesList = transformMoves(detail.moves)
+                            movesList = transformMoves(detail.moves),
+                            abilitiesList = transformAbilities(detail.abilities)
                         )
                     }
 
@@ -129,6 +131,16 @@ private fun transformMoves(
             PokemonMove(it.id!!, it.level)
         }
 }
+
+private fun transformAbilities(
+    list: List<PokemonOriginalQuery.Ability>
+): List<PokemonAbility> {
+    return list
+        .map {
+            PokemonAbility(it.id!!, it.isHidden)
+        }
+}
+
 
 private fun formatName(
     name: String

@@ -15,13 +15,14 @@ import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.model.PokemonAbility
 import des.c5inco.pokedexer.model.PokemonMove
 
 @Database(
-    version = 5,
+    version = 6,
     entities = [Pokemon::class, Move::class, Item::class, Ability::class],
     autoMigrations = [
-        AutoMigration(from = 1, to = 5),
+        AutoMigration(from = 1, to = 6),
     ]
 )
 @TypeConverters(Converters::class)
@@ -89,6 +90,28 @@ class Converters {
     fun pokemonMoveListToString(list: List<PokemonMove>): String {
         return list.joinToString(separator = "|") {
             val data = listOf(it.id, it.targetLevel)
+            data.joinToString(",")
+        }
+    }
+
+    @TypeConverter
+    fun stringToPokemonAbilityList(str: String): List<PokemonAbility> {
+        val list = mutableListOf<PokemonAbility>()
+
+        if (str.isNotBlank()) {
+            str.split("|").map {
+                val ability = it.split(",")
+                list.add(PokemonAbility(ability[0].toInt(), ability[1].toBoolean()))
+            }
+        }
+
+        return list.toList()
+    }
+
+    @TypeConverter
+    fun pokemonAbilityListToString(list: List<PokemonAbility>): String {
+        return list.joinToString(separator = "|") {
+            val data = listOf(it.id, it.isHidden)
             data.joinToString(",")
         }
     }
