@@ -42,7 +42,7 @@ sealed class MenuItem(
     object Abilities : MenuItem("Abilities", Type.Water)
     object Items : MenuItem("Items", Type.Electric)
     object Locations : MenuItem("Locations", Type.Dragon)
-    object TypeCharts : MenuItem("Type charts", Type.Psychic)
+    object TypeCharts : MenuItem("Type charts", Type.Water)
 }
 
 @Composable
@@ -50,7 +50,7 @@ fun Menu(
     modifier: Modifier = Modifier,
     onMenuItemSelected: (MenuItem) -> Unit = {}
 ) {
-    val menuItems = listOf(MenuItem.Pokedex, MenuItem.Moves, MenuItem.Abilities, MenuItem.Items)
+    val menuItems = listOf(MenuItem.Pokedex, MenuItem.Moves, MenuItem.TypeCharts, MenuItem.Items)
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -137,6 +137,7 @@ fun mapMenuItemToIcon(
         MenuItem.Moves -> R.drawable.ic_fitness_center
         MenuItem.Abilities -> R.drawable.ic_stream
         MenuItem.Items -> R.drawable.ic_store_mall_directory
+        MenuItem.TypeCharts -> R.drawable.ic_genetics
         else -> R.drawable.ic_catching_pokemon
     }
 }

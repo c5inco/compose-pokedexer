@@ -80,7 +80,6 @@ fun HomeScreen(
                                 MenuItem.Pokedex,
                                 MenuItem.Items ->
                                     onMenuItemSelected(it)
-
                                 else ->
                                     openAlertDialog = true
                             }
