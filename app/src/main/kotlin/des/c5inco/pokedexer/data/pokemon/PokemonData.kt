@@ -1,11 +1,13 @@
 package des.c5inco.pokedexer.data.pokemon
 
 import des.c5inco.pokedexer.R
+import des.c5inco.pokedexer.data.abilities.SampleAbilities
 import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Evolution
 import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsAbilities
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsEvolutions
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsMoves
 
@@ -577,6 +579,15 @@ fun mapSampleMovesToDetailsList(): List<PokemonDetailsMoves> {
         PokemonDetailsMoves(
             it,
             0
+        )
+    }
+}
+
+fun mapSampleAbilitiesToDetailsList(): List<PokemonDetailsAbilities> {
+    return SampleAbilities.map {
+        PokemonDetailsAbilities(
+            it,
+            it.id % 2 == 0
         )
     }
 }

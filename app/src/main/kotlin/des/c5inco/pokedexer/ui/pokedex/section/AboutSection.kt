@@ -152,7 +152,10 @@ fun AboutSectionPreview() {
             types = pokemon.typeOfPokemon
         ) {
             Surface(Modifier.fillMaxWidth()) {
-                AboutSection(pokemon = pokemon, abilities = listOf())
+                AboutSection(
+                    pokemon = pokemon,
+                    abilities = mapSampleAbilitiesToDetailsList().take(2)
+                )
             }
         }
     }

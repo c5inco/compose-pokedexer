@@ -5,17 +5,17 @@ import des.c5inco.pokedexer.model.Ability
 val SampleAbilities = listOf(
     Ability(
         id = 1,
-        name = "Master Ball",
-        description = "The best BALL with the ultimate performance. It will catch any wild POKéMON without fail.",
+        name = "Stench",
+        description = "By releasing a stench when attacking, the Pokémon may cause the target to flinch.",
     ),
     Ability(
         id = 2,
-        name = "Ultra Ball",
-        description = "A very high-grade BALL that offers a higher POKéMON catch rate than a GREAT BALL.",
+        name = "Drizzle",
+        description = "The Pokémon makes it rain when it enters a battle.",
     ),
     Ability(
-        id = 3,
-        name = "Great Ball",
-        description = "A good, quality BALL that offers a higher POKéMON catch rate than a standard POKé BALL.",
+        id = 4,
+        name = "Battle Armor",
+        description = "Hard armor protects the Pokémon from critical hits.",
     )
 )

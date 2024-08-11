@@ -154,7 +154,7 @@ class PokemonDetailsViewModel @AssistedInject constructor(
                     }
                 }
             }.joinAll()
-            abilities = ab.sortedBy { it.ability.id }
+            abilities = ab.sortedBy { it.isHidden }
 
             userPreferencesFlow.collect {
                 isFavorite = it.favorites.contains(incomingPokemon.id)

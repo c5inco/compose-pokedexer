@@ -80,6 +80,7 @@ import androidx.compose.ui.zIndex
 import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.data.pokemon.mapSampleAbilitiesToDetailsList
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.data.pokemon.mapSampleMovesToDetailsList
 import des.c5inco.pokedexer.model.Pokemon
@@ -557,7 +558,7 @@ private fun PokemonDetailsPreview(
                             activePokemon.evolutionChain
                         ),
                         moves = mapSampleMovesToDetailsList(),
-                        abilities = listOf(),
+                        abilities = mapSampleAbilitiesToDetailsList(),
                         onPage = {
                             activePokemon = it
                         }
@@ -593,7 +594,7 @@ private fun PokemonDetailsPalettePreview(
                             activePokemon.evolutionChain
                         ),
                         moves = mapSampleMovesToDetailsList(),
-                        abilities = listOf()
+                        abilities = mapSampleAbilitiesToDetailsList()
                     )
                 }
             }
