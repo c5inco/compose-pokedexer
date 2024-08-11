@@ -14,19 +14,27 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.ui.common.CategoryIcon
-import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.TypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -52,39 +59,50 @@ fun MovesListScreenRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovesListScreen(
     loading: Boolean,
     moves: List<Move>,
     onBackClick: () -> Unit = {},
 ) {
-    Surface {
-        Column(
-            Modifier.fillMaxSize()
-        ) {
-            NavigationTopAppBar(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(top = 16.dp),
-                onBackClick = onBackClick
-            )
-            Column(
-                Modifier
-                    .weight(1f)
-                    .padding(horizontal = 24.dp)
-            ) {
-                Text(
-                    text = "Moves",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(
-                        top = 16.dp, bottom = 24.dp
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val collapsedFraction = scrollBehavior.state.collapsedFraction
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            MediumTopAppBar(
+                title = {
+                    Text(
+                        text = "Moves",
+                        style = if (collapsedFraction > 0.5f) MaterialTheme.typography.titleMedium else MaterialTheme.typography.headlineMedium,
                     )
-                )
-                if (loading) {
-                    CircularProgressIndicator()
-                } else {
-                    MovesList(moves = moves)
-                }
+                },
+                navigationIcon =  {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            Modifier
+                .padding(top = innerPadding.calculateTopPadding())
+                .padding(horizontal = 16.dp)
+                .fillMaxSize()
+        ) {
+            if (loading) {
+                CircularProgressIndicator()
+            } else {
+                MovesList(moves = moves)
             }
         }
     }
@@ -191,12 +209,12 @@ private fun MovesList(
 
 @Preview
 @Composable
-fun MovesListScreenPreview() {
+private fun MovesListScreenPreview() {
     AppTheme {
         Surface {
             MovesListScreen(
                 loading = false,
-                moves = SampleMoves
+                moves = SampleMoves + SampleMoves + SampleMoves + SampleMoves + SampleMoves + SampleMoves
             )
         }
     }
