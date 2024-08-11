@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.data.pokemon.mapSampleAbilitiesToDetailsList
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsAbilities
@@ -47,7 +48,7 @@ fun AboutSection(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp, horizontal = 20.dp)
+                    .padding(16.dp)
             ) {
                 Column(Modifier.weight(1f)) {
                     Label(text = "Height")
@@ -61,7 +62,55 @@ fun AboutSection(
                 }
             }
         }
+        if (abilities.isNotEmpty()) {
+            AbilitiesDetails(abilities = abilities)
+        }
         BreedingDetails(pokemon = pokemon)
+    }
+}
+
+@Composable
+private fun AbilitiesDetails(
+    modifier: Modifier = Modifier,
+    abilities: List<PokemonDetailsAbilities>
+) {
+    Column(
+        modifier = modifier,
+    ) {
+        Text(
+            "Abilities",
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(Modifier.height(16.dp))
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            abilities.forEach {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    tonalElevation = 3.dp,
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        if (it.isHidden) {
+                            Text(
+                                text = "Hidden".uppercase(),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(Modifier.height(8.dp))
+                        }
+                        Text(text = it.ability.name)
+                        Spacer(Modifier.height(2.dp))
+                        Label(text = it.ability.description)
+                    }
+                }
+            }
+        }
     }
 }
 
