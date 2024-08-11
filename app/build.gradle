@@ -83,7 +83,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.ui.util)
     implementation(libs.navigation.compose)
-    implementation(libs.bundles.accompanist)
 
     // Room
     ksp(libs.room.compiler)

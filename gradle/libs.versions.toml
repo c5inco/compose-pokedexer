@@ -1,5 +1,4 @@
 [versions]
-accompanist = "0.34.0"
 activityCompose = "1.9.0"
 androidGradlePlugin = "8.5.1"
 apollo = "3.7.1"
@@ -39,8 +38,6 @@ androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-compose-ui-util = { module = "androidx.compose.ui:ui-util" }
 
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
-
 apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
@@ -66,12 +63,8 @@ androidx-profile-installer = { module = "androidx.profileinstaller:profileinstal
 
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor"}
 
-[bundles]
-accompanist = ["accompanist-systemuicontroller"]
-
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-androidLibrary = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 androidTest = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 daggerHiltAndroidGradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
