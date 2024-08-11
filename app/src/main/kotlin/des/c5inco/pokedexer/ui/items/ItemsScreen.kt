@@ -2,6 +2,7 @@ package des.c5inco.pokedexer.ui.items
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -10,23 +11,30 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.ui.common.ItemImage
-import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
@@ -41,50 +49,57 @@ fun ItemsScreenRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemsScreen(
     loading: Boolean = false,
     items: List<Item> = SampleItems,
     onBackClick: () -> Unit = {}
 ) {
-    Surface {
-        Column(
-            Modifier.fillMaxSize()
-        ) {
-            NavigationTopAppBar(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(top = 16.dp),
-                onBackClick = onBackClick
-            )
-            Column(
-                Modifier
-                    .weight(1f)
-                    .padding(horizontal = 24.dp)
-            ) {
-                Text(
-                    text = "Items",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(
-                        top = 16.dp, bottom = 24.dp
-                    )
-                )
-                if (loading) {
-                    CircularProgressIndicator()
-                } else {
-                    LazyVerticalStaggeredGrid(
-                        columns = StaggeredGridCells.Adaptive(120.dp),
-                        verticalItemSpacing = 4.dp,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
-                        content = {
-                            items(items) {
-                                ItemCard(item = it)
-                            }
-                        },
-                    )
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-                }
+    Scaffold(
+        topBar = {
+            MediumTopAppBar(
+                title = { Text("Items",) },
+                navigationIcon =  {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
+            )
+        },
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+    ) { innerPadding ->
+        Column(
+            Modifier
+                .padding(top = innerPadding.calculateTopPadding())
+                .padding(horizontal = 16.dp)
+                .fillMaxSize()
+        ) {
+            if (loading) {
+                CircularProgressIndicator()
+            } else {
+                LazyVerticalStaggeredGrid(
+                    columns = StaggeredGridCells.Adaptive(120.dp),
+                    verticalItemSpacing = 4.dp,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    contentPadding = PaddingValues(
+                        top = 12.dp,
+                        bottom = 12.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                    ),
+                    content = {
+                        items(items) {
+                            ItemCard(item = it)
+                        }
+                    },
+                )
+
             }
         }
     }

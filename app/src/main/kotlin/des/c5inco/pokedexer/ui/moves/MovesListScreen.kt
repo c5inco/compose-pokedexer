@@ -67,7 +67,6 @@ fun MovesListScreen(
     onBackClick: () -> Unit = {},
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val collapsedFraction = scrollBehavior.state.collapsedFraction
 
     Scaffold(
         modifier = Modifier

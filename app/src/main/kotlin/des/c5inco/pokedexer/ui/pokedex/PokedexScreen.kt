@@ -35,7 +35,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -51,25 +50,27 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -79,7 +80,6 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
-import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -123,6 +123,7 @@ enum class FilterMenuState {
     Types
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokedexScreen(
     loading: Boolean,
@@ -138,39 +139,7 @@ fun PokedexScreen(
     val listState = rememberLazyGridState()
     var filterMenuState by remember { mutableStateOf(FilterMenuState.Hidden) }
 
-    val topAppBarRevealThreshold = with(LocalDensity.current) { 64.dp.toPx() }
-    val scrollOffset by remember {
-        derivedStateOf {
-            listState.firstVisibleItemScrollOffset
-        }
-    }
-
-    val isGridAtTop by remember {
-        derivedStateOf {
-            scrollOffset < topAppBarRevealThreshold && listState.firstVisibleItemIndex == 0
-        }
-    }
-
-    val topAppBarTitleRevealProgress by remember {
-        derivedStateOf {
-            if (isGridAtTop) {
-                1f - (topAppBarRevealThreshold - scrollOffset) / topAppBarRevealThreshold
-            } else {
-                1f
-            }
-        }
-    }
-
-    val backgroundScrollThreshold = with(LocalDensity.current) { 40.dp.toPx() }
-    val backgroundRevealProgress by remember {
-        derivedStateOf {
-            if (isGridAtTop) {
-                (1f - (backgroundScrollThreshold - scrollOffset) / backgroundScrollThreshold).coerceIn(0f, 1f)
-            } else {
-                1f
-            }
-        }
-    }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     LaunchedEffect(pastPokemonSelected) {
         pastPokemonSelected?.let {pastId ->
@@ -183,7 +152,25 @@ fun PokedexScreen(
         }
     }
 
-    Surface {
+    Scaffold(
+        topBar = {
+            MediumTopAppBar(
+                title = { Text("Pokemon",) },
+                navigationIcon =  {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent),
+                scrollBehavior = scrollBehavior
+            )
+        },
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+    ) { innerPadding ->
         Box(
             Modifier.fillMaxSize()
         ) {
@@ -196,52 +183,16 @@ fun PokedexScreen(
             )
             PokemonList(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding(),
+                    .padding(top = innerPadding.calculateTopPadding())
+                    .fillMaxWidth(),
                 listState = listState,
                 loading = loading,
-                title = {
-                    Text(
-                        text = "Pokedex",
-                        style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier
-                            .padding(
-                                top = 16.dp,
-                                bottom = 24.dp
-                            )
-                            .graphicsLayer {
-                                alpha = 1f - topAppBarTitleRevealProgress
-                            }
-                    )
-                },
                 pokemon = pokemon,
                 favorites = favorites,
                 showFavorites = showFavorites,
                 typeFilter = typeFilter,
                 onPokemonSelected = onPokemonSelected
             )
-
-            val navBarCollapsedColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
-
-            NavigationTopAppBar(
-                modifier = Modifier
-                    .drawBehind {
-                        drawRect(color = navBarCollapsedColor, alpha = backgroundRevealProgress)
-                    }
-                    .statusBarsPadding()
-                    .padding(top = 16.dp)
-                ,
-                title = {
-                    Text(
-                        text = "Pokedex",
-                        modifier = Modifier.graphicsLayer {
-                            alpha = topAppBarTitleRevealProgress
-                        }
-                    )
-                },
-                onBackClick = onBackClick
-            )
-
             AnimatedVisibility(
                 visible = filterMenuState != FilterMenuState.Hidden,
                 enter = fadeIn(),
@@ -330,7 +281,6 @@ private fun PokemonList(
     modifier: Modifier = Modifier,
     listState: LazyGridState,
     loading: Boolean = false,
-    title: @Composable () -> Unit,
     pokemon: List<Pokemon>,
     favorites: List<Pokemon>,
     showFavorites: Boolean = false,
@@ -339,6 +289,7 @@ private fun PokemonList(
 ) {
     val loaded = remember { MutableTransitionState(!loading) }
     val pokemonToShow = if (showFavorites) favorites else pokemon
+    val bottomContentPadding = 96.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     LazyVerticalGrid(
         modifier = modifier.testTag("PokedexLazyGrid"),
@@ -346,11 +297,8 @@ private fun PokemonList(
         state = listState,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 64.dp),
+        contentPadding = PaddingValues(top = 12.dp, start = 16.dp, end = 16.dp, bottom = bottomContentPadding),
         content = {
-            item(span = { GridItemSpan(2) }) {
-                title()
-            }
             if (loading) {
                 item(span = { GridItemSpan(2) }) {
                     Column(
