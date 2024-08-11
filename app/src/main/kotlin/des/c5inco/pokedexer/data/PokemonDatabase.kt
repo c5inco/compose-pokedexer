@@ -5,9 +5,11 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import des.c5inco.pokedexer.data.abilities.AbilitiesDao
 import des.c5inco.pokedexer.data.items.ItemsDao
 import des.c5inco.pokedexer.data.moves.MovesDao
 import des.c5inco.pokedexer.data.pokemon.PokemonDao
+import des.c5inco.pokedexer.model.Ability
 import des.c5inco.pokedexer.model.Evolution
 import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Item
@@ -16,18 +18,18 @@ import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.PokemonMove
 
 @Database(
-    version = 4,
-    entities = [Pokemon::class, Move::class, Item::class],
+    version = 5,
+    entities = [Pokemon::class, Move::class, Item::class, Ability::class],
     autoMigrations = [
-        AutoMigration(from = 1, to = 4),
+        AutoMigration(from = 1, to = 5),
     ]
 )
 @TypeConverters(Converters::class)
 abstract class PokemonDatabase : RoomDatabase() {
     abstract fun pokemonDao(): PokemonDao
     abstract fun movesDao(): MovesDao
-
     abstract fun itemsDao(): ItemsDao
+    abstract fun abilitiesDao(): AbilitiesDao
 }
 
 class Converters {
