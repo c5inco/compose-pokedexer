@@ -157,7 +157,7 @@ fun SharedTransitionScope.ItemResultExpandedCard(
             ) {
                 Text(
                     text = item.name,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.sharedBounds(

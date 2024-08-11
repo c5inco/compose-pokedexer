@@ -104,7 +104,7 @@ fun MainAppBar(
                 ) {
                     Text(
                         text = "What Pokémon\nare you looking for?",
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.padding(
                             top = 64.dp, bottom = 32.dp
                         )

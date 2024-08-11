@@ -176,7 +176,7 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                 ) {
                     Text(
                         text = move.name,
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.titleLarge,
                         color = MoveCategoryTheme.colorScheme.primary,
                         modifier = Modifier.sharedBounds(
                             sharedContentState = rememberSharedContentState(key = "move-name-${move.id}"),

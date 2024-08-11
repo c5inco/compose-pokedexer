@@ -29,15 +29,16 @@ val AppTypography = Typography(
     ),
     headlineMedium = TextStyle(
         fontWeight = FontWeight.Black,
-        fontSize = 30.sp,
         fontFamily = appFontFamily
     ),
     headlineSmall = TextStyle(
         fontWeight = FontWeight.Black,
-        fontSize = 24.sp,
+        fontSize = 30.sp,
         fontFamily = appFontFamily
     ),
     titleLarge = defaultTypography.titleLarge.copy(
+        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp,
         fontFamily = appFontFamily
     ),
     titleMedium = TextStyle(
