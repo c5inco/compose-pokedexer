@@ -20,6 +20,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
@@ -38,6 +39,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -84,13 +86,13 @@ import des.c5inco.pokedexer.data.pokemon.mapSampleAbilitiesToDetailsList
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.data.pokemon.mapSampleMovesToDetailsList
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.ui.common.ConsumeSwipeNestedScrollConnection
 import des.c5inco.pokedexer.ui.common.Emphasis
 import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
-import des.c5inco.pokedexer.ui.common.consumeSwipeNestedScrollConnection
 import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
@@ -175,6 +177,8 @@ fun AnimatedContentScope.PokemonDetailsScreen(
             anchorDraggableState.progress(DragValue.Start, DragValue.End)
         }
     }
+
+    val nestedScrollState = rememberScrollState()
 
     val scaleTarget by remember {
         derivedStateOf {
@@ -300,8 +304,9 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                     Header(pokemon = targetPokemon)
                 }
 
-                val nestedScrollConnection = consumeSwipeNestedScrollConnection(
+                val nestedScrollConnection = ConsumeSwipeNestedScrollConnection(
                     state = anchorDraggableState,
+                    nestedScrollState = nestedScrollState,
                     orientation = Orientation.Vertical
                 )
 
@@ -329,7 +334,9 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                         evolutions = evolutions,
                         moves = moves,
                         abilities = abilities,
-                        modifier = Modifier.offset { IntOffset(x = 0, y = cardPaddingTarget) },
+                        nestedScrollState = nestedScrollState,
+                        modifier = Modifier
+                            .offset { IntOffset(x = 0, y = cardPaddingTarget) },
                     )
                 }
 
@@ -393,11 +400,12 @@ private enum class Sections(val title: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CardContent(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>,
     moves: List<PokemonDetailsMoves>,
     abilities: List<PokemonDetailsAbilities>,
+    nestedScrollState: ScrollState
 ) {
     val sectionTitles = Sections.entries.map { it.title }
     var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
@@ -440,11 +448,16 @@ private fun CardContent(
             }
         }
 
-        Box(
+        Column(
             modifier = Modifier.padding(24.dp)
         ) {
             when (section) {
-                Sections.About -> AboutSection(pokemon, abilities)
+                Sections.About ->
+                    AboutSection(
+                        pokemon = pokemon,
+                        abilities = abilities,
+                        scrollState = nestedScrollState,
+                    )
                 Sections.BaseStats -> BaseStatsSection(pokemon)
                 Sections.Evolution -> EvolutionSection(evolutions = evolutions)
                 else -> MovesSection(moves = moves)
