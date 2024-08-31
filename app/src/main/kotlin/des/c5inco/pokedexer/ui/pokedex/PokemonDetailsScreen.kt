@@ -1,5 +1,6 @@
 package des.c5inco.pokedexer.ui.pokedex
 
+import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExitTransition
@@ -234,17 +235,22 @@ fun AnimatedContentScope.PokemonDetailsScreen(
         }
     }
 
-    val pokemonTypeColor by animateColorAsState(
-        targetValue = PokemonTypesTheme.colorScheme.surface,
-        animationSpec = tween(durationMillis = 500),
-        label = "pokemonTypeSurfaceColor"
-    )
+    val pokemonTypeSurfaceColor = PokemonTypesTheme.colorScheme.surface
 
     Surface(
         modifier = Modifier
-            .drawBehind {
-                drawRect(pokemonTypeColor)
-            },
+            .then(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Modifier.shaderGradientBackground(
+                        startColor = PokemonTypesTheme.colorScheme.surfaceVariant,
+                        endColor = pokemonTypeSurfaceColor
+                    )
+                } else {
+                    Modifier.drawBehind {
+                        drawRect(pokemonTypeSurfaceColor)
+                    }
+                }
+            ),
         color = Color.Transparent
     ) {
         Box(Modifier.fillMaxSize()) {
