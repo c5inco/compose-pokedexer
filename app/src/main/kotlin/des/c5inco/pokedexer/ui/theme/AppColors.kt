@@ -67,7 +67,9 @@ data class PokemonTypeColorScheme(
     val primary: Color,
     val surface: Color,
     val onSurface: Color,
-    val surfaceVariant: Color
+    val surfaceVariant: Color,
+    val secondary: Color = primary,
+    val tertiary: Color = primary
 )
 
 val LocalPokemonTypeColorScheme = staticCompositionLocalOf {
