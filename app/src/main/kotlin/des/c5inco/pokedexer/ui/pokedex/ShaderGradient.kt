@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,12 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
@@ -92,15 +93,6 @@ val LinearSRGBShader = """
         // Implicit assumption in here that colors are full opacity
         float fraction = fragCoord.x / resolution.x;
         
-        vec2 uv = fragCoord / resolution.xy;
-        
-        // Create a 45-degree angle
-        float angle = radians(45.0);
-        vec2 direction = vec2(cos(angle), sin(angle));
-        
-        // Calculate the gradient
-        float gradient = dot(uv, direction);
-        
         // Convert start and end colors to linear SRGB
         vec3 linearStart = srgbToLinearSrgb(startColor.xyz);
         vec3 linearEnd = srgbToLinearSrgb(endColor.xyz);
@@ -152,7 +144,8 @@ private fun ShaderGradientPreview() {
         ) {
             Surface {
                 Column(
-                    Modifier.fillMaxSize()
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     val startColor = PokemonTypesTheme.colorScheme.surfaceVariant
                     val endColor = PokemonTypesTheme.colorScheme.surface
@@ -190,10 +183,8 @@ private fun ShaderGradientPreview() {
                             .fillMaxWidth()
                             .weight(1f)
                             .background(
-                                brush = Brush.linearGradient(
+                                brush = Brush.horizontalGradient(
                                     colors = listOf(startColor, endColor),
-                                    start = Offset.Zero,
-                                    end = Offset.Infinite
                                 )
                             )
                     ) { }
