@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.pokedex
 
 import android.os.Build
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExitTransition
@@ -71,6 +72,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -379,7 +381,14 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                     ) {
                         Icon(
                             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
+                            contentDescription = stringResource(
+                                R.string.favoritesActionContentDescription,
+                                if (isFavorite) {
+                                    stringResource(R.string.removeActionContentDescription)
+                                } else {
+                                    stringResource(R.string.addActionContentDescription)
+                                }
+                            )
                         )
                     }
                 },
@@ -389,11 +398,11 @@ fun AnimatedContentScope.PokemonDetailsScreen(
     }
 }
 
-private enum class Sections(val title: String) {
-    About("About"),
-    BaseStats("Base stats"),
-    Evolution("Evolution"),
-    Moves("Moves")
+private enum class Sections(@StringRes val title: Int) {
+    About(R.string.aboutLabel),
+    BaseStats(R.string.baseStatsLabel),
+    Evolution(R.string.evolutionLabel),
+    Moves(R.string.movesLabel)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -438,7 +447,7 @@ private fun CardContent(
                     onClick = { section = Sections.entries.toTypedArray()[index] },
                 ) {
                     Text(
-                        text = text,
+                        text = stringResource(text),
                         fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
                         modifier = Modifier.padding(vertical = 20.dp)
                     )

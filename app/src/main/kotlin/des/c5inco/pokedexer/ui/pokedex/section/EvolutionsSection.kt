@@ -1,7 +1,6 @@
 package des.c5inco.pokedexer.ui.pokedex.section
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,9 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.model.EvolutionTrigger
@@ -45,7 +46,7 @@ fun EvolutionSection(
     Column(modifier) {
         if (evolutions.size > 1) {
             Text(
-                "Evolution chain",
+                text = stringResource(R.string.evolutionChainLabel),
                 style = MaterialTheme.typography.titleMedium,
             )
 
@@ -104,7 +105,7 @@ fun EvolutionSection(
                     HorizontalDivider()
             }
         } else {
-            Text(text = "No evolutions found")
+            Text(text = stringResource(R.string.evolutionsEmptyText))
         }
     }
 }

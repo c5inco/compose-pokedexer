@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
@@ -103,7 +105,7 @@ fun MainAppBar(
                     modifier = Modifier.padding(horizontal = 32.dp)
                 ) {
                     Text(
-                        text = "What Pokémon\nare you looking for?",
+                        text = stringResource(R.string.homeTitle),
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.padding(
                             top = 64.dp, bottom = 32.dp
@@ -182,7 +184,7 @@ private fun AnimatedContentScope.SearchResults(
         if (pokemonResults.isNotEmpty()) {
             Column {
                 Text(
-                    text = "Pokemon (${pokemonResults.size})",
+                    text = "${stringResource(R.string.pokemonLabel)} ${pokemonResults.size})",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )
@@ -212,7 +214,7 @@ private fun AnimatedContentScope.SearchResults(
         if (movesResults.isNotEmpty()) {
             Column {
                 Text(
-                    text = "Moves (${movesResults.size})",
+                    text = "${stringResource(R.string.movesLabel)} (${movesResults.size})",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )
@@ -249,7 +251,7 @@ private fun AnimatedContentScope.SearchResults(
         if (itemsResults.isNotEmpty()) {
             Column {
                 Text(
-                    text = "Items (${itemsResults.size})",
+                    text = "${stringResource(R.string.itemsLabel)} (${itemsResults.size})",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )

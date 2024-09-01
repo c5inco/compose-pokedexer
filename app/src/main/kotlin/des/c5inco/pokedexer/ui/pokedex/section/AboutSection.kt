@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,12 +52,12 @@ fun AboutSection(
                     .padding(16.dp)
             ) {
                 Column(Modifier.weight(1f)) {
-                    Label(text = "Height")
+                    Label(text = stringResource(R.string.heightLabel))
                     Spacer(Modifier.height(12.dp))
                     Text("${pokemon.height}m")
                 }
                 Column(Modifier.weight(1f)) {
-                    Label(text = "Weight")
+                    Label(text = stringResource(R.string.weightLabel))
                     Spacer(Modifier.height(12.dp))
                     Text("${pokemon.weight}kg")
                 }
@@ -78,7 +79,7 @@ private fun AbilitiesDetails(
         modifier = modifier,
     ) {
         Text(
-            "Abilities",
+            text = stringResource(R.string.abilitiesLabel),
             style = MaterialTheme.typography.titleMedium
         )
         Spacer(Modifier.height(16.dp))
@@ -98,7 +99,7 @@ private fun AbilitiesDetails(
                     ) {
                         if (it.isHidden) {
                             Text(
-                                text = "Hidden".uppercase(),
+                                text = stringResource(R.string.hiddenLabel).uppercase(),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.primary
                             )
@@ -121,13 +122,13 @@ private fun BreedingDetails(
 ) {
     Column(modifier) {
         Text(
-            "Breeding",
+            text = stringResource(R.string.breedingLabel),
             style = MaterialTheme.typography.titleMedium,
         )
         Spacer(Modifier.height(24.dp))
         Row(Modifier.fillMaxWidth()) {
             Label(
-                text = "Gender",
+                text = stringResource(R.string.genderLabel),
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 12.dp)
@@ -157,7 +158,7 @@ private fun BreedingDetails(
                 }
             } else {
                 Text(
-                    "Genderless",
+                    text = stringResource(R.string.genderlessLabel),
                     modifier = Modifier.weight(2.2f)
                 )
             }
@@ -165,7 +166,7 @@ private fun BreedingDetails(
         Spacer(Modifier.height(18.dp))
         Row(Modifier.fillMaxWidth()) {
             Label(
-                text = "Egg Groups",
+                text = stringResource(R.string.eggGroupsLabel),
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 12.dp)
@@ -178,7 +179,7 @@ private fun BreedingDetails(
         Spacer(Modifier.height(18.dp))
         Row(Modifier.fillMaxWidth()) {
             Label(
-                text = "Egg Cycles",
+                text = stringResource(R.string.eggCyclesLabel),
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 12.dp)

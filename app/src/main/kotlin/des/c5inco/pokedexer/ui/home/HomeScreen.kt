@@ -26,7 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
 import des.c5inco.pokedexer.ui.home.appbar.SearchResult
 import des.c5inco.pokedexer.ui.home.appbar.elements.MenuItem
@@ -142,21 +144,13 @@ fun HomeScreen(
     if (openAlertDialog) {
         AlertDialog(
             onDismissRequest = { openAlertDialog = false },
-            title = {
-                Text(text = "\uD83D\uDEA7 Feature WIP")
-            },
-            text = {
-                Text(
-                    "This area is under construction!"
-                )
-            },
+            title = { Text(text = stringResource(R.string.featureInProgressTitle)) },
+            text = { Text(stringResource(R.string.featureInProgressMessage)) },
             confirmButton = {
                 TextButton(
-                    onClick = {
-                        openAlertDialog = false
-                    }
+                    onClick = { openAlertDialog = false }
                 ) {
-                    Text("Dismiss")
+                    Text(stringResource(R.string.dismissButtonText))
                 }
             },
         )
@@ -169,9 +163,7 @@ fun HomeScreenPreview() {
     AppTheme {
         HomeScreen(
             searchText = TextFieldState(),
-            searchResponse = SearchResponse(
-                currentText = "pikachu"
-            )
+            searchResponse = SearchResponse()
         )
     }
 }

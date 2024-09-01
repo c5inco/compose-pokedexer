@@ -35,10 +35,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.ui.common.CategoryIcon
@@ -74,12 +76,12 @@ fun MovesListScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
-                title = { Text("Moves",) },
+                title = { Text(stringResource(R.string.movesLabel)) },
                 navigationIcon =  {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.backActionContentDescription)
                         )
                     }
                 },
@@ -127,28 +129,28 @@ private fun MovesList(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Name",
+                        text = stringResource(R.string.nameTableHeader),
                         modifier = Modifier.weight(1f),
                     )
                     Box(
                         Modifier.requiredWidth(75.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Type")
+                        Text(stringResource(R.string.typeTableHeader))
                     }
                     Box(
                         Modifier.requiredWidth(48.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Cat")
+                        Text(stringResource(R.string.categoryTableHeader))
                     }
                     Text(
-                        text = "Pwr",
+                        text = stringResource(R.string.powerTableHeader),
                         textAlign = TextAlign.End,
                         modifier = Modifier.requiredWidth(40.dp)
                     )
                     Text(
-                        text = "Acc",
+                        text = stringResource(R.string.accuracyTableHeader),
                         textAlign = TextAlign.End,
                         modifier = Modifier.requiredWidth(40.dp)
                     )

@@ -23,9 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.ui.common.CategoryIcon
 import des.c5inco.pokedexer.ui.common.TypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
@@ -59,33 +61,33 @@ fun MovesSection(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Lvl",
+                        text = stringResource(R.string.levelTableHeader),
                         textAlign = TextAlign.End,
                         modifier = Modifier
                             .requiredWidth(40.dp)
                             .padding(end = 12.dp)
                     )
                     Text(
-                        text = "Name",
+                        text = stringResource(R.string.nameTableHeader),
                         modifier = Modifier.weight(1f),
                     )
                     Text(
-                        text = "Type",
+                        text = stringResource(R.string.typeTableHeader),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.requiredWidth(75.dp)
                     )
                     Text(
-                        "Cat",
+                        text = stringResource(R.string.categoryTableHeader),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.requiredWidth(48.dp)
                     )
                     Text(
-                        text = "Pwr",
+                        text = stringResource(R.string.powerTableHeader),
                         textAlign = TextAlign.End,
                         modifier = Modifier.requiredWidth(40.dp)
                     )
                     Text(
-                        text = "Acc",
+                        text = stringResource(R.string.accuracyTableHeader),
                         textAlign = TextAlign.End,
                         modifier = Modifier.requiredWidth(40.dp)
                     )
