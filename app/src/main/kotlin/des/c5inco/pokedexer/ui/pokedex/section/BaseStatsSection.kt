@@ -99,6 +99,7 @@ fun BaseStatsSection(
                 LinearProgressIndicator(
                     progress = { statValue.value },
                     color = indicatorColor,
+                    drawStopIndicator = {},
                     modifier = Modifier
                         .clip(RoundedCornerShape(100))
                         .weight(2.5f)
