@@ -2,7 +2,7 @@
 activityCompose = "1.9.2"
 androidGradlePlugin = "8.6.0"
 apollo = "3.7.1"
-composeBom = "2024.09.00"
+composeBom = "2024.09.01"
 coreKtx = "1.13.1"
 espressoCore = "3.6.1"
 uiAutomator = "2.3.0"
@@ -71,4 +71,3 @@ kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKsp" }
 apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
