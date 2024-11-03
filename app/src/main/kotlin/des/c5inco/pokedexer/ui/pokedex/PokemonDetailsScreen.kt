@@ -308,10 +308,12 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                     Header(pokemon = targetPokemon)
                 }
 
-                val nestedScrollConnection = consumeSwipeNestedScrollConnection(
-                    state = anchorDraggableState,
-                    orientation = Orientation.Vertical
-                )
+                val nestedScrollConnection = remember((anchorDraggableState)) {
+                    consumeSwipeNestedScrollConnection(
+                        state = anchorDraggableState,
+                        orientation = Orientation.Vertical
+                    )
+                }
 
                 Surface(
                     modifier = Modifier
@@ -320,7 +322,6 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                             exit = ExitTransition.None
                         )
                         .align(Alignment.TopCenter)
-                        .nestedScroll(nestedScrollConnection)
                         .offset {
                             IntOffset(
                                 x = 0,
@@ -329,6 +330,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                                     .roundToInt()
                             )
                         }
+                        .nestedScroll(nestedScrollConnection)
                         .anchoredDraggable(anchorDraggableState, Orientation.Vertical),
                     shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
                 ) {
