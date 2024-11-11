@@ -43,7 +43,7 @@ fun EvolutionSection(
     modifier: Modifier = Modifier,
     evolutions: List<PokemonDetailsEvolutions> = listOf(),
 ) {
-    Column(modifier) {
+    Column(modifier.padding(24.dp)) {
         if (evolutions.size > 1) {
             Text(
                 text = stringResource(R.string.evolutionChainLabel),

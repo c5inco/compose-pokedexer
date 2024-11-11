@@ -44,6 +44,7 @@ data class Stat(
 
 @Composable
 fun BaseStatsSection(
+    modifier: Modifier = Modifier,
     pokemon: Pokemon
 ) {
     val stats = listOf(
@@ -55,7 +56,10 @@ fun BaseStatsSection(
         Stat(R.string.speedStatLabel, pokemon.speed),
     )
 
-    Column(Modifier.fillMaxWidth()) {
+    Column(modifier
+        .padding(24.dp)
+        .fillMaxWidth()
+    ) {
         stats.forEachIndexed { idx, stat ->
             val statValue = remember { Animatable(0f) }
 

@@ -34,12 +34,15 @@ import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
 fun AboutSection(
+    modifier: Modifier = Modifier,
     pokemon: Pokemon,
     abilities: List<PokemonDetailsAbilities>
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(28.dp),
-        modifier = Modifier.verticalScroll(rememberScrollState())
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp)
     ) {
         Text(
             text = pokemon.description,

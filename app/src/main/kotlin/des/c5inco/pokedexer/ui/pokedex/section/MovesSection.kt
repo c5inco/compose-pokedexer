@@ -43,6 +43,9 @@ fun MovesSection(
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(
+            top = 24.dp,
+            start = 24.dp,
+            end = 24.dp,
             bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 60.dp
         )
     ) {
