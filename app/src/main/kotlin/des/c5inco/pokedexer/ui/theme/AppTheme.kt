@@ -92,7 +92,9 @@ fun mapDynamicPokemonColorScheme(
             primary = colorScheme.primaryContainer.darken(0.4f),
             surface = colorScheme.primaryContainer,
             onSurface = colorScheme.onSurface,
-            surfaceVariant = colorScheme.onPrimary
+            surfaceVariant = colorScheme.onPrimary,
+            secondary = colorScheme.secondary,
+            tertiary = colorScheme.secondary,
         )
     } else {
         PokemonTypeColorScheme(
@@ -103,7 +105,9 @@ fun mapDynamicPokemonColorScheme(
             } else {
                 colorScheme.onSecondaryContainer
             },
-            surfaceVariant = seedColor.lighten(0.7f)
+            surfaceVariant = seedColor.lighten(0.7f),
+            secondary = colorScheme.primary,
+            tertiary = colorScheme.secondary,
         )
     }
 }

@@ -4,6 +4,7 @@ import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.R
@@ -34,15 +36,15 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 sealed class MenuItem(
-    val label: String,
+    @StringRes val label: Int,
     val typeColor: Type
 ) {
-    object Pokedex : MenuItem("Pokedex", Type.Grass)
-    object Moves : MenuItem("Moves", Type.Fire)
-    object Abilities : MenuItem("Abilities", Type.Water)
-    object Items : MenuItem("Items", Type.Electric)
-    object Locations : MenuItem("Locations", Type.Dragon)
-    object TypeCharts : MenuItem("Type charts", Type.Water)
+    object Pokedex : MenuItem(R.string.pokedexLabel, Type.Grass)
+    object Moves : MenuItem(R.string.movesLabel, Type.Fire)
+    object Abilities : MenuItem(R.string.abilitiesLabel, Type.Water)
+    object Items : MenuItem(R.string.itemsLabel, Type.Electric)
+    object Locations : MenuItem(R.string.locationsLabel, Type.Dragon)
+    object TypeCharts : MenuItem(R.string.typeChartsLabel, Type.Water)
 }
 
 @Composable
@@ -112,12 +114,12 @@ fun MenuItemButton(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(start = 16.dp, bottom = 16.dp),
-                    text = item.label,
+                    text = stringResource(id = item.label),
                     color = Color.White
                 )
                 Icon(
                     painter = painterResource(id = mapMenuItemToIcon(item)),
-                    contentDescription = "Pokedex",
+                    contentDescription = stringResource(R.string.pokemonLabel),
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = 16.dp)
@@ -151,9 +153,11 @@ private fun Modifier.customShadow(
             .height(12.dp)
             .fillMaxWidth(0.8f)
             .graphicsLayer {
-                renderEffect = RenderEffect.createBlurEffect(
-                    40f,40f, Shader.TileMode.DECAL
-                ).asComposeRenderEffect()
+                renderEffect = RenderEffect
+                    .createBlurEffect(
+                        40f, 40f, Shader.TileMode.DECAL
+                    )
+                    .asComposeRenderEffect()
             }
             .background(color, RoundedCornerShape(100))
     )

@@ -1,5 +1,7 @@
 package des.c5inco.pokedexer.ui.pokedex
 
+import android.os.Build
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExitTransition
@@ -20,7 +22,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
@@ -39,7 +40,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -72,6 +72,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -86,13 +87,13 @@ import des.c5inco.pokedexer.data.pokemon.mapSampleAbilitiesToDetailsList
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.data.pokemon.mapSampleMovesToDetailsList
 import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.ui.common.ConsumeSwipeNestedScrollConnection
 import des.c5inco.pokedexer.ui.common.Emphasis
 import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
+import des.c5inco.pokedexer.ui.common.consumeSwipeNestedScrollConnection
 import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
@@ -178,8 +179,6 @@ fun AnimatedContentScope.PokemonDetailsScreen(
         }
     }
 
-    val nestedScrollState = rememberScrollState()
-
     val scaleTarget by remember {
         derivedStateOf {
             if (anchorDraggableProgress < 0.7f) {
@@ -238,17 +237,22 @@ fun AnimatedContentScope.PokemonDetailsScreen(
         }
     }
 
-    val pokemonTypeColor by animateColorAsState(
-        targetValue = PokemonTypesTheme.colorScheme.surface,
-        animationSpec = tween(durationMillis = 500),
-        label = "pokemonTypeSurfaceColor"
-    )
+    val pokemonTypeSurfaceColor = PokemonTypesTheme.colorScheme.surface
 
     Surface(
         modifier = Modifier
-            .drawBehind {
-                drawRect(pokemonTypeColor)
-            },
+            .then(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Modifier.shaderGradientBackground(
+                        startColor = PokemonTypesTheme.colorScheme.surfaceVariant,
+                        endColor = pokemonTypeSurfaceColor
+                    )
+                } else {
+                    Modifier.drawBehind {
+                        drawRect(pokemonTypeSurfaceColor)
+                    }
+                }
+            ),
         color = Color.Transparent
     ) {
         Box(Modifier.fillMaxSize()) {
@@ -304,11 +308,12 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                     Header(pokemon = targetPokemon)
                 }
 
-                val nestedScrollConnection = ConsumeSwipeNestedScrollConnection(
-                    state = anchorDraggableState,
-                    nestedScrollState = nestedScrollState,
-                    orientation = Orientation.Vertical
-                )
+                val nestedScrollConnection = remember((anchorDraggableState)) {
+                    consumeSwipeNestedScrollConnection(
+                        state = anchorDraggableState,
+                        orientation = Orientation.Vertical
+                    )
+                }
 
                 Surface(
                     modifier = Modifier
@@ -317,7 +322,6 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                             exit = ExitTransition.None
                         )
                         .align(Alignment.TopCenter)
-                        .nestedScroll(nestedScrollConnection)
                         .offset {
                             IntOffset(
                                 x = 0,
@@ -326,6 +330,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                                     .roundToInt()
                             )
                         }
+                        .nestedScroll(nestedScrollConnection)
                         .anchoredDraggable(anchorDraggableState, Orientation.Vertical),
                     shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
                 ) {
@@ -334,9 +339,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                         evolutions = evolutions,
                         moves = moves,
                         abilities = abilities,
-                        nestedScrollState = nestedScrollState,
-                        modifier = Modifier
-                            .offset { IntOffset(x = 0, y = cardPaddingTarget) },
+                        modifier = Modifier.offset { IntOffset(x = 0, y = cardPaddingTarget) },
                     )
                 }
 
@@ -380,7 +383,14 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                     ) {
                         Icon(
                             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
+                            contentDescription = stringResource(
+                                R.string.favoritesActionContentDescription,
+                                if (isFavorite) {
+                                    stringResource(R.string.removeActionContentDescription)
+                                } else {
+                                    stringResource(R.string.addActionContentDescription)
+                                }
+                            )
                         )
                     }
                 },
@@ -390,22 +400,21 @@ fun AnimatedContentScope.PokemonDetailsScreen(
     }
 }
 
-private enum class Sections(val title: String) {
-    About("About"),
-    BaseStats("Base stats"),
-    Evolution("Evolution"),
-    Moves("Moves")
+private enum class Sections(@StringRes val title: Int) {
+    About(R.string.aboutLabel),
+    BaseStats(R.string.baseStatsLabel),
+    Evolution(R.string.evolutionLabel),
+    Moves(R.string.movesLabel)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CardContent(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>,
     moves: List<PokemonDetailsMoves>,
     abilities: List<PokemonDetailsAbilities>,
-    nestedScrollState: ScrollState
 ) {
     val sectionTitles = Sections.entries.map { it.title }
     var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
@@ -440,7 +449,7 @@ private fun CardContent(
                     onClick = { section = Sections.entries.toTypedArray()[index] },
                 ) {
                     Text(
-                        text = text,
+                        text = stringResource(text),
                         fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
                         modifier = Modifier.padding(vertical = 20.dp)
                     )
@@ -448,17 +457,10 @@ private fun CardContent(
             }
         }
 
-        Column(
-            modifier = Modifier.padding(24.dp)
-        ) {
+        Box {
             when (section) {
-                Sections.About ->
-                    AboutSection(
-                        pokemon = pokemon,
-                        abilities = abilities,
-                        scrollState = nestedScrollState,
-                    )
-                Sections.BaseStats -> BaseStatsSection(pokemon)
+                Sections.About -> AboutSection(pokemon = pokemon, abilities = abilities)
+                Sections.BaseStats -> BaseStatsSection(pokemon = pokemon)
                 Sections.Evolution -> EvolutionSection(evolutions = evolutions)
                 else -> MovesSection(moves = moves)
             }

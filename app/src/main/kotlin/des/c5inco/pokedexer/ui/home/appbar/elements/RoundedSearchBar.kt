@@ -25,9 +25,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
@@ -72,7 +74,7 @@ fun RoundedSearchBar(
 
                             if (searchText.text.isEmpty()) {
                                 Text(
-                                    text = "Search Pokemon, Move, Item, etc",
+                                    text = stringResource(R.string.searchPlaceholderText),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.outline,
                                     modifier = Modifier.padding(end = 12.dp),
@@ -90,7 +92,7 @@ fun RoundedSearchBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Clear,
-                        contentDescription = "Clear Search",
+                        contentDescription = stringResource(R.string.clearSearchContentDescription),
                     )
                 }
             }

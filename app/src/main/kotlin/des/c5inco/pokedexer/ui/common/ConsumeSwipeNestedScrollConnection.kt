@@ -1,32 +1,23 @@
 package des.c5inco.pokedexer.ui.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.unit.Velocity
-import des.c5inco.pokedexer.ui.pokedex.DragValue
 
 // Copied from BackdropScaffold internal implementation
 @OptIn(ExperimentalFoundationApi::class)
-class ConsumeSwipeNestedScrollConnection(
-    val state: AnchoredDraggableState<*>,
-    val nestedScrollState: ScrollState,
-    val orientation: Orientation
-): NestedScrollConnection {
+fun consumeSwipeNestedScrollConnection(
+    state: AnchoredDraggableState<*>,
+    orientation: Orientation
+): NestedScrollConnection = object : NestedScrollConnection {
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
         val delta = available.toFloat()
-        println("onPreScroll: ${state.currentValue}, $delta")
-
         return if (delta < 0 && source == NestedScrollSource.UserInput) {
-            if (state.currentValue == DragValue.Start) {
-               state.dispatchRawDelta(delta).toOffset()
-            } else {
-                nestedScrollState.dispatchRawDelta(delta).toOffset()
-            }
+            state.dispatchRawDelta(delta).toOffset()
         } else {
             Offset.Zero
         }

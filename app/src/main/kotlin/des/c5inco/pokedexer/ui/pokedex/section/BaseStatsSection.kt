@@ -1,5 +1,6 @@
 package des.c5inco.pokedexer.ui.pokedex.section
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
@@ -20,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Label
@@ -31,7 +34,7 @@ import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlinx.coroutines.delay
 
 data class Stat(
-    val label: String,
+    @StringRes val label: Int,
     val value: Int?,
     val max: Int = 200
 ) {
@@ -41,18 +44,22 @@ data class Stat(
 
 @Composable
 fun BaseStatsSection(
+    modifier: Modifier = Modifier,
     pokemon: Pokemon
 ) {
     val stats = listOf(
-        Stat("HP", pokemon.hp),
-        Stat("Attack", pokemon.attack),
-        Stat("Defense", pokemon.defense),
-        Stat("Sp. Atk", pokemon.specialAttack),
-        Stat("Sp. Def", pokemon.specialDefense),
-        Stat("Speed", pokemon.speed),
+        Stat(R.string.hitPointsStatLabel, pokemon.hp),
+        Stat(R.string.attackStatLabel, pokemon.attack),
+        Stat(R.string.defenseStatLabel, pokemon.defense),
+        Stat(R.string.specialAttackStatLabel, pokemon.specialAttack),
+        Stat(R.string.specialDefenseStatLabel, pokemon.specialDefense),
+        Stat(R.string.speedStatLabel, pokemon.speed),
     )
 
-    Column(Modifier.fillMaxWidth()) {
+    Column(modifier
+        .padding(24.dp)
+        .fillMaxWidth()
+    ) {
         stats.forEachIndexed { idx, stat ->
             val statValue = remember { Animatable(0f) }
 
@@ -74,7 +81,7 @@ fun BaseStatsSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Label(
-                    text = stat.label,
+                    text = stringResource(stat.label),
                     modifier = Modifier
                         .weight(1f)
                         .graphicsLayer { alpha = 0.7f }
@@ -96,6 +103,7 @@ fun BaseStatsSection(
                 LinearProgressIndicator(
                     progress = { statValue.value },
                     color = indicatorColor,
+                    drawStopIndicator = {},
                     modifier = Modifier
                         .clip(RoundedCornerShape(100))
                         .weight(2.5f)
