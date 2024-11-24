@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -70,6 +71,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -321,14 +323,14 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                             enter = Material3Transitions.SharedYAxisEnterTransition(density),
                             exit = ExitTransition.None
                         )
-                        .align(Alignment.TopCenter)
-                        .offset {
-                            IntOffset(
-                                x = 0,
-                                y = anchorDraggableState
-                                    .requireOffset()
-                                    .roundToInt()
-                            )
+                        .align(Alignment.BottomCenter)
+                        .layout { measurable, constraints ->
+                            val placeable = measurable.measure(constraints.copy(
+                                maxHeight = constraints.maxHeight - anchorDraggableState.requireOffset().roundToInt()
+                            ))
+                            layout(placeable.width, placeable.height) {
+                                placeable.placeRelative(0, 0)
+                            }
                         }
                         .nestedScroll(nestedScrollConnection)
                         .anchoredDraggable(anchorDraggableState, Orientation.Vertical),
@@ -339,7 +341,9 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                         evolutions = evolutions,
                         moves = moves,
                         abilities = abilities,
-                        modifier = Modifier.offset { IntOffset(x = 0, y = cardPaddingTarget) },
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .offset { IntOffset(x = 0, y = cardPaddingTarget) },
                     )
                 }
 
@@ -420,7 +424,7 @@ private fun CardContent(
     var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
     ) {
         val tabIndicatorColor by animateColorAsState(
             targetValue = PokemonTypesTheme.colorScheme.primary,
