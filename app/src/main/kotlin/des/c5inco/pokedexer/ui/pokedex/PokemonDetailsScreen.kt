@@ -457,12 +457,10 @@ private fun CardContent(
             }
         }
 
-        Box(
-            modifier = Modifier.padding(24.dp)
-        ) {
+        Box {
             when (section) {
-                Sections.About -> AboutSection(pokemon, abilities)
-                Sections.BaseStats -> BaseStatsSection(pokemon)
+                Sections.About -> AboutSection(pokemon = pokemon, abilities = abilities)
+                Sections.BaseStats -> BaseStatsSection(pokemon = pokemon)
                 Sections.Evolution -> EvolutionSection(evolutions = evolutions)
                 else -> MovesSection(moves = moves)
             }
