@@ -10,6 +10,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -170,9 +171,9 @@ fun AnimatedContentScope.PokemonDetailsScreen(
             initialValue = DragValue.Start,
             anchors = draggableAnchors,
             positionalThreshold = { distance -> distance * 0.5f },
-            velocityThreshold = { with(density) { 100.dp.toPx() } },
-            snapAnimationSpec = spring(),
-            decayAnimationSpec = defaultDecayAnimationSpec
+            velocityThreshold = { with(density) { 244.dp.toPx() * 0.5f } },
+            snapAnimationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessMediumLow),
+            decayAnimationSpec = defaultDecayAnimationSpec,
         )
     }
     val anchorDraggableProgress by remember {
