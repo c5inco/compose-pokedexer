@@ -2,6 +2,7 @@ package des.c5inco.pokedexer.data.moves
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import des.c5inco.pokedexer.PokemonOriginalMovesQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
@@ -48,7 +49,7 @@ class RemoteMovesRepository @Inject constructor(
                     Result.Success(movesFromServer)
                 } else {
                     Result.Error(
-                        ApolloException("The response has errors: ${response.errors}")
+                        DefaultApolloException("The response has errors: ${response.errors}")
                     )
                 }
             }

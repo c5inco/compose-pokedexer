@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace "des.c5inco.pokedexer"
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "des.c5inco.pokedexer"
@@ -60,7 +60,9 @@ android {
         }
     }
     apollo {
-        packageName.set("des.c5inco.pokedexer")
+        service("service") {
+            packageName.set("des.c5inco.pokedexer")
+        }
     }
 }
 

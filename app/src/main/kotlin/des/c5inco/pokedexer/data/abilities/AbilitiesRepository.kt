@@ -2,6 +2,7 @@ package des.c5inco.pokedexer.data.abilities
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import des.c5inco.pokedexer.AbilitiesQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
@@ -50,7 +51,7 @@ class AbilitiesRepositoryImpl @Inject constructor(
                     Result.Success(abilitiesFromServer)
                 } else {
                     Result.Error(
-                        ApolloException("The response has errors: ${response.errors}")
+                        DefaultApolloException("The response has errors: ${response.errors}", null)
                     )
                 }
             }

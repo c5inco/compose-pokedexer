@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.pokedex
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -172,7 +173,7 @@ class PokemonDetailsViewModel @AssistedInject constructor(
 @Composable
 fun pokemonDetailsViewModel(pokemon: Pokemon): PokemonDetailsViewModel {
     val factory = EntryPointAccessors.fromActivity(
-        LocalContext.current as Activity,
+        LocalActivity.current!!,
         ViewModelFactoryProvider::class.java
     ).pokemonDetailsViewModelFactory()
 

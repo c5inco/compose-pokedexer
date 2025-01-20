@@ -2,6 +2,7 @@ package des.c5inco.pokedexer.data.pokemon
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import des.c5inco.pokedexer.PokemonOriginalQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
@@ -66,7 +67,7 @@ class RemotePokemonRepository @Inject constructor(
                     Result.Success(pokemonFromServer)
                 } else {
                     Result.Error(
-                        ApolloException("The response has errors: ${response.errors}")
+                        DefaultApolloException("The response has errors: ${response.errors}")
                     )
                 }
             }

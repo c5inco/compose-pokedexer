@@ -2,6 +2,7 @@ package des.c5inco.pokedexer.data.items
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import des.c5inco.pokedexer.ItemsQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
@@ -51,7 +52,7 @@ class ItemsRepositoryImpl @Inject constructor(
                     Result.Success(itemsFromServer)
                 } else {
                     Result.Error(
-                        ApolloException("The response has errors: ${response.errors}")
+                        DefaultApolloException("The response has errors: ${response.errors}")
                     )
                 }
             }
