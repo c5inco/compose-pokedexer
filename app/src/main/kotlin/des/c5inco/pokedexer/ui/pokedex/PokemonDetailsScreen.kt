@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.ui.pokedex
 
-import android.os.Build
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
@@ -67,8 +66,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -96,8 +95,10 @@ import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
+import des.c5inco.pokedexer.ui.common.calculateAnalogousColors
 import des.c5inco.pokedexer.ui.common.consumeSwipeNestedScrollConnection
 import des.c5inco.pokedexer.ui.common.formatId
+import des.c5inco.pokedexer.ui.common.meshGradient
 import des.c5inco.pokedexer.ui.pokedex.section.AboutSection
 import des.c5inco.pokedexer.ui.pokedex.section.BaseStatsSection
 import des.c5inco.pokedexer.ui.pokedex.section.EvolutionSection
@@ -241,21 +242,35 @@ fun AnimatedContentScope.PokemonDetailsScreen(
     }
 
     val pokemonTypeSurfaceColor = PokemonTypesTheme.colorScheme.surface
+    val analogousSurfaceColor = remember(pokemonTypeSurfaceColor) { calculateAnalogousColors(pokemonTypeSurfaceColor)[1] }
+
+    val colors = listOf(
+        listOf(
+            Offset(0f, 0f) to PokemonTypesTheme.colorScheme.surface,
+            Offset(.33f, 0f) to PokemonTypesTheme.colorScheme.surface,
+            Offset(.66f, 0f) to PokemonTypesTheme.colorScheme.surface,
+            Offset(1f, 0f) to PokemonTypesTheme.colorScheme.surface,
+        ),
+        listOf(
+            Offset(0f, .6f) to analogousSurfaceColor,
+            Offset(.25f, .4f) to analogousSurfaceColor,
+            Offset(.8f, .6f) to analogousSurfaceColor,
+            Offset(1f, .5f) to analogousSurfaceColor,
+        ),
+        listOf(
+            Offset(0f, 1f) to PokemonTypesTheme.colorScheme.primary,
+            Offset(.33f, 1f) to PokemonTypesTheme.colorScheme.primary,
+            Offset(.67f, 1f) to PokemonTypesTheme.colorScheme.primary,
+            Offset(1f, 1f) to PokemonTypesTheme.colorScheme.primary,
+        ),
+    )
 
     Surface(
-        modifier = Modifier
-            .then(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    Modifier.shaderGradientBackground(
-                        startColor = PokemonTypesTheme.colorScheme.surfaceVariant,
-                        endColor = pokemonTypeSurfaceColor
-                    )
-                } else {
-                    Modifier.drawBehind {
-                        drawRect(pokemonTypeSurfaceColor)
-                    }
-                }
-            ),
+        modifier = Modifier.meshGradient(
+            points = colors,
+            resolutionX = 32,
+            resolutionY = 32,
+        ),
         color = Color.Transparent
     ) {
         Box(Modifier.fillMaxSize()) {
@@ -277,7 +292,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                     .padding(top = 140.dp)
                     .size(240.dp)
                     .graphicsLayer { alpha = textAlphaTarget },
-                tint = PokemonTypesTheme.colorScheme.surfaceVariant
+                tint = PokemonTypesTheme.colorScheme.onSurface.copy(alpha = 0.2f)
             )
             Box(
                 Modifier
@@ -355,7 +370,8 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                         .graphicsLayer { alpha = imageAlphaTarget },
                     loading = loading,
                     pokemonList = pokemonSet,
-                    backgroundColor = PokemonTypesTheme.colorScheme.surface,
+                    foregroundColor = PokemonTypesTheme.colorScheme.onSurface,
+                    backgroundColor = analogousSurfaceColor,
                     enabled = anchorDraggableState.currentValue == DragValue.Start,
                     pagerState = pagerState,
                 ) { it, progress, tint ->
