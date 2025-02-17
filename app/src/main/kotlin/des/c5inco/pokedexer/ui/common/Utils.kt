@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.ColorUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -39,6 +40,31 @@ fun Canvas.drawPathWithPaint(
     path: Path,
     paint: Paint = Paint()
 ) = drawPath(path, paint)
+
+fun calculateAnalogousColors(baseColor: Color, angle: Float = 30f): List<Color> {
+    // Convert the base color to HSL
+    val hsl = FloatArray(3)
+    ColorUtils.RGBToHSL(
+        (baseColor.red * 255).toInt(),
+        (baseColor.green * 255).toInt(),
+        (baseColor.blue * 255).toInt(),
+        hsl
+    )
+
+    // Calculate the two analogous hues
+    val hue1 = (hsl[0] + angle) % 360
+    val hue2 = (hsl[0] - angle) % 360
+    val analogousHues = listOf(hue1, hue2)
+
+    // Create analogous colors
+    val analogousColors = analogousHues.map { hue ->
+        val newHsl = hsl.copyOf()
+        newHsl[0] = hue
+        Color(ColorUtils.HSLToColor(newHsl))
+    }
+
+    return analogousColors
+}
 
 val infiniteLoopFlow: Flow<Int> = flow {
     while (true) {
