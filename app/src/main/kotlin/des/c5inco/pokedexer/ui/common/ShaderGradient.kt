@@ -1,4 +1,4 @@
-package des.c5inco.pokedexer.ui.pokedex
+package des.c5inco.pokedexer.ui.common
 
 import android.graphics.RuntimeShader
 import android.os.Build
