@@ -3,7 +3,6 @@ package des.c5inco.pokedexer.ui.pokedex
 import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
 import android.os.Build
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -96,12 +95,12 @@ fun PagerPokemonImage(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PokemonPager(
     modifier: Modifier = Modifier,
     loading: Boolean = false,
     pokemonList: List<Pokemon>,
+    foregroundColor: Color = Color.Black,
     backgroundColor: Color,
     enabled: Boolean = true,
     pagerState: PagerState,
@@ -109,7 +108,7 @@ fun PokemonPager(
 ) {
     val foregroundTint = Color(
         ColorUtils.compositeColors(
-            Color.Black.copy(alpha = 0.4f).toArgb(),
+            foregroundColor.copy(alpha = 0.35f).toArgb(),
             backgroundColor.toArgb()
         )
     )
@@ -152,7 +151,6 @@ fun PokemonPager(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun PokemonPagerPreview() {
