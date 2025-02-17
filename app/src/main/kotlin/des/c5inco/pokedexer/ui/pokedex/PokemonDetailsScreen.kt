@@ -246,16 +246,16 @@ fun AnimatedContentScope.PokemonDetailsScreen(
 
     val colors = listOf(
         listOf(
-            Offset(0f, 0f) to PokemonTypesTheme.colorScheme.surface,
-            Offset(.33f, 0f) to PokemonTypesTheme.colorScheme.surface,
-            Offset(.66f, 0f) to PokemonTypesTheme.colorScheme.surface,
-            Offset(1f, 0f) to PokemonTypesTheme.colorScheme.surface,
+            Offset(0f, 0f) to analogousSurfaceColor,
+            Offset(.33f, 0f) to analogousSurfaceColor,
+            Offset(.66f, 0f) to analogousSurfaceColor,
+            Offset(1f, 0f) to analogousSurfaceColor,
         ),
         listOf(
-            Offset(0f, .6f) to analogousSurfaceColor,
-            Offset(.25f, .4f) to analogousSurfaceColor,
-            Offset(.8f, .6f) to analogousSurfaceColor,
-            Offset(1f, .5f) to analogousSurfaceColor,
+            Offset(0f, .6f) to pokemonTypeSurfaceColor,
+            Offset(.25f, .4f) to pokemonTypeSurfaceColor,
+            Offset(.8f, .6f) to pokemonTypeSurfaceColor,
+            Offset(1f, .5f) to pokemonTypeSurfaceColor,
         ),
         listOf(
             Offset(0f, 1f) to PokemonTypesTheme.colorScheme.primary,
@@ -292,7 +292,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                     .padding(top = 140.dp)
                     .size(240.dp)
                     .graphicsLayer { alpha = textAlphaTarget },
-                tint = PokemonTypesTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+                tint = PokemonTypesTheme.colorScheme.onSurface.copy(alpha = 0.15f)
             )
             Box(
                 Modifier
@@ -371,7 +371,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                     loading = loading,
                     pokemonList = pokemonSet,
                     foregroundColor = PokemonTypesTheme.colorScheme.onSurface,
-                    backgroundColor = analogousSurfaceColor,
+                    backgroundColor = pokemonTypeSurfaceColor,
                     enabled = anchorDraggableState.currentValue == DragValue.Start,
                     pagerState = pagerState,
                 ) { it, progress, tint ->

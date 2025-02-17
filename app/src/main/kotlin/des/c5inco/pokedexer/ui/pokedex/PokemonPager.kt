@@ -108,7 +108,7 @@ fun PokemonPager(
 ) {
     val foregroundTint = Color(
         ColorUtils.compositeColors(
-            foregroundColor.copy(alpha = 0.35f).toArgb(),
+            foregroundColor.copy(alpha = 0.25f).toArgb(),
             backgroundColor.toArgb()
         )
     )
