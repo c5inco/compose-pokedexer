@@ -52,6 +52,7 @@ fun calculateAnalogousColors(baseColor: Color, angle: Float = 30f): List<Color> 
     )
 
     // Calculate the two analogous hues
+    // TODO: Expand to five hues
     val hue1 = (hsl[0] + angle) % 360
     val hue2 = (hsl[0] - angle) % 360
     val analogousHues = listOf(hue1, hue2)
