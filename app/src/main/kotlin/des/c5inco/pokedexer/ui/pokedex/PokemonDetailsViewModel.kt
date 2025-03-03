@@ -70,6 +70,8 @@ class PokemonDetailsViewModel @AssistedInject constructor(
     var isFavorite by mutableStateOf(false)
         private set
 
+    var bottomSheetDraggableValue by mutableStateOf(DragValue.Start)
+
     @AssistedFactory
     interface PokemonDetailsViewModelFactory {
         fun create(pokemon: Pokemon): PokemonDetailsViewModel

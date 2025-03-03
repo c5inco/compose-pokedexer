@@ -109,6 +109,7 @@ import des.c5inco.pokedexer.ui.theme.PokemonTypeColorOverlay
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AnimatedContentScope.PokemonDetailsScreenRoute(
     viewModel: PokedexViewModel,
@@ -126,6 +127,10 @@ fun AnimatedContentScope.PokemonDetailsScreenRoute(
             moves = detailsViewModel.moves,
             abilities = detailsViewModel.abilities,
             isFavorite = detailsViewModel.isFavorite,
+            bottomSheetDragValue = detailsViewModel.bottomSheetDraggableValue,
+            onBottomSheetDragValueChange = {
+                detailsViewModel.bottomSheetDraggableValue = it
+            },
             onPage = {
                 detailsViewModel.refresh(it)
             },
@@ -149,6 +154,8 @@ fun AnimatedContentScope.PokemonDetailsScreen(
     moves: List<PokemonDetailsMoves>,
     abilities: List<PokemonDetailsAbilities>,
     isFavorite: Boolean = false,
+    bottomSheetDragValue: DragValue = DragValue.Start,
+    onBottomSheetDragValueChange: (DragValue) -> Unit = {},
     onPage: (Pokemon) -> Unit = {},
     onFavoriteClick: (Int) -> Unit = { _ -> },
     onBackClick: (Int) -> Unit = {},
@@ -167,16 +174,22 @@ fun AnimatedContentScope.PokemonDetailsScreen(
     }
 
     val defaultDecayAnimationSpec = rememberSplineBasedDecay<Float>()
+
     val anchorDraggableState = remember {
         AnchoredDraggableState(
-            initialValue = DragValue.Start,
+            initialValue = bottomSheetDragValue,
             anchors = draggableAnchors,
             positionalThreshold = { distance -> distance * 0.5f },
             velocityThreshold = { with(density) { 244.dp.toPx() * 0.5f } },
             snapAnimationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessMediumLow),
             decayAnimationSpec = defaultDecayAnimationSpec,
+            confirmValueChange = {
+                onBottomSheetDragValueChange(it)
+                true
+            }
         )
     }
+
     val anchorDraggableProgress by remember {
         derivedStateOf {
             anchorDraggableState.progress(DragValue.Start, DragValue.End)
