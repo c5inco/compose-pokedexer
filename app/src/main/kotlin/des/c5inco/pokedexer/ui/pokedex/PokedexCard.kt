@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.pokedex
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +20,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
@@ -33,7 +37,9 @@ import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
+import des.c5inco.pokedexer.ui.common.calculateAnalogousColors
 import des.c5inco.pokedexer.ui.common.formatId
+import des.c5inco.pokedexer.ui.common.meshGradient
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
@@ -45,10 +51,64 @@ fun PokedexCard(
     onPokemonSelected: (Pokemon) -> Unit = {}
 ) {
     PokemonTypesTheme(types = pokemon.typeOfPokemon) {
+        val pokemonTypeSurfaceColor = PokemonTypesTheme.colorScheme.surface
+        val analogousSurfaceColor = remember(pokemonTypeSurfaceColor) { calculateAnalogousColors(pokemonTypeSurfaceColor)[1] }
+
+        val colors = listOf(
+            listOf(
+                Offset(0.0f, 0.0f) to analogousSurfaceColor,
+                Offset(0.24099097f, 0.0f) to analogousSurfaceColor,
+                Offset(0.5358101f, 0.0f) to analogousSurfaceColor,
+                Offset(0.7894143f, 0.0f) to analogousSurfaceColor,
+                Offset(1.0f, 0.0f) to pokemonTypeSurfaceColor,
+            ),
+            listOf(
+                Offset(0.0f, 0.5f) to analogousSurfaceColor,
+                Offset(0.24236615f, 0.6261937f) to pokemonTypeSurfaceColor,
+                Offset(0.5254497f, 0.4176749f) to pokemonTypeSurfaceColor,
+                Offset(0.802476f, 0.6690188f) to analogousSurfaceColor,
+                Offset(1.0f, 0.35517487f) to pokemonTypeSurfaceColor,
+            ),
+            listOf(
+                Offset(0.0f, 1.0f) to pokemonTypeSurfaceColor,
+                Offset(0.23941448f, 1.0f) to pokemonTypeSurfaceColor,
+                Offset(0.5159903f, 1.0f) to pokemonTypeSurfaceColor,
+                Offset(0.7876128f, 1.0f) to pokemonTypeSurfaceColor,
+                Offset(1.0f, 1.0f) to pokemonTypeSurfaceColor,
+            ),
+        )
+
+        // val colors = listOf(
+        //     listOf(
+        //         Offset(0f, 0f) to analogousSurfaceColor,
+        //         Offset(.33f, 0f) to analogousSurfaceColor,
+        //         Offset(.66f, 0f) to analogousSurfaceColor,
+        //         Offset(1f, 0f) to analogousSurfaceColor,
+        //     ),
+        //     listOf(
+        //         Offset(0f, .6f) to pokemonTypeSurfaceColor,
+        //         Offset(.25f, .4f) to pokemonTypeSurfaceColor,
+        //         Offset(.8f, .6f) to pokemonTypeSurfaceColor,
+        //         Offset(1f, .5f) to pokemonTypeSurfaceColor,
+        //     ),
+        //     listOf(
+        //         Offset(0f, 1f) to PokemonTypesTheme.colorScheme.primary,
+        //         Offset(.33f, 1f) to PokemonTypesTheme.colorScheme.primary,
+        //         Offset(.67f, 1f) to PokemonTypesTheme.colorScheme.primary,
+        //         Offset(1f, 1f) to PokemonTypesTheme.colorScheme.primary,
+        //     ),
+        // )
+
         Surface(
-            modifier = modifier,
+            modifier = modifier
+                .clip(MaterialTheme.shapes.large)
+                .meshGradient(
+                    points = colors,
+                    resolutionX = 10,
+                    resolutionY = 10,
+                ),
             shape = MaterialTheme.shapes.large,
-            color = PokemonTypesTheme.colorScheme.surface,
+            color = Color.Transparent,
             contentColor = PokemonTypesTheme.colorScheme.onSurface
         ) {
             Box(
@@ -63,12 +123,13 @@ fun PokedexCard(
                     Spacer(Modifier.height(8.dp))
                     PokemonTypeLabels(types = pokemon.typeOfPokemon, metrics = TypeLabelMetrics.SMALL)
                 }
+                val idAlpha = if (isSystemInDarkTheme()) 0.5f else 0.7f
                 Text(
                     text = formatId(pokemon.id),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     modifier = Modifier
-                        .graphicsLayer { alpha = 0.5f }
+                        .graphicsLayer { alpha = idAlpha }
                         .padding(top = 8.dp, end = 12.dp)
                         .align(Alignment.TopEnd)
                 )
@@ -118,8 +179,10 @@ private fun PokedexCardPreview() {
     AppTheme {
         Surface {
             Column(
-                Modifier.width(200.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+                modifier = Modifier
+                    .width(200.dp)
+                    .padding(12.dp)
             ) {
                 PokedexCard(
                     modifier = Modifier.fillMaxWidth(),
