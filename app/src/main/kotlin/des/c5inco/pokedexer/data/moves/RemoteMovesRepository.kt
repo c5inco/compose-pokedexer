@@ -7,7 +7,6 @@ import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
 import des.c5inco.pokedexer.model.Move
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -53,7 +52,6 @@ class RemoteMovesRepository @Inject constructor(
                 }
             }
         } else {
-            delay(3000)
             println("Moves loaded from database: ${moves.size}")
         }
     }
