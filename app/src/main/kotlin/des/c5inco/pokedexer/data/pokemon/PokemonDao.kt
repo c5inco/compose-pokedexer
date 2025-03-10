@@ -13,6 +13,9 @@ interface PokemonDao {
     @Query("SELECT * FROM pokemon")
     suspend fun getAll(): List<Pokemon>
 
+    @Query("SELECT * FROM pokemon")
+    fun getAllFlow(): Flow<List<Pokemon>>
+
     @Query("SELECT * FROM pokemon WHERE id = :id LIMIT 1")
     suspend fun findById(id: Int): Pokemon?
 

@@ -12,86 +12,74 @@ import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * UI state for the Pokedex screen
- */
-data class PokedexUiState(
-    val pokemon: List<Pokemon> = listOf(),
-    val loading: Boolean = false,
-)
+sealed interface PokedexUiState {
+    data object Loading : PokedexUiState
+    data class Ready(
+        val pokemon: List<Pokemon>,
+        val favorites: List<Pokemon>,
+        val typeFilter: Type?
+    ) : PokedexUiState
+}
 
 @HiltViewModel
 class PokedexViewModel @Inject constructor(
     private val pokemonRepository: PokemonRepository,
     userPreferencesRepository: UserPreferencesRepository,
 ): ViewModel() {
-    var uiState by mutableStateOf(PokedexUiState(loading = true))
-        private set
-    private val pokemonList = mutableStateListOf<Pokemon>()
-
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
     var favorites = mutableStateListOf<Pokemon>()
     var showFavorites by mutableStateOf(false)
-    var typeFilter by mutableStateOf<Type?>(null)
+    private var typeFilters = MutableStateFlow<Type?>(null)
 
-    init {
-        refresh()
-    }
+    val state: StateFlow<PokedexUiState> =
+        combine(
+            pokemonRepository.pokemon(),
+            userPreferencesFlow,
+            typeFilters
+        ) { pokemon, userPreferences, typeFilters ->
+            if (favorites.isNotEmpty()) {
+                favorites.clear()
+            }
 
-    /**
-     * Refresh Pokemon list
-     */
-    fun refresh() {
-        viewModelScope.launch {
-            // TODO: Handle error/exception better
-            when (val result = pokemonRepository.getAllPokemon()) {
+            when (val result = pokemonRepository.getPokemonByIds(userPreferences.favorites)) {
                 is Result.Success -> {
-                    pokemonList.addAll(result.data)
-                    uiState = uiState.copy(
-                        loading = false,
-                        pokemon = pokemonList.toList()
-                    )
+                    favorites.addAll(result.data.toList())
                 }
-                is Result.Error -> {
-                    throw result.exception
-                }
+                else ->
+                    favorites
             }
-
-            userPreferencesFlow.collect {
-                if (favorites.isNotEmpty()) {
-                    favorites.clear()
-                }
-
-                when (val result = pokemonRepository.getPokemonByIds(it.favorites)) {
-                    is Result.Success -> {
-                        favorites.addAll(result.data.toList())
+            PokedexUiState.Ready(
+                pokemon = pokemon.filter {
+                    if (typeFilters != null) {
+                        it.typeOfPokemon.contains(typeFilters.toString())
+                    } else {
+                        true
                     }
-                    else ->
-                        favorites
-                }
-            }
-        }
-    }
+                },
+                favorites = favorites.toList(),
+                typeFilter = typeFilters
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = PokedexUiState.Loading
+        )
 
     fun toggleFavorites() {
         showFavorites = !showFavorites
     }
 
-    fun filterByType(
-        typeToFilter: Type?
-    ) {
-        typeFilter = if (typeFilter != typeToFilter) typeToFilter else null
-
-        uiState = PokedexUiState(
-            loading = false,
-            pokemon = if (typeFilter != null) {
-                pokemonList.filter { it.typeOfPokemon.contains(typeFilter.toString()) }
-            } else {
-                pokemonList.toList()
-            }
-        )
+    fun filterByType(typeToFilter: Type?) {
+        viewModelScope.launch {
+            typeFilters.value = if (typeFilters.value != typeToFilter) typeToFilter else null
+        }
     }
 }

@@ -74,6 +74,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
@@ -93,12 +94,12 @@ fun PokedexScreenRoute(
     pastPokemonSelected: Int?,
     onBackClick: () -> Unit
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     PokedexScreen(
-        loading = viewModel.uiState.loading,
-        pokemon = viewModel.uiState.pokemon,
+        state = state,
         favorites = viewModel.favorites,
         showFavorites = viewModel.showFavorites,
-        typeFilter = viewModel.typeFilter,
         pastPokemonSelected = pastPokemonSelected,
         onPokemonSelected = onPokemonSelected,
         onMenuItemClick = {
@@ -125,11 +126,9 @@ enum class FilterMenuState {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokedexScreen(
-    loading: Boolean,
-    pokemon: List<Pokemon>,
+    state: PokedexUiState,
     favorites: List<Pokemon>,
     showFavorites: Boolean = false,
-    typeFilter: Type? = null,
     pastPokemonSelected: Int? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
@@ -187,11 +186,11 @@ fun PokedexScreen(
                     .padding(top = innerPadding.calculateTopPadding())
                     .fillMaxWidth(),
                 listState = listState,
-                loading = loading,
-                pokemon = pokemon,
+                loading = state is PokedexUiState.Loading,
+                pokemon = if (state is PokedexUiState.Ready) state.pokemon else emptyList(),
                 favorites = favorites,
                 showFavorites = showFavorites,
-                typeFilter = typeFilter,
+                typeFilter = if (state is PokedexUiState.Ready) state.typeFilter else null,
                 onPokemonSelected = onPokemonSelected
             )
             AnimatedVisibility(
@@ -222,7 +221,7 @@ fun PokedexScreen(
                 if (filterMenuState != FilterMenuState.Hidden) {
                     FilterMenu(
                         showFavorites = showFavorites,
-                        typeFilter = typeFilter,
+                        typeFilter = if (state is PokedexUiState.Ready) state.typeFilter else null,
                         menuState = filterMenuState,
                         onMenuItemClick = {
                             if (it is FilterMenuEvent.ShowTypes) {
@@ -257,12 +256,14 @@ fun PokedexScreen(
                                     contentDescription = "Show filters",
                                 )
                             }
+
                             FilterMenuState.Visible -> {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_close),
                                     contentDescription = "Hide filters",
                                 )
                             }
+
                             FilterMenuState.Types -> {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -273,6 +274,7 @@ fun PokedexScreen(
                     }
                 }
             }
+
         }
     }
 }
@@ -534,10 +536,15 @@ private fun PokedexScreenPreview() {
     var showFavorites by remember { mutableStateOf(false) }
     var typeFilter by remember { mutableStateOf<Type?>(null) }
 
+    val state = PokedexUiState.Ready(
+        pokemon = pokemon,
+        favorites = favorites,
+        typeFilter = null
+    )
+
     AppTheme {
         PokedexScreen(
-            loading = false,
-            pokemon = pokemon,
+            state = state,
             favorites = favorites,
             showFavorites = showFavorites,
             onMenuItemClick = { result ->

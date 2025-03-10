@@ -3,7 +3,6 @@ package des.c5inco.pokedexer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.abilities.AbilitiesRepository
 import des.c5inco.pokedexer.data.items.ItemsRepository
 import des.c5inco.pokedexer.data.moves.MovesRepository
@@ -22,15 +21,7 @@ class RootViewModel @Inject constructor(
         viewModelScope.launch {
             println("Populating databases...")
 
-            when(val pokemonResults = pokemonRepository.getAllPokemon()) {
-                is Result.Success -> {
-                    println("Pokemon database: ${pokemonResults.data.size}")
-                }
-                is Result.Error -> {
-                    throw pokemonResults.exception
-                }
-            }
-
+            launch { pokemonRepository.updatePokemon() }
             launch { movesRepository.updateMoves() }
             launch { itemsRepository.updateItems() }
             launch { abilitiesRepository.updateAbilities() }

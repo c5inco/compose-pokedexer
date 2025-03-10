@@ -13,6 +13,7 @@ import des.c5inco.pokedexer.model.PokemonMove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -20,6 +21,9 @@ class RemotePokemonRepository @Inject constructor(
     private val pokemonDao: PokemonDao,
     private val apolloClient: ApolloClient
 ) : PokemonRepository {
+    override fun pokemon(): Flow<List<Pokemon>> {
+        return pokemonDao.getAllFlow()
+    }
 
     override suspend fun getAllPokemon(): Result<List<Pokemon>> {
         val localPokemon = pokemonDao.getAll()
@@ -71,6 +75,54 @@ class RemotePokemonRepository @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    override suspend fun updatePokemon() {
+        val localPokemon = pokemonDao.getAllFlow().first()
+
+        if (localPokemon.isEmpty()) {
+            withContext(Dispatchers.IO) {
+                println("Loading pokemon from network...")
+                val response = apolloClient.query(PokemonOriginalQuery()).execute()
+
+                if (!response.hasErrors()) {
+                    val pokemonFromServer = response.data!!.pokemon.map { model ->
+                        val detail = model.detail.first()
+                        val stats = detail.stats.map { it.baseStat }
+
+                        Pokemon(
+                            id = model.id,
+                            name = formatName(model.name),
+                            description = cleanupDescriptionText(model.description.first().flavorText)
+                                .replace(model.name.uppercase(), formatName(model.name)),
+                            typeOfPokemon = detail.types.map { formatName(it.type!!.name) },
+                            category = model.species[0].genus,
+                            image = model.id,
+                            height = (detail.height ?: 0) / 10.0, // in decimeters
+                            weight = (detail.weight ?: 0) / 10.0, // in 10 gram chunks
+                            genderRate = model.genderRate ?: -1,
+                            hp = stats[0],
+                            attack = stats[1],
+                            defense = stats[2],
+                            specialAttack = stats[3],
+                            specialDefense = stats[4],
+                            speed = stats[5],
+                            evolutionChain = transformEvolutionChain(model.evolutionChain?.evolutions ?: emptyList()),
+                            movesList = transformMoves(detail.moves),
+                            abilitiesList = transformAbilities(detail.abilities)
+                        )
+                    }
+
+                    pokemonDao.deleteAll()
+                    pokemonDao.insertAll(*pokemonFromServer.toTypedArray())
+                    println("Populated pokemon database: ${pokemonFromServer.size}")
+                } else {
+                    throw ApolloException("The response has errors: ${response.errors}")
+                }
+            }
+        } else {
+            println("Pokemon loaded from database: ${localPokemon.size}")
         }
     }
 

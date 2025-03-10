@@ -55,6 +55,8 @@ class PokemonDetailsViewModel @AssistedInject constructor(
     @Assisted private val pokemon: Pokemon
 ): ViewModel() {
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
+    val pokemonSet = pokemonRepository.pokemon()
+
     var details by mutableStateOf(pokemon)
         private set
 

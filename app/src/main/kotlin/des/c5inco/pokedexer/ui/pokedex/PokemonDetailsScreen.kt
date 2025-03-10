@@ -82,6 +82,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
@@ -111,16 +112,16 @@ import kotlin.math.roundToInt
 
 @Composable
 fun AnimatedContentScope.PokemonDetailsScreenRoute(
-    viewModel: PokedexViewModel,
     detailsViewModel: PokemonDetailsViewModel,
     onBackClick: (Int) -> Unit,
 ) {
+    val pokemonSet by detailsViewModel.pokemonSet.collectAsStateWithLifecycle(initialValue = emptyList())
+
     PokemonTypesTheme(
         types = detailsViewModel.details.typeOfPokemon
     ) {
         PokemonDetailsScreen(
-            loading = viewModel.uiState.loading,
-            pokemonSet = viewModel.uiState.pokemon,
+            pokemonSet = pokemonSet,
             pokemon = detailsViewModel.details,
             evolutions = detailsViewModel.evolutions,
             moves = detailsViewModel.moves,
@@ -142,7 +143,6 @@ enum class DragValue { Start, Center, End }
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AnimatedContentScope.PokemonDetailsScreen(
-    loading: Boolean,
     pokemonSet: List<Pokemon>,
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>,
@@ -368,7 +368,6 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                         .zIndex(pagerZIndex)
                         .padding(top = 124.dp)
                         .graphicsLayer { alpha = imageAlphaTarget },
-                    loading = loading,
                     pokemonList = pokemonSet,
                     foregroundColor = PokemonTypesTheme.colorScheme.onSurface,
                     backgroundColor = pokemonTypeSurfaceColor,
@@ -582,12 +581,11 @@ private fun PokemonDetailsPreview(
             AnimatedContent(
                 targetState = true,
                 label = ""
-            ) { targetState ->
+            ) { _ ->
                 PokemonTypesTheme(
                     types = activePokemon.typeOfPokemon
                 ) {
                     PokemonDetailsScreen(
-                        loading = !targetState,
                         pokemonSet = SamplePokemonData,
                         pokemon = activePokemon,
                         evolutions = mapSampleEvolutionsToList(
@@ -617,13 +615,12 @@ private fun PokemonDetailsPalettePreview(
             AnimatedContent(
                 targetState = true,
                 label = ""
-            ) { targetState ->
+            ) { _ ->
                 PokemonTypeColorOverlay(
                     types = activePokemon.typeOfPokemon,
                     paletteStyle = paletteStyle
                 ) {
                     PokemonDetailsScreen(
-                        loading = !targetState,
                         pokemonSet = SamplePokemonData,
                         pokemon = activePokemon,
                         evolutions = mapSampleEvolutionsToList(
