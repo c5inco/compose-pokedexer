@@ -5,10 +5,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import des.c5inco.pokedexer.data.moves.MovesRepository
 import des.c5inco.pokedexer.model.Move
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -23,10 +24,11 @@ sealed interface MovesListUiState {
 class MovesListViewModel @Inject constructor(
     movesRepository: MovesRepository
 ): ViewModel() {
+    @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<MovesListUiState> =
-        combine(movesRepository.moves()) { moves ->
+        movesRepository.moves().mapLatest {
             delay(500)
-            MovesListUiState.Ready(moves.first())
+            MovesListUiState.Ready(it)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
