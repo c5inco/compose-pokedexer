@@ -2,6 +2,7 @@ package des.c5inco.pokedexer.data.pokemon
 
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.model.Pokemon
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Interface to the Pokemon data layer.
@@ -16,7 +17,7 @@ interface PokemonRepository {
 
     suspend fun getPokemonByIds(ids: List<Int>): Result<List<Pokemon>>
 
-    suspend fun getPokemonByName(name: String): Result<List<Pokemon>>
+    fun getPokemonByName(name: String): Flow<List<Pokemon>>
 
     suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon>
 

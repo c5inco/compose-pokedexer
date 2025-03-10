@@ -9,5 +9,5 @@ interface MovesRepository {
     suspend fun updateMoves()
     suspend fun getMoveById(id: Int): Result<Move>
     suspend fun getMovesByIds(ids: List<Int>): Result<List<Move>>
-    suspend fun getMovesByName(name: String): Result<List<Move>>
+    fun getMovesByName(name: String): Flow<List<Move>>
 }

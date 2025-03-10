@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import des.c5inco.pokedexer.model.Item
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ItemsDao {
@@ -18,7 +19,7 @@ interface ItemsDao {
     suspend fun findByIds(ids: List<Int>): List<Item>
 
     @Query("SELECT * FROM item WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
-    suspend fun findByName(name: String): List<Item>
+    fun findByName(name: String): Flow<List<Item>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: Item)

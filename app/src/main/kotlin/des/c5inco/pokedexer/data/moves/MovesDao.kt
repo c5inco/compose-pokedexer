@@ -20,7 +20,7 @@ interface MovesDao {
     suspend fun findByIds(ids: List<Int>): List<Move>
 
     @Query("SELECT * FROM move WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
-    suspend fun findByName(name: String): List<Move>
+    fun findByName(name: String): Flow<List<Move>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(move: Move)

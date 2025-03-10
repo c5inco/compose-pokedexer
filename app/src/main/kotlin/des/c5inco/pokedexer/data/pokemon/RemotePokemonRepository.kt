@@ -12,6 +12,7 @@ import des.c5inco.pokedexer.model.PokemonAbility
 import des.c5inco.pokedexer.model.PokemonMove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -86,8 +87,8 @@ class RemotePokemonRepository @Inject constructor(
         return Result.Success(pokemonDao.findByIds(ids))
     }
 
-    override suspend fun getPokemonByName(name: String): Result<List<Pokemon>> {
-        return Result.Success(pokemonDao.findByName(name))
+    override fun getPokemonByName(name: String): Flow<List<Pokemon>> {
+        return pokemonDao.findByName(name)
     }
 
     override suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon> {

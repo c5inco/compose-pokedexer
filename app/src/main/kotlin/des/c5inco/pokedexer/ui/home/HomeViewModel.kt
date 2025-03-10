@@ -7,7 +7,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import des.c5inco.pokedexer.data.dataOrThrow
 import des.c5inco.pokedexer.data.items.ItemsRepository
 import des.c5inco.pokedexer.data.moves.MovesRepository
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
@@ -16,11 +15,11 @@ import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -53,18 +52,18 @@ class HomeViewModel @Inject constructor(
                         currentText = textContent,
                     )
                 } else {
-                    coroutineScope {
-                        val pokemonResults = async { pokemonRepository.getPokemonByName(textContent) }
-                        val movesResults = async { movesRepository.getMovesByName(textContent) }
-                        val itemsResults = async { itemsRepository.getItemsByName(textContent) }
-
+                    combine(
+                        pokemonRepository.getPokemonByName(textContent),
+                        movesRepository.getMovesByName(textContent),
+                        itemsRepository.getItemsByName(textContent)
+                    ) { pokemonResults, movesResults, itemsResults ->
                         SearchResponse(
                             currentText = textContent,
-                            foundPokemon = pokemonResults.await().dataOrThrow(),
-                            foundMoves = movesResults.await().dataOrThrow(),
-                            foundItems = itemsResults.await().dataOrThrow()
+                            foundPokemon = pokemonResults,
+                            foundMoves = movesResults,
+                            foundItems = itemsResults
                         )
-                    }
+                    }.first()
                 }
             }
             .stateIn(

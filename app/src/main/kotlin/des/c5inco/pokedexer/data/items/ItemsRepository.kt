@@ -8,6 +8,7 @@ import des.c5inco.pokedexer.data.cleanupDescriptionText
 import des.c5inco.pokedexer.model.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ interface ItemsRepository {
     suspend fun getAllItems(): Result<List<Item>>
     suspend fun getItemById(id: Int): Result<Item>
     suspend fun getItemByIds(ids: List<Int>): Result<List<Item>>
-    suspend fun getItemsByName(name: String): Result<List<Item>>
+    fun getItemsByName(name: String): Flow<List<Item>>
 }
 
 class ItemsRepositoryImpl @Inject constructor(
@@ -71,7 +72,7 @@ class ItemsRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getItemsByName(name: String): Result<List<Item>> {
-        return Result.Success(itemsDao.findByName(name))
+    override fun getItemsByName(name: String): Flow<List<Item>> {
+        return itemsDao.findByName(name)
     }
 }
