@@ -31,14 +31,7 @@ class RootViewModel @Inject constructor(
                 }
             }
 
-            when(val movesResults = movesRepository.getAllMoves()) {
-                is Result.Success -> {
-                    println("Moves database: ${movesResults.data.size}")
-                }
-                is Result.Error -> {
-                    throw movesResults.exception
-                }
-            }
+            movesRepository.updateMoves()
 
             when(val itemsResults = itemsRepository.getAllItems()) {
                 is Result.Success -> {

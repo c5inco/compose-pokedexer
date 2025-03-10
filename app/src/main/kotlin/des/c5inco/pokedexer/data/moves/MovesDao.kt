@@ -6,11 +6,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import des.c5inco.pokedexer.model.Move
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovesDao {
     @Query("SELECT * FROM move")
-    suspend fun getAll(): List<Move>
+    fun getAll(): Flow<List<Move>>
 
     @Query("SELECT * FROM move WHERE id = :id LIMIT 1")
     suspend fun findById(id: Int): Move?
