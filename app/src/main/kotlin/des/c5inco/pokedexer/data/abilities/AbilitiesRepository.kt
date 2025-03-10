@@ -7,12 +7,12 @@ import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
 import des.c5inco.pokedexer.model.Ability
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface AbilitiesRepository {
-    suspend fun getAllAbilities(): Result<List<Ability>>
+    suspend fun updateAbilities()
     suspend fun getAbilityById(id: Int): Result<Ability>
     suspend fun getAbilitiesByIds(ids: List<Int>): Result<List<Ability>>
     suspend fun getAbilitiesByName(name: String): Result<List<Ability>>
@@ -22,16 +22,12 @@ class AbilitiesRepositoryImpl @Inject constructor(
     private val abilitiesDao: AbilitiesDao,
     private val apolloClient: ApolloClient
 ): AbilitiesRepository {
-    override suspend fun getAllAbilities(): Result<List<Ability>> {
-        val localItems = abilitiesDao.getAll()
+    override suspend fun updateAbilities() {
+        val localAbilities = abilitiesDao.getAll().first()
 
-        if (localItems.isNotEmpty()) {
-            delay(300)
-            println("abilities from cache")
-            return Result.Success(localItems)
-        } else {
+        if (localAbilities.isEmpty()) {
             return withContext(Dispatchers.IO) {
-                println("abilities from network")
+                println("Loading abilities from network...")
                 val response = apolloClient.query(AbilitiesQuery()).execute()
 
                 if (!response.hasErrors()) {
@@ -47,13 +43,13 @@ class AbilitiesRepositoryImpl @Inject constructor(
 
                     abilitiesDao.deleteAll()
                     abilitiesDao.insertAll(*abilitiesFromServer.toTypedArray())
-                    Result.Success(abilitiesFromServer)
+                    println("Populated abilities database: ${abilitiesFromServer.size}")
                 } else {
-                    Result.Error(
-                        ApolloException("The response has errors: ${response.errors}")
-                    )
+                    throw ApolloException("The response has errors: ${response.errors}")
                 }
             }
+        } else {
+            println("Abilities loaded from database: ${localAbilities.size}")
         }
     }
 
