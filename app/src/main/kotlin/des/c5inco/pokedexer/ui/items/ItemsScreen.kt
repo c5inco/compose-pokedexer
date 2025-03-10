@@ -43,7 +43,7 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
 fun ItemsScreenRoute(
-    viewModel: ItemsListViewModel,
+    viewModel: ItemsViewModel,
     onBackClick: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()

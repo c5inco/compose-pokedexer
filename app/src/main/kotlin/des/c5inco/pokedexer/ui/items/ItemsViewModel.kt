@@ -20,7 +20,7 @@ sealed interface ItemsListUiState {
 }
 
 @HiltViewModel
-class ItemsListViewModel @Inject constructor(
+class ItemsViewModel @Inject constructor(
     itemsRepository: ItemsRepository
 ): ViewModel() {
     val state: StateFlow<ItemsListUiState> =
