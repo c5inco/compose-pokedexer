@@ -41,7 +41,7 @@ fun Canvas.drawPathWithPaint(
     paint: Paint = Paint()
 ) = drawPath(path, paint)
 
-fun calculateAnalogousColors(baseColor: Color, angle: Float = 30f): List<Color> {
+fun calculateAnalogousColors(baseColor: Color, angle: Float = 15f): List<Color> {
     // Convert the base color to HSL
     val hsl = FloatArray(3)
     ColorUtils.RGBToHSL(
@@ -51,11 +51,12 @@ fun calculateAnalogousColors(baseColor: Color, angle: Float = 30f): List<Color> 
         hsl
     )
 
-    // Calculate the two analogous hues
-    // TODO: Expand to five hues
+    // Calculate four analogous hues
     val hue1 = (hsl[0] + angle) % 360
-    val hue2 = (hsl[0] - angle) % 360
-    val analogousHues = listOf(hue1, hue2)
+    val hue2 = (hsl[0] + angle * 2) % 360
+    val hue3 = (hsl[0] - angle) % 360
+    val hue4 = (hsl[0] - angle * 2) % 360
+    val analogousHues = listOf(hue1, hue2, hue3, hue4)
 
     // Create analogous colors
     val analogousColors = analogousHues.map { hue ->
