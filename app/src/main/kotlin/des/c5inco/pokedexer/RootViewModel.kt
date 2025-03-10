@@ -32,15 +32,7 @@ class RootViewModel @Inject constructor(
             }
 
             movesRepository.updateMoves()
-
-            when(val itemsResults = itemsRepository.getAllItems()) {
-                is Result.Success -> {
-                    println("Items database: ${itemsResults.data.size}")
-                }
-                is Result.Error -> {
-                    throw itemsResults.exception
-                }
-            }
+            itemsRepository.updateItems()
 
             when(val abilitiesResults = abilitiesRepository.getAllAbilities()) {
                 is Result.Success -> {

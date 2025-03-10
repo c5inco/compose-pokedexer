@@ -7,13 +7,14 @@ import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
 import des.c5inco.pokedexer.model.Item
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface ItemsRepository {
-    suspend fun getAllItems(): Result<List<Item>>
+    fun items(): Flow<List<Item>>
+    suspend fun updateItems()
     suspend fun getItemById(id: Int): Result<Item>
     suspend fun getItemByIds(ids: List<Int>): Result<List<Item>>
     fun getItemsByName(name: String): Flow<List<Item>>
@@ -23,16 +24,16 @@ class ItemsRepositoryImpl @Inject constructor(
     private val itemsDao: ItemsDao,
     private val apolloClient: ApolloClient
 ): ItemsRepository {
-    override suspend fun getAllItems(): Result<List<Item>> {
-        val localItems = itemsDao.getAll()
+    override fun items(): Flow<List<Item>> {
+        return itemsDao.getAll()
+    }
 
-        if (localItems.isNotEmpty()) {
-            delay(300)
-            println("items from cache")
-            return Result.Success(localItems)
-        } else {
-            return withContext(Dispatchers.IO) {
-                println("items from network")
+    override suspend fun updateItems() {
+        val items = itemsDao.getAll().first()
+
+        if (items.isEmpty()) {
+            withContext(Dispatchers.IO) {
+                println("Loading items from network...")
                 val response = apolloClient.query(ItemsQuery()).execute()
 
                 if (!response.hasErrors()) {
@@ -49,13 +50,13 @@ class ItemsRepositoryImpl @Inject constructor(
 
                     itemsDao.deleteAll()
                     itemsDao.insertAll(*itemsFromServer.toTypedArray())
-                    Result.Success(itemsFromServer)
+                    println("Populated items database: ${itemsFromServer.size}")
                 } else {
-                    Result.Error(
-                        ApolloException("The response has errors: ${response.errors}")
-                    )
+                    throw ApolloException("The response has errors: ${response.errors}")
                 }
             }
+        } else {
+            println("Items loaded from database: ${items.size}")
         }
     }
 

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ItemsDao {
     @Query("SELECT * FROM item")
-    suspend fun getAll(): List<Item>
+    fun getAll(): Flow<List<Item>>
 
     @Query("SELECT * FROM item WHERE id = :id LIMIT 1")
     suspend fun findById(id: Int): Item?
