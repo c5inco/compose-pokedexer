@@ -52,9 +52,7 @@ class PokedexViewModel @Inject constructor(
             delay(500)
             listLoadedState.targetState = true
 
-            if (favorites.isNotEmpty()) {
-                favorites.clear()
-            }
+            val favorites = pokemonRepository.getPokemonByIds(userPreferences.favorites).first()
 
             when (val result = pokemonRepository.getPokemonByIds(userPreferences.favorites)) {
                 is Result.Success -> {

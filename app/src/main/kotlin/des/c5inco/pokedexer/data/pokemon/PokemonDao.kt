@@ -20,7 +20,7 @@ interface PokemonDao {
     suspend fun findById(id: Int): Pokemon?
 
     @Query("SELECT * FROM pokemon WHERE id IN (:ids)")
-    suspend fun findByIds(ids: List<Int>): List<Pokemon>
+    fun findByIds(ids: List<Int>): Flow<List<Pokemon>>
 
     @Query("SELECT * FROM pokemon WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
     fun findByName(name: String): Flow<List<Pokemon>>

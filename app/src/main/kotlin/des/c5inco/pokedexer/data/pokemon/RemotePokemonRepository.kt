@@ -135,8 +135,8 @@ class RemotePokemonRepository @Inject constructor(
         )
     }
 
-    override suspend fun getPokemonByIds(ids: List<Int>): Result<List<Pokemon>> {
-        return Result.Success(pokemonDao.findByIds(ids))
+    override fun getPokemonByIds(ids: List<Int>): Flow<List<Pokemon>> {
+        return pokemonDao.findByIds(ids)
     }
 
     override fun getPokemonByName(name: String): Flow<List<Pokemon>> {
