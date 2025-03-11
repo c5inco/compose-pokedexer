@@ -96,11 +96,12 @@ fun PokedexScreenRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showFavorites by viewModel.showFavorites.collectAsStateWithLifecycle()
+    val typeFilter by viewModel.typeFilters.collectAsStateWithLifecycle()
 
     PokedexScreen(
         state = state,
-        favorites = viewModel.favorites,
         showFavorites = showFavorites,
+        typeFilter = typeFilter,
         pastPokemonSelected = pastPokemonSelected,
         onPokemonSelected = onPokemonSelected,
         onMenuItemClick = {
@@ -128,8 +129,8 @@ enum class FilterMenuState {
 @Composable
 fun PokedexScreen(
     state: PokedexUiState,
-    favorites: List<Pokemon>,
     showFavorites: Boolean = false,
+    typeFilter: Type? = null,
     pastPokemonSelected: Int? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
@@ -204,9 +205,9 @@ fun PokedexScreen(
                             listState = listState,
                             listLoadedState = state.listLoadedState,
                             pokemon = state.pokemon,
-                            favorites = favorites,
+                            favorites = state.favorites,
                             showFavorites = showFavorites,
-                            typeFilter = state.typeFilter,
+                            typeFilter = typeFilter,
                             onPokemonSelected = onPokemonSelected
                         )
                     }
@@ -240,7 +241,7 @@ fun PokedexScreen(
                 if (filterMenuState != FilterMenuState.Hidden) {
                     FilterMenu(
                         showFavorites = showFavorites,
-                        typeFilter = if (state is PokedexUiState.Ready) state.typeFilter else null,
+                        typeFilter = typeFilter,
                         menuState = filterMenuState,
                         onMenuItemClick = {
                             if (it is FilterMenuEvent.ShowTypes) {
@@ -309,7 +310,14 @@ private fun PokemonList(
     typeFilter: Type? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
-    val pokemonToShow = if (showFavorites) favorites else pokemon
+    val pokemonToShow = (if (showFavorites) favorites else pokemon).filter {
+        if (typeFilter != null) {
+            it.typeOfPokemon.contains(typeFilter.toString())
+        } else {
+            true
+        }
+    }
+
     val bottomContentPadding = 96.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     LazyVerticalGrid(
@@ -533,40 +541,38 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
 @Composable
 private fun PokedexScreenPreview() {
     var pokemon by remember { mutableStateOf(SamplePokemonData) }
-    val favorites by remember { mutableStateOf(SamplePokemonData.take(5)) }
     var showFavorites by remember { mutableStateOf(false) }
     var typeFilter by remember { mutableStateOf<Type?>(null) }
 
-    val state = PokedexUiState.Ready(
-        listLoadedState = MutableTransitionState(true),
-        pokemon = pokemon,
-        favorites = favorites,
-        typeFilter = null
-    )
+    var state by remember {
+        mutableStateOf(
+            PokedexUiState.Ready(
+                listLoadedState = MutableTransitionState(true),
+                pokemon = SamplePokemonData.toList(),
+                favorites = SamplePokemonData.take(5),
+            )
+        )
+    }
 
     AppTheme {
         PokedexScreen(
             state = state,
-            favorites = favorites,
             showFavorites = showFavorites,
+            typeFilter = typeFilter,
             onMenuItemClick = { result ->
                 when (result) {
                     is FilterMenuEvent.ToggleFavorites -> {
                         showFavorites = !showFavorites
-                        pokemon = if (showFavorites) {
-                            favorites.toList()
-                        } else {
-                            SamplePokemonData.toList()
-                        }
+                        state = state.copy(
+                            pokemon = if (showFavorites) {
+                                SamplePokemonData.take(5)
+                            } else {
+                                SamplePokemonData.toList()
+                            }
+                        )
                     }
                     is FilterMenuEvent.FilterTypes -> {
                         typeFilter = if (typeFilter != result.typeToFilter) result.typeToFilter else null
-
-                        pokemon = if (typeFilter != null) {
-                            SamplePokemonData.filter { it.typeOfPokemon.contains(typeFilter.toString()) }
-                        } else {
-                            SamplePokemonData.toList()
-                        }
                     }
                     is FilterMenuEvent.ShowTypes -> {}
                 }
