@@ -95,11 +95,12 @@ fun PokedexScreenRoute(
     onBackClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val showFavorites by viewModel.showFavorites.collectAsStateWithLifecycle()
 
     PokedexScreen(
         state = state,
         favorites = viewModel.favorites,
-        showFavorites = viewModel.showFavorites,
+        showFavorites = showFavorites,
         pastPokemonSelected = pastPokemonSelected,
         onPokemonSelected = onPokemonSelected,
         onMenuItemClick = {
@@ -181,18 +182,36 @@ fun PokedexScreen(
                     .align(Alignment.TopEnd)
                     .offset(x = 90.dp, y = (-72).dp)
             )
-            PokemonList(
+
+            Column(
                 modifier = Modifier
                     .padding(top = innerPadding.calculateTopPadding())
-                    .fillMaxWidth(),
-                listState = listState,
-                loading = state is PokedexUiState.Loading,
-                pokemon = if (state is PokedexUiState.Ready) state.pokemon else emptyList(),
-                favorites = favorites,
-                showFavorites = showFavorites,
-                typeFilter = if (state is PokedexUiState.Ready) state.typeFilter else null,
-                onPokemonSelected = onPokemonSelected
-            )
+                    .fillMaxWidth()
+            ) {
+                when (state) {
+                    is PokedexUiState.Loading -> {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .size(48.dp)
+                                .padding(vertical = 24.dp)
+                        )
+                    }
+
+                    is PokedexUiState.Ready -> {
+                        PokemonList(
+                            listState = listState,
+                            listLoadedState = state.listLoadedState,
+                            pokemon = state.pokemon,
+                            favorites = favorites,
+                            showFavorites = showFavorites,
+                            typeFilter = state.typeFilter,
+                            onPokemonSelected = onPokemonSelected
+                        )
+                    }
+                }
+            }
             AnimatedVisibility(
                 visible = filterMenuState != FilterMenuState.Hidden,
                 enter = fadeIn(),
@@ -283,14 +302,13 @@ fun PokedexScreen(
 private fun PokemonList(
     modifier: Modifier = Modifier,
     listState: LazyGridState,
-    loading: Boolean = false,
+    listLoadedState: MutableTransitionState<Boolean>,
     pokemon: List<Pokemon>,
     favorites: List<Pokemon>,
     showFavorites: Boolean = false,
     typeFilter: Type? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
-    val loaded = remember { MutableTransitionState(!loading) }
     val pokemonToShow = if (showFavorites) favorites else pokemon
     val bottomContentPadding = 96.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
@@ -302,80 +320,63 @@ private fun PokemonList(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(top = 12.dp, start = 16.dp, end = 16.dp, bottom = bottomContentPadding),
         content = {
-            if (loading) {
+            if (pokemonToShow.isEmpty()) {
                 item(span = { GridItemSpan(2) }) {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
                     ) {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .size(48.dp)
-                                .padding(vertical = 24.dp)
+                        Text(
+                            text = "No Pokemon match the following:",
+                            style = MaterialTheme.typography.bodyLarge
                         )
-                    }
-                }
-            } else {
-                loaded.targetState = true
-
-                if (pokemonToShow.isEmpty()) {
-                    item(span = { GridItemSpan(2) }) {
+                        Spacer(Modifier.height(16.dp))
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Bottom,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp)
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            Text(
-                                text = "No Pokemon match the following:",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            Spacer(Modifier.height(16.dp))
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                if (showFavorites) {
-                                    Text(
-                                        text = "Favorites",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                }
-                                if (typeFilter != null) {
-                                    Text(
-                                        text = "Type: $typeFilter",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                }
+                            if (showFavorites) {
+                                Text(
+                                    text = "Favorites",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                            if (typeFilter != null) {
+                                Text(
+                                    text = "Type: $typeFilter",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
                             }
                         }
                     }
-                } else {
-                    itemsIndexed(items = pokemonToShow, key = { _, p -> p.id }) { idx, p ->
-                        AnimatedVisibility(
-                            visibleState = loaded,
-                            enter = slideInVertically(
-                                animationSpec = tween(
-                                    durationMillis = 500,
-                                    delayMillis = idx / 2 * 120
-                                ),
-                                initialOffsetY = { it / 2 }
-                            ) + fadeIn(
-                                animationSpec = tween(
-                                    durationMillis = 400,
-                                    delayMillis = idx / 2 * 150
-                                ),
+                }
+            } else {
+                itemsIndexed(items = pokemonToShow, key = { _, p -> p.id }) { idx, p ->
+                    AnimatedVisibility(
+                        visibleState = listLoadedState,
+                        enter = slideInVertically(
+                            animationSpec = tween(
+                                durationMillis = 500,
+                                delayMillis = idx / 2 * 120
                             ),
-                            exit = ExitTransition.None,
-                            label = "pokemonCardTransition"
-                        ) {
-                            PokedexCard(
-                                pokemon = p,
-                                isFavorite = favorites.contains(p),
-                                onPokemonSelected = onPokemonSelected
-                            )
-                        }
+                            initialOffsetY = { it / 2 }
+                        ) + fadeIn(
+                            animationSpec = tween(
+                                durationMillis = 400,
+                                delayMillis = idx / 2 * 150
+                            ),
+                        ),
+                        exit = ExitTransition.None,
+                        label = "pokemonCardTransition"
+                    ) {
+                        PokedexCard(
+                            pokemon = p,
+                            isFavorite = favorites.contains(p),
+                            onPokemonSelected = onPokemonSelected
+                        )
                     }
                 }
             }
@@ -537,6 +538,7 @@ private fun PokedexScreenPreview() {
     var typeFilter by remember { mutableStateOf<Type?>(null) }
 
     val state = PokedexUiState.Ready(
+        listLoadedState = MutableTransitionState(true),
         pokemon = pokemon,
         favorites = favorites,
         typeFilter = null
