@@ -13,7 +13,7 @@ interface AbilitiesDao {
     fun getAll(): Flow<List<Ability>>
 
     @Query("SELECT * FROM ability WHERE id = :id LIMIT 1")
-    suspend fun findById(id: Int): Ability?
+    fun findById(id: Int): Flow<Ability?>
 
     @Query("SELECT * FROM ability WHERE id IN (:ids)")
     suspend fun findByIds(ids: List<Int>): List<Ability>

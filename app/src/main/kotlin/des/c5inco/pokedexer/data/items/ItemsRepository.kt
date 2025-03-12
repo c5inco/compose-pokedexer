@@ -15,7 +15,7 @@ import javax.inject.Inject
 interface ItemsRepository {
     fun items(): Flow<List<Item>>
     suspend fun updateItems()
-    suspend fun getItemById(id: Int): Result<Item>
+    fun getItemById(id: Int): Flow<Item?>
     suspend fun getItemByIds(ids: List<Int>): Result<List<Item>>
     fun getItemsByName(name: String): Flow<List<Item>>
 }
@@ -60,13 +60,8 @@ class ItemsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getItemById(id: Int): Result<Item> {
-        itemsDao.findById(id)?.let {
-            return Result.Success(it)
-        }
-        return Result.Error(
-            Exception("Item with ID: $id not found in local DB!")
-        )
+    override fun getItemById(id: Int): Flow<Item?> {
+        return itemsDao.findById(id)
     }
 
     override suspend fun getItemByIds(ids: List<Int>): Result<List<Item>> {

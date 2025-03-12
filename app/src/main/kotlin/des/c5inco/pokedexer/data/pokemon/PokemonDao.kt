@@ -17,7 +17,7 @@ interface PokemonDao {
     fun getAllFlow(): Flow<List<Pokemon>>
 
     @Query("SELECT * FROM pokemon WHERE id = :id LIMIT 1")
-    suspend fun findById(id: Int): Pokemon?
+    fun findById(id: Int): Flow<Pokemon?>
 
     @Query("SELECT * FROM pokemon WHERE id IN (:ids)")
     fun findByIds(ids: List<Int>): Flow<List<Pokemon>>

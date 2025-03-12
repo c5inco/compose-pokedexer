@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface MovesRepository {
     fun moves(): Flow<List<Move>>
     suspend fun updateMoves()
-    suspend fun getMoveById(id: Int): Result<Move>
+    fun getMoveById(id: Int): Flow<Move?>
     suspend fun getMovesByIds(ids: List<Int>): Result<List<Move>>
     fun getMovesByName(name: String): Flow<List<Move>>
 }

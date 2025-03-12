@@ -14,7 +14,7 @@ interface MovesDao {
     fun getAll(): Flow<List<Move>>
 
     @Query("SELECT * FROM move WHERE id = :id LIMIT 1")
-    suspend fun findById(id: Int): Move?
+    fun findById(id: Int): Flow<Move?>
 
     @Query("SELECT * FROM move WHERE id IN (:ids)")
     suspend fun findByIds(ids: List<Int>): List<Move>

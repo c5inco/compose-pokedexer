@@ -56,14 +56,10 @@ class RemoteMovesRepository @Inject constructor(
         }
     }
 
-    override suspend fun getMoveById(id: Int): Result<Move> {
-        movesDao.findById(id)?.let {
-            return Result.Success(it)
-        }
-        return Result.Error(
-            Exception("Move with ID: $id not found in local DB!")
-        )
+    override fun getMoveById(id: Int): Flow<Move?> {
+        return movesDao.findById(id)
     }
+
     override suspend fun getMovesByIds(ids: List<Int>): Result<List<Move>> {
         return Result.Success(movesDao.findByIds(ids))
     }

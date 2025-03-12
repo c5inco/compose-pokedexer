@@ -116,17 +116,18 @@ fun AnimatedContentScope.PokemonDetailsScreenRoute(
     onBackClick: (Int) -> Unit,
 ) {
     val pokemonSet by detailsViewModel.pokemonSet.collectAsStateWithLifecycle(initialValue = emptyList())
+    val uiState by detailsViewModel.uiState.collectAsStateWithLifecycle()
 
     PokemonTypesTheme(
-        types = detailsViewModel.details.typeOfPokemon
+        types = uiState.details.typeOfPokemon
     ) {
         PokemonDetailsScreen(
             pokemonSet = pokemonSet,
-            pokemon = detailsViewModel.details,
-            evolutions = detailsViewModel.evolutions,
-            moves = detailsViewModel.moves,
-            abilities = detailsViewModel.abilities,
-            isFavorite = detailsViewModel.isFavorite,
+            pokemon = uiState.details,
+            evolutions = uiState.evolutions,
+            moves = uiState.moves,
+            abilities = uiState.abilities,
+            isFavorite = uiState.isFavorite,
             onPage = {
                 detailsViewModel.refresh(it)
             },

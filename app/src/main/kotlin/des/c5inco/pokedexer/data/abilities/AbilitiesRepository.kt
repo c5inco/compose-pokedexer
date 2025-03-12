@@ -7,13 +7,14 @@ import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
 import des.c5inco.pokedexer.model.Ability
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface AbilitiesRepository {
     suspend fun updateAbilities()
-    suspend fun getAbilityById(id: Int): Result<Ability>
+    fun getAbilityById(id: Int): Flow<Ability?>
     suspend fun getAbilitiesByIds(ids: List<Int>): Result<List<Ability>>
     suspend fun getAbilitiesByName(name: String): Result<List<Ability>>
 }
@@ -53,13 +54,8 @@ class AbilitiesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAbilityById(id: Int): Result<Ability> {
-        abilitiesDao.findById(id)?.let {
-            return Result.Success(it)
-        }
-        return Result.Error(
-            Exception("Ability with ID: $id not found in local DB!")
-        )
+    override fun getAbilityById(id: Int): Flow<Ability?> {
+        return abilitiesDao.findById(id)
     }
 
     override suspend fun getAbilitiesByIds(ids: List<Int>): Result<List<Ability>> {

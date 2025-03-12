@@ -13,7 +13,7 @@ interface ItemsDao {
     fun getAll(): Flow<List<Item>>
 
     @Query("SELECT * FROM item WHERE id = :id LIMIT 1")
-    suspend fun findById(id: Int): Item?
+    fun findById(id: Int): Flow<Item?>
 
     @Query("SELECT * FROM item WHERE id IN (:ids)")
     suspend fun findByIds(ids: List<Int>): List<Item>

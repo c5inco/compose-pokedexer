@@ -72,13 +72,8 @@ class RemotePokemonRepository @Inject constructor(
         }
     }
 
-    override suspend fun getPokemonById(id: Int): Result<Pokemon> {
-        pokemonDao.findById(id)?.let {
-            return Result.Success(it)
-        }
-        return Result.Error(
-            Exception("Pokemon with ID: $id not found in local DB!")
-        )
+    override fun getPokemonById(id: Int): Flow<Pokemon?> {
+        return pokemonDao.findById(id)
     }
 
     override fun getPokemonByIds(ids: List<Int>): Flow<List<Pokemon>> {

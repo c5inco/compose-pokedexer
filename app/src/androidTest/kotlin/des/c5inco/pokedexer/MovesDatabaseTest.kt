@@ -43,7 +43,7 @@ class MovesDatabaseTest {
     fun insertOneMove() = runBlocking {
         val pokemon = SampleMoves[0].copy()
         movesDao.insert(pokemon)
-        val oneMove = movesDao.findById(1)
+        val oneMove = movesDao.findById(1).first()
         assertEquals(oneMove?.id, 1)
         assertEquals(oneMove?.name, "Pound")
     }

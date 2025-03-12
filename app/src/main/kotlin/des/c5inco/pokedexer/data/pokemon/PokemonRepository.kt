@@ -12,7 +12,7 @@ interface PokemonRepository {
 
     suspend fun updatePokemon()
 
-    suspend fun getPokemonById(id: Int): Result<Pokemon>
+    fun getPokemonById(id: Int): Flow<Pokemon?>
 
     fun getPokemonByIds(ids: List<Int>): Flow<List<Pokemon>>
 

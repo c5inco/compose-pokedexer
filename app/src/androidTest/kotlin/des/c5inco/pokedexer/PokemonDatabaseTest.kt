@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import des.c5inco.pokedexer.data.PokemonDatabase
 import des.c5inco.pokedexer.data.pokemon.PokemonDao
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -42,7 +43,7 @@ class PokemonDatabaseTest {
     fun insertOnePokemon() = runBlocking {
         val pokemon = SamplePokemonData[0].copy()
         pokemonDao.insert(pokemon)
-        val onePokemon = pokemonDao.findById(1)
+        val onePokemon = pokemonDao.findById(1).first()
         assertEquals(onePokemon?.id, 1)
         assertEquals(onePokemon?.typeOfPokemon, listOf("Grass", "Poison"))
     }
