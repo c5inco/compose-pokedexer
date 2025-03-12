@@ -8,11 +8,6 @@ import kotlinx.coroutines.flow.Flow
  * Interface to the Pokemon data layer.
  */
 interface PokemonRepository {
-    /**
-     * Get all pokemon
-     */
-    suspend fun getAllPokemon(): Result<List<Pokemon>>
-
     fun pokemon(): Flow<List<Pokemon>>
 
     suspend fun updatePokemon()
