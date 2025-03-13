@@ -1,8 +1,6 @@
 package des.c5inco.pokedexer.ui.home
 
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,8 +37,6 @@ class HomeViewModel @Inject constructor(
     private val itemsRepository: ItemsRepository,
 ): ViewModel() {
     val searchText = TextFieldState()
-
-    val loading by mutableStateOf(false)
 
     val searchResponses: StateFlow<SearchResponse> =
         snapshotFlow { searchText.text }

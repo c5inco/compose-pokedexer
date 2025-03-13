@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class PokemonDetailsEvolutions(
@@ -147,7 +148,7 @@ class PokemonDetailsViewModel @AssistedInject constructor(
         )
 
     fun refresh(incomingPokemon: Pokemon) {
-        activePokemon.value = incomingPokemon
+        activePokemon.update { incomingPokemon }
     }
 
     fun toggleFavorite(pokemonId: Int) {

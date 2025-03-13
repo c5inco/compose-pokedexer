@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 sealed interface PokedexUiState {
@@ -64,10 +65,10 @@ class PokedexViewModel @Inject constructor(
         )
 
     fun toggleFavorites() {
-        showFavorites.value = !showFavorites.value
+        showFavorites.update { !showFavorites.value }
     }
 
     fun filterByType(typeToFilter: Type?) {
-        typeFilters.value = if (typeFilters.value != typeToFilter) typeToFilter else null
+        typeFilters.update { if (typeFilters.value != typeToFilter) typeToFilter else null }
     }
 }
