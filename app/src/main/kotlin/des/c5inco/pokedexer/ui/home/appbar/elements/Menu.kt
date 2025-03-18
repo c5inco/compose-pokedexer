@@ -40,9 +40,9 @@ sealed class MenuItem(
     val typeColor: Type
 ) {
     object Pokedex : MenuItem(R.string.pokedexLabel, Type.Grass)
-    object Moves : MenuItem(R.string.movesLabel, Type.Fire)
+    object Moves : MenuItem(R.string.movesLabel, Type.Fighting)
     object Abilities : MenuItem(R.string.abilitiesLabel, Type.Water)
-    object Items : MenuItem(R.string.itemsLabel, Type.Electric)
+    object Items : MenuItem(R.string.itemsLabel, Type.Fire)
     object Locations : MenuItem(R.string.locationsLabel, Type.Dragon)
     object TypeCharts : MenuItem(R.string.typeChartsLabel, Type.Water)
 }

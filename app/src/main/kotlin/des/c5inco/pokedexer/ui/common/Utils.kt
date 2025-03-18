@@ -51,11 +51,11 @@ fun calculateAnalogousColors(baseColor: Color, angle: Float = 15f): List<Color> 
         hsl
     )
 
-    // Calculate four analogous hues
+    // Calculate the four analogous hues
     val hue1 = (hsl[0] + angle) % 360
-    val hue2 = (hsl[0] + angle * 2) % 360
-    val hue3 = (hsl[0] - angle) % 360
-    val hue4 = (hsl[0] - angle * 2) % 360
+    val hue2 = (hsl[0] - angle) % 360
+    val hue3 = (hsl[0] + angle * 2f) % 360
+    val hue4 = (hsl[0] - angle * 2f) % 360
     val analogousHues = listOf(hue1, hue2, hue3, hue4)
 
     // Create analogous colors

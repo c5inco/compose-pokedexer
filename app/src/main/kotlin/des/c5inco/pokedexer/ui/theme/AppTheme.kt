@@ -50,6 +50,8 @@ fun PokemonTypesTheme(
     val extendedTypesColors = mapDynamicPokemonColorScheme(
         seedColor = seedColor,
         colorScheme = kolorScheme,
+    ).copy(
+        type = Type.valueOf(types[0])
     )
 
     CompositionLocalProvider(

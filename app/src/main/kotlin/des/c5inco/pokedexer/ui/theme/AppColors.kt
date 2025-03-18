@@ -37,33 +37,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.materialkolor.PaletteStyle
+import des.c5inco.pokedexer.model.Type
 import kotlinx.coroutines.launch
 
 class PokemonColors {
     companion object {
-        val Bug = Color(0xffaabb22)
-        val Dark = Color(0xff775544)
-        val Dragon = Color(0xff7766EE)
+        val Bug = Color(0xffAFC836)
+        val Dark = Color(0xff9298A4)
+        val Dragon = Color(0xff0180C7)
         val Electric = Color(0xffF0C03E)
         val Fairy = Color(0xffee99ee)
-        val Fighting = Color(0xffbb5544)
-        val Fire = Color(0xffff4422)
-        val Flying = Color(0xff8899ff)
-        val Ghost = Color(0xff9F5BBA)
-        val Grass = Color(0xff4FC1A6)
-        val Ground = Color(0xff775544)
-        val Ice = Color(0xff66ccff)
-        val Normal = Color(0xffaaaa99)
-        val Poison = Color(0xffaa5599)
-        val Psychic = Color(0xffff5599)
-        val Rock = Color(0xffBBAA66)
+        val Fighting = Color(0xffE74347)
+        val Fire = Color(0xffFBAE46)
+        val Flying = Color(0xffA6C2F2)
+        val Ghost = Color(0xff7773D4)
+        val Grass = Color(0xff5AC178)
+        val Ground = Color(0xffD29463)
+        val Ice = Color(0xff8CDDD4)
+        val Normal = Color(0xffA3A49E)
+        val Poison = Color(0xffC261D4)
+        val Psychic = Color(0xffFE9F92)
+        val Rock = Color(0xffD7CD90)
         val Water = Color(0xff429BED)
-        val Steel = Color(0xffaaaabb)
+        val Steel = Color(0xff58A6AA)
     }
 }
 
 @Immutable
 data class PokemonTypeColorScheme(
+    val type: Type? = null,
     val primary: Color,
     val surface: Color,
     val onSurface: Color,
@@ -108,7 +110,7 @@ data class MoveCategoryColors(
 
 val PhysicalColors = MoveCategoryColors(
     primaryDark = Color(0xffE3300E),
-    primaryLight = PokemonColors.Fire,
+    primaryLight = PokemonColors.Fighting,
     surfaceDark = Color(0xff561F14),
     surfaceLight = Color(0xffFFDAD3),
     onSurfaceDark = Color(0xffFFDAD3),
@@ -117,7 +119,7 @@ val PhysicalColors = MoveCategoryColors(
 
 val SpecialColors = MoveCategoryColors(
     primaryDark = Color(0xffC7BFFF),
-    primaryLight = PokemonColors.Dragon,
+    primaryLight = PokemonColors.Flying,
     surfaceDark = Color(0xff2F295F),
     surfaceLight = Color(0xffE4DFFF),
     onSurfaceDark = Color(0xffE4DFFF),
@@ -126,7 +128,7 @@ val SpecialColors = MoveCategoryColors(
 
 val StatusColors = MoveCategoryColors(
     primaryDark = Color(0xffFFB691),
-    primaryLight = PokemonColors.Dark,
+    primaryLight = PokemonColors.Fire,
     surfaceDark = Color(0xff542102),
     surfaceLight = Color(0xffFFDBCB),
     onSurfaceDark = Color(0xffFFDBCB),

@@ -90,6 +90,7 @@ import des.c5inco.pokedexer.data.pokemon.mapSampleAbilitiesToDetailsList
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.data.pokemon.mapSampleMovesToDetailsList
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.model.mapTypeToCuratedAnalogousHue
 import des.c5inco.pokedexer.ui.common.Emphasis
 import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
@@ -243,7 +244,10 @@ fun AnimatedContentScope.PokemonDetailsScreen(
     }
 
     val pokemonTypeSurfaceColor = PokemonTypesTheme.colorScheme.surface
-    val analogousSurfaceColor = remember(pokemonTypeSurfaceColor) { calculateAnalogousColors(pokemonTypeSurfaceColor)[1] }
+    val hueIndex = mapTypeToCuratedAnalogousHue(PokemonTypesTheme.colorScheme.type)
+    val analogousSurfaceColor = remember(pokemonTypeSurfaceColor) {
+        calculateAnalogousColors(pokemonTypeSurfaceColor, 24f)[hueIndex]
+    }
 
     val colors = listOf(
         listOf(
