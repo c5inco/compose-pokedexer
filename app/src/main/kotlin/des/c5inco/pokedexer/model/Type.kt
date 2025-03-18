@@ -47,3 +47,16 @@ fun mapTypeToColor(type: String): Color {
         else -> return Color.Magenta
     }
 }
+
+fun mapTypeToCuratedAnalogousHue(type: Type?): Int {
+    return when (type) {
+        Type.Electric,
+        Type.Fairy,
+        Type.Grass,
+        Type.Poison,
+        Type.Ghost,
+        Type.Psychic,
+        Type.Dragon -> 1
+        else -> 0
+    }
+}

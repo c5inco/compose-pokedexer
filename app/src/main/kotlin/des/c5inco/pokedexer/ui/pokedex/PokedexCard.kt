@@ -5,14 +5,16 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
@@ -33,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.model.mapTypeToCuratedAnalogousHue
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
@@ -52,7 +55,10 @@ fun PokedexCard(
 ) {
     PokemonTypesTheme(types = pokemon.typeOfPokemon) {
         val pokemonTypeSurfaceColor = PokemonTypesTheme.colorScheme.surface
-        val analogousSurfaceColor = remember(pokemonTypeSurfaceColor) { calculateAnalogousColors(pokemonTypeSurfaceColor)[1] }
+        val hueIndex = mapTypeToCuratedAnalogousHue(PokemonTypesTheme.colorScheme.type)
+        val analogousSurfaceColor = remember(pokemonTypeSurfaceColor) {
+            calculateAnalogousColors(pokemonTypeSurfaceColor, 18f)[hueIndex]
+        }
 
         val colors = listOf(
             listOf(
@@ -178,25 +184,18 @@ private fun PokemonName(name: String?) {
 private fun PokedexCardPreview() {
     AppTheme {
         Surface {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                modifier = Modifier
-                    .width(200.dp)
-                    .padding(12.dp)
+            val ids = listOf(0, 3, 6) + (9..22).toList()
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(12.dp)
             ) {
-                PokedexCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    pokemon = SamplePokemonData[0]
-                )
-                PokedexCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    pokemon = SamplePokemonData[3],
-                    isFavorite = true
-                )
-                PokedexCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    pokemon = SamplePokemonData[6]
-                )
+                items(ids) {
+                    PokedexCard(
+                        pokemon = SamplePokemonData[it],
+                    )
+                }
             }
         }
     }
