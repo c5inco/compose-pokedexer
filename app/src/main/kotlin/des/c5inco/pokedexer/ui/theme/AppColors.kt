@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.materialkolor.PaletteStyle
+import des.c5inco.pokedexer.model.Type
 import kotlinx.coroutines.launch
 
 class PokemonColors {
@@ -64,6 +65,7 @@ class PokemonColors {
 
 @Immutable
 data class PokemonTypeColorScheme(
+    val type: Type? = null,
     val primary: Color,
     val surface: Color,
     val onSurface: Color,
