@@ -1,10 +1,10 @@
-package des.c5inco.pokedexer.ui.moves
+package des.c5inco.pokedexer.ui.items
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import des.c5inco.pokedexer.data.moves.MovesRepository
-import des.c5inco.pokedexer.model.Move
+import des.c5inco.pokedexer.data.items.ItemsRepository
+import des.c5inco.pokedexer.model.Item
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -12,24 +12,24 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
-sealed interface MovesListUiState {
-    data object Loading : MovesListUiState
+sealed interface ItemsListUiState {
+    data object Loading : ItemsListUiState
     data class Ready(
-        val moves: List<Move>,
-    ) : MovesListUiState
+        val items: List<Item>,
+    ) : ItemsListUiState
 }
 
 @HiltViewModel
-class MovesListViewModel @Inject constructor(
-    movesRepository: MovesRepository
+class ItemsViewModel @Inject constructor(
+    itemsRepository: ItemsRepository
 ): ViewModel() {
-    val state: StateFlow<MovesListUiState> =
-        movesRepository.moves().map {
+    val state: StateFlow<ItemsListUiState> =
+        itemsRepository.items().map {
             delay(500)
-            MovesListUiState.Ready(it)
+            ItemsListUiState.Ready(it)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = MovesListUiState.Loading
+            initialValue = ItemsListUiState.Loading
         )
 }

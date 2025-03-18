@@ -28,11 +28,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.model.Item
@@ -41,12 +43,13 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
 fun ItemsScreenRoute(
-    viewModel: ItemsListViewModel,
+    viewModel: ItemsViewModel,
     onBackClick: () -> Unit = {}
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     ItemsScreen(
-        loading = viewModel.uiState.loading,
-        items = viewModel.uiState.items,
+        state = state,
         onBackClick = onBackClick
     )
 }
@@ -54,8 +57,7 @@ fun ItemsScreenRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemsScreen(
-    loading: Boolean = false,
-    items: List<Item> = SampleItems,
+    state: ItemsListUiState,
     onBackClick: () -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -84,24 +86,26 @@ fun ItemsScreen(
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-            if (loading) {
-                CircularProgressIndicator()
-            } else {
-                LazyVerticalStaggeredGrid(
-                    columns = StaggeredGridCells.Adaptive(120.dp),
-                    verticalItemSpacing = 4.dp,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    contentPadding = PaddingValues(
-                        top = 12.dp,
-                        bottom = 12.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-                    ),
-                    content = {
-                        items(items) {
-                            ItemCard(item = it)
-                        }
-                    },
-                )
-
+            when (val s = state) {
+                is ItemsListUiState.Ready -> {
+                    LazyVerticalStaggeredGrid(
+                        columns = StaggeredGridCells.Adaptive(120.dp),
+                        verticalItemSpacing = 4.dp,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        contentPadding = PaddingValues(
+                            top = 12.dp,
+                            bottom = 12.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                        ),
+                        content = {
+                            items(s.items) {
+                                ItemCard(item = it)
+                            }
+                        },
+                    )
+                }
+                is ItemsListUiState.Loading -> {
+                    CircularProgressIndicator()
+                }
             }
         }
     }
@@ -140,9 +144,13 @@ private fun ItemCard(
 @Preview
 @Composable
 fun ItemsScreenPreview() {
+    val state: ItemsListUiState = ItemsListUiState.Ready(
+        items = SampleItems
+    )
+
     AppTheme {
         Surface {
-            ItemsScreen()
+            ItemsScreen(state)
         }
     }
 }

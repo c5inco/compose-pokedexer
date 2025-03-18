@@ -98,7 +98,6 @@ fun PagerPokemonImage(
 @Composable
 fun PokemonPager(
     modifier: Modifier = Modifier,
-    loading: Boolean = false,
     pokemonList: List<Pokemon>,
     foregroundColor: Color = Color.Black,
     backgroundColor: Color,
@@ -117,35 +116,33 @@ fun PokemonPager(
         modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        if (!loading) {
-            HorizontalPager(
-                state = pagerState,
-                key = { it },
-                contentPadding = PaddingValues(horizontal = 92.dp),
-                userScrollEnabled = enabled,
-                modifier = Modifier.testTag("PokemonPager"),
-            ) { page ->
-                val pokemon = pokemonList[page]
-                val pageOffset = ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
-                val progress = pageOffset.coerceIn(0f, 1f)
-                val scale = lerp(
-                    start = 0.5f, stop = 1f, fraction = 1f - progress
-                )
-                val yPos = lerp(
-                    start = 48f, stop = 0f, fraction = 1f - progress
-                )
+        HorizontalPager(
+            state = pagerState,
+            key = { it },
+            contentPadding = PaddingValues(horizontal = 92.dp),
+            userScrollEnabled = enabled,
+            modifier = Modifier.testTag("PokemonPager"),
+        ) { page ->
+            val pokemon = pokemonList[page]
+            val pageOffset = ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+            val progress = pageOffset.coerceIn(0f, 1f)
+            val scale = lerp(
+                start = 0.5f, stop = 1f, fraction = 1f - progress
+            )
+            val yPos = lerp(
+                start = 48f, stop = 0f, fraction = 1f - progress
+            )
 
-                Box(
-                    modifier = Modifier
-                        .padding(top = 24.dp)
-                        .graphicsLayer {
-                            scaleX = scale
-                            scaleY = scale
-                            translationY = yPos
-                        },
-                ) {
-                    pagerContent(pokemon, progress, foregroundTint)
-                }
+            Box(
+                modifier = Modifier
+                    .padding(top = 24.dp)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        translationY = yPos
+                    },
+            ) {
+                pagerContent(pokemon, progress, foregroundTint)
             }
         }
     }

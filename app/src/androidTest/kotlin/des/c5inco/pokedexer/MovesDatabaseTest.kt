@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import des.c5inco.pokedexer.data.PokemonDatabase
 import des.c5inco.pokedexer.data.moves.MovesDao
 import des.c5inco.pokedexer.data.moves.SampleMoves
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -42,7 +43,7 @@ class MovesDatabaseTest {
     fun insertOneMove() = runBlocking {
         val pokemon = SampleMoves[0].copy()
         movesDao.insert(pokemon)
-        val oneMove = movesDao.findById(1)
+        val oneMove = movesDao.findById(1).first()
         assertEquals(oneMove?.id, 1)
         assertEquals(oneMove?.name, "Pound")
     }
@@ -52,7 +53,7 @@ class MovesDatabaseTest {
     fun insertMultipleMoves() = runBlocking {
         val pokemon = SampleMoves
         movesDao.insertAll(*(pokemon.toTypedArray()))
-        val allMoves = movesDao.getAll()
-        assertEquals(allMoves.size, 4)
+        val allMoves = movesDao.getAll().first()
+        assertEquals(allMoves.size, 5)
     }
 }

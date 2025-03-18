@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Move
@@ -54,9 +56,10 @@ fun MovesListScreenRoute(
     viewModel: MovesListViewModel,
     onBackClick: () -> Unit = {}
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     MovesListScreen(
-        loading = viewModel.uiState.loading,
-        moves = viewModel.uiState.moves,
+        state = state,
         onBackClick = onBackClick
     )
 }
@@ -64,8 +67,7 @@ fun MovesListScreenRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovesListScreen(
-    loading: Boolean,
-    moves: List<Move>,
+    state: MovesListUiState = MovesListUiState.Loading,
     onBackClick: () -> Unit = {},
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -95,10 +97,13 @@ fun MovesListScreen(
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-            if (loading) {
-                CircularProgressIndicator()
-            } else {
-                MovesList(moves = moves)
+            when (val s = state) {
+                is MovesListUiState.Ready -> {
+                    MovesList(moves = s.moves)
+                }
+                is MovesListUiState.Loading -> {
+                    CircularProgressIndicator()
+                }
             }
         }
     }
@@ -206,11 +211,14 @@ private fun MovesList(
 @Preview
 @Composable
 private fun MovesListScreenPreview() {
+    val state: MovesListUiState = MovesListUiState.Ready(
+        moves = SampleMoves + SampleMoves + SampleMoves + SampleMoves + SampleMoves + SampleMoves
+    )
+
     AppTheme {
         Surface {
             MovesListScreen(
-                loading = false,
-                moves = SampleMoves + SampleMoves + SampleMoves + SampleMoves + SampleMoves + SampleMoves
+                state = state
             )
         }
     }
