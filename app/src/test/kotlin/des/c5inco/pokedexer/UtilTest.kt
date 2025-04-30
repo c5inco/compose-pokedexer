@@ -13,7 +13,7 @@ class UtilTest {
         @Test
         fun `cleanupDescriptionText replaces newline characters with spaces`() {
             val input = "This is a\nmultiline string."
-            val expected = "This is \na multiline string."
+            val expected = "This is a multiline string."
             val actual = cleanupDescriptionText(input)
             assertEquals(expected, actual)
         }
