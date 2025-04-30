@@ -32,4 +32,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run Unit test
-        run: ./gradlew clean testDebugUnitTest
+        run: ./gradlew clean testDebug
