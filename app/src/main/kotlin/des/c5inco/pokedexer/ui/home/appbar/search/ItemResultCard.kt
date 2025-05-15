@@ -85,7 +85,7 @@ fun SharedTransitionScope.ItemResultCard(
             ItemImage(
                 item = item,
                 modifier = Modifier.sharedElement(
-                    state = rememberSharedContentState(key = "image-${item.id}"),
+                    sharedContentState = rememberSharedContentState(key = "image-${item.id}"),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = imageBoundsTransform
                 )
@@ -188,7 +188,7 @@ fun SharedTransitionScope.ItemResultExpandedCard(
                 .align(Alignment.TopCenter)
                 .offset(y = -24.dp)
                 .sharedElement(
-                    state = rememberSharedContentState(key = "image-${item.id}"),
+                    sharedContentState = rememberSharedContentState(key = "image-${item.id}"),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = imageBoundsTransform
                 )

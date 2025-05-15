@@ -10,8 +10,8 @@ import androidx.compose.ui.unit.Velocity
 
 // Copied from BackdropScaffold internal implementation
 @OptIn(ExperimentalFoundationApi::class)
-fun consumeSwipeNestedScrollConnection(
-    state: AnchoredDraggableState<*>,
+fun <T> consumeSwipeNestedScrollConnection(
+    state: AnchoredDraggableState<T>,
     orientation: Orientation
 ): NestedScrollConnection = object : NestedScrollConnection {
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
@@ -38,7 +38,11 @@ fun consumeSwipeNestedScrollConnection(
     override suspend fun onPreFling(available: Velocity): Velocity {
         val toFling = available.toFloat()
         val currentOffset = state.requireOffset()
-        return if (toFling < 0 && currentOffset > state.anchors.minAnchor()) {
+        // Corrected line: find an anchor with the minimum offset
+        val minAnchor = state.anchors.closestAnchor(Float.NEGATIVE_INFINITY)
+        val minAnchorOffset = if (minAnchor != null) state.anchors.positionOf(minAnchor) else Float.NEGATIVE_INFINITY
+
+        return if (toFling < 0 && currentOffset > minAnchorOffset) {
             state.settle(velocity = toFling)
             // since we go to the anchor with tween settling, consume all for the best UX
             available

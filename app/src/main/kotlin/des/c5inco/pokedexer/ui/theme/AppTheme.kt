@@ -24,6 +24,7 @@ fun AppTheme(
     val colors = rememberDynamicColorScheme(
         seedColor = Color(0xff673AB7),
         isDark = useDarkTheme,
+        isAmoled = false
     )
 
     MaterialTheme(
@@ -80,6 +81,7 @@ fun getDynamicColorScheme(
 ) = rememberDynamicColorScheme(
     seedColor = seedColor,
     isDark = isDark,
+    isAmoled = false,
     style = paletteStyle
 )
 

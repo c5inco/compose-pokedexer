@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "des.c5inco.pokedexer.benchmark"
-    compileSdk = 34
+    compileSdk = 36
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace "des.c5inco.pokedexer"
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "des.c5inco.pokedexer"
