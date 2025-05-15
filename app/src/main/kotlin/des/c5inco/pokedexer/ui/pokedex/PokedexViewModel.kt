@@ -1,97 +1,73 @@
 package des.c5inco.pokedexer.ui.pokedex
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
-/**
- * UI state for the Pokedex screen
- */
-data class PokedexUiState(
-    val pokemon: List<Pokemon> = listOf(),
-    val loading: Boolean = false,
-)
+sealed interface PokedexUiState {
+    data class Loading(
+        val listLoadedState: MutableTransitionState<Boolean>
+    ) : PokedexUiState
+
+    data class Ready(
+        val listLoadedState: MutableTransitionState<Boolean>,
+        val pokemon: List<Pokemon>,
+        val favorites: List<Pokemon>,
+    ) : PokedexUiState
+}
 
 @HiltViewModel
 class PokedexViewModel @Inject constructor(
     private val pokemonRepository: PokemonRepository,
     userPreferencesRepository: UserPreferencesRepository,
 ): ViewModel() {
-    var uiState by mutableStateOf(PokedexUiState(loading = true))
-        private set
-    private val pokemonList = mutableStateListOf<Pokemon>()
-
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
-    var favorites = mutableStateListOf<Pokemon>()
-    var showFavorites by mutableStateOf(false)
-    var typeFilter by mutableStateOf<Type?>(null)
+    private val listLoadedState = MutableTransitionState(false)
 
-    init {
-        refresh()
-    }
+    val showFavorites = MutableStateFlow(false)
+    val typeFilters = MutableStateFlow<Type?>(null)
 
-    /**
-     * Refresh Pokemon list
-     */
-    fun refresh() {
-        viewModelScope.launch {
-            // TODO: Handle error/exception better
-            when (val result = pokemonRepository.getAllPokemon()) {
-                is Result.Success -> {
-                    pokemonList.addAll(result.data)
-                    uiState = uiState.copy(
-                        loading = false,
-                        pokemon = pokemonList.toList()
-                    )
-                }
-                is Result.Error -> {
-                    throw result.exception
-                }
-            }
+    val state: StateFlow<PokedexUiState> =
+        combine(
+            pokemonRepository.pokemon(),
+            userPreferencesFlow,
+        ) { pokemon, userPreferences ->
+            delay(500)
+            listLoadedState.targetState = true
 
-            userPreferencesFlow.collect {
-                if (favorites.isNotEmpty()) {
-                    favorites.clear()
-                }
+            val favorites = pokemonRepository.getPokemonByIds(userPreferences.favorites).first()
 
-                when (val result = pokemonRepository.getPokemonByIds(it.favorites)) {
-                    is Result.Success -> {
-                        favorites.addAll(result.data.toList())
-                    }
-                    else ->
-                        favorites
-                }
-            }
-        }
-    }
+            PokedexUiState.Ready(
+                listLoadedState = listLoadedState,
+                pokemon = pokemon,
+                favorites = favorites.toList(),
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = PokedexUiState.Loading(
+                listLoadedState = listLoadedState
+            )
+        )
 
     fun toggleFavorites() {
-        showFavorites = !showFavorites
+        showFavorites.value = !showFavorites.value
     }
 
-    fun filterByType(
-        typeToFilter: Type?
-    ) {
-        typeFilter = if (typeFilter != typeToFilter) typeToFilter else null
-
-        uiState = PokedexUiState(
-            loading = false,
-            pokemon = if (typeFilter != null) {
-                pokemonList.filter { it.typeOfPokemon.contains(typeFilter.toString()) }
-            } else {
-                pokemonList.toList()
-            }
-        )
+    fun filterByType(typeToFilter: Type?) {
+        typeFilters.value = if (typeFilters.value != typeToFilter) typeToFilter else null
     }
 }

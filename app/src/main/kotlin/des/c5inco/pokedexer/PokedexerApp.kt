@@ -106,7 +106,6 @@ fun PokedexerApp(
                 exitTransition = { Material3Transitions.SharedZAxisExitTransition },
             ) {
                 PokemonDetailsScreenRoute(
-                    viewModel = hiltViewModel(),
                     detailsViewModel = pokemonDetailsViewModel(pokemon),
                     onBackClick = {
                         navController.previousBackStackEntry

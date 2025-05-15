@@ -6,20 +6,21 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import des.c5inco.pokedexer.model.Move
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovesDao {
     @Query("SELECT * FROM move")
-    suspend fun getAll(): List<Move>
+    fun getAll(): Flow<List<Move>>
 
     @Query("SELECT * FROM move WHERE id = :id LIMIT 1")
-    suspend fun findById(id: Int): Move?
+    fun findById(id: Int): Flow<Move?>
 
     @Query("SELECT * FROM move WHERE id IN (:ids)")
     suspend fun findByIds(ids: List<Int>): List<Move>
 
     @Query("SELECT * FROM move WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
-    suspend fun findByName(name: String): List<Move>
+    fun findByName(name: String): Flow<List<Move>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(move: Move)

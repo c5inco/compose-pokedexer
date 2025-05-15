@@ -11,7 +11,8 @@ import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.PokemonAbility
 import des.c5inco.pokedexer.model.PokemonMove
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -19,18 +20,16 @@ class RemotePokemonRepository @Inject constructor(
     private val pokemonDao: PokemonDao,
     private val apolloClient: ApolloClient
 ) : PokemonRepository {
+    override fun pokemon(): Flow<List<Pokemon>> {
+        return pokemonDao.getAllFlow()
+    }
 
-    override suspend fun getAllPokemon(): Result<List<Pokemon>> {
-        val localPokemon = pokemonDao.getAll()
+    override suspend fun updatePokemon() {
+        val localPokemon = pokemonDao.getAllFlow().first()
 
-        if (localPokemon.isNotEmpty()) {
-            // TODO: Ask why this is needed to avoid blinking
-            delay(300)
-            println("from cache")
-            return Result.Success(localPokemon)
-        } else {
-            return withContext(Dispatchers.IO) {
-                println("from network")
+        if (localPokemon.isEmpty()) {
+            withContext(Dispatchers.IO) {
+                println("Loading pokemon from network...")
                 val response = apolloClient.query(PokemonOriginalQuery()).execute()
 
                 if (!response.hasErrors()) {
@@ -63,31 +62,26 @@ class RemotePokemonRepository @Inject constructor(
 
                     pokemonDao.deleteAll()
                     pokemonDao.insertAll(*pokemonFromServer.toTypedArray())
-                    Result.Success(pokemonFromServer)
+                    println("Populated pokemon database: ${pokemonFromServer.size}")
                 } else {
-                    Result.Error(
-                        ApolloException("The response has errors: ${response.errors}")
-                    )
+                    throw ApolloException("The response has errors: ${response.errors}")
                 }
             }
+        } else {
+            println("Pokemon loaded from database: ${localPokemon.size}")
         }
     }
 
-    override suspend fun getPokemonById(id: Int): Result<Pokemon> {
-        pokemonDao.findById(id)?.let {
-            return Result.Success(it)
-        }
-        return Result.Error(
-            Exception("Pokemon with ID: $id not found in local DB!")
-        )
+    override fun getPokemonById(id: Int): Flow<Pokemon?> {
+        return pokemonDao.findById(id)
     }
 
-    override suspend fun getPokemonByIds(ids: List<Int>): Result<List<Pokemon>> {
-        return Result.Success(pokemonDao.findByIds(ids))
+    override fun getPokemonByIds(ids: List<Int>): Flow<List<Pokemon>> {
+        return pokemonDao.findByIds(ids)
     }
 
-    override suspend fun getPokemonByName(name: String): Result<List<Pokemon>> {
-        return Result.Success(pokemonDao.findByName(name))
+    override fun getPokemonByName(name: String): Flow<List<Pokemon>> {
+        return pokemonDao.findByName(name)
     }
 
     override suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon> {

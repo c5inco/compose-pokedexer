@@ -74,6 +74,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
@@ -93,12 +94,14 @@ fun PokedexScreenRoute(
     pastPokemonSelected: Int?,
     onBackClick: () -> Unit
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val showFavorites by viewModel.showFavorites.collectAsStateWithLifecycle()
+    val typeFilter by viewModel.typeFilters.collectAsStateWithLifecycle()
+
     PokedexScreen(
-        loading = viewModel.uiState.loading,
-        pokemon = viewModel.uiState.pokemon,
-        favorites = viewModel.favorites,
-        showFavorites = viewModel.showFavorites,
-        typeFilter = viewModel.typeFilter,
+        state = state,
+        showFavorites = showFavorites,
+        typeFilter = typeFilter,
         pastPokemonSelected = pastPokemonSelected,
         onPokemonSelected = onPokemonSelected,
         onMenuItemClick = {
@@ -125,9 +128,7 @@ enum class FilterMenuState {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokedexScreen(
-    loading: Boolean,
-    pokemon: List<Pokemon>,
-    favorites: List<Pokemon>,
+    state: PokedexUiState,
     showFavorites: Boolean = false,
     typeFilter: Type? = null,
     pastPokemonSelected: Int? = null,
@@ -182,18 +183,36 @@ fun PokedexScreen(
                     .align(Alignment.TopEnd)
                     .offset(x = 90.dp, y = (-72).dp)
             )
-            PokemonList(
+
+            Column(
                 modifier = Modifier
                     .padding(top = innerPadding.calculateTopPadding())
-                    .fillMaxWidth(),
-                listState = listState,
-                loading = loading,
-                pokemon = pokemon,
-                favorites = favorites,
-                showFavorites = showFavorites,
-                typeFilter = typeFilter,
-                onPokemonSelected = onPokemonSelected
-            )
+                    .fillMaxWidth()
+            ) {
+                when (state) {
+                    is PokedexUiState.Loading -> {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .size(48.dp)
+                                .padding(vertical = 24.dp)
+                        )
+                    }
+
+                    is PokedexUiState.Ready -> {
+                        PokemonList(
+                            listState = listState,
+                            listLoadedState = state.listLoadedState,
+                            pokemon = state.pokemon,
+                            favorites = state.favorites,
+                            showFavorites = showFavorites,
+                            typeFilter = typeFilter,
+                            onPokemonSelected = onPokemonSelected
+                        )
+                    }
+                }
+            }
             AnimatedVisibility(
                 visible = filterMenuState != FilterMenuState.Hidden,
                 enter = fadeIn(),
@@ -257,12 +276,14 @@ fun PokedexScreen(
                                     contentDescription = "Show filters",
                                 )
                             }
+
                             FilterMenuState.Visible -> {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_close),
                                     contentDescription = "Hide filters",
                                 )
                             }
+
                             FilterMenuState.Types -> {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -273,6 +294,7 @@ fun PokedexScreen(
                     }
                 }
             }
+
         }
     }
 }
@@ -281,15 +303,21 @@ fun PokedexScreen(
 private fun PokemonList(
     modifier: Modifier = Modifier,
     listState: LazyGridState,
-    loading: Boolean = false,
+    listLoadedState: MutableTransitionState<Boolean>,
     pokemon: List<Pokemon>,
     favorites: List<Pokemon>,
     showFavorites: Boolean = false,
     typeFilter: Type? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
-    val loaded = remember { MutableTransitionState(!loading) }
-    val pokemonToShow = if (showFavorites) favorites else pokemon
+    val pokemonToShow = (if (showFavorites) favorites else pokemon).filter {
+        if (typeFilter != null) {
+            it.typeOfPokemon.contains(typeFilter.toString())
+        } else {
+            true
+        }
+    }
+
     val bottomContentPadding = 96.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     LazyVerticalGrid(
@@ -300,80 +328,63 @@ private fun PokemonList(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(top = 12.dp, start = 16.dp, end = 16.dp, bottom = bottomContentPadding),
         content = {
-            if (loading) {
+            if (pokemonToShow.isEmpty()) {
                 item(span = { GridItemSpan(2) }) {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
                     ) {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .size(48.dp)
-                                .padding(vertical = 24.dp)
+                        Text(
+                            text = "No Pokemon match the following:",
+                            style = MaterialTheme.typography.bodyLarge
                         )
-                    }
-                }
-            } else {
-                loaded.targetState = true
-
-                if (pokemonToShow.isEmpty()) {
-                    item(span = { GridItemSpan(2) }) {
+                        Spacer(Modifier.height(16.dp))
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Bottom,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp)
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            Text(
-                                text = "No Pokemon match the following:",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            Spacer(Modifier.height(16.dp))
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                if (showFavorites) {
-                                    Text(
-                                        text = "Favorites",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                }
-                                if (typeFilter != null) {
-                                    Text(
-                                        text = "Type: $typeFilter",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                }
+                            if (showFavorites) {
+                                Text(
+                                    text = "Favorites",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                            if (typeFilter != null) {
+                                Text(
+                                    text = "Type: $typeFilter",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
                             }
                         }
                     }
-                } else {
-                    itemsIndexed(items = pokemonToShow, key = { _, p -> p.id }) { idx, p ->
-                        AnimatedVisibility(
-                            visibleState = loaded,
-                            enter = slideInVertically(
-                                animationSpec = tween(
-                                    durationMillis = 500,
-                                    delayMillis = idx / 2 * 120
-                                ),
-                                initialOffsetY = { it / 2 }
-                            ) + fadeIn(
-                                animationSpec = tween(
-                                    durationMillis = 400,
-                                    delayMillis = idx / 2 * 150
-                                ),
+                }
+            } else {
+                itemsIndexed(items = pokemonToShow, key = { _, p -> p.id }) { idx, p ->
+                    AnimatedVisibility(
+                        visibleState = listLoadedState,
+                        enter = slideInVertically(
+                            animationSpec = tween(
+                                durationMillis = 500,
+                                delayMillis = idx / 2 * 120
                             ),
-                            exit = ExitTransition.None,
-                            label = "pokemonCardTransition"
-                        ) {
-                            PokedexCard(
-                                pokemon = p,
-                                isFavorite = favorites.contains(p),
-                                onPokemonSelected = onPokemonSelected
-                            )
-                        }
+                            initialOffsetY = { it / 2 }
+                        ) + fadeIn(
+                            animationSpec = tween(
+                                durationMillis = 400,
+                                delayMillis = idx / 2 * 150
+                            ),
+                        ),
+                        exit = ExitTransition.None,
+                        label = "pokemonCardTransition"
+                    ) {
+                        PokedexCard(
+                            pokemon = p,
+                            isFavorite = favorites.contains(p),
+                            onPokemonSelected = onPokemonSelected
+                        )
                     }
                 }
             }
@@ -530,34 +541,38 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
 @Composable
 private fun PokedexScreenPreview() {
     var pokemon by remember { mutableStateOf(SamplePokemonData) }
-    val favorites by remember { mutableStateOf(SamplePokemonData.take(5)) }
     var showFavorites by remember { mutableStateOf(false) }
     var typeFilter by remember { mutableStateOf<Type?>(null) }
 
+    var state by remember {
+        mutableStateOf(
+            PokedexUiState.Ready(
+                listLoadedState = MutableTransitionState(true),
+                pokemon = SamplePokemonData.toList(),
+                favorites = SamplePokemonData.take(5),
+            )
+        )
+    }
+
     AppTheme {
         PokedexScreen(
-            loading = false,
-            pokemon = pokemon,
-            favorites = favorites,
+            state = state,
             showFavorites = showFavorites,
+            typeFilter = typeFilter,
             onMenuItemClick = { result ->
                 when (result) {
                     is FilterMenuEvent.ToggleFavorites -> {
                         showFavorites = !showFavorites
-                        pokemon = if (showFavorites) {
-                            favorites.toList()
-                        } else {
-                            SamplePokemonData.toList()
-                        }
+                        state = state.copy(
+                            pokemon = if (showFavorites) {
+                                SamplePokemonData.take(5)
+                            } else {
+                                SamplePokemonData.toList()
+                            }
+                        )
                     }
                     is FilterMenuEvent.FilterTypes -> {
                         typeFilter = if (typeFilter != result.typeToFilter) result.typeToFilter else null
-
-                        pokemon = if (typeFilter != null) {
-                            SamplePokemonData.filter { it.typeOfPokemon.contains(typeFilter.toString()) }
-                        } else {
-                            SamplePokemonData.toList()
-                        }
                     }
                     is FilterMenuEvent.ShowTypes -> {}
                 }
