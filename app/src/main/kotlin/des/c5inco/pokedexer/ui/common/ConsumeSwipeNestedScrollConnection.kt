@@ -1,6 +1,6 @@
 package des.c5inco.pokedexer.ui.common
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.ui.geometry.Offset
@@ -9,10 +9,9 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.unit.Velocity
 
 // Copied from BackdropScaffold internal implementation
-@OptIn(ExperimentalFoundationApi::class)
 fun <T> consumeSwipeNestedScrollConnection(
     state: AnchoredDraggableState<T>,
-    orientation: Orientation
+    orientation: Orientation,
 ): NestedScrollConnection = object : NestedScrollConnection {
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
         val delta = available.toFloat()
@@ -43,8 +42,7 @@ fun <T> consumeSwipeNestedScrollConnection(
         val minAnchorOffset = if (minAnchor != null) state.anchors.positionOf(minAnchor) else Float.NEGATIVE_INFINITY
 
         return if (toFling < 0 && currentOffset > minAnchorOffset) {
-            state.settle(velocity = toFling)
-            // since we go to the anchor with tween settling, consume all for the best UX
+            state.settle(tween())
             available
         } else {
             Velocity.Zero
@@ -52,7 +50,7 @@ fun <T> consumeSwipeNestedScrollConnection(
     }
 
     override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-        state.settle(velocity = available.toFloat())
+        state.settle(tween())
         return available
     }
 

@@ -9,11 +9,9 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -23,6 +21,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.AnchoredDraggableDefaults
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
@@ -173,10 +172,6 @@ fun AnimatedContentScope.PokemonDetailsScreen(
         AnchoredDraggableState(
             initialValue = DragValue.Start,
             anchors = draggableAnchors,
-            positionalThreshold = { distance -> distance * 0.5f },
-            velocityThreshold = { with(density) { 244.dp.toPx() * 0.5f } },
-            snapAnimationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessMediumLow),
-            decayAnimationSpec = defaultDecayAnimationSpec,
         )
     }
     val anchorDraggableProgress by remember {
@@ -354,7 +349,11 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                             }
                         }
                         .nestedScroll(nestedScrollConnection)
-                        .anchoredDraggable(anchorDraggableState, Orientation.Vertical),
+                        .anchoredDraggable(
+                            state = anchorDraggableState,
+                            orientation = Orientation.Vertical,
+                            flingBehavior = AnchoredDraggableDefaults.flingBehavior(anchorDraggableState)
+                        ),
                     shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
                 ) {
                     CardContent(
