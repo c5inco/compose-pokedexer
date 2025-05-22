@@ -2,7 +2,6 @@ package des.c5inco.pokedexer.ui.home
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -32,8 +31,6 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
 import des.c5inco.pokedexer.ui.home.appbar.SearchResult
 import des.c5inco.pokedexer.ui.home.appbar.elements.MenuItem
-import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultExpandedCard
-import des.c5inco.pokedexer.ui.home.appbar.search.MoveResultExpandedCard
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
@@ -61,85 +58,61 @@ fun HomeScreen(
     onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
 ) {
     var openAlertDialog by remember { mutableStateOf(false) }
-    var expandSearchResult by remember { mutableStateOf(false) }
     var searchResult by remember { mutableStateOf<SearchResult?>(null) }
 
-    SharedTransitionLayout {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Box {
-                Column {
-                    MainAppBar(
-                        searchText = searchText,
-                        searchResponse = searchResponse,
-                        selectedSearchResult = searchResult,
-                        sharedTransitionScope = this@SharedTransitionLayout,
-                        onMenuItemSelected = {
-                            when (it) {
-                                MenuItem.Moves,
-                                MenuItem.Pokedex,
-                                MenuItem.Items ->
-                                    onMenuItemSelected(it)
-                                else ->
-                                    openAlertDialog = true
-                            }
-                        },
-                        onSearchResultSelected = {
-                            // TODO: Build Pokemon expanded result card later, for now navigate to details
-                            if (it is SearchResult.PokemonEvent) {
-                                onSearchResultSelected(it)
-                            } else {
-                                expandSearchResult = true
-                                searchResult = it
-                            }
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Box {
+            Column {
+                MainAppBar(
+                    searchText = searchText,
+                    searchResponse = searchResponse,
+                    selectedSearchResult = searchResult,
+                    onMenuItemSelected = {
+                        when (it) {
+                            MenuItem.Moves,
+                            MenuItem.Pokedex,
+                            MenuItem.Items ->
+                                onMenuItemSelected(it)
+
+                            else ->
+                                openAlertDialog = true
                         }
-                    )
-                }
+                    },
+                )
             }
         }
-        AnimatedContent(
-            targetState = searchResult,
-            transitionSpec = {
-                fadeIn() togetherWith fadeOut()
-            },
-            label = "searchResultSharedElementTransition"
-        ) { targetResult ->
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                targetResult?.let {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clickable {
-                                expandSearchResult = false
-                                searchResult = null
-                            }
-                            .background(Color.Black.copy(alpha = 0.5f))
-                    )
-                    when (it) {
-                        is SearchResult.PokemonEvent -> TODO()
-                        is SearchResult.ItemEvent -> {
-                            ItemResultExpandedCard(
-                                item = it.item,
-                                animatedVisibilityScope = this@AnimatedContent
-                            )
+    }
+    AnimatedContent(
+        targetState = searchResult,
+        transitionSpec = {
+            fadeIn() togetherWith fadeOut()
+        },
+        label = "searchResultSharedElementTransition"
+    ) { targetResult ->
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            targetResult?.let {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable {
+                            searchResult = null
                         }
-                        is SearchResult.MoveEvent -> {
-                            MoveResultExpandedCard(
-                                move = it.move,
-                                animatedVisibilityScope = this@AnimatedContent
-                            )
-                        }
-                    }
+                        .background(Color.Black.copy(alpha = 0.5f))
+                )
+                when (it) {
+                    is SearchResult.PokemonEvent -> TODO()
+                    is SearchResult.ItemEvent -> TODO()
+                    is SearchResult.MoveEvent -> TODO()
                 }
             }
         }
     }
-
 
     if (openAlertDialog) {
         AlertDialog(

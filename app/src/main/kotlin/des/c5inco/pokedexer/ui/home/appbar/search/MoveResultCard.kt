@@ -1,15 +1,5 @@
 package des.c5inco.pokedexer.ui.home.appbar.search
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -35,14 +25,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.moves.SampleMoves
@@ -54,12 +39,10 @@ import des.c5inco.pokedexer.ui.common.TypeIconLabel
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.MoveCategoryTheme
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.MoveResultCard(
+fun MoveResultCard(
     modifier: Modifier = Modifier,
     move: Move = SampleMoves.first(),
-    animatedVisibilityScope: AnimatedVisibilityScope,
     onSelected: (Move) -> Unit = { }
 ) {
     MoveCategoryTheme(
@@ -68,12 +51,7 @@ fun SharedTransitionScope.MoveResultCard(
         Card(
             modifier = modifier
                 .width(200.dp)
-                .clickable { onSelected(move) }
-                .sharedBounds(
-                    sharedContentState = rememberSharedContentState(key = "move-${move.id}-bounds"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.large)
-                ),
+                .clickable { onSelected(move) },
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -89,81 +67,55 @@ fun SharedTransitionScope.MoveResultCard(
                 Text(
                     text = move.name,
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.sharedBounds(
-                        sharedContentState = rememberSharedContentState(key = "move-name-${move.id}"),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        boundsTransform = textBoundsTransform,
-                    )
                 )
                 CategoryIcon(
                     move = move,
                     modifier = Modifier
                         .size(36.dp)
-                        .sharedBounds(
-                            sharedContentState = rememberSharedContentState(key = "category-icon-${move.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = imageBoundsTransform,
-                        )
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @PreviewLightDark
 @Composable
 fun MoveResultCardPreview() {
     AppTheme {
         Surface(
             tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp,
+            modifier = Modifier.padding(vertical = 20.dp)
         ) {
-            SharedTransitionLayout {
-                AnimatedVisibility(
-                    visible = true,
-                    modifier = Modifier.padding(vertical = 20.dp)
-                ) {
-                    LazyHorizontalGrid(
-                        rows = GridCells.Fixed(4),
-                        contentPadding = PaddingValues(horizontal = 20.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .height(240.dp)
-                            .fillMaxWidth()
-                    ) {
-                        items(5) {
-                            MoveResultCard(
-                                move = SampleMoves[it],
-                                animatedVisibilityScope = this@AnimatedVisibility
-                            )
-                        }
-                    }
+            LazyHorizontalGrid(
+                rows = GridCells.Fixed(4),
+                contentPadding = PaddingValues(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .height(240.dp)
+                    .fillMaxWidth()
+            ) {
+                items(5) {
+                    MoveResultCard(
+                        move = SampleMoves[it],
+                    )
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.MoveResultExpandedCard(
+fun MoveResultExpandedCard(
     modifier: Modifier = Modifier,
     move: Move = SampleMoves.first(),
-    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
     MoveCategoryTheme(
         category = move.category()
     ) {
         Card(
             modifier = modifier
-                .width(260.dp)
-                .sharedBounds(
-                    sharedContentState = rememberSharedContentState(key = "move-${move.id}-bounds"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    boundsTransform = containerBoundsTransform,
-                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.large)
-                ),
+                .width(260.dp),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -178,46 +130,35 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                         text = move.name,
                         style = MaterialTheme.typography.titleLarge,
                         color = MoveCategoryTheme.colorScheme.primary,
-                        modifier = Modifier.sharedBounds(
-                            sharedContentState = rememberSharedContentState(key = "move-name-${move.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = textBoundsTransform
-                        )
                     )
                     Spacer(Modifier.height(6.dp))
-                    with(animatedVisibilityScope) {
-                        Column(
-                            Modifier.animateEnterExit(
-                                    enter = fadeIn(tween(400)) + slideInVertically(tween(300)) { -it / 2 },
-                                    exit = fadeOut()
-                                )
+
+                    Column {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                TypeIconLabel(type = move.type())
-                                Spacer(Modifier.width(6.dp))
-                                ValuesText(
-                                    label = "PP",
-                                    value = move.pp,
-                                    modifier = Modifier.weight(0.75f)
-                                )
-                                ValuesText(
-                                    label = "PWR",
-                                    value = move.power ?: -1,
-                                )
-                                ValuesText(
-                                    label = "ACC",
-                                    value = move.accuracy ?: -1,
-                                )
-                            }
-                            Spacer(Modifier.height(12.dp))
-                            Text(
-                                text = move.description,
-                                style = MaterialTheme.typography.bodyMedium,
+                            TypeIconLabel(type = move.type())
+                            Spacer(Modifier.width(6.dp))
+                            ValuesText(
+                                label = "PP",
+                                value = move.pp,
+                                modifier = Modifier.weight(0.75f)
+                            )
+                            ValuesText(
+                                label = "PWR",
+                                value = move.power ?: -1,
+                            )
+                            ValuesText(
+                                label = "ACC",
+                                value = move.accuracy ?: -1,
                             )
                         }
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = move.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     }
                 }
                 CategoryIcon(
@@ -226,11 +167,6 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                         .size(64.dp)
                         .align(Alignment.TopEnd)
                         .offset(x = 16.dp, y = (-16).dp)
-                        .sharedBounds(
-                            sharedContentState = rememberSharedContentState(key = "category-icon-${move.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = imageBoundsTransform,
-                        )
                         .graphicsLayer { alpha = 0.4f }
                 )
             }
@@ -260,73 +196,25 @@ private fun RowScope.ValuesText(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @PreviewLightDark
 @Composable
 private fun MoveResultExpandedCardPreview() {
     AppTheme {
-        SharedTransitionLayout {
-            AnimatedVisibility(
-                visible = true
-            ) {
-                Column(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    MoveResultExpandedCard(
-                        move = SampleMoves[3],
-                        animatedVisibilityScope = this@AnimatedVisibility
-                    )
-                    MoveResultExpandedCard(
-                        move = SampleMoves[1],
-                        animatedVisibilityScope = this@AnimatedVisibility
-                    )
-                    MoveResultExpandedCard(
-                        move = SampleMoves[2],
-                        animatedVisibilityScope = this@AnimatedVisibility
-                    )
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalSharedTransitionApi::class)
-@Preview
-@Composable
-private fun MoveResultTransitionPreview() {
-    var expanded by remember { mutableStateOf(false) }
-    val sampleMove = SampleMoves[3]
-
-    AppTheme {
-        SharedTransitionLayout {
-            Box(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .fillMaxSize()
-                    .padding(20.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                AnimatedContent(
-                    targetState = expanded,
-                ) { targetState ->
-                    if (targetState) {
-                        MoveResultExpandedCard(
-                            move = sampleMove,
-                            modifier = Modifier.clickable { expanded = false },
-                            animatedVisibilityScope = this@AnimatedContent
-                        )
-                    } else {
-                        MoveResultCard(
-                            move = sampleMove,
-                            animatedVisibilityScope = this@AnimatedContent,
-                            onSelected = { expanded = !expanded }
-                        )
-                    }
-                }
-            }
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            MoveResultExpandedCard(
+                move = SampleMoves[3],
+            )
+            MoveResultExpandedCard(
+                move = SampleMoves[1],
+            )
+            MoveResultExpandedCard(
+                move = SampleMoves[2],
+            )
         }
     }
 }

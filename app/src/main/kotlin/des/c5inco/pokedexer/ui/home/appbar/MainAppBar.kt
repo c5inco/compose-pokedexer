@@ -1,11 +1,8 @@
 package des.c5inco.pokedexer.ui.home.appbar
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -64,7 +61,6 @@ import des.c5inco.pokedexer.ui.home.appbar.elements.RoundedSearchBar
 import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultCard
 import des.c5inco.pokedexer.ui.home.appbar.search.MoveResultCard
 import des.c5inco.pokedexer.ui.home.appbar.search.PokemonResultCard
-import des.c5inco.pokedexer.ui.home.appbar.search.slideAndFadeEnterTransition
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 sealed class SearchResult {
@@ -73,13 +69,11 @@ sealed class SearchResult {
     data class ItemEvent(val item: Item) : SearchResult()
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainAppBar(
     searchText: TextFieldState,
     searchResponse: SearchResponse,
     selectedSearchResult: SearchResult? = null,
-    sharedTransitionScope: SharedTransitionScope,
     onMenuItemSelected: (MenuItem) -> Unit = { _ -> },
     onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
 ) {
@@ -120,16 +114,17 @@ fun MainAppBar(
                 }
                 AnimatedContent(
                     targetState = searchResponse,
-                    transitionSpec = { fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false)) },
+                    transitionSpec = {
+                        fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false))
+                    },
                     label = "searchResultsTransition",
-                ) { response  ->
+                ) { response ->
                     if (response.foundPokemon.isNotEmpty() || response.foundMoves.isNotEmpty() || response.foundItems.isNotEmpty()) {
                         SearchResults(
                             pokemonResults = response.foundPokemon,
                             movesResults = response.foundMoves,
                             itemsResults = response.foundItems,
                             selectedSearchResult = selectedSearchResult,
-                            sharedTransitionScope = sharedTransitionScope,
                             onSelected = onSearchResultSelected,
                             modifier = Modifier.padding(top = 32.dp)
                         )
@@ -161,16 +156,14 @@ fun MainAppBar(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun AnimatedContentScope.SearchResults(
+private fun SearchResults(
     modifier: Modifier = Modifier,
     pokemonResults: List<Pokemon> = SamplePokemonData.take(10),
     movesResults: List<Move> = SampleMoves.take(10),
     itemsResults: List<Item> = SampleItems.take(10),
     selectedSearchResult: SearchResult? = null,
-    sharedTransitionScope: SharedTransitionScope,
-    onSelected: (SearchResult) -> Unit = { _ ->}
+    onSelected: (SearchResult) -> Unit = { _ -> }
 ) {
     val scrollState = rememberScrollState()
 
@@ -200,11 +193,6 @@ private fun AnimatedContentScope.SearchResults(
                         PokemonResultCard(
                             pokemon = it,
                             onPokemonSelected = { onSelected(SearchResult.PokemonEvent(it)) },
-                            modifier = Modifier
-                                .animateEnterExit(
-                                    enter = slideAndFadeEnterTransition(idx),
-                                    exit = fadeOut()
-                                )
                         )
                     }
                 }
@@ -227,21 +215,14 @@ private fun AnimatedContentScope.SearchResults(
                     modifier = Modifier.height(240.dp)
                 ) {
                     itemsIndexed(items = movesResults, key = { _, it -> it.id }) { idx, it ->
-                        with (sharedTransitionScope) {
-                            AnimatedVisibility(
-                                visible = it != (selectedSearchResult as? SearchResult.MoveEvent)?.move,
-                                modifier = Modifier.animateEnterExit(
-                                    enter = slideAndFadeEnterTransition(idx),
-                                    exit = fadeOut()
-                                )
-                            ) {
-                                MoveResultCard(
-                                    move = it,
-                                    animatedVisibilityScope = this,
-                                    modifier = Modifier.width(200.dp),
-                                    onSelected = { onSelected(SearchResult.MoveEvent(it)) }
-                                )
-                            }
+                        AnimatedVisibility(
+                            visible = it != (selectedSearchResult as? SearchResult.MoveEvent)?.move,
+                        ) {
+                            MoveResultCard(
+                                move = it,
+                                modifier = Modifier.width(200.dp),
+                                onSelected = { onSelected(SearchResult.MoveEvent(it)) }
+                            )
                         }
                     }
                 }
@@ -264,21 +245,14 @@ private fun AnimatedContentScope.SearchResults(
                     modifier = Modifier.height(240.dp)
                 ) {
                     itemsIndexed(items = itemsResults, key = { _, it -> it.id }) { idx, it ->
-                        with (sharedTransitionScope) {
-                            AnimatedVisibility(
-                                visible = it != (selectedSearchResult as? SearchResult.ItemEvent)?.item,
-                                modifier = Modifier.animateEnterExit(
-                                    enter = slideAndFadeEnterTransition(idx),
-                                    exit = fadeOut()
-                                )
-                            ) {
-                                ItemResultCard(
-                                    item = it,
-                                    modifier = Modifier.width(200.dp),
-                                    animatedVisibilityScope = this,
-                                    onSelected = { onSelected(SearchResult.ItemEvent(it)) }
-                                )
-                            }
+                        AnimatedVisibility(
+                            visible = it != (selectedSearchResult as? SearchResult.ItemEvent)?.item,
+                        ) {
+                            ItemResultCard(
+                                item = it,
+                                modifier = Modifier.width(200.dp),
+                                onSelected = { onSelected(SearchResult.ItemEvent(it)) }
+                            )
                         }
                     }
                 }
@@ -297,20 +271,11 @@ private fun SearchResultsPreview() {
         Surface(
             tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp,
         ) {
-            SharedTransitionLayout {
-                AnimatedContent(
-                    targetState = true,
-                ) { _ ->
-                    SearchResults(
-                        sharedTransitionScope = this@SharedTransitionLayout,
-                    )
-                }
-            }
+            SearchResults()
         }
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @PreviewLightDark
 @Composable
 fun PreviewMainAppBar() {
@@ -319,18 +284,11 @@ fun PreviewMainAppBar() {
             Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            SharedTransitionLayout {
-                AnimatedContent(
-                    targetState = true,
-                ) { _ ->
-                    Column {
-                        MainAppBar(
-                            searchText = TextFieldState(),
-                            searchResponse = SearchResponse(),
-                            sharedTransitionScope = this@SharedTransitionLayout,
-                        )
-                    }
-                }
+            Column {
+                MainAppBar(
+                    searchText = TextFieldState(),
+                    searchResponse = SearchResponse(),
+                )
             }
         }
     }
