@@ -1,132 +1,85 @@
 package des.c5inco.pokedexer.ui.home
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import des.c5inco.pokedexer.R
-import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
-import des.c5inco.pokedexer.ui.home.appbar.SearchResult
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.ui.home.appbar.elements.MenuItem
+import des.c5inco.pokedexer.ui.items.ItemsScreenRoute
+import des.c5inco.pokedexer.ui.moves.MovesListScreenRoute
+import des.c5inco.pokedexer.ui.pokedex.PokedexScreenRoute
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
 fun HomeScreenRoute(
-    viewModel: HomeViewModel,
-    onMenuItemSelected: (MenuItem) -> Unit = { _ -> },
-    onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
+    // viewModel: HomeViewModel, // Remains commented out
+    navigateToPokemonDetails: (Pokemon) -> Unit,
+    pokemonIdFromDetailsScreen: Int?
 ) {
-    val searchResponse by viewModel.searchResponses.collectAsStateWithLifecycle()
-
     HomeScreen(
-        searchText = viewModel.searchText,
-        searchResponse = searchResponse,
-        onMenuItemSelected = onMenuItemSelected,
-        onSearchResultSelected = onSearchResultSelected
+        navigateToPokemonDetails = navigateToPokemonDetails,
+        pokemonIdFromDetailsScreen = pokemonIdFromDetailsScreen
     )
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun HomeScreen(
-    searchText: TextFieldState,
-    searchResponse: SearchResponse,
-    onMenuItemSelected: (MenuItem) -> Unit = { _ -> },
-    onSearchResultSelected: (SearchResult) -> Unit = { _ -> }
+    navigateToPokemonDetails: (Pokemon) -> Unit = {},
+    pokemonIdFromDetailsScreen: Int? = null
 ) {
-    var openAlertDialog by remember { mutableStateOf(false) }
-    var searchResult by remember { mutableStateOf<SearchResult?>(null) }
+    var currentSelectedItem by remember { mutableStateOf<MenuItem>(MenuItem.Pokedex) }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Box {
-            Column {
-                MainAppBar(
-                    searchText = searchText,
-                    searchResponse = searchResponse,
-                    selectedSearchResult = searchResult,
-                    onMenuItemSelected = {
-                        when (it) {
-                            MenuItem.Moves,
-                            MenuItem.Pokedex,
-                            MenuItem.Items ->
-                                onMenuItemSelected(it)
-
-                            else ->
-                                openAlertDialog = true
-                        }
-                    },
-                )
-            }
+    Scaffold(
+        contentWindowInsets = WindowInsets(0.dp), // Allow inner scaffolds to handle insets
+        bottomBar = {
+            BottomNavigationBar(
+                currentSelectedItem = currentSelectedItem,
+                onItemSelected = { selectedItem ->
+                    currentSelectedItem = selectedItem
+                }
+            )
         }
-    }
-    AnimatedContent(
-        targetState = searchResult,
-        transitionSpec = {
-            fadeIn() togetherWith fadeOut()
-        },
-        label = "searchResultSharedElementTransition"
-    ) { targetResult ->
+    ) { paddingValues ->
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier
+                .padding(paddingValues) // Apply padding for bottom bar
+                .fillMaxSize()
         ) {
-            targetResult?.let {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable {
-                            searchResult = null
-                        }
-                        .background(Color.Black.copy(alpha = 0.5f))
+            when (currentSelectedItem) {
+                MenuItem.Pokedex -> PokedexScreenRoute(
+                    viewModel = hiltViewModel(),
+                    onPokemonSelected = navigateToPokemonDetails,
+                    pastPokemonSelected = pokemonIdFromDetailsScreen,
+                    onBackClick = { /* No-op, handled by NavHost or system back */ }
                 )
-                when (it) {
-                    is SearchResult.PokemonEvent -> TODO()
-                    is SearchResult.ItemEvent -> TODO()
-                    is SearchResult.MoveEvent -> TODO()
-                }
+                MenuItem.Moves -> MovesListScreenRoute(
+                    viewModel = hiltViewModel(),
+                    onBackClick = { /* No-op, handled by NavHost or system back */ }
+                )
+                MenuItem.Items -> ItemsScreenRoute(
+                    viewModel = hiltViewModel(),
+                    onBackClick = { /* No-op, handled by NavHost or system back */ }
+                )
+                // Default case should ideally not be reached if BottomNavigationBar only shows these 3
+                else -> PokedexScreenRoute( // Default to Pokedex or a placeholder
+                    viewModel = hiltViewModel(),
+                    onPokemonSelected = navigateToPokemonDetails,
+                    pastPokemonSelected = pokemonIdFromDetailsScreen,
+                    onBackClick = { }
+                )
             }
         }
-    }
-
-    if (openAlertDialog) {
-        AlertDialog(
-            onDismissRequest = { openAlertDialog = false },
-            title = { Text(text = stringResource(R.string.featureInProgressTitle)) },
-            text = { Text(stringResource(R.string.featureInProgressMessage)) },
-            confirmButton = {
-                TextButton(
-                    onClick = { openAlertDialog = false }
-                ) {
-                    Text(stringResource(R.string.dismissButtonText))
-                }
-            },
-        )
     }
 }
 
@@ -134,9 +87,6 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     AppTheme {
-        HomeScreen(
-            searchText = TextFieldState(),
-            searchResponse = SearchResponse()
-        )
+        HomeScreen()
     }
 }
