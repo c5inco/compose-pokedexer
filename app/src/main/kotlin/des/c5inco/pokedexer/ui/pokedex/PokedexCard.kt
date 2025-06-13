@@ -4,9 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -29,19 +28,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.model.mapTypeToCuratedAnalogousHue
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonImage
-import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
-import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
 import des.c5inco.pokedexer.ui.common.calculateAnalogousColors
 import des.c5inco.pokedexer.ui.common.formatId
+import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.common.meshGradient
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
@@ -122,13 +122,8 @@ fun PokedexCard(
                     .height(124.dp)
                     .clickable { onPokemonSelected(pokemon) }
             ) {
-                Column(
-                    Modifier.padding(top = 24.dp, start = 12.dp)
-                ) {
-                    PokemonName(pokemon.name)
-                    Spacer(Modifier.height(8.dp))
-                    PokemonTypeLabels(types = pokemon.typeOfPokemon, metrics = TypeLabelMetrics.SMALL)
-                }
+                PokemonName(modifier = Modifier.align(Alignment.TopStart).padding(start = 12.dp, top = 24.dp), name = pokemon.name)
+
                 val idAlpha = if (isSystemInDarkTheme()) 0.5f else 0.7f
                 Text(
                     text = formatId(pokemon.id),
@@ -139,6 +134,24 @@ fun PokedexCard(
                         .padding(top = 8.dp, end = 12.dp)
                         .align(Alignment.TopEnd)
                 )
+
+                PokemonTypesTheme(types = pokemon.typeOfPokemon) {
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .offset(x = 8.dp, y = (-12).dp)
+                    ) {
+                        pokemon.typeOfPokemon.forEach {
+                            Icon(
+                                painter = painterResource(id = mapTypeToIcon(Type.valueOf(it))),
+                                contentDescription = null,
+                                tint = PokemonTypesTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                }
+
                 Pokeball(
                     tint = Color.White,
                     modifier = Modifier
@@ -153,7 +166,7 @@ fun PokedexCard(
                     description = pokemon.name,
                     modifier = Modifier
                         .padding(bottom = 6.dp, end = 6.dp)
-                        .size(80.dp)
+                        .size(92.dp)
                         .align(Alignment.BottomEnd)
                 )
                 if (isFavorite) {
@@ -171,11 +184,13 @@ fun PokedexCard(
 }
 
 @Composable
-private fun PokemonName(name: String?) {
+private fun PokemonName(modifier: Modifier = Modifier, name: String?) {
     Text(
         text = name ?: "",
         fontWeight = FontWeight.Bold,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
+        letterSpacing = (-0.4).sp,
+        modifier = modifier
     )
 }
 
