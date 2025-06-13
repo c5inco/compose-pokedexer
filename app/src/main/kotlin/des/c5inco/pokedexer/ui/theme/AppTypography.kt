@@ -58,6 +58,9 @@ val AppTypography = Typography(
     labelLarge = defaultTypography.labelLarge.copy(
         fontFamily = appFontFamily
     ),
+    labelMedium = defaultTypography.labelMedium.copy(
+        fontFamily = appFontFamily
+    ),
     labelSmall = defaultTypography.labelSmall.copy(
         fontWeight = FontWeight.Black,
         fontFamily = appFontFamily,
