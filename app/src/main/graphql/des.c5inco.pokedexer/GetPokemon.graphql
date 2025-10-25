@@ -7,7 +7,7 @@ query PokemonOriginal($generationId: Int!) {
   pokemon: pokemon_v2_pokemonspecies(where: {generation_id: {_eq: $generationId}}, order_by: {id: asc}) {
     id
     name
-    description: pokemon_v2_pokemonspeciesflavortexts(where: {version_id: {_eq: 7}}) {
+    description: pokemon_v2_pokemonspeciesflavortexts(where: {language_id: { _eq: 9}}, order_by: {version_id: asc}, limit: 1) {
       flavorText: flavor_text
     }
     detail: pokemon_v2_pokemons {
@@ -48,5 +48,6 @@ query PokemonOriginal($generationId: Int!) {
     species: pokemon_v2_pokemonspeciesnames(where: {pokemon_v2_language: {iso639: {_eq: "en"}}}) {
       genus
     }
+    generation_id
   }
 }
