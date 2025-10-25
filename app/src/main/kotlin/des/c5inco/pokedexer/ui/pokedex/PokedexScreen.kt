@@ -47,12 +47,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
@@ -178,30 +175,6 @@ fun PokedexScreen(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
-                    }
-                },
-                actions = {
-                    var expanded by remember { mutableStateOf(false) }
-
-                    Box(
-                    ) {
-                        IconButton(onClick = { expanded = !expanded }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = "More options")
-                        }
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            Generation.entries.forEach { generation ->
-                                DropdownMenuItem(
-                                    text = { Text("Generation ${generation.romanNumeral}") },
-                                    onClick = {
-                                        onGenerationSelected(generation)
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
                     }
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
