@@ -7,12 +7,14 @@ import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
 import des.c5inco.pokedexer.model.Evolution
 import des.c5inco.pokedexer.model.EvolutionTrigger
+import des.c5inco.pokedexer.model.Generation
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.PokemonAbility
 import des.c5inco.pokedexer.model.PokemonMove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -86,6 +88,29 @@ class RemotePokemonRepository @Inject constructor(
 
     override fun getPokemonByName(name: String): Flow<List<Pokemon>> {
         return pokemonDao.findByName(name)
+    }
+
+    override fun getPokemonByGeneration(generation: Generation): Flow<List<Pokemon>> {
+        return flow {
+            val localPokemon = pokemonDao.getAllByGeneration(generation.id).first()
+            
+            if (localPokemon.isEmpty()) {
+                // Generation not in database, fetch from remote
+                try {
+                    updatePokemonByGeneration(generation.id)
+                    // After fetching, emit the data from the database
+                    val remotePokemon = pokemonDao.getAllByGeneration(generation.id).first()
+                    emit(remotePokemon)
+                } catch (e: Exception) {
+                    println("Failed to fetch Pokemon for generation ${generation.id}: ${e.message}")
+                    // Emit empty list on failure
+                    emit(emptyList())
+                }
+            } else {
+                // Generation already in database, emit it
+                emit(localPokemon)
+            }
+        }
     }
 
     override suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon> {

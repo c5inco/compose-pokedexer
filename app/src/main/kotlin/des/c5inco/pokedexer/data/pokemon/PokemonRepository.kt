@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.data.pokemon
 
 import des.c5inco.pokedexer.data.Result
+import des.c5inco.pokedexer.model.Generation
 import des.c5inco.pokedexer.model.Pokemon
 import kotlinx.coroutines.flow.Flow
 
@@ -17,6 +18,8 @@ interface PokemonRepository {
     fun getPokemonByIds(ids: List<Int>): Flow<List<Pokemon>>
 
     fun getPokemonByName(name: String): Flow<List<Pokemon>>
+
+    fun getPokemonByGeneration(generation: Generation): Flow<List<Pokemon>>
 
     suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon>
 

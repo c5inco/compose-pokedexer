@@ -47,9 +47,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
@@ -78,6 +81,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.model.Generation
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.common.Pokeball
@@ -97,13 +101,18 @@ fun PokedexScreenRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showFavorites by viewModel.showFavorites.collectAsStateWithLifecycle()
     val typeFilter by viewModel.typeFilters.collectAsStateWithLifecycle()
+    val generationFilter by viewModel.generationFilters.collectAsStateWithLifecycle()
 
     PokedexScreen(
         state = state,
         showFavorites = showFavorites,
         typeFilter = typeFilter,
+        generationFilter = generationFilter,
         pastPokemonSelected = pastPokemonSelected,
         onPokemonSelected = onPokemonSelected,
+        onGenerationSelected = { generation ->
+            viewModel.filterByGeneration(generation)
+        },
         onMenuItemClick = {
             when (it) {
                 is FilterMenuEvent.ToggleFavorites -> {
@@ -112,7 +121,11 @@ fun PokedexScreenRoute(
                 is FilterMenuEvent.FilterTypes -> {
                     viewModel.filterByType(it.typeToFilter)
                 }
+                is FilterMenuEvent.FilterGeneration -> {
+                    viewModel.filterByGeneration(it.generationToFilter)
+                }
                 is FilterMenuEvent.ShowTypes -> {}
+                is FilterMenuEvent.ShowGenerations -> {}
             }
         },
         onBackClick = onBackClick
@@ -122,7 +135,8 @@ fun PokedexScreenRoute(
 enum class FilterMenuState {
     Hidden,
     Visible,
-    Types
+    Types,
+    Generations
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -131,8 +145,10 @@ fun PokedexScreen(
     state: PokedexUiState,
     showFavorites: Boolean = false,
     typeFilter: Type? = null,
+    generationFilter: Generation? = null,
     pastPokemonSelected: Int? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
+    onGenerationSelected: (Generation) -> Unit = {},
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
@@ -162,6 +178,30 @@ fun PokedexScreen(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
+                    }
+                },
+                actions = {
+                    var expanded by remember { mutableStateOf(false) }
+
+                    Box(
+                    ) {
+                        IconButton(onClick = { expanded = !expanded }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            Generation.entries.forEach { generation ->
+                                DropdownMenuItem(
+                                    text = { Text("Generation ${generation.romanNumeral}") },
+                                    onClick = {
+                                        onGenerationSelected(generation)
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
@@ -208,6 +248,7 @@ fun PokedexScreen(
                             favorites = state.favorites,
                             showFavorites = showFavorites,
                             typeFilter = typeFilter,
+                            generationFilter = generationFilter,
                             onPokemonSelected = onPokemonSelected
                         )
                     }
@@ -242,10 +283,13 @@ fun PokedexScreen(
                     FilterMenu(
                         showFavorites = showFavorites,
                         typeFilter = typeFilter,
+                        generationFilter = generationFilter,
                         menuState = filterMenuState,
                         onMenuItemClick = {
                             if (it is FilterMenuEvent.ShowTypes) {
                                 filterMenuState = FilterMenuState.Types
+                            } else if (it is FilterMenuEvent.ShowGenerations) {
+                                filterMenuState = FilterMenuState.Generations
                             } else {
                                 filterMenuState = FilterMenuState.Hidden
                                 onMenuItemClick(it)
@@ -262,6 +306,7 @@ fun PokedexScreen(
                             FilterMenuState.Hidden -> FilterMenuState.Visible
                             FilterMenuState.Visible -> FilterMenuState.Hidden
                             FilterMenuState.Types -> FilterMenuState.Visible
+                            FilterMenuState.Generations -> FilterMenuState.Visible
                         }
                     },
                 ) {
@@ -290,6 +335,13 @@ fun PokedexScreen(
                                     contentDescription = "Back to filter menu",
                                 )
                             }
+
+                            FilterMenuState.Generations -> {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Back to filter menu",
+                                )
+                            }
                         }
                     }
                 }
@@ -308,14 +360,17 @@ private fun PokemonList(
     favorites: List<Pokemon>,
     showFavorites: Boolean = false,
     typeFilter: Type? = null,
+    generationFilter: Generation? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
     val pokemonToShow = (if (showFavorites) favorites else pokemon).filter {
-        if (typeFilter != null) {
+        val matchesType = if (typeFilter != null) {
             it.typeOfPokemon.contains(typeFilter.toString())
         } else {
             true
         }
+        
+        matchesType
     }
 
     val bottomContentPadding = 96.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
@@ -349,6 +404,12 @@ private fun PokemonList(
                             if (showFavorites) {
                                 Text(
                                     text = "Favorites",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                            if (generationFilter != null) {
+                                Text(
+                                    text = "Gen ${generationFilter.romanNumeral}",
                                     style = MaterialTheme.typography.titleMedium
                                 )
                             }
@@ -395,7 +456,9 @@ private fun PokemonList(
 sealed class FilterMenuEvent {
     data class ToggleFavorites(val filterFavorites: Boolean) : FilterMenuEvent()
     data class ShowTypes(val showTypes: Boolean) : FilterMenuEvent()
+    data class ShowGenerations(val showGenerations: Boolean) : FilterMenuEvent()
     data class FilterTypes(val typeToFilter: Type) : FilterMenuEvent()
+    data class FilterGeneration(val generationToFilter: Generation) : FilterMenuEvent()
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -404,6 +467,7 @@ private fun FilterMenu(
     modifier: Modifier = Modifier,
     showFavorites: Boolean,
     typeFilter: Type? = null,
+    generationFilter: Generation? = null,
     menuState: FilterMenuState,
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
 ) {
@@ -415,66 +479,108 @@ private fun FilterMenu(
         label = "filterMenuTransition",
         modifier = modifier.fillMaxWidth()
     ) { targetState ->
-        if (targetState == FilterMenuState.Types) {
-            FlowRow(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(horizontal = 24.dp)
-            ) {
-                Type.entries.forEachIndexed { idx, type ->
-                    val selected = type == typeFilter
+        when (targetState) {
+            FilterMenuState.Types -> {
+                FlowRow(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                ) {
+                    Type.entries.forEachIndexed { idx, type ->
+                        val selected = type == typeFilter
 
-                    val seedColor = mapTypeToSeedColor(types = listOf(type.toString()))
-                    val kolorScheme = getDynamicColorScheme(seedColor, PaletteStyle.Rainbow)
-                    val pokemonColorScheme = mapDynamicPokemonColorScheme(
-                        seedColor = seedColor,
-                        colorScheme = kolorScheme
-                    )
+                        val seedColor = mapTypeToSeedColor(types = listOf(type.toString()))
+                        val kolorScheme = getDynamicColorScheme(seedColor, PaletteStyle.Rainbow)
+                        val pokemonColorScheme = mapDynamicPokemonColorScheme(
+                            seedColor = seedColor,
+                            colorScheme = kolorScheme
+                        )
 
-                    FilterTypeItem(
-                        type = type,
-                        colors = if (selected) {
-                            ButtonDefaults.filledTonalButtonColors(
-                                containerColor = pokemonColorScheme.surface,
-                                contentColor = pokemonColorScheme.onSurface
-                            )
-                        } else {
-                            ButtonDefaults.filledTonalButtonColors()
-                        },
-                        selected = selected,
-                        index = idx,
-                        onClick = { onMenuItemClick(FilterMenuEvent.FilterTypes(type)) },
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
+                        FilterTypeItem(
+                            type = type,
+                            colors = if (selected) {
+                                ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = pokemonColorScheme.surface,
+                                    contentColor = pokemonColorScheme.onSurface
+                                )
+                            } else {
+                                ButtonDefaults.filledTonalButtonColors()
+                            },
+                            selected = selected,
+                            index = idx,
+                            onClick = { onMenuItemClick(FilterMenuEvent.FilterTypes(type)) },
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
                 }
             }
-        } else {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                FilterMenuItem(
-                    index = 0,
-                    onClick = { onMenuItemClick(FilterMenuEvent.ToggleFavorites(!showFavorites)) }
+            FilterMenuState.Generations -> {
+                FlowRow(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(horizontal = 24.dp)
                 ) {
-                    Icon(
-                        imageVector = if (showFavorites) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(if (showFavorites) "Show all" else "Show favorites")
+                    Generation.entries.forEachIndexed { idx, generation ->
+                        val selected = generation == generationFilter
+
+                        FilterGenerationItem(
+                            generation = generation,
+                            colors = if (selected) {
+                                ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary
+                                )
+                            } else {
+                                ButtonDefaults.filledTonalButtonColors()
+                            },
+                            selected = selected,
+                            index = idx,
+                            onClick = { onMenuItemClick(FilterMenuEvent.FilterGeneration(generation)) },
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
                 }
-                FilterMenuItem(
-                    index = 1,
-                    onClick = { onMenuItemClick(FilterMenuEvent.ShowTypes(true)) }
+            }
+            FilterMenuState.Hidden -> {}
+            FilterMenuState.Visible -> {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_genetics),
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(if (typeFilter != null) "Filtered by $typeFilter" else "All types")
+                    FilterMenuItem(
+                        index = 0,
+                        onClick = { onMenuItemClick(FilterMenuEvent.ToggleFavorites(!showFavorites)) }
+                    ) {
+                        Icon(
+                            imageVector = if (showFavorites) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(if (showFavorites) "Show all" else "Show favorites")
+                    }
+                    FilterMenuItem(
+                        index = 1,
+                        onClick = { onMenuItemClick(FilterMenuEvent.ShowTypes(true)) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_genetics),
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(if (typeFilter != null) "Filtered by $typeFilter" else "All types")
+                    }
+                    FilterMenuItem(
+                        index = 2,
+                        onClick = { onMenuItemClick(FilterMenuEvent.ShowGenerations(true)) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_filter),
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(if (generationFilter != null) "Gen ${generationFilter.romanNumeral}" else "All generations")
+                    }
                 }
             }
         }
@@ -537,12 +643,40 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
     }
 }
 
+@Composable
+private fun AnimatedVisibilityScope.FilterGenerationItem(
+    modifier: Modifier = Modifier,
+    generation: Generation,
+    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(),
+    selected: Boolean = false,
+    index: Int,
+    onClick: () -> Unit = {},
+) {
+    FilledTonalButton(
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+        onClick = onClick,
+        colors = colors,
+        modifier = modifier
+            .animateEnterExit(
+                enter = fadeIn(animationSpec = tween(durationMillis = 240, delayMillis = index * 15 + 60)) +
+                    slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(durationMillis = 150, delayMillis = index * 15 + 60)),
+                exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
+                label = "Gen${generation.id}Transition"
+            )
+    ) {
+        Text(
+            text = "Gen ${generation.romanNumeral}"
+        )
+    }
+}
+
 @PreviewLightDark
 @Composable
 private fun PokedexScreenPreview() {
     var pokemon by remember { mutableStateOf(SamplePokemonData) }
     var showFavorites by remember { mutableStateOf(false) }
     var typeFilter by remember { mutableStateOf<Type?>(null) }
+    var generationFilter by remember { mutableStateOf<Generation?>(null) }
 
     var state by remember {
         mutableStateOf(
@@ -559,6 +693,10 @@ private fun PokedexScreenPreview() {
             state = state,
             showFavorites = showFavorites,
             typeFilter = typeFilter,
+            generationFilter = generationFilter,
+            onGenerationSelected = { generation ->
+                generationFilter = generation
+            },
             onMenuItemClick = { result ->
                 when (result) {
                     is FilterMenuEvent.ToggleFavorites -> {
@@ -574,7 +712,11 @@ private fun PokedexScreenPreview() {
                     is FilterMenuEvent.FilterTypes -> {
                         typeFilter = if (typeFilter != result.typeToFilter) result.typeToFilter else null
                     }
+                    is FilterMenuEvent.FilterGeneration -> {
+                        generationFilter = if (generationFilter != result.generationToFilter) result.generationToFilter else null
+                    }
                     is FilterMenuEvent.ShowTypes -> {}
+                    is FilterMenuEvent.ShowGenerations -> {}
                 }
             }
         )

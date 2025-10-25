@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
+import des.c5inco.pokedexer.model.Generation
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
 import kotlinx.coroutines.delay
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -39,10 +41,13 @@ class PokedexViewModel @Inject constructor(
 
     val showFavorites = MutableStateFlow(false)
     val typeFilters = MutableStateFlow<Type?>(null)
+    val generationFilters = MutableStateFlow(Generation.I)
 
     val state: StateFlow<PokedexUiState> =
         combine(
-            pokemonRepository.pokemon(),
+            generationFilters.flatMapLatest { generation ->
+                pokemonRepository.getPokemonByGeneration(generation)
+            },
             userPreferencesFlow,
         ) { pokemon, userPreferences ->
             delay(500)
@@ -69,5 +74,9 @@ class PokedexViewModel @Inject constructor(
 
     fun filterByType(typeToFilter: Type?) {
         typeFilters.value = if (typeFilters.value != typeToFilter) typeToFilter else null
+    }
+
+    fun filterByGeneration(generationToFilter: Generation?) {
+        generationFilters.value = generationToFilter ?: Generation.I
     }
 }
