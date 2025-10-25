@@ -25,12 +25,16 @@ class RemotePokemonRepository @Inject constructor(
     }
 
     override suspend fun updatePokemon() {
-        val localPokemon = pokemonDao.getAllFlow().first()
+        updatePokemonByGeneration(1)
+    }
+
+    private suspend fun updatePokemonByGeneration(generationId: Int) {
+        val localPokemon = pokemonDao.getAllByGeneration(generationId).first()
 
         if (localPokemon.isEmpty()) {
             withContext(Dispatchers.IO) {
-                println("Loading pokemon from network...")
-                val response = apolloClient.query(PokemonOriginalQuery()).execute()
+                println("Loading Pokemon (gen $generationId) from network...")
+                val response = apolloClient.query(PokemonOriginalQuery(generationId)).execute()
 
                 if (!response.hasErrors()) {
                     val pokemonFromServer = response.data!!.pokemon.map { model ->
@@ -48,6 +52,7 @@ class RemotePokemonRepository @Inject constructor(
                             height = (detail.height ?: 0) / 10.0, // in decimeters
                             weight = (detail.weight ?: 0) / 10.0, // in 10 gram chunks
                             genderRate = model.genderRate ?: -1,
+                            generationId = generationId,
                             hp = stats[0],
                             attack = stats[1],
                             defense = stats[2],
@@ -60,7 +65,6 @@ class RemotePokemonRepository @Inject constructor(
                         )
                     }
 
-                    pokemonDao.deleteAll()
                     pokemonDao.insertAll(*pokemonFromServer.toTypedArray())
                     println("Populated pokemon database: ${pokemonFromServer.size}")
                 } else {
@@ -68,7 +72,7 @@ class RemotePokemonRepository @Inject constructor(
                 }
             }
         } else {
-            println("Pokemon loaded from database: ${localPokemon.size}")
+            println("Pokemon (Gen $generationId) loaded from database: ${localPokemon.size}")
         }
     }
 

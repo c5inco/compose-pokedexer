@@ -16,6 +16,9 @@ interface PokemonDao {
     @Query("SELECT * FROM pokemon")
     fun getAllFlow(): Flow<List<Pokemon>>
 
+    @Query("SELECT * FROM pokemon WHERE generationId = :generationId")
+    fun getAllByGeneration(generationId: Int = 1): Flow<List<Pokemon>>
+
     @Query("SELECT * FROM pokemon WHERE id = :id LIMIT 1")
     fun findById(id: Int): Flow<Pokemon?>
 

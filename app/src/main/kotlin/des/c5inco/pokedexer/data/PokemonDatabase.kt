@@ -19,10 +19,11 @@ import des.c5inco.pokedexer.model.PokemonAbility
 import des.c5inco.pokedexer.model.PokemonMove
 
 @Database(
-    version = 6,
+    version = 7,
     entities = [Pokemon::class, Move::class, Item::class, Ability::class],
     autoMigrations = [
         AutoMigration(from = 1, to = 6),
+        AutoMigration(from = 6, to = 7),
     ]
 )
 @TypeConverters(Converters::class)
