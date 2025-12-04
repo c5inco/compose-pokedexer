@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.apollo)
@@ -80,7 +81,14 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.ui.util)
-    implementation(libs.navigation.compose)
+
+    // Navigation 3
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.kotlinx.serialization.core)
+    // Keep old nav for reference during migration
+    // implementation(libs.navigation.compose)
 
     // Room
     ksp(libs.room.compiler)
@@ -93,7 +101,8 @@ dependencies {
     // Hilt
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
+    // Not needed with Nav3 - we'll use Nav3's ViewModel integration instead
+    // implementation(libs.androidx.hilt.navigation.compose)
 
     // Shapes
     implementation(libs.androidx.graphics.shapes)
