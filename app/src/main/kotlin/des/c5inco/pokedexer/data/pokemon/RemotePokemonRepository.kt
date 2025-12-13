@@ -1,7 +1,7 @@
 package des.c5inco.pokedexer.data.pokemon
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.ApolloException
 import des.c5inco.pokedexer.PokemonOriginalQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
@@ -70,7 +70,7 @@ class RemotePokemonRepository @Inject constructor(
                     pokemonDao.insertAll(*pokemonFromServer.toTypedArray())
                     println("Populated pokemon database: ${pokemonFromServer.size}")
                 } else {
-                    throw ApolloException("The response has errors: ${response.errors}")
+                    throw RuntimeException("The response has errors: ${response.errors}")
                 }
             }
         } else {

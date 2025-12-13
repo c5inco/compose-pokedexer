@@ -7,9 +7,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
-import coil.compose.AsyncImage
-import coil.imageLoader
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.imageLoader
+import coil3.request.ImageRequest
 import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 
 @Composable
@@ -22,7 +22,7 @@ fun PokemonImage(
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(artworkUrl(image))
-            .crossfade(300)
+            // .crossfade(300)
             .build(),
         placeholder = if (LocalInspectionMode.current) {
             painterResource(id = placeholderPokemonImage(image))

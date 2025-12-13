@@ -60,7 +60,9 @@ android {
         }
     }
     apollo {
-        packageName.set("des.c5inco.pokedexer")
+        service("service") {
+            packageName.set("des.c5inco.pokedexer")
+        }
     }
 }
 
@@ -113,6 +115,7 @@ dependencies {
 
     // Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     // Benchmark
     implementation(libs.androidx.profile.installer)
