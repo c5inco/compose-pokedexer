@@ -2,11 +2,11 @@ package des.c5inco.pokedexer.di
 
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.components.SingletonComponent
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsViewModel
 
 @EntryPoint
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 interface ViewModelFactoryProvider {
-    fun pokemonDetailsViewModelFactory() : PokemonDetailsViewModel.PokemonDetailsViewModelFactory
+    fun pokemonDetailsViewModelFactory(): PokemonDetailsViewModel.PokemonDetailsViewModelFactory
 }

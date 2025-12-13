@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.ui.pokedex
 
-import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
@@ -62,7 +61,7 @@ class PokemonDetailsViewModel @AssistedInject constructor(
     private val abilitiesRepository: AbilitiesRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
     @Assisted private val pokemon: Pokemon
-): ViewModel() {
+) : ViewModel() {
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
     private val activePokemon = MutableStateFlow(pokemon)
     val pokemonSet = pokemonRepository.pokemon()
@@ -159,8 +158,8 @@ class PokemonDetailsViewModel @AssistedInject constructor(
 
 @Composable
 fun pokemonDetailsViewModel(pokemon: Pokemon): PokemonDetailsViewModel {
-    val factory = EntryPointAccessors.fromActivity(
-        LocalContext.current as Activity,
+    val factory = EntryPointAccessors.fromApplication(
+        LocalContext.current.applicationContext,
         ViewModelFactoryProvider::class.java
     ).pokemonDetailsViewModelFactory()
 
