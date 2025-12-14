@@ -93,7 +93,8 @@ fun PokedexScreenRoute(
     viewModel: PokedexViewModel,
     onPokemonSelected: (Pokemon) -> Unit,
     pastPokemonSelected: Int?,
-    onBackClick: () -> Unit
+    showNavigationIcon: Boolean = true,
+    onBackClick: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showFavorites by viewModel.showFavorites.collectAsStateWithLifecycle()
@@ -106,6 +107,7 @@ fun PokedexScreenRoute(
         typeFilter = typeFilter,
         generationFilter = generationFilter,
         pastPokemonSelected = pastPokemonSelected,
+        showNavigationIcon = showNavigationIcon,
         onPokemonSelected = onPokemonSelected,
         onGenerationSelected = { generation ->
             viewModel.filterByGeneration(generation)
@@ -144,6 +146,7 @@ fun PokedexScreen(
     typeFilter: Type? = null,
     generationFilter: Generation? = null,
     pastPokemonSelected: Int? = null,
+    showNavigationIcon: Boolean = true,
     onPokemonSelected: (Pokemon) -> Unit = {},
     onGenerationSelected: (Generation) -> Unit = {},
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
@@ -169,12 +172,14 @@ fun PokedexScreen(
         topBar = {
             MediumTopAppBar(
                 title = { Text("Pokemon",) },
-                navigationIcon =  {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
+                navigationIcon = {
+                    if (showNavigationIcon) {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(

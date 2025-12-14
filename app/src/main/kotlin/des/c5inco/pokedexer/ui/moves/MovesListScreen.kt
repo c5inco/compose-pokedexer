@@ -54,12 +54,14 @@ import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 @Composable
 fun MovesListScreenRoute(
     viewModel: MovesListViewModel,
+    showNavigationIcon: Boolean = true,
     onBackClick: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     MovesListScreen(
         state = state,
+        showNavigationIcon = showNavigationIcon,
         onBackClick = onBackClick
     )
 }
@@ -68,6 +70,7 @@ fun MovesListScreenRoute(
 @Composable
 fun MovesListScreen(
     state: MovesListUiState = MovesListUiState.Loading,
+    showNavigationIcon: Boolean = true,
     onBackClick: () -> Unit = {},
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -79,12 +82,14 @@ fun MovesListScreen(
         topBar = {
             MediumTopAppBar(
                 title = { Text(stringResource(R.string.movesLabel)) },
-                navigationIcon =  {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.backActionContentDescription)
-                        )
+                navigationIcon = {
+                    if (showNavigationIcon) {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.backActionContentDescription)
+                            )
+                        }
                     }
                 },
                 scrollBehavior = scrollBehavior

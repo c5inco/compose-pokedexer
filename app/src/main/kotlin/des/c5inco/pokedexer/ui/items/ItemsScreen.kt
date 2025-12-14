@@ -44,12 +44,14 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 @Composable
 fun ItemsScreenRoute(
     viewModel: ItemsViewModel,
+    showNavigationIcon: Boolean = true,
     onBackClick: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ItemsScreen(
         state = state,
+        showNavigationIcon = showNavigationIcon,
         onBackClick = onBackClick
     )
 }
@@ -58,6 +60,7 @@ fun ItemsScreenRoute(
 @Composable
 fun ItemsScreen(
     state: ItemsListUiState,
+    showNavigationIcon: Boolean = true,
     onBackClick: () -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -66,12 +69,14 @@ fun ItemsScreen(
         topBar = {
             MediumTopAppBar(
                 title = { Text(stringResource(R.string.itemsLabel)) },
-                navigationIcon =  {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.backActionContentDescription)
-                        )
+                navigationIcon = {
+                    if (showNavigationIcon) {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.backActionContentDescription)
+                            )
+                        }
                     }
                 },
                 scrollBehavior = scrollBehavior
