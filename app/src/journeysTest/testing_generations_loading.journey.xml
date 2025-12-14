@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<journey name="Testing Generations Loading">
+    <description xml:space="preserve">Testing to see if loading different generations from the server in odd or any order of loading works well, in that it shouldn't matter what order you filter generations, the details navigation works.</description>
+    <actions xml:space="preserve">
+        <action>Filter the Pokemon list to Gen III (3)</action>
+        <action>Select Torchic</action>
+        <action>Wait to see the details page for Torchic.</action>
+        <action>Assert the screen showing tabs (About, Base stats, evolution, moves)</action>
+        <action>Scroll slowly through the About tab to see the breeding informatio</action>
+    </actions>
+</journey>

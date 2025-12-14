@@ -13,8 +13,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 
     defaultConfig {
@@ -25,12 +27,10 @@ android {
 
     testOptions {
         managedDevices {
-            devices {
-                create("pixel4Api31", com.android.build.api.dsl.ManagedVirtualDevice::class) {
-                    device = "Pixel 4"
-                    apiLevel = 31
-                    systemImageSource = "aosp"
-                }
+            allDevices.register<com.android.build.api.dsl.ManagedVirtualDevice>("pixel4Api31") {
+                device = "Pixel 4"
+                apiLevel = 31
+                systemImageSource = "aosp"
             }
         }
     }

@@ -64,6 +64,26 @@ android {
             packageName.set("des.c5inco.pokedexer")
         }
     }
+    testOptions {
+        suites {
+            journeysTest {
+                assets {
+                }
+                targets {
+                    'default' {
+                    }
+                }
+                useJunitEngine {
+                    inputs com.android.build.api.dsl.AgpTestSuiteInputParameters.TESTED_APKS
+                    includeEngines 'journeys-test-engine'
+                    enginesDependencies(libs.junit.platform.launcher)
+                    enginesDependencies(libs.junit.platform.engine)
+                    enginesDependencies(libs.journeys.junit.engine)
+                }
+                targetVariants 'debug'
+            }
+        }
+    }
 }
 
 dependencies {
