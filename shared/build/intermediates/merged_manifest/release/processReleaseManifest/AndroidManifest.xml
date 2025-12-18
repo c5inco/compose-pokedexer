@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="des.c5inco.pokedexer.shared" >
-
-    <uses-sdk android:minSdkVersion="28" />
-    <!-- Permissions needed by shared module -->
-    <uses-permission android:name="android.permission.INTERNET" />
-
-</manifest>

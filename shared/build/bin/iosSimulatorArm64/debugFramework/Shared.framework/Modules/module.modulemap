@@ -1,8 +1,0 @@
-framework module "Shared" {
-    umbrella header "Shared.h"
-
-    export *
-    module * { export * }
-
-    use Foundation
-}
