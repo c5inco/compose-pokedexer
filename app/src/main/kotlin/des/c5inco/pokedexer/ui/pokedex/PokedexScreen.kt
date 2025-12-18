@@ -107,9 +107,6 @@ fun PokedexScreenRoute(
         generationFilter = generationFilter,
         pastPokemonSelected = pastPokemonSelected,
         onPokemonSelected = onPokemonSelected,
-        onGenerationSelected = { generation ->
-            viewModel.filterByGeneration(generation)
-        },
         onMenuItemClick = {
             when (it) {
                 is FilterMenuEvent.ToggleFavorites -> {
@@ -145,7 +142,6 @@ fun PokedexScreen(
     generationFilter: Generation? = null,
     pastPokemonSelected: Int? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
-    onGenerationSelected: (Generation) -> Unit = {},
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
@@ -641,7 +637,6 @@ private fun AnimatedVisibilityScope.FilterGenerationItem(
 @PreviewLightDark
 @Composable
 private fun PokedexScreenPreview() {
-    var pokemon by remember { mutableStateOf(SamplePokemonData) }
     var showFavorites by remember { mutableStateOf(false) }
     var typeFilter by remember { mutableStateOf<Type?>(null) }
     var generationFilter by remember { mutableStateOf<Generation?>(null) }
@@ -662,14 +657,11 @@ private fun PokedexScreenPreview() {
             showFavorites = showFavorites,
             typeFilter = typeFilter,
             generationFilter = generationFilter,
-            onGenerationSelected = { generation ->
-                generationFilter = generation
-            },
             onMenuItemClick = { result ->
                 when (result) {
                     is FilterMenuEvent.ToggleFavorites -> {
                         showFavorites = !showFavorites
-                        state = state.copy(
+                        state.copy(
                             pokemon = if (showFavorites) {
                                 SamplePokemonData.take(5)
                             } else {
@@ -678,10 +670,10 @@ private fun PokedexScreenPreview() {
                         )
                     }
                     is FilterMenuEvent.FilterTypes -> {
-                        typeFilter = if (typeFilter != result.typeToFilter) result.typeToFilter else null
+                        if (typeFilter != result.typeToFilter) result.typeToFilter else null
                     }
                     is FilterMenuEvent.FilterGeneration -> {
-                        generationFilter = if (generationFilter != result.generationToFilter) result.generationToFilter else null
+                        if (generationFilter != result.generationToFilter) result.generationToFilter else null
                     }
                     is FilterMenuEvent.ShowTypes -> {}
                     is FilterMenuEvent.ShowGenerations -> {}
