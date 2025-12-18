@@ -1,0 +1,21 @@
+// Xcode Configuration file for Pokedexer iOS App
+// This file can be used to configure build settings
+
+// Product settings
+PRODUCT_NAME = Pokedexer
+PRODUCT_BUNDLE_IDENTIFIER = des.c5inco.pokedexer
+
+// Deployment target
+IPHONEOS_DEPLOYMENT_TARGET = 15.0
+
+// Swift version
+SWIFT_VERSION = 5.0
+
+// Framework search paths
+// Adjust based on debug/release configuration
+FRAMEWORK_SEARCH_PATHS[config=Debug] = $(inherited) $(SRCROOT)/../shared/build/bin/iosSimulatorArm64/debugFramework
+FRAMEWORK_SEARCH_PATHS[config=Release] = $(inherited) $(SRCROOT)/../shared/build/bin/iosArm64/releaseFramework
+
+// Other linker flags to embed the framework
+OTHER_LDFLAGS = $(inherited) -framework Shared
+

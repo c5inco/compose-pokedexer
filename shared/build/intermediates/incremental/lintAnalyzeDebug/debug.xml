@@ -1,0 +1,32 @@
+<variant
+    name="debug"
+    package="des.c5inco.pokedexer.shared"
+    minSdkVersion="28"
+    targetSdkVersion="28"
+    debuggable="true"
+    mergedManifest="build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml"
+    proguardFiles="build/intermediates/default_proguard_files/global/proguard-android.txt-8.13.1"
+    partialResultsDir="build/intermediates/lint_partial_results/debug/lintAnalyzeDebug/out"
+    desugaredMethodsFiles="/Users/c5inco/.gradle/caches/8.14/transforms/702d26c5e1e109c74665fa76393175d5/transformed/D8BackportedDesugaredMethods.txt">
+  <buildFeatures
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+    <sourceProvider
+        manifests="src/androidMain/AndroidManifest.xml"
+        javaDirectories="src/main/java:src/debug/java:src/androidMain/kotlin:src/main/kotlin:src/debug/kotlin"
+        resDirectories="src/main/res:src/androidMain/res:src/debug/res:src/androidDebug/res"
+        assetsDirectories="src/main/assets:src/androidMain/assets:src/debug/assets:src/androidDebug/assets"/>
+  </sourceProviders>
+  <testSourceProviders>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      classOutputs="build/intermediates/javac/debug/compileDebugJavaWithJavac/classes:build/tmp/kotlin-classes/debug:build/generated/ksp/android/androidDebug/resources:build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar"
+      type="MAIN"
+      applicationId="des.c5inco.pokedexer.shared"
+      generatedSourceFolders="build/generated/ksp/android/androidDebug/java:build/generated/ksp/android/androidDebug/kotlin:build/generated/ap_generated_sources/debug/out"
+      generatedResourceFolders="build/generated/res/resValues/debug"
+      desugaredMethodsFiles="/Users/c5inco/.gradle/caches/8.14/transforms/702d26c5e1e109c74665fa76393175d5/transformed/D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>

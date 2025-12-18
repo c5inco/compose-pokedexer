@@ -1,0 +1,127 @@
+[
+  {
+    "moduleId": "module com.rickclephas.kmp:kmp-nativecoroutines-core:1.0.0-ALPHA-40",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/com.rickclephas.kmp-kmp-nativecoroutines-core-1.0.0-ALPHA-40-appleMain-oza40g.klib",
+    "sourceSetName": "appleMain"
+  },
+  {
+    "moduleId": "module com.rickclephas.kmp:kmp-nativecoroutines-core:1.0.0-ALPHA-40",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/com.rickclephas.kmp-kmp-nativecoroutines-core-1.0.0-ALPHA-40-nativeCoroutinesMain-oza40g.klib",
+    "sourceSetName": "nativeCoroutinesMain"
+  },
+  {
+    "moduleId": "module org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/org.jetbrains.kotlinx-kotlinx-coroutines-core-1.10.2-nativeDarwinMain--jzUgA.klib",
+    "sourceSetName": "nativeDarwinMain"
+  },
+  {
+    "moduleId": "module org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/org.jetbrains.kotlinx-kotlinx-coroutines-core-1.10.2-nativeMain-wJOvIw.klib",
+    "sourceSetName": "nativeMain"
+  },
+  {
+    "moduleId": "module com.apollographql.apollo3:apollo-runtime:3.8.6",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/com.apollographql.apollo3-apollo-runtime-3.8.6-appleMain-9GLi0w.klib",
+    "sourceSetName": "appleMain"
+  },
+  {
+    "moduleId": "module androidx.room:room-runtime:2.7.2",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/androidx.room-room-runtime-2.7.2-nativeMain-A5a4aw.klib",
+    "sourceSetName": "nativeMain"
+  },
+  {
+    "moduleId": "module androidx.room:room-runtime:2.7.2",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/androidx.room-room-runtime-2.7.2-jvmNativeMain-A5a4aw.klib",
+    "sourceSetName": "jvmNativeMain"
+  },
+  {
+    "moduleId": "module androidx.sqlite:sqlite-bundled:2.5.1",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/androidx.sqlite-sqlite-bundled-2.5.1-nativeMain-BHP1JA.klib",
+    "sourceSetName": "nativeMain"
+  },
+  {
+    "moduleId": "module org.jetbrains.kotlinx:atomicfu:0.27.0",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/org.jetbrains.kotlinx-atomicfu-0.27.0-nativeUnixLikeMain-7K06eQ.klib",
+    "sourceSetName": "nativeUnixLikeMain"
+  },
+  {
+    "moduleId": "module org.jetbrains.kotlinx:atomicfu:0.27.0",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/org.jetbrains.kotlinx-atomicfu-0.27.0-nativeMain-7K06eQ.klib",
+    "sourceSetName": "nativeMain"
+  },
+  {
+    "moduleId": "module org.jetbrains.kotlinx:atomicfu:0.27.0",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/org.jetbrains.kotlinx-atomicfu-0.27.0-commonMain-7K06eQ.klib",
+    "sourceSetName": "commonMain"
+  },
+  {
+    "moduleId": "module com.apollographql.apollo3:apollo-api:3.8.6",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/com.apollographql.apollo3-apollo-api-3.8.6-appleMain-qbeSbg.klib",
+    "sourceSetName": "appleMain"
+  },
+  {
+    "moduleId": "module com.apollographql.apollo3:apollo-mpp-utils:3.8.6",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/com.apollographql.apollo3-apollo-mpp-utils-3.8.6-appleMain-xN6WGw.klib",
+    "sourceSetName": "appleMain"
+  },
+  {
+    "moduleId": "module com.squareup.okio:okio:3.9.1",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/com.squareup.okio-okio-3.9.1-unixMain-ha3VpQ.klib",
+    "sourceSetName": "unixMain"
+  },
+  {
+    "moduleId": "module com.squareup.okio:okio:3.9.1",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/com.squareup.okio-okio-3.9.1-nativeMain-ha3VpQ.klib",
+    "sourceSetName": "nativeMain"
+  },
+  {
+    "moduleId": "module com.squareup.okio:okio:3.9.1",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/com.squareup.okio-okio-3.9.1-nonJvmMain-ha3VpQ.klib",
+    "sourceSetName": "nonJvmMain"
+  },
+  {
+    "moduleId": "module com.squareup.okio:okio:3.9.1",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/com.squareup.okio-okio-3.9.1-hashFunctions-ha3VpQ.klib",
+    "sourceSetName": "hashFunctions"
+  },
+  {
+    "moduleId": "module androidx.annotation:annotation:1.9.1",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/androidx.annotation-annotation-1.9.1-nonJvmMain-WmoUwA.klib",
+    "sourceSetName": "nonJvmMain"
+  },
+  {
+    "moduleId": "module androidx.collection:collection:1.4.2",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/androidx.collection-collection-1.4.2-darwinMain-62QevQ.klib",
+    "sourceSetName": "darwinMain"
+  },
+  {
+    "moduleId": "module androidx.collection:collection:1.4.2",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/androidx.collection-collection-1.4.2-nativeMain-GMwabQ.klib",
+    "sourceSetName": "nativeMain"
+  },
+  {
+    "moduleId": "module androidx.room:room-common:2.7.2",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/androidx.room-room-common-2.7.2-nativeMain-wI2kUA.klib",
+    "sourceSetName": "nativeMain"
+  },
+  {
+    "moduleId": "module androidx.sqlite:sqlite:2.5.1",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/androidx.sqlite-sqlite-2.5.1-nativeMain-uVnlTg.klib",
+    "sourceSetName": "nativeMain"
+  },
+  {
+    "moduleId": "module androidx.sqlite:sqlite-framework:2.5.1",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/androidx.sqlite-sqlite-framework-2.5.1-nativeMain-kyeICw.klib",
+    "sourceSetName": "nativeMain"
+  },
+  {
+    "moduleId": "module com.apollographql.apollo3:apollo-annotations:3.8.6",
+    "file": "/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/build/kotlinTransformedMetadataLibraries/nativeMain/com.apollographql.apollo3-apollo-annotations-3.8.6-appleMain-Cw3-aA.klib",
+    "sourceSetName": "appleMain"
+  },
+  {
+    "moduleId": "module org.jetbrains:annotations:23.0.0",
+    "file": "/Users/c5inco/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/23.0.0/8cc20c07506ec18e0834947b84a864bfc094484e/annotations-23.0.0.jar",
+    "sourceSetName": null
+  }
+]

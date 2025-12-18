@@ -5,19 +5,22 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import des.c5inco.pokedexer.data.items.ItemsDao
 import des.c5inco.pokedexer.data.items.ItemsRepository
-import des.c5inco.pokedexer.data.items.ItemsRepositoryImpl
+import des.c5inco.pokedexer.data.items.SharedItemsRepository
+import des.c5inco.pokedexer.shared.data.db.ItemsDao as SharedItemsDao
 
 @InstallIn(SingletonComponent::class)
 @Module
 object RemoteItemsRepositoryModule {
 
+    /**
+     * Provides the Items repository using the shared KMP database.
+     */
     @Provides
     fun provideItemsRepository(
-        itemsDao: ItemsDao,
+        sharedItemsDao: SharedItemsDao,
         apolloClient: ApolloClient
     ): ItemsRepository {
-        return ItemsRepositoryImpl(itemsDao, apolloClient)
+        return SharedItemsRepository(sharedItemsDao, apolloClient)
     }
 }

@@ -1,0 +1,30 @@
+<variant
+    name="debug"
+    package="des.c5inco.pokedexer.shared"
+    minSdkVersion="28"
+    targetSdkVersion="28"
+    debuggable="true"
+    mergedManifest="build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml"
+    manifestMergeReport="build/outputs/logs/manifest-merger-debug-report.txt"
+    partialResultsDir="build/intermediates/android_test_lint_partial_results/debug/lintAnalyzeDebugAndroidTest/out">
+  <buildFeatures
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+  </sourceProviders>
+  <testSourceProviders>
+    <sourceProvider
+        manifests="src/androidInstrumentedTest/AndroidManifest.xml"
+        javaDirectories="src/androidTest/java:src/androidTestDebug/java:src/androidInstrumentedTest/kotlin:src/androidTest/kotlin:src/androidTestDebug/kotlin"
+        resDirectories="src/androidTest/res:src/androidInstrumentedTest/res:src/androidTestDebug/res:src/androidInstrumentedTestDebug/res"
+        assetsDirectories="src/androidTest/assets:src/androidInstrumentedTest/assets:src/androidTestDebug/assets:src/androidInstrumentedTestDebug/assets"
+        androidTest="true"/>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      type="INSTRUMENTATION_TEST"
+      applicationId="des.c5inco.pokedexer.shared.test"
+      generatedResourceFolders="build/generated/res/resValues/androidTest/debug"
+      desugaredMethodsFiles="/Users/c5inco/.gradle/caches/8.14/transforms/702d26c5e1e109c74665fa76393175d5/transformed/D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>

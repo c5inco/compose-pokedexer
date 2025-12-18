@@ -1,0 +1,1 @@
+/Users/c5inco/.konan/kotlin-native-prebuilt-macos-aarch64-2.2.0/klib/commonized/2.2.0

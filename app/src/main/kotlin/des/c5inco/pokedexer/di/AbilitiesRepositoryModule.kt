@@ -5,19 +5,22 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import des.c5inco.pokedexer.data.abilities.AbilitiesDao
 import des.c5inco.pokedexer.data.abilities.AbilitiesRepository
-import des.c5inco.pokedexer.data.abilities.AbilitiesRepositoryImpl
+import des.c5inco.pokedexer.data.abilities.SharedAbilitiesRepository
+import des.c5inco.pokedexer.shared.data.db.AbilitiesDao as SharedAbilitiesDao
 
 @InstallIn(SingletonComponent::class)
 @Module
 object RemoteAbilitiesRepositoryModule {
 
+    /**
+     * Provides the Abilities repository using the shared KMP database.
+     */
     @Provides
     fun provideAbilitiesRepository(
-        abilitiesDao: AbilitiesDao,
+        sharedAbilitiesDao: SharedAbilitiesDao,
         apolloClient: ApolloClient
     ): AbilitiesRepository {
-        return AbilitiesRepositoryImpl(abilitiesDao, apolloClient)
+        return SharedAbilitiesRepository(sharedAbilitiesDao, apolloClient)
     }
 }

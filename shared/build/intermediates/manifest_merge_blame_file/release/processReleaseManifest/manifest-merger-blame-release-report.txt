@@ -1,0 +1,11 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="des.c5inco.pokedexer.shared" >
+4
+5    <uses-sdk android:minSdkVersion="28" />
+6    <!-- Permissions needed by shared module -->
+7    <uses-permission android:name="android.permission.INTERNET" />
+7-->/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/src/androidMain/AndroidManifest.xml:4:5-67
+7-->/Users/c5inco/AndroidStudioProjects/Pokedexer/shared/src/androidMain/AndroidManifest.xml:4:22-64
+8
+9</manifest>

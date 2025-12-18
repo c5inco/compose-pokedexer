@@ -1,0 +1,24 @@
+{
+  "originHash" : "918008e942b405aa0e22086e3576a3bcf148cfefe1023699f066b76c4b05e2f0",
+  "pins" : [
+    {
+      "identity" : "kmp-nativecoroutines",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rickclephas/KMP-NativeCoroutines",
+      "state" : {
+        "revision" : "b5076e459acd61386cb4a4b8c0f62489859c1884",
+        "version" : "1.0.0-ALPHA-40"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "revision" : "5004a18539bd68905c5939aa893075f578f4f03d",
+        "version" : "6.9.1"
+      }
+    }
+  ],
+  "version" : 3
+}

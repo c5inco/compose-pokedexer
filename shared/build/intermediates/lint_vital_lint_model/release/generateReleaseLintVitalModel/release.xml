@@ -1,0 +1,31 @@
+<variant
+    name="release"
+    package="des.c5inco.pokedexer.shared"
+    minSdkVersion="28"
+    targetSdkVersion="28"
+    mergedManifest="build/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml"
+    manifestMergeReport="build/outputs/logs/manifest-merger-release-report.txt"
+    proguardFiles="build/intermediates/default_proguard_files/global/proguard-android.txt-8.13.1"
+    partialResultsDir="build/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out">
+  <buildFeatures
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+    <sourceProvider
+        manifests="src/androidMain/AndroidManifest.xml"
+        javaDirectories="src/main/java:src/release/java:src/androidMain/kotlin:src/main/kotlin:src/release/kotlin"
+        resDirectories="src/main/res:src/androidMain/res:src/release/res:src/androidRelease/res"
+        assetsDirectories="src/main/assets:src/androidMain/assets:src/release/assets:src/androidRelease/assets"/>
+  </sourceProviders>
+  <testSourceProviders>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      classOutputs="build/intermediates/javac/release/compileReleaseJavaWithJavac/classes:build/tmp/kotlin-classes/release:build/generated/ksp/android/androidRelease/resources:build/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar"
+      type="MAIN"
+      applicationId="des.c5inco.pokedexer.shared"
+      generatedSourceFolders="build/generated/ksp/android/androidRelease/java:build/generated/ksp/android/androidRelease/kotlin:build/generated/ap_generated_sources/release/out"
+      generatedResourceFolders="build/generated/res/resValues/release"
+      desugaredMethodsFiles="/Users/c5inco/.gradle/caches/8.14/transforms/702d26c5e1e109c74665fa76393175d5/transformed/D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>

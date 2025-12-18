@@ -5,14 +5,19 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import des.c5inco.pokedexer.shared.data.ApolloClientProvider
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
 object NetworkModule {
+    /**
+     * Provides the Apollo client from the shared KMP module.
+     * This ensures both Android and iOS use the same GraphQL configuration.
+     */
     @Provides
     @Singleton
     fun provideApolloClient(): ApolloClient {
-        return ApolloClient.Builder().serverUrl("https://beta.pokeapi.co/graphql/v1beta").build()
+        return ApolloClientProvider.apolloClient
     }
 }
