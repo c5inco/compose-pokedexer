@@ -154,13 +154,18 @@ fun PokedexScreen(
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    LaunchedEffect(pastPokemonSelected) {
-        pastPokemonSelected?.let {pastId ->
-            val visibleItems = listState.layoutInfo.visibleItemsInfo
-            val visible = visibleItems.filter { it.key == pastId }
+    LaunchedEffect(pastPokemonSelected, state) {
+        if (state is PokedexUiState.Ready && pastPokemonSelected != null) {
+            val pokemonToShow = state.pokemon
+            val index = pokemonToShow.indexOfFirst { it.id == pastPokemonSelected }
+            
+            if (index != -1) {
+                val visibleItems = listState.layoutInfo.visibleItemsInfo
+                val visible = visibleItems.filter { it.key == pastPokemonSelected }
 
-            if (visible.isEmpty()) {
-                listState.scrollToItem(pastId, -100)
+                if (visible.isEmpty()) {
+                    listState.scrollToItem(index, -100)
+                }
             }
         }
     }
@@ -217,7 +222,7 @@ fun PokedexScreen(
                         PokemonList(
                             listState = listState,
                             listLoadedState = state.listLoadedState,
-                            pokemon = state.pokemon,
+                            pokemonToShow = state.pokemon,
                             favorites = state.favorites,
                             showFavorites = showFavorites,
                             typeFilter = typeFilter,
@@ -329,23 +334,13 @@ private fun PokemonList(
     modifier: Modifier = Modifier,
     listState: LazyGridState,
     listLoadedState: MutableTransitionState<Boolean>,
-    pokemon: List<Pokemon>,
+    pokemonToShow: List<Pokemon>,
     favorites: List<Pokemon>,
     showFavorites: Boolean = false,
     typeFilter: Type? = null,
     generationFilter: Generation? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
-    val pokemonToShow = (if (showFavorites) favorites else pokemon).filter {
-        val matchesType = if (typeFilter != null) {
-            it.typeOfPokemon.contains(typeFilter.toString())
-        } else {
-            true
-        }
-        
-        matchesType
-    }
-
     val bottomContentPadding = 96.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     LazyVerticalGrid(

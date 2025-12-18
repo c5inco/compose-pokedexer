@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.pokedex
 
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,7 +11,6 @@ import des.c5inco.pokedexer.model.Generation
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -35,13 +35,14 @@ sealed interface PokedexUiState {
 class PokedexViewModel @Inject constructor(
     private val pokemonRepository: PokemonRepository,
     userPreferencesRepository: UserPreferencesRepository,
+    private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
     private val listLoadedState = MutableTransitionState(false)
 
-    val showFavorites = MutableStateFlow(false)
-    val typeFilters = MutableStateFlow<Type?>(null)
-    val generationFilters = MutableStateFlow(Generation.I)
+    val showFavorites = savedStateHandle.getStateFlow("showFavorites", false)
+    val typeFilters = savedStateHandle.getStateFlow<Type?>("typeFilters", null)
+    val generationFilters = savedStateHandle.getStateFlow("generationFilters", Generation.I)
 
     val state: StateFlow<PokedexUiState> =
         combine(
@@ -49,15 +50,26 @@ class PokedexViewModel @Inject constructor(
                 pokemonRepository.getPokemonByGeneration(generation)
             },
             userPreferencesFlow,
-        ) { pokemon, userPreferences ->
+            showFavorites,
+            typeFilters
+        ) { pokemon, userPreferences, favoritesOnly, typeFilter ->
             delay(500)
             listLoadedState.targetState = true
 
             val favorites = pokemonRepository.getPokemonByIds(userPreferences.favorites).first()
 
+            val filteredPokemon = (if (favoritesOnly) favorites else pokemon).filter {
+                val matchesType = if (typeFilter != null) {
+                    it.typeOfPokemon.contains(typeFilter.toString())
+                } else {
+                    true
+                }
+                matchesType
+            }
+
             PokedexUiState.Ready(
                 listLoadedState = listLoadedState,
-                pokemon = pokemon,
+                pokemon = filteredPokemon,
                 favorites = favorites.toList(),
             )
         }.stateIn(
@@ -69,14 +81,14 @@ class PokedexViewModel @Inject constructor(
         )
 
     fun toggleFavorites() {
-        showFavorites.value = !showFavorites.value
+        savedStateHandle["showFavorites"] = !showFavorites.value
     }
 
     fun filterByType(typeToFilter: Type?) {
-        typeFilters.value = if (typeFilters.value != typeToFilter) typeToFilter else null
+        savedStateHandle["typeFilters"] = if (typeFilters.value != typeToFilter) typeToFilter else null
     }
 
     fun filterByGeneration(generationToFilter: Generation?) {
-        generationFilters.value = generationToFilter ?: Generation.I
+        savedStateHandle["generationFilters"] = generationToFilter ?: Generation.I
     }
 }

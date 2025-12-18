@@ -118,24 +118,26 @@ fun AnimatedContentScope.PokemonDetailsScreenRoute(
     val pokemonSet by detailsViewModel.pokemonSet.collectAsStateWithLifecycle(initialValue = emptyList())
     val uiState by detailsViewModel.uiState.collectAsStateWithLifecycle()
 
-    PokemonTypesTheme(
-        types = uiState.details.typeOfPokemon
-    ) {
-        PokemonDetailsScreen(
-            pokemonSet = pokemonSet,
-            pokemon = uiState.details,
-            evolutions = uiState.evolutions,
-            moves = uiState.moves,
-            abilities = uiState.abilities,
-            isFavorite = uiState.isFavorite,
-            onPage = {
-                detailsViewModel.refresh(it)
-            },
-            onFavoriteClick = {
-                detailsViewModel.toggleFavorite(it)
-            },
-            onBackClick = onBackClick,
-        )
+    if (pokemonSet.isNotEmpty()) {
+        PokemonTypesTheme(
+            types = uiState.details.typeOfPokemon
+        ) {
+            PokemonDetailsScreen(
+                pokemonSet = pokemonSet,
+                pokemon = uiState.details,
+                evolutions = uiState.evolutions,
+                moves = uiState.moves,
+                abilities = uiState.abilities,
+                isFavorite = uiState.isFavorite,
+                onPage = {
+                    detailsViewModel.refresh(it)
+                },
+                onFavoriteClick = {
+                    detailsViewModel.toggleFavorite(it)
+                },
+                onBackClick = onBackClick,
+            )
+        }
     }
 }
 
@@ -156,7 +158,11 @@ fun AnimatedContentScope.PokemonDetailsScreen(
 ) {
     val density = LocalDensity.current
 
-    val pagerState = rememberPagerState(initialPage = pokemon.id - 1) {
+    val initialPage = remember {
+        pokemonSet.indexOfFirst { it.id == pokemon.id }.coerceAtLeast(0)
+    }
+
+    val pagerState = rememberPagerState(initialPage = initialPage) {
         pokemonSet.size
     }
 

@@ -118,7 +118,7 @@ fun PokemonPager(
     ) {
         HorizontalPager(
             state = pagerState,
-            key = { it },
+            key = { pokemonList[it].id },
             contentPadding = PaddingValues(horizontal = 92.dp),
             userScrollEnabled = enabled,
             modifier = Modifier.testTag("PokemonPager"),
