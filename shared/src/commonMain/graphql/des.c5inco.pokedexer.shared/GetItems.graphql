@@ -1,0 +1,14 @@
+query Items {
+  info: pokemon_v2_item_aggregate(where: {pokemon_v2_itemflavortexts: {version_group_id: {_eq: 7}}}) {
+    total: aggregate {
+      count
+    }
+    items: nodes {
+      id
+      name
+      flavorText: pokemon_v2_itemflavortexts(where: {version_group_id: {_eq: 7}}) {
+        text: flavor_text
+      }
+    }
+  }
+}

@@ -14,4 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Pokedexer"
 include ':app'
+include ':shared'
 include ':benchmark'

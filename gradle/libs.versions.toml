@@ -21,6 +21,8 @@ room = "2.7.2"
 dataStore = "1.2.0"
 shapes = "1.0.1"
 materialKolor = "2.1.1"
+kotlinxCoroutines = "1.10.1"
+sqlite = "2.5.0-alpha13"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -63,6 +65,11 @@ androidx-profile-installer = { module = "androidx.profileinstaller:profileinstal
 
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor"}
 
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "dataStore" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 androidTest = { id = "com.android.test", version.ref = "androidGradlePlugin" }
@@ -72,3 +79,6 @@ kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKsp" }
 apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+androidLibrary = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+room = { id = "androidx.room", version.ref = "room" }

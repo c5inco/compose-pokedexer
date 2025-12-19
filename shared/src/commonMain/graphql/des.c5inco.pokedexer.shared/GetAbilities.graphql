@@ -1,0 +1,9 @@
+query Abilities {
+  abilities: pokemon_v2_ability(where: {is_main_series: {_eq: true}}) {
+    id
+    name
+    flavorText: pokemon_v2_abilityflavortexts(where: {pokemon_v2_language: {iso639: {_eq: "en"}}}, order_by: {version_group_id: desc}, limit: 1) {
+      description: flavor_text
+    }
+  }
+}
