@@ -14,9 +14,21 @@ google-services.json
 !/.idea/codeStyles/codeStyleConfig.xml
 
 .DS_Store
-/build
-/captures
+build/
+captures/
 .externalNativeBuild
 .cxx
 local.properties
 .kotlin/
+
+# iOS
+iosApp/DerivedData/
+iosApp/build/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/
+*.xcworkspace/xcuserdata/
+
+# XcodeGen
+# Uncomment the following lines if you want to ignore the generated Xcode project files
+# iosApp/Pokedexer.xcodeproj
+# iosApp/Pokedexer.xcworkspace
