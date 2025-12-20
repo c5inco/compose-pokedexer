@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -16,6 +17,7 @@ data class UserPreferences(
     val favorites: List<Int>
 )
 
+@Inject
 class UserPreferencesRepository(
     private val dataStore: DataStore<Preferences>
 ) {

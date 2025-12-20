@@ -5,12 +5,17 @@ import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.PokemonOriginalMovesQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
+import des.c5inco.pokedexer.di.AppScope
 import des.c5inco.pokedexer.model.Move
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
+@ContributesBinding(AppScope::class)
+@Inject
 class RemoteMovesRepository(
     private val movesDao: MovesDao,
     private val apolloClient: ApolloClient

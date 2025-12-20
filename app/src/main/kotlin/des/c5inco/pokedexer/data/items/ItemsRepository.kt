@@ -5,7 +5,10 @@ import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.ItemsQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
+import des.c5inco.pokedexer.di.AppScope
 import des.c5inco.pokedexer.model.Item
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -19,6 +22,8 @@ interface ItemsRepository {
     fun getItemsByName(name: String): Flow<List<Item>>
 }
 
+@ContributesBinding(AppScope::class)
+@Inject
 class ItemsRepositoryImpl(
     private val itemsDao: ItemsDao,
     private val apolloClient: ApolloClient

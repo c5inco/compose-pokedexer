@@ -5,7 +5,10 @@ import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.AbilitiesQuery
 import des.c5inco.pokedexer.data.Result
 import des.c5inco.pokedexer.data.cleanupDescriptionText
+import des.c5inco.pokedexer.di.AppScope
 import des.c5inco.pokedexer.model.Ability
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -18,6 +21,8 @@ interface AbilitiesRepository {
     suspend fun getAbilitiesByName(name: String): Result<List<Ability>>
 }
 
+@ContributesBinding(AppScope::class)
+@Inject
 class AbilitiesRepositoryImpl(
     private val abilitiesDao: AbilitiesDao,
     private val apolloClient: ApolloClient
