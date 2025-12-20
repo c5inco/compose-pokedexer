@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Privacy Nutrition Label - Required APIs Disclosure -->
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <!-- NSUserDefaults API - Used for storing user favorites -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <!-- CA92.1: Access info from same app or app group -->
+                <string>CA92.1</string>
+            </array>
+        </dict>
+        <!-- File timestamp APIs - Used by Room database -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <!-- C617.1: Access file timestamps inside app container -->
+                <string>C617.1</string>
+            </array>
+        </dict>
+        <!-- System boot time APIs - May be used by networking libraries -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <!-- 35F9.1: Access system boot time for measuring time intervals -->
+                <string>35F9.1</string>
+            </array>
+        </dict>
+    </array>
+    
+    <!-- Data Collection Disclosure -->
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array>
+        <!-- No user data is collected or sent to external servers -->
+    </array>
+    
+    <!-- Tracking Disclosure -->
+    <key>NSPrivacyTracking</key>
+    <false/>
+    
+    <!-- Tracking Domains - None used -->
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+</dict>
+</plist>
+

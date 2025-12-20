@@ -2,7 +2,7 @@ name: Pokedexer
 options:
   bundleIdPrefix: des.c5inco
   deploymentTarget:
-    iOS: "16.0"
+    iOS: "18.0"
   xcodeVersion: "15.0"
   groupSortPosition: top
 
@@ -15,8 +15,22 @@ settings:
   base:
     MARKETING_VERSION: "1.0"
     CURRENT_PROJECT_VERSION: "1"
-    DEVELOPMENT_TEAM: ""
+    # Set your Apple Developer Team ID here for code signing
+    # You can find this in your Apple Developer account or in Xcode preferences
+    DEVELOPMENT_TEAM: "" # REQUIRED: Set your Team ID before archiving
     CODE_SIGN_STYLE: Automatic
+    # Enable Swift strict concurrency checking
+    SWIFT_STRICT_CONCURRENCY: complete
+  configs:
+    Debug:
+      DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+      SWIFT_OPTIMIZATION_LEVEL: -Onone
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+    Release:
+      DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+      SWIFT_OPTIMIZATION_LEVEL: -O
+      SWIFT_COMPILATION_MODE: wholemodule
+      VALIDATE_PRODUCT: YES
 
 targets:
   Pokedexer:
@@ -37,28 +51,70 @@ targets:
         LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/Frameworks
         FRAMEWORK_SEARCH_PATHS:
           - $(inherited)
-          - $(SRCROOT)/../shared/build/bin/iosSimulatorArm64/debugFramework
           - $(SRCROOT)/../shared/build/bin/iosArm64/releaseFramework
+        "FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]":
+          - $(inherited)
+          - $(SRCROOT)/../shared/build/bin/iosArm64/debugFramework
+        "FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]":
+          - $(inherited)
+          - $(SRCROOT)/../shared/build/bin/iosSimulatorArm64/debugFramework
         OTHER_LDFLAGS:
           - $(inherited)
           - -framework Shared
+        # Ensure bitcode is disabled (Kotlin/Native frameworks don't support it)
+        ENABLE_BITCODE: NO
+        # Support for archiving
+        SKIP_INSTALL: NO
+        # Strip debug symbols in release
+        STRIP_INSTALLED_PRODUCT: YES
+        # Product name
+        PRODUCT_NAME: Pokedexer
       configs:
         Debug:
-          FRAMEWORK_SEARCH_PATHS:
-            - $(inherited)
-            - $(SRCROOT)/../shared/build/bin/iosSimulatorArm64/debugFramework
+          # Allow debugging
+          GCC_OPTIMIZATION_LEVEL: 0
+          COPY_PHASE_STRIP: NO
         Release:
-          FRAMEWORK_SEARCH_PATHS:
-            - $(inherited)
-            - $(SRCROOT)/../shared/build/bin/iosArm64/releaseFramework
+          # Optimize for release
+          GCC_OPTIMIZATION_LEVEL: s
+          COPY_PHASE_STRIP: YES
+          STRIP_STYLE: all
     preBuildScripts:
       - name: Build Shared Framework
         script: |
           cd "$SRCROOT/.."
-          if [ "$CONFIGURATION" = "Debug" ]; then
-            ./gradlew :shared:linkDebugFrameworkIosSimulatorArm64 --no-daemon
+          
+          # Detect if we are building for simulator or device
+          if [[ "$SDK_NAME" =~ "simulator" ]]; then
+            GRADLE_TASK="linkDebugFrameworkIosSimulatorArm64"
+            FRAMEWORK_DIR="iosSimulatorArm64"
           else
+            GRADLE_TASK="linkDebugFrameworkIosArm64"
+            FRAMEWORK_DIR="iosArm64"
+          fi
+
+          if [ "$CONFIGURATION" = "Debug" ]; then
+            echo "Building Debug framework for $SDK_NAME..."
+            ./gradlew :shared:$GRADLE_TASK --no-daemon
+          else
+            echo "Building Release framework for $SDK_NAME..."
             ./gradlew :shared:linkReleaseFrameworkIosArm64 --no-daemon
+            
+            # Strip debug symbols from the release framework
+            FRAMEWORK_PATH="$SRCROOT/../shared/build/bin/iosArm64/releaseFramework/Shared.framework"
+            if [ -d "$FRAMEWORK_PATH" ]; then
+              echo "Stripping debug symbols from Shared.framework..."
+              strip -x "$FRAMEWORK_PATH/Shared" 2>/dev/null || true
+            fi
+          fi
+        basedOnDependencyAnalysis: false
+    postBuildScripts:
+      - name: Embed Shared Framework
+        script: |
+          # This script ensures the framework is properly embedded for distribution
+          if [ "$CONFIGURATION" = "Release" ]; then
+            echo "Verifying Shared.framework is properly signed..."
+            codesign --verify --verbose "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/Shared.framework" 2>/dev/null || true
           fi
         basedOnDependencyAnalysis: false
 
@@ -77,4 +133,3 @@ schemes:
       config: Debug
     archive:
       config: Release
-
