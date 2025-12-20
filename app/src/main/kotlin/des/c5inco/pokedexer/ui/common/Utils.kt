@@ -18,7 +18,17 @@ fun formatId(id: Int): String = "#" + "$id".padStart(3, '0')
 
 fun artworkUrl(id: Int): String = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/${id.toString().padStart(3, '0')}.png"
 
-fun itemAssetsUri(name: String): String = assetsUri("items", "$name.webp")
+fun itemAssetsUri(name: String): String {
+    if (name.startsWith("http")) {
+        if (name.contains("sprites/items/")) {
+            val extracted = name.substringAfter("sprites/items/").substringBefore(".png")
+            return assetsUri("items", "$extracted.webp")
+        }
+        return name
+    }
+    return assetsUri("items", "$name.webp")
+}
+
 private fun assetsUri(
     subDirectory: String? = null,
     name: String

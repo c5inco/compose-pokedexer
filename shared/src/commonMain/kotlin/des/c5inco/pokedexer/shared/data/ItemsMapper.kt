@@ -11,7 +11,7 @@ fun ItemsQuery.Item.toDomainModel(): Item {
         id = this.id,
         name = formatItemName(this.name),
         description = this.flavorText.firstOrNull()?.text?.let { cleanupDescriptionText(it) } ?: "",
-        sprite = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${this.name}.png"
+        sprite = this.name
     )
 }
 
