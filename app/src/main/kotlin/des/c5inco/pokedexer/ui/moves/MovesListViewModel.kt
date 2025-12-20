@@ -2,16 +2,15 @@ package des.c5inco.pokedexer.ui.moves
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import des.c5inco.pokedexer.data.moves.MovesRepository
 import des.c5inco.pokedexer.model.Move
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 sealed interface MovesListUiState {
     data object Loading : MovesListUiState
@@ -20,8 +19,8 @@ sealed interface MovesListUiState {
     ) : MovesListUiState
 }
 
-@HiltViewModel
-class MovesListViewModel @Inject constructor(
+@Inject
+class MovesListViewModel(
     movesRepository: MovesRepository
 ): ViewModel() {
     @OptIn(ExperimentalCoroutinesApi::class)

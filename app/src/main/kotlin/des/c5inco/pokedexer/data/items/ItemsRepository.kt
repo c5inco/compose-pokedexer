@@ -10,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 interface ItemsRepository {
     fun items(): Flow<List<Item>>
@@ -20,7 +19,7 @@ interface ItemsRepository {
     fun getItemsByName(name: String): Flow<List<Item>>
 }
 
-class ItemsRepositoryImpl @Inject constructor(
+class ItemsRepositoryImpl(
     private val itemsDao: ItemsDao,
     private val apolloClient: ApolloClient
 ): ItemsRepository {

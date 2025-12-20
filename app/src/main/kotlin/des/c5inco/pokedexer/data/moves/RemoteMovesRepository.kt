@@ -10,9 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class RemoteMovesRepository @Inject constructor(
+class RemoteMovesRepository(
     private val movesDao: MovesDao,
     private val apolloClient: ApolloClient
 ): MovesRepository {

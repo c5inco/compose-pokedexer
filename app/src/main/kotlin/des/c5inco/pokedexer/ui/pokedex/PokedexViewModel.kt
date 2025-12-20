@@ -4,12 +4,14 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
 import des.c5inco.pokedexer.model.Generation
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +19,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 sealed interface PokedexUiState {
     data class Loading(
@@ -31,11 +32,10 @@ sealed interface PokedexUiState {
     ) : PokedexUiState
 }
 
-@HiltViewModel
-class PokedexViewModel @Inject constructor(
+class PokedexViewModel @AssistedInject constructor(
     private val pokemonRepository: PokemonRepository,
     userPreferencesRepository: UserPreferencesRepository,
-    private val savedStateHandle: SavedStateHandle,
+    @Assisted private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
     private val listLoadedState = MutableTransitionState(false)
@@ -90,5 +90,10 @@ class PokedexViewModel @Inject constructor(
 
     fun filterByGeneration(generationToFilter: Generation?) {
         savedStateHandle["generationFilters"] = generationToFilter ?: Generation.I
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(savedStateHandle: SavedStateHandle): PokedexViewModel
     }
 }

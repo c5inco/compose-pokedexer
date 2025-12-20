@@ -10,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 interface AbilitiesRepository {
     suspend fun updateAbilities()
@@ -19,7 +18,7 @@ interface AbilitiesRepository {
     suspend fun getAbilitiesByName(name: String): Result<List<Ability>>
 }
 
-class AbilitiesRepositoryImpl @Inject constructor(
+class AbilitiesRepositoryImpl(
     private val abilitiesDao: AbilitiesDao,
     private val apolloClient: ApolloClient
 ): AbilitiesRepository {

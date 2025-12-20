@@ -1,26 +1,20 @@
 package des.c5inco.pokedexer.ui.pokedex
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.EntryPointAccessors
 import des.c5inco.pokedexer.data.abilities.AbilitiesRepository
 import des.c5inco.pokedexer.data.items.ItemsRepository
 import des.c5inco.pokedexer.data.moves.MovesRepository
 import des.c5inco.pokedexer.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
-import des.c5inco.pokedexer.di.ViewModelFactoryProvider
 import des.c5inco.pokedexer.model.Ability
 import des.c5inco.pokedexer.model.EvolutionTrigger
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -69,17 +63,6 @@ class PokemonDetailsViewModel @AssistedInject constructor(
     @AssistedFactory
     interface PokemonDetailsViewModelFactory {
         fun create(pokemon: Pokemon): PokemonDetailsViewModel
-    }
-
-    companion object {
-        fun provideFactory(
-            assistedFactory: PokemonDetailsViewModelFactory,
-            pokemon: Pokemon
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(pokemon) as T
-            }
-        }
     }
 
     val uiState: StateFlow<PokemonDetailsUiState> =
@@ -154,14 +137,4 @@ class PokemonDetailsViewModel @AssistedInject constructor(
             userPreferencesRepository.updateFavorites(pokemonId)
         }
     }
-}
-
-@Composable
-fun pokemonDetailsViewModel(pokemon: Pokemon): PokemonDetailsViewModel {
-    val factory = EntryPointAccessors.fromApplication(
-        LocalContext.current.applicationContext,
-        ViewModelFactoryProvider::class.java
-    ).pokemonDetailsViewModelFactory()
-
-    return viewModel(factory = PokemonDetailsViewModel.provideFactory(factory, pokemon))
 }

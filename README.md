@@ -8,7 +8,7 @@ Notable changes:
 - Swapped out [composer-router](https://github.com/zsoltk/compose-router) for [Compose Navigation](https://developer.android.com/jetpack/compose/navigation)
 - Added [Accompanist](https://github.com/google/accompanist) for edge-to-edge UI treatment
 - Querying pokemon data via [GraphQL from PokeApi](https://pokeapi.co/docs/graphql), storing in local Room database
-- Added Hilt for dependency injection, as well as ViewModels
+- [Metro](https://zacsweers.github.io/metro/latest/) for dependency injection, as well as ViewModels
 - Coil for image loading
 - Simple use of RuntimeShader of pager color transition (for devices API 33+)
 - Dynamic theming for app and Pokemon types, powered by [Material Kolor](https://github.com/jordond/MaterialKolor)

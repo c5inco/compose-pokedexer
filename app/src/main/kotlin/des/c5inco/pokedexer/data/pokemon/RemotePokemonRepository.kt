@@ -16,9 +16,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class RemotePokemonRepository @Inject constructor(
+class RemotePokemonRepository(
     private val pokemonDao: PokemonDao,
     private val apolloClient: ApolloClient
 ) : PokemonRepository {

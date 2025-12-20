@@ -11,13 +11,12 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
-import javax.inject.Inject
 
 data class UserPreferences(
     val favorites: List<Int>
 )
 
-class UserPreferencesRepository @Inject constructor(
+class UserPreferencesRepository(
     private val dataStore: DataStore<Preferences>
 ) {
     private val TAG: String = "UserPreferencesRepo"
