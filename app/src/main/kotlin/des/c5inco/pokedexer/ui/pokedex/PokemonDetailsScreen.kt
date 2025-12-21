@@ -342,7 +342,7 @@ fun AnimatedContentScope.PokemonDetailsScreen(
                 Surface(
                     modifier = Modifier
                         .animateEnterExit(
-                            enter = Material3Transitions.SharedYAxisEnterTransition(density),
+                            enter = Material3Transitions.SharedYAxisEnterTransition,
                             exit = ExitTransition.None
                         )
                         .align(Alignment.BottomCenter)

@@ -1,5 +1,9 @@
 package des.c5inco.pokedexer.ui.moves
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -97,15 +101,19 @@ fun MovesListScreen(
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-            when (val s = state) {
-                is MovesListUiState.Ready -> {
-                    MovesList(moves = s.moves)
-                }
-                is MovesListUiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
+            AnimatedContent(
+                targetState = state,
+                transitionSpec = {
+                    fadeIn().togetherWith(fadeOut())
+                },
+                modifier = Modifier.fillMaxWidth(),
+                label = "movesListContentTransition"
+            ) { targetState ->
+                when (val s = targetState) {
+                    is MovesListUiState.Ready -> {
+                        MovesList(moves = s.moves)
+                    }
+                    is MovesListUiState.Loading -> {
                         LoadingIndicator()
                     }
                 }

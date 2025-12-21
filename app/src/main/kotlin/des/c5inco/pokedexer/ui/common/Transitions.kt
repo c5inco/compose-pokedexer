@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 
+// Material2 motion
+
 object Material2Transitions {
     val SharedXAxisEnterTransition: (Density) -> EnterTransition = { density ->
         fadeIn(
@@ -145,14 +147,13 @@ object Material3Transitions {
         }
     }
 
-    val SharedYAxisEnterTransition: (Density) -> EnterTransition = { density ->
+    val SharedYAxisEnterTransition: EnterTransition =
         fadeIn(
             animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedDecelerateEasing)
         ) +
         slideInVertically(animationSpec = tween(durationMillis = DurationLong2, easing = EmphasizedDecelerateEasing)) {
             it / 2
         }
-    }
 
     val SharedZAxisEnterTransition =
         fadeIn(animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing)) +

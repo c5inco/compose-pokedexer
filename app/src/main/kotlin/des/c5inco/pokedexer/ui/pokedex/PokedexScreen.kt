@@ -81,6 +81,7 @@ import des.c5inco.pokedexer.model.Generation
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.common.LoadingIndicator
+import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -197,22 +198,35 @@ fun PokedexScreen(
             Column(
                 modifier = Modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxWidth()
             ) {
-                when (state) {
-                    is PokedexUiState.Loading -> {
-                        LoadingIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                    }
+                AnimatedContent(
+                    targetState = state,
+                    transitionSpec = {
+                        if (initialState is PokedexUiState.Loading && targetState is PokedexUiState.Ready) {
+                            (Material3Transitions.SharedYAxisEnterTransition).togetherWith(fadeOut())
+                        } else {
+                            fadeIn().togetherWith(fadeOut())
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "pokedexContentTransition"
+                ) { targetState ->
+                    when (targetState) {
+                        is PokedexUiState.Loading -> {
+                            LoadingIndicator()
+                        }
 
-                    is PokedexUiState.Ready -> {
-                        PokemonList(
-                            listState = listState,
-                            listLoadedState = state.listLoadedState,
-                            pokemonToShow = state.pokemon,
-                            favorites = state.favorites,
-                            showFavorites = showFavorites,
-                            typeFilter = typeFilter,
-                            generationFilter = generationFilter,
-                            onPokemonSelected = onPokemonSelected,
-                        )
+                        is PokedexUiState.Ready -> {
+                            PokemonList(
+                                listState = listState,
+                                listLoadedState = targetState.listLoadedState,
+                                pokemonToShow = targetState.pokemon,
+                                favorites = targetState.favorites,
+                                showFavorites = showFavorites,
+                                typeFilter = typeFilter,
+                                generationFilter = generationFilter,
+                                onPokemonSelected = onPokemonSelected,
+                            )
+                        }
                     }
                 }
             }

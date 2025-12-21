@@ -1,5 +1,9 @@
 package des.c5inco.pokedexer.ui.items
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -89,30 +93,39 @@ fun ItemsScreen(
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-            when (val s = state) {
-                is ItemsListUiState.Ready -> {
-                    LazyColumn(
-                        contentPadding = PaddingValues(
-                            top = 12.dp,
-                            bottom = 12.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-                        ),
-                        content = {
-                            itemsIndexed(s.items) { index, item ->
-                                ItemCard(
-                                    item = item,
-                                    containerColor = if (index % 2 == 0) {
-                                        MaterialTheme.colorScheme.surfaceContainerHigh
-                                    } else {
-                                        MaterialTheme.colorScheme.surfaceContainerLow
-                                    }
-                                )
-                                Spacer(Modifier.height(8.dp))
-                            }
-                        },
-                    )
-                }
-                is ItemsListUiState.Loading -> {
-                    LoadingIndicator()
+            AnimatedContent(
+                targetState = state,
+                transitionSpec = {
+                    fadeIn().togetherWith(fadeOut())
+                },
+                modifier = Modifier.fillMaxWidth(),
+                label = "itemsListContentTransition"
+            ) { targetState ->
+                when (val s = targetState) {
+                    is ItemsListUiState.Ready -> {
+                        LazyColumn(
+                            contentPadding = PaddingValues(
+                                top = 12.dp,
+                                bottom = 12.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                            ),
+                            content = {
+                                itemsIndexed(s.items) { index, item ->
+                                    ItemCard(
+                                        item = item,
+                                        containerColor = if (index % 2 == 0) {
+                                            MaterialTheme.colorScheme.surfaceContainerHigh
+                                        } else {
+                                            MaterialTheme.colorScheme.surfaceContainerLow
+                                        }
+                                    )
+                                    Spacer(Modifier.height(8.dp))
+                                }
+                            },
+                        )
+                    }
+                    is ItemsListUiState.Loading -> {
+                        LoadingIndicator()
+                    }
                 }
             }
         }
