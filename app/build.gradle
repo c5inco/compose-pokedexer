@@ -111,6 +111,7 @@ dependencies {
 
     // Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
 
     // Benchmark
     implementation(libs.androidx.profile.installer)

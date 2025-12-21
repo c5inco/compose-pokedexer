@@ -97,19 +97,19 @@ fun MovesListScreen(
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-            // when (val s = state) {
-            //     is MovesListUiState.Ready -> {
-            //         MovesList(moves = s.moves)
-            //     }
-            //     is MovesListUiState.Loading -> {
+            when (val s = state) {
+                is MovesListUiState.Ready -> {
+                    MovesList(moves = s.moves)
+                }
+                is MovesListUiState.Loading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         LoadingIndicator(modifier = Modifier.align(Alignment.TopCenter))
                     }
-            //     }
-            // }
+                }
+            }
         }
     }
 }
