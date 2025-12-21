@@ -16,8 +16,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 
 sealed interface PokedexUiState {
@@ -44,35 +46,47 @@ class PokedexViewModel @AssistedInject constructor(
     val typeFilters = savedStateHandle.getStateFlow<Type?>("typeFilters", null)
     val generationFilters = savedStateHandle.getStateFlow("generationFilters", Generation.I)
 
-    val state: StateFlow<PokedexUiState> =
-        combine(
-            generationFilters.flatMapLatest { generation ->
-                pokemonRepository.getPokemonByGeneration(generation)
-            },
-            userPreferencesFlow,
-            showFavorites,
-            typeFilters
-        ) { pokemon, userPreferences, favoritesOnly, typeFilter ->
-            delay(500)
-            listLoadedState.targetState = true
-
-            val favorites = pokemonRepository.getPokemonByIds(userPreferences.favorites).first()
-
-            val filteredPokemon = (if (favoritesOnly) favorites else pokemon).filter {
-                val matchesType = if (typeFilter != null) {
-                    it.typeOfPokemon.contains(typeFilter.toString())
-                } else {
-                    true
-                }
-                matchesType
+    val state: StateFlow<PokedexUiState> = generationFilters
+        .flatMapLatest { generation ->
+            val listLoadedState = MutableTransitionState(initialState = false).apply {
+                targetState = false
             }
 
-            PokedexUiState.Ready(
-                listLoadedState = listLoadedState,
-                pokemon = filteredPokemon,
-                favorites = favorites.toList(),
-            )
-        }.stateIn(
+            val pokemonFlow = pokemonRepository.getPokemonByGeneration(generation)
+
+            flow {
+                emit(PokedexUiState.Loading(listLoadedState))
+                delay(500)
+                emitAll(
+                    combine(
+                        pokemonFlow,
+                        userPreferencesFlow,
+                        showFavorites,
+                        typeFilters
+                    ) { pokemon, userPreferences, favoritesOnly, typeFilter ->
+                        listLoadedState.targetState = true
+
+                        val favorites = pokemonRepository.getPokemonByIds(userPreferences.favorites).first()
+
+                        val filteredPokemon = (if (favoritesOnly) favorites else pokemon).filter {
+                            val matchesType = if (typeFilter != null) {
+                                it.typeOfPokemon.contains(typeFilter.toString())
+                            } else {
+                                true
+                            }
+                            matchesType
+                        }
+
+                        PokedexUiState.Ready(
+                            listLoadedState = listLoadedState,
+                            pokemon = filteredPokemon,
+                            favorites = favorites.toList(),
+                        )
+                    }
+                )
+            }
+        }
+        .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = PokedexUiState.Loading(
