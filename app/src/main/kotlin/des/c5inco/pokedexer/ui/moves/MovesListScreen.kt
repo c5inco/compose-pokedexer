@@ -106,7 +106,7 @@ fun MovesListScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        LoadingIndicator(modifier = Modifier.align(Alignment.TopCenter))
+                        LoadingIndicator()
                     }
                 }
             }
