@@ -49,7 +49,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
@@ -81,6 +80,7 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Generation
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
+import des.c5inco.pokedexer.ui.common.LoadingIndicator
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -93,7 +93,7 @@ fun PokedexScreenRoute(
     viewModel: PokedexViewModel,
     onPokemonSelected: (Pokemon) -> Unit,
     pastPokemonSelected: Int?,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showFavorites by viewModel.showFavorites.collectAsStateWithLifecycle()
@@ -122,7 +122,7 @@ fun PokedexScreenRoute(
                 is FilterMenuEvent.ShowGenerations -> {}
             }
         },
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
     )
 }
 
@@ -130,7 +130,7 @@ enum class FilterMenuState {
     Hidden,
     Visible,
     Types,
-    Generations
+    Generations,
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,7 +143,7 @@ fun PokedexScreen(
     pastPokemonSelected: Int? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
 ) {
     val listState = rememberLazyGridState()
     var filterMenuState by remember { mutableStateOf(FilterMenuState.Hidden) }
@@ -154,7 +154,7 @@ fun PokedexScreen(
         if (state is PokedexUiState.Ready && pastPokemonSelected != null) {
             val pokemonToShow = state.pokemon
             val index = pokemonToShow.indexOfFirst { it.id == pastPokemonSelected }
-            
+
             if (index != -1) {
                 val visibleItems = listState.layoutInfo.visibleItemsInfo
                 val visible = visibleItems.filter { it.key == pastPokemonSelected }
@@ -169,49 +169,37 @@ fun PokedexScreen(
     Scaffold(
         topBar = {
             MediumTopAppBar(
-                title = { Text("Pokemon",) },
-                navigationIcon =  {
+                title = { Text("Pokemon") },
+                navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
                 },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
-                ),
-                scrollBehavior = scrollBehavior
+                colors =
+                    TopAppBarDefaults.mediumTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
+                    ),
+                scrollBehavior = scrollBehavior,
             )
         },
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
-        Box(
-            Modifier.fillMaxSize()
-        ) {
+        Box(Modifier.fillMaxSize()) {
             Pokeball(
                 tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
-                modifier = Modifier
-                    .size(256.dp)
-                    .align(Alignment.TopEnd)
-                    .offset(x = 90.dp, y = (-72).dp)
+                modifier =
+                    Modifier.size(256.dp).align(Alignment.TopEnd).offset(x = 90.dp, y = (-72).dp),
             )
 
             Column(
-                modifier = Modifier
-                    .padding(top = innerPadding.calculateTopPadding())
-                    .fillMaxWidth()
+                modifier = Modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxWidth()
             ) {
                 when (state) {
                     is PokedexUiState.Loading -> {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .size(48.dp)
-                                .padding(vertical = 24.dp)
-                        )
+                        LoadingIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                     }
 
                     is PokedexUiState.Ready -> {
@@ -223,7 +211,7 @@ fun PokedexScreen(
                             showFavorites = showFavorites,
                             typeFilter = typeFilter,
                             generationFilter = generationFilter,
-                            onPokemonSelected = onPokemonSelected
+                            onPokemonSelected = onPokemonSelected,
                         )
                     }
                 }
@@ -232,26 +220,25 @@ fun PokedexScreen(
                 visible = filterMenuState != FilterMenuState.Hidden,
                 enter = fadeIn(),
                 exit = fadeOut(),
-                modifier = Modifier.matchParentSize()
+                modifier = Modifier.matchParentSize(),
             ) {
                 Box(
-                    Modifier
-                        .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                    Modifier.background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
-                            onClick = { filterMenuState = FilterMenuState.Hidden }
-                        ),
+                            onClick = { filterMenuState = FilterMenuState.Hidden },
+                        )
                 )
             }
 
             Column(
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(WindowInsets.navigationBars.asPaddingValues())
-                    .padding(bottom = 24.dp)
+                modifier =
+                    Modifier.align(Alignment.BottomCenter)
+                        .padding(WindowInsets.navigationBars.asPaddingValues())
+                        .padding(bottom = 24.dp),
             ) {
                 if (filterMenuState != FilterMenuState.Hidden) {
                     FilterMenu(
@@ -276,17 +263,18 @@ fun PokedexScreen(
                     shape = CircleShape,
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = {
-                        filterMenuState = when (filterMenuState) {
-                            FilterMenuState.Hidden -> FilterMenuState.Visible
-                            FilterMenuState.Visible -> FilterMenuState.Hidden
-                            FilterMenuState.Types -> FilterMenuState.Visible
-                            FilterMenuState.Generations -> FilterMenuState.Visible
-                        }
+                        filterMenuState =
+                            when (filterMenuState) {
+                                FilterMenuState.Hidden -> FilterMenuState.Visible
+                                FilterMenuState.Visible -> FilterMenuState.Hidden
+                                FilterMenuState.Types -> FilterMenuState.Visible
+                                FilterMenuState.Generations -> FilterMenuState.Visible
+                            }
                     },
                 ) {
                     AnimatedContent(
                         targetState = filterMenuState,
-                        label = "filterMenuButtonTransition"
+                        label = "filterMenuButtonTransition",
                     ) { targetState ->
                         when (targetState) {
                             FilterMenuState.Hidden -> {
@@ -320,7 +308,6 @@ fun PokedexScreen(
                     }
                 }
             }
-
         }
     }
 }
@@ -337,7 +324,8 @@ private fun PokemonList(
     generationFilter: Generation? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
-    val bottomContentPadding = 96.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val bottomContentPadding =
+        96.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     LazyVerticalGrid(
         modifier = modifier.testTag("PokedexLazyGrid"),
@@ -345,20 +333,19 @@ private fun PokemonList(
         state = listState,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(top = 12.dp, start = 16.dp, end = 16.dp, bottom = bottomContentPadding),
+        contentPadding =
+            PaddingValues(top = 12.dp, start = 16.dp, end = 16.dp, bottom = bottomContentPadding),
         content = {
             if (pokemonToShow.isEmpty()) {
                 item(span = { GridItemSpan(2) }) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Bottom,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
+                        modifier = Modifier.fillMaxWidth().height(200.dp),
                     ) {
                         Text(
                             text = "No Pokemon match the following:",
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                         Spacer(Modifier.height(16.dp))
                         Column(
@@ -368,19 +355,19 @@ private fun PokemonList(
                             if (showFavorites) {
                                 Text(
                                     text = "Favorites",
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleMedium,
                                 )
                             }
                             if (generationFilter != null) {
                                 Text(
                                     text = "Gen ${generationFilter.romanNumeral}",
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleMedium,
                                 )
                             }
                             if (typeFilter != null) {
                                 Text(
                                     text = "Type: $typeFilter",
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleMedium,
                                 )
                             }
                         }
@@ -390,38 +377,40 @@ private fun PokemonList(
                 itemsIndexed(items = pokemonToShow, key = { _, p -> p.id }) { idx, p ->
                     AnimatedVisibility(
                         visibleState = listLoadedState,
-                        enter = slideInVertically(
-                            animationSpec = tween(
-                                durationMillis = 500,
-                                delayMillis = idx / 2 * 120
-                            ),
-                            initialOffsetY = { it / 2 }
-                        ) + fadeIn(
-                            animationSpec = tween(
-                                durationMillis = 400,
-                                delayMillis = idx / 2 * 150
-                            ),
-                        ),
+                        enter =
+                            slideInVertically(
+                                animationSpec =
+                                    tween(durationMillis = 500, delayMillis = idx / 2 * 120),
+                                initialOffsetY = { it / 2 },
+                            ) +
+                                fadeIn(
+                                    animationSpec =
+                                        tween(durationMillis = 400, delayMillis = idx / 2 * 150)
+                                ),
                         exit = ExitTransition.None,
-                        label = "pokemonCardTransition"
+                        label = "pokemonCardTransition",
                     ) {
                         PokedexCard(
                             pokemon = p,
                             isFavorite = favorites.contains(p),
-                            onPokemonSelected = onPokemonSelected
+                            onPokemonSelected = onPokemonSelected,
                         )
                     }
                 }
             }
-        }
+        },
     )
 }
 
 sealed class FilterMenuEvent {
     data class ToggleFavorites(val filterFavorites: Boolean) : FilterMenuEvent()
+
     data class ShowTypes(val showTypes: Boolean) : FilterMenuEvent()
+
     data class ShowGenerations(val showGenerations: Boolean) : FilterMenuEvent()
+
     data class FilterTypes(val typeToFilter: Type) : FilterMenuEvent()
+
     data class FilterGeneration(val generationToFilter: Generation) : FilterMenuEvent()
 }
 
@@ -438,41 +427,43 @@ private fun FilterMenu(
     AnimatedContent(
         targetState = menuState,
         transitionSpec = {
-            EnterTransition.None togetherWith ExitTransition.None using(SizeTransform(false))
+            EnterTransition.None togetherWith ExitTransition.None using (SizeTransform(false))
         },
         label = "filterMenuTransition",
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) { targetState ->
         when (targetState) {
             FilterMenuState.Types -> {
                 FlowRow(
                     horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(horizontal = 24.dp)
+                    modifier = Modifier.padding(horizontal = 24.dp),
                 ) {
                     Type.entries.forEachIndexed { idx, type ->
                         val selected = type == typeFilter
 
                         val seedColor = mapTypeToSeedColor(types = listOf(type.toString()))
                         val kolorScheme = getDynamicColorScheme(seedColor, PaletteStyle.Rainbow)
-                        val pokemonColorScheme = mapDynamicPokemonColorScheme(
-                            seedColor = seedColor,
-                            colorScheme = kolorScheme
-                        )
+                        val pokemonColorScheme =
+                            mapDynamicPokemonColorScheme(
+                                seedColor = seedColor,
+                                colorScheme = kolorScheme,
+                            )
 
                         FilterTypeItem(
                             type = type,
-                            colors = if (selected) {
-                                ButtonDefaults.filledTonalButtonColors(
-                                    containerColor = pokemonColorScheme.surface,
-                                    contentColor = pokemonColorScheme.onSurface
-                                )
-                            } else {
-                                ButtonDefaults.filledTonalButtonColors()
-                            },
+                            colors =
+                                if (selected) {
+                                    ButtonDefaults.filledTonalButtonColors(
+                                        containerColor = pokemonColorScheme.surface,
+                                        contentColor = pokemonColorScheme.onSurface,
+                                    )
+                                } else {
+                                    ButtonDefaults.filledTonalButtonColors()
+                                },
                             selected = selected,
                             index = idx,
                             onClick = { onMenuItemClick(FilterMenuEvent.FilterTypes(type)) },
-                            modifier = Modifier.padding(horizontal = 4.dp)
+                            modifier = Modifier.padding(horizontal = 4.dp),
                         )
                     }
                 }
@@ -480,25 +471,28 @@ private fun FilterMenu(
             FilterMenuState.Generations -> {
                 FlowRow(
                     horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(horizontal = 24.dp)
+                    modifier = Modifier.padding(horizontal = 24.dp),
                 ) {
                     Generation.entries.forEachIndexed { idx, generation ->
                         val selected = generation == generationFilter
 
                         FilterGenerationItem(
                             generation = generation,
-                            colors = if (selected) {
-                                ButtonDefaults.filledTonalButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary
-                                )
-                            } else {
-                                ButtonDefaults.filledTonalButtonColors()
-                            },
+                            colors =
+                                if (selected) {
+                                    ButtonDefaults.filledTonalButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                                    )
+                                } else {
+                                    ButtonDefaults.filledTonalButtonColors()
+                                },
                             selected = selected,
                             index = idx,
-                            onClick = { onMenuItemClick(FilterMenuEvent.FilterGeneration(generation)) },
-                            modifier = Modifier.padding(horizontal = 4.dp)
+                            onClick = {
+                                onMenuItemClick(FilterMenuEvent.FilterGeneration(generation))
+                            },
+                            modifier = Modifier.padding(horizontal = 4.dp),
                         )
                     }
                 }
@@ -511,39 +505,46 @@ private fun FilterMenu(
                 ) {
                     FilterMenuItem(
                         index = 0,
-                        onClick = { onMenuItemClick(FilterMenuEvent.ToggleFavorites(!showFavorites)) }
+                        onClick = {
+                            onMenuItemClick(FilterMenuEvent.ToggleFavorites(!showFavorites))
+                        },
                     ) {
                         Icon(
-                            imageVector = if (showFavorites) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
+                            imageVector =
+                                if (showFavorites) Icons.Default.FavoriteBorder
+                                else Icons.Default.Favorite,
                             contentDescription = null,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(18.dp),
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(if (showFavorites) "Show all" else "Show favorites")
                     }
                     FilterMenuItem(
                         index = 1,
-                        onClick = { onMenuItemClick(FilterMenuEvent.ShowTypes(true)) }
+                        onClick = { onMenuItemClick(FilterMenuEvent.ShowTypes(true)) },
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_genetics),
                             contentDescription = null,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(18.dp),
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(if (typeFilter != null) "Filtered by $typeFilter" else "All types")
                     }
                     FilterMenuItem(
                         index = 2,
-                        onClick = { onMenuItemClick(FilterMenuEvent.ShowGenerations(true)) }
+                        onClick = { onMenuItemClick(FilterMenuEvent.ShowGenerations(true)) },
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_filter),
                             contentDescription = null,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(18.dp),
                         )
                         Spacer(Modifier.width(8.dp))
-                        Text(if (generationFilter != null) "Gen ${generationFilter.romanNumeral}" else "All generations")
+                        Text(
+                            if (generationFilter != null) "Gen ${generationFilter.romanNumeral}"
+                            else "All generations"
+                        )
                     }
                 }
             }
@@ -556,19 +557,27 @@ private fun AnimatedVisibilityScope.FilterMenuItem(
     modifier: Modifier = Modifier,
     index: Int,
     onClick: () -> Unit = {},
-    content: @Composable RowScope.() -> Unit = {}
+    content: @Composable RowScope.() -> Unit = {},
 ) {
     FilledTonalButton(
         contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp),
         onClick = onClick,
-        modifier = modifier
-            .animateEnterExit(
-                enter = fadeIn(animationSpec = tween(durationMillis = 200, delayMillis = index * 15 + 60)) +
-                    slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(durationMillis = 240, delayMillis = index * 50 + 60)),
-                exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)) +
-                    slideOutVertically(targetOffsetY = { it / 2 }),
-                label = "filterMenuItemTransition"
-            )
+        modifier =
+            modifier.animateEnterExit(
+                enter =
+                    fadeIn(
+                        animationSpec = tween(durationMillis = 200, delayMillis = index * 15 + 60)
+                    ) +
+                        slideInVertically(
+                            initialOffsetY = { it / 2 },
+                            animationSpec =
+                                tween(durationMillis = 240, delayMillis = index * 50 + 60),
+                        ),
+                exit =
+                    fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)) +
+                        slideOutVertically(targetOffsetY = { it / 2 }),
+                label = "filterMenuItemTransition",
+            ),
     ) {
         content()
     }
@@ -587,20 +596,25 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
         contentPadding = PaddingValues(start = 12.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
         onClick = onClick,
         colors = colors,
-        modifier = modifier
-            .animateEnterExit(
-                enter = fadeIn(animationSpec = tween(durationMillis = 240, delayMillis = index * 15 + 60)) +
-                    slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(durationMillis = 150, delayMillis = index * 15 + 60)),
+        modifier =
+            modifier.animateEnterExit(
+                enter =
+                    fadeIn(
+                        animationSpec = tween(durationMillis = 240, delayMillis = index * 15 + 60)
+                    ) +
+                        slideInVertically(
+                            initialOffsetY = { it / 2 },
+                            animationSpec =
+                                tween(durationMillis = 150, delayMillis = index * 15 + 60),
+                        ),
                 exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
-                label = "{$type}TypeTransition"
-            )
+                label = "{$type}TypeTransition",
+            ),
     ) {
         Icon(
             painter = painterResource(id = mapTypeToIcon(type)),
             contentDescription = null,
-            modifier = Modifier
-                .size(18.dp)
-                .graphicsLayer { alpha = if (selected) 1f else 0.4f }
+            modifier = Modifier.size(18.dp).graphicsLayer { alpha = if (selected) 1f else 0.4f },
         )
         Spacer(Modifier.width(4.dp))
         Text("$type")
@@ -620,17 +634,22 @@ private fun AnimatedVisibilityScope.FilterGenerationItem(
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
         onClick = onClick,
         colors = colors,
-        modifier = modifier
-            .animateEnterExit(
-                enter = fadeIn(animationSpec = tween(durationMillis = 240, delayMillis = index * 15 + 60)) +
-                    slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(durationMillis = 150, delayMillis = index * 15 + 60)),
+        modifier =
+            modifier.animateEnterExit(
+                enter =
+                    fadeIn(
+                        animationSpec = tween(durationMillis = 240, delayMillis = index * 15 + 60)
+                    ) +
+                        slideInVertically(
+                            initialOffsetY = { it / 2 },
+                            animationSpec =
+                                tween(durationMillis = 150, delayMillis = index * 15 + 60),
+                        ),
                 exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
-                label = "Gen${generation.id}Transition"
-            )
+                label = "Gen${generation.id}Transition",
+            ),
     ) {
-        Text(
-            text = "Gen ${generation.romanNumeral}"
-        )
+        Text(text = "Gen ${generation.romanNumeral}")
     }
 }
 
@@ -662,23 +681,25 @@ private fun PokedexScreenPreview() {
                     is FilterMenuEvent.ToggleFavorites -> {
                         showFavorites = !showFavorites
                         state.copy(
-                            pokemon = if (showFavorites) {
-                                SamplePokemonData.take(5)
-                            } else {
-                                SamplePokemonData.toList()
-                            }
+                            pokemon =
+                                if (showFavorites) {
+                                    SamplePokemonData.take(5)
+                                } else {
+                                    SamplePokemonData.toList()
+                                }
                         )
                     }
                     is FilterMenuEvent.FilterTypes -> {
                         if (typeFilter != result.typeToFilter) result.typeToFilter else null
                     }
                     is FilterMenuEvent.FilterGeneration -> {
-                        if (generationFilter != result.generationToFilter) result.generationToFilter else null
+                        if (generationFilter != result.generationToFilter) result.generationToFilter
+                        else null
                     }
                     is FilterMenuEvent.ShowTypes -> {}
                     is FilterMenuEvent.ShowGenerations -> {}
                 }
-            }
+            },
         )
     }
 }

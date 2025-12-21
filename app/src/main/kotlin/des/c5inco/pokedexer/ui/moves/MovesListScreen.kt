@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,6 +45,7 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.ui.common.CategoryIcon
+import des.c5inco.pokedexer.ui.common.LoadingIndicator
 import des.c5inco.pokedexer.ui.common.TypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -97,14 +97,19 @@ fun MovesListScreen(
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-            when (val s = state) {
-                is MovesListUiState.Ready -> {
-                    MovesList(moves = s.moves)
-                }
-                is MovesListUiState.Loading -> {
-                    CircularProgressIndicator()
-                }
-            }
+            // when (val s = state) {
+            //     is MovesListUiState.Ready -> {
+            //         MovesList(moves = s.moves)
+            //     }
+            //     is MovesListUiState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LoadingIndicator(modifier = Modifier.align(Alignment.TopCenter))
+                    }
+            //     }
+            // }
         }
     }
 }
