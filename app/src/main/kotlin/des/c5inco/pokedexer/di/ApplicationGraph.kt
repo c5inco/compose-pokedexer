@@ -9,22 +9,24 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
+import coil.ImageLoader
+import coil.decode.ImageDecoderDecoder
 import com.apollographql.apollo3.ApolloClient
-import dev.zacsweers.metro.ContributesTo
-import dev.zacsweers.metro.DependencyGraph
-import dev.zacsweers.metro.Provides
-import dev.zacsweers.metro.SingleIn
+import des.c5inco.pokedexer.RootViewModel
 import des.c5inco.pokedexer.data.PokemonDatabase
 import des.c5inco.pokedexer.data.abilities.AbilitiesDao
 import des.c5inco.pokedexer.data.items.ItemsDao
 import des.c5inco.pokedexer.data.moves.MovesDao
 import des.c5inco.pokedexer.data.pokemon.PokemonDao
-import des.c5inco.pokedexer.RootViewModel
 import des.c5inco.pokedexer.ui.home.HomeViewModel
 import des.c5inco.pokedexer.ui.items.ItemsViewModel
 import des.c5inco.pokedexer.ui.moves.MovesListViewModel
 import des.c5inco.pokedexer.ui.pokedex.PokedexViewModel
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsViewModel
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.DependencyGraph
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -98,6 +100,17 @@ interface ApplicationModule {
             produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES) }
         )
     }
+
+    // Image Loading
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideGifImageLoader(context: Context): ImageLoader {
+        return ImageLoader.Builder(context)
+            .components {
+                add(ImageDecoderDecoder.Factory())
+            }
+            .build()
+    }
 }
 
 /**
@@ -116,6 +129,9 @@ interface ApplicationGraph {
     // Factories for assisted injection ViewModels
     val pokedexViewModelFactory: PokedexViewModel.Factory
     val pokemonDetailsViewModelFactory: PokemonDetailsViewModel.PokemonDetailsViewModelFactory
+
+    // Image loading
+    val gifImageLoader: ImageLoader
 
     /**
      * Factory to create the ApplicationGraph with external dependencies.
