@@ -1,19 +1,20 @@
 package des.c5inco.pokedexer.ui.items
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -88,10 +89,7 @@ fun ItemsScreen(
         ) {
             when (val s = state) {
                 is ItemsListUiState.Ready -> {
-                    LazyVerticalStaggeredGrid(
-                        columns = StaggeredGridCells.Adaptive(120.dp),
-                        verticalItemSpacing = 4.dp,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    LazyColumn(
                         contentPadding = PaddingValues(
                             top = 12.dp,
                             bottom = 12.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
@@ -99,6 +97,7 @@ fun ItemsScreen(
                         content = {
                             items(s.items) {
                                 ItemCard(item = it)
+                                Spacer(Modifier.height(8.dp))
                             }
                         },
                     )
@@ -117,26 +116,30 @@ private fun ItemCard(
     item: Item
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
+        Row(
+            modifier = Modifier.padding(16.dp),
         ) {
             ItemImage(
                 item = item,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(56.dp)
             )
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = item.name,
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = item.description,
-                style = MaterialTheme.typography.bodySmall
-            )
+            Spacer(Modifier.width(16.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = item.name,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = item.description,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }
