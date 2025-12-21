@@ -102,7 +102,12 @@ fun MovesListScreen(
                     MovesList(moves = s.moves)
                 }
                 is MovesListUiState.Loading -> {
-                    CircularProgressIndicator()
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
         }
