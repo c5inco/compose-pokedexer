@@ -1,23 +1,25 @@
 package des.c5inco.pokedexer.ui.items
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,8 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +42,6 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.ui.common.ItemImage
-import des.c5inco.pokedexer.ui.common.LoadingIndicator
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
@@ -90,28 +91,28 @@ fun ItemsScreen(
         ) {
             when (val s = state) {
                 is ItemsListUiState.Ready -> {
-                    LazyVerticalStaggeredGrid(
-                        columns = StaggeredGridCells.Adaptive(120.dp),
-                        verticalItemSpacing = 4.dp,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    LazyColumn(
                         contentPadding = PaddingValues(
                             top = 12.dp,
                             bottom = 12.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
                         ),
                         content = {
-                            items(s.items) {
-                                ItemCard(item = it)
+                            itemsIndexed(s.items) { index, item ->
+                                ItemCard(
+                                    item = item,
+                                    containerColor = if (index % 2 == 0) {
+                                        MaterialTheme.colorScheme.surfaceContainerHigh
+                                    } else {
+                                        MaterialTheme.colorScheme.surfaceContainerLow
+                                    }
+                                )
+                                Spacer(Modifier.height(8.dp))
                             }
                         },
                     )
                 }
                 is ItemsListUiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        LoadingIndicator(modifier = Modifier.align(Alignment.TopCenter))
-                    }
+                    CircularProgressIndicator()
                 }
             }
         }
@@ -121,29 +122,35 @@ fun ItemsScreen(
 @Composable
 private fun ItemCard(
     modifier: Modifier = Modifier,
-    item: Item
+    item: Item,
+    containerColor: Color = CardDefaults.cardColors().containerColor
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = containerColor)
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
+        Row(
+            modifier = Modifier.padding(16.dp),
         ) {
             ItemImage(
                 item = item,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(56.dp)
             )
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = item.name,
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = item.description,
-                style = MaterialTheme.typography.bodySmall
-            )
+            Spacer(Modifier.width(16.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = item.name,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = item.description,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }
