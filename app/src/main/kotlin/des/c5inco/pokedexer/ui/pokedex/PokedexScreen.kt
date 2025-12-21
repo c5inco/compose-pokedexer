@@ -49,7 +49,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
@@ -81,6 +80,7 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.model.Generation
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
+import des.c5inco.pokedexer.ui.common.LoadingSpinner
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -205,11 +205,9 @@ fun PokedexScreen(
             ) {
                 when (state) {
                     is PokedexUiState.Loading -> {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.primary,
+                        LoadingSpinner(
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
-                                .size(48.dp)
                                 .padding(vertical = 24.dp)
                         )
                     }

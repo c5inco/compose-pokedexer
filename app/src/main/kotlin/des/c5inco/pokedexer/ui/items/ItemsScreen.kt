@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +38,7 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.ui.common.ItemImage
+import des.c5inco.pokedexer.ui.common.LoadingSpinner
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
@@ -104,7 +104,11 @@ fun ItemsScreen(
                     )
                 }
                 is ItemsListUiState.Loading -> {
-                    CircularProgressIndicator()
+                    LoadingSpinner(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(vertical = 24.dp)
+                    )
                 }
             }
         }
