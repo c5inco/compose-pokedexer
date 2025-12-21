@@ -13,30 +13,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import dagger.hilt.android.HiltAndroidApp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
+import des.c5inco.pokedexer.di.ApplicationGraph
 import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.home.HomeScreenRoute
 import des.c5inco.pokedexer.ui.home.appbar.SearchResult
 import des.c5inco.pokedexer.ui.home.appbar.elements.MenuItem
+import des.c5inco.pokedexer.di.metroViewModel
 import des.c5inco.pokedexer.ui.items.ItemsScreenRoute
 import des.c5inco.pokedexer.ui.moves.MovesListScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.PokedexScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsScreenRoute
-import des.c5inco.pokedexer.ui.pokedex.pokemonDetailsViewModel
+import dev.zacsweers.metro.createGraphFactory
 
-@HiltAndroidApp
-class PokedexerApplication : Application()
+class PokedexerApplication : Application() {
+    lateinit var appGraph: ApplicationGraph
+        private set
+
+    override fun onCreate() {
+        super.onCreate()
+        appGraph = createGraphFactory<ApplicationGraph.Factory>().create(this)
+    }
+}
+
+/**
+ * Extension property to access the app graph from any context.
+ */
+val Application.appGraph: ApplicationGraph
+    get() = (this as PokedexerApplication).appGraph
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PokedexerApp(
-    viewModel: RootViewModel = hiltViewModel()
+    viewModel: RootViewModel = metroViewModel()
 ) {
     val navController = rememberNavController()
     val density = LocalDensity.current
@@ -55,7 +68,7 @@ fun PokedexerApp(
     ) {
         composable(route = "home") {
             HomeScreenRoute(
-                viewModel = hiltViewModel(),
+                viewModel = metroViewModel(),
                 onMenuItemSelected = {
                     if (it == MenuItem.Pokedex) {
                         navController.navigate("pokedex")
@@ -91,7 +104,7 @@ fun PokedexerApp(
                 val pastPokemonId = it.savedStateHandle.get<Int>("pokemonId")
 
                 PokedexScreenRoute(
-                    viewModel = hiltViewModel(),
+                    viewModel = metroViewModel(),
                     onPokemonSelected = {
                         pokemon = it
                         navController.navigate("details")
@@ -106,7 +119,7 @@ fun PokedexerApp(
                 exitTransition = { Material3Transitions.SharedZAxisExitTransition },
             ) {
                 PokemonDetailsScreenRoute(
-                    detailsViewModel = pokemonDetailsViewModel(pokemon),
+                    detailsViewModel = metroViewModel { pokemonDetailsViewModelFactory.create(pokemon) },
                     onBackClick = {
                         navController.previousBackStackEntry
                             ?.savedStateHandle
@@ -118,13 +131,13 @@ fun PokedexerApp(
         }
         composable(route = "moves") {
             MovesListScreenRoute(
-                viewModel = hiltViewModel(),
+                viewModel = metroViewModel(),
                 onBackClick = { navController.popBackStack() }
             )
         }
         composable(route = "items") {
             ItemsScreenRoute(
-                viewModel = hiltViewModel(),
+                viewModel = metroViewModel(),
                 onBackClick = { navController.popBackStack() }
             )
         }

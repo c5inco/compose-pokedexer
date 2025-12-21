@@ -1,11 +1,10 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
-    alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.apollo)
-    alias(libs.plugins.daggerHiltAndroidGradle)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.metro)
 }
 
 android {
@@ -64,6 +63,10 @@ android {
     }
 }
 
+metro {
+    // No interop needed for clean migration
+}
+
 dependencies {
     // Core
     implementation(libs.androidx.core.ktx)
@@ -90,11 +93,6 @@ dependencies {
 
     // Datastore
     implementation(libs.datastore)
-
-    // Hilt
-    kapt(libs.hilt.android.compiler)
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
 
     // Shapes
     implementation(libs.androidx.graphics.shapes)

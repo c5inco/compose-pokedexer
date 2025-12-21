@@ -18,7 +18,7 @@ This is an Android Pokédex app built with **Jetpack Compose** and following mod
 
 ### Technology Stack
 - **UI Framework**: Jetpack Compose with Material 3
-- **Architecture**: MVVM with Hilt dependency injection
+- **Architecture**: MVVM with Metro dependency injection
 - **Database**: Room (local SQLite database)
 - **Network**: Apollo GraphQL client connecting to PokéAPI
 - **Navigation**: Compose Navigation
@@ -29,8 +29,8 @@ This is an Android Pokédex app built with **Jetpack Compose** and following mod
 
 **Main Entry Points**:
 - `MainActivity.kt` - Single activity with edge-to-edge display
-- `PokedexerApp.kt` - Main Compose navigation graph and app structure
-- `PokedexerApplication` - Hilt application class
+- `PokedexerApp.kt` - Main Compose navigation graph, app structure, and Application class
+- `PokedexerApplication` - Metro application class with dependency graph initialization
 
 **Data Layer**:
 - `PokemonDatabase.kt` - Room database with DAOs for Pokemon, Moves, Items, and Abilities
@@ -47,8 +47,10 @@ This is an Android Pokédex app built with **Jetpack Compose** and following mod
 - `ui/theme/` - App theming with Material 3
 
 **Dependency Injection**:
-- Hilt modules in `di/` directory for database, network, and repository setup
-- NetworkModule configures Apollo client for GraphQL API
+- Metro `@DependencyGraph` in `di/ApplicationGraph.kt` for database, network, and repository setup
+- `MetroViewModel.kt` provides a `metroViewModel()` composable helper for ViewModel injection in Compose
+- ViewModels use Metro's `@Inject` annotation for constructor injection
+- Assisted injection with `@Assisted` and `@AssistedFactory` for ViewModels requiring runtime parameters
 
 ### Navigation Structure
 - Home screen with search and menu navigation
