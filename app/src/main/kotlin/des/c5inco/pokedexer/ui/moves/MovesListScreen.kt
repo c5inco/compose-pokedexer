@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.moves
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -98,15 +99,13 @@ fun MovesListScreen(
         Column(
             Modifier
                 .padding(top = innerPadding.calculateTopPadding())
-                .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
             AnimatedContent(
                 targetState = state,
                 transitionSpec = {
-                    fadeIn().togetherWith(fadeOut())
+                    fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false))
                 },
-                modifier = Modifier.fillMaxWidth(),
                 label = "movesListContentTransition"
             ) { targetState ->
                 when (val s = targetState) {
@@ -129,7 +128,7 @@ private fun MovesList(
     moves: List<Move> = SampleMoves
 ) {
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.padding(horizontal = 16.dp),
         contentPadding = WindowInsets.navigationBars.asPaddingValues()
     ) {
         stickyHeader {

@@ -205,9 +205,8 @@ fun PokedexScreen(
                             (Material3Transitions.SharedYAxisEnterTransition).togetherWith(fadeOut())
                         } else {
                             fadeIn().togetherWith(fadeOut())
-                        }
+                        }.using(SizeTransform(clip = false))
                     },
-                    modifier = Modifier.fillMaxWidth(),
                     label = "pokedexContentTransition"
                 ) { targetState ->
                     when (targetState) {

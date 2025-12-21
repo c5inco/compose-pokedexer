@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.ui.items
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -90,15 +91,13 @@ fun ItemsScreen(
         Column(
             Modifier
                 .padding(top = innerPadding.calculateTopPadding())
-                .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
             AnimatedContent(
                 targetState = state,
                 transitionSpec = {
-                    fadeIn().togetherWith(fadeOut())
+                    fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false))
                 },
-                modifier = Modifier.fillMaxWidth(),
                 label = "itemsListContentTransition"
             ) { targetState ->
                 when (val s = targetState) {
@@ -121,6 +120,7 @@ fun ItemsScreen(
                                     Spacer(Modifier.height(8.dp))
                                 }
                             },
+                            modifier = Modifier.padding(horizontal = 16.dp)
                         )
                     }
                     is ItemsListUiState.Loading -> {
