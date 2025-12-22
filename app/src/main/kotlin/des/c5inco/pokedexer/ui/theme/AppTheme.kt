@@ -52,7 +52,13 @@ fun PokemonTypesTheme(
         seedColor = seedColor,
         colorScheme = kolorScheme,
     ).copy(
-        type = Type.valueOf(types[0])
+        type = types.getOrNull(0)?.let {
+            try {
+                Type.valueOf(it.replaceFirstChar { it.uppercase() })
+            } catch (e: IllegalArgumentException) {
+                null
+            }
+        }
     )
 
     CompositionLocalProvider(
@@ -119,27 +125,31 @@ fun mapDynamicPokemonColorScheme(
 fun mapTypeToSeedColor(
     types: List<String>,
 ): Color {
-    val firstType = types[0]
+    val firstType = types.getOrNull(0) ?: return Color.Magenta
 
-    return when (Type.valueOf(firstType)) {
-        Type.Bug -> PokemonColors.Bug
-        Type.Dark -> PokemonColors.Dark
-        Type.Dragon -> PokemonColors.Dragon
-        Type.Electric -> PokemonColors.Electric
-        Type.Fairy -> PokemonColors.Fairy
-        Type.Fighting -> PokemonColors.Fighting
-        Type.Fire -> PokemonColors.Fire
-        Type.Flying -> PokemonColors.Flying
-        Type.Ghost -> PokemonColors.Ghost
-        Type.Grass -> PokemonColors.Grass
-        Type.Ground -> PokemonColors.Ground
-        Type.Ice -> PokemonColors.Ice
-        Type.Normal -> PokemonColors.Normal
-        Type.Poison -> PokemonColors.Poison
-        Type.Psychic -> PokemonColors.Psychic
-        Type.Rock -> PokemonColors.Rock
-        Type.Steel -> PokemonColors.Steel
-        Type.Water -> PokemonColors.Water
+    return try {
+        when (Type.valueOf(firstType.replaceFirstChar { it.uppercase() })) {
+            Type.Bug -> PokemonColors.Bug
+            Type.Dark -> PokemonColors.Dark
+            Type.Dragon -> PokemonColors.Dragon
+            Type.Electric -> PokemonColors.Electric
+            Type.Fairy -> PokemonColors.Fairy
+            Type.Fighting -> PokemonColors.Fighting
+            Type.Fire -> PokemonColors.Fire
+            Type.Flying -> PokemonColors.Flying
+            Type.Ghost -> PokemonColors.Ghost
+            Type.Grass -> PokemonColors.Grass
+            Type.Ground -> PokemonColors.Ground
+            Type.Ice -> PokemonColors.Ice
+            Type.Normal -> PokemonColors.Normal
+            Type.Poison -> PokemonColors.Poison
+            Type.Psychic -> PokemonColors.Psychic
+            Type.Rock -> PokemonColors.Rock
+            Type.Steel -> PokemonColors.Steel
+            Type.Water -> PokemonColors.Water
+        }
+    } catch (e: IllegalArgumentException) {
+        Color.Magenta
     }
 }
 
