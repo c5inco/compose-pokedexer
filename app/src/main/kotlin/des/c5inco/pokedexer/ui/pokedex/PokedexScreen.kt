@@ -81,7 +81,6 @@ import des.c5inco.pokedexer.model.Generation
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.Type
 import des.c5inco.pokedexer.ui.common.LoadingIndicator
-import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -198,18 +197,18 @@ fun PokedexScreen(
             Column(
                 modifier = Modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxWidth()
             ) {
-                AnimatedContent(
-                    targetState = state,
-                    transitionSpec = {
-                        if (initialState is PokedexUiState.Loading && targetState is PokedexUiState.Ready) {
-                            (Material3Transitions.SharedYAxisEnterTransition).togetherWith(fadeOut())
-                        } else {
-                            fadeIn().togetherWith(fadeOut())
-                        }.using(SizeTransform(clip = false))
-                    },
-                    label = "pokedexContentTransition"
-                ) { targetState ->
-                    when (targetState) {
+                // AnimatedContent(
+                //     targetState = state,
+                //     transitionSpec = {
+                //         if (initialState is PokedexUiState.Loading && targetState is PokedexUiState.Ready) {
+                //             (Material3Transitions.SharedYAxisEnterTransition).togetherWith(fadeOut())
+                //         } else {
+                //             fadeIn().togetherWith(fadeOut())
+                //         }.using(SizeTransform(clip = false))
+                //     },
+                //     label = "pokedexContentTransition"
+                // ) { targetState ->
+                    when (state) {
                         is PokedexUiState.Loading -> {
                             LoadingIndicator()
                         }
@@ -217,9 +216,9 @@ fun PokedexScreen(
                         is PokedexUiState.Ready -> {
                             PokemonList(
                                 listState = listState,
-                                listLoadedState = targetState.listLoadedState,
-                                pokemonToShow = targetState.pokemon,
-                                favorites = targetState.favorites,
+                                listLoadedState = state.listLoadedState,
+                                pokemonToShow = state.pokemon,
+                                favorites = state.favorites,
                                 showFavorites = showFavorites,
                                 typeFilter = typeFilter,
                                 generationFilter = generationFilter,
@@ -227,7 +226,7 @@ fun PokedexScreen(
                             )
                         }
                     }
-                }
+                // }
             }
             AnimatedVisibility(
                 visible = filterMenuState != FilterMenuState.Hidden,
