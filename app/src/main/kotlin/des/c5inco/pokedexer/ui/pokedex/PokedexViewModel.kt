@@ -40,7 +40,6 @@ class PokedexViewModel @AssistedInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
-    private val listLoadedState = MutableTransitionState(false)
 
     val showFavorites = savedStateHandle.getStateFlow("showFavorites", false)
     val typeFilters = savedStateHandle.getStateFlow<Type?>("typeFilters", null)
@@ -48,9 +47,7 @@ class PokedexViewModel @AssistedInject constructor(
 
     val state: StateFlow<PokedexUiState> = generationFilters
         .flatMapLatest { generation ->
-            val listLoadedState = MutableTransitionState(initialState = false).apply {
-                targetState = false
-            }
+            val listLoadedState = MutableTransitionState(false)
 
             val pokemonFlow = pokemonRepository.getPokemonByGeneration(generation)
 
@@ -68,13 +65,15 @@ class PokedexViewModel @AssistedInject constructor(
 
                         val favorites = pokemonRepository.getPokemonByIds(userPreferences.favorites).first()
 
-                        val filteredPokemon = (if (favoritesOnly) favorites else pokemon).filter {
+                        val filteredPokemon = pokemon.filter { p ->
+                            val isFavorite = userPreferences.favorites.contains(p.id)
+                            val matchesFavorites = if (favoritesOnly) isFavorite else true
                             val matchesType = if (typeFilter != null) {
-                                it.typeOfPokemon.contains(typeFilter.toString())
+                                p.typeOfPokemon.contains(typeFilter.toString())
                             } else {
                                 true
                             }
-                            matchesType
+                            matchesFavorites && matchesType
                         }
 
                         PokedexUiState.Ready(
@@ -90,7 +89,7 @@ class PokedexViewModel @AssistedInject constructor(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = PokedexUiState.Loading(
-                listLoadedState = listLoadedState
+                listLoadedState = MutableTransitionState(false)
             )
         )
 
