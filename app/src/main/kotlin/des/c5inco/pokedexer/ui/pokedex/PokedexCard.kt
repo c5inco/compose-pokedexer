@@ -60,50 +60,31 @@ fun PokedexCard(
             calculateAnalogousColors(pokemonTypeSurfaceColor, 18f)[hueIndex]
         }
 
-        val colors = listOf(
+        val colors = remember(analogousSurfaceColor, pokemonTypeSurfaceColor) {
             listOf(
-                Offset(0.0f, 0.0f) to analogousSurfaceColor,
-                Offset(0.24099097f, 0.0f) to analogousSurfaceColor,
-                Offset(0.5358101f, 0.0f) to analogousSurfaceColor,
-                Offset(0.7894143f, 0.0f) to analogousSurfaceColor,
-                Offset(1.0f, 0.0f) to pokemonTypeSurfaceColor,
-            ),
-            listOf(
-                Offset(0.0f, 0.5f) to analogousSurfaceColor,
-                Offset(0.24236615f, 0.6261937f) to pokemonTypeSurfaceColor,
-                Offset(0.5254497f, 0.4176749f) to pokemonTypeSurfaceColor,
-                Offset(0.802476f, 0.6690188f) to analogousSurfaceColor,
-                Offset(1.0f, 0.35517487f) to pokemonTypeSurfaceColor,
-            ),
-            listOf(
-                Offset(0.0f, 1.0f) to pokemonTypeSurfaceColor,
-                Offset(0.23941448f, 1.0f) to pokemonTypeSurfaceColor,
-                Offset(0.5159903f, 1.0f) to pokemonTypeSurfaceColor,
-                Offset(0.7876128f, 1.0f) to pokemonTypeSurfaceColor,
-                Offset(1.0f, 1.0f) to pokemonTypeSurfaceColor,
-            ),
-        )
-
-        // val colors = listOf(
-        //     listOf(
-        //         Offset(0f, 0f) to analogousSurfaceColor,
-        //         Offset(.33f, 0f) to analogousSurfaceColor,
-        //         Offset(.66f, 0f) to analogousSurfaceColor,
-        //         Offset(1f, 0f) to analogousSurfaceColor,
-        //     ),
-        //     listOf(
-        //         Offset(0f, .6f) to pokemonTypeSurfaceColor,
-        //         Offset(.25f, .4f) to pokemonTypeSurfaceColor,
-        //         Offset(.8f, .6f) to pokemonTypeSurfaceColor,
-        //         Offset(1f, .5f) to pokemonTypeSurfaceColor,
-        //     ),
-        //     listOf(
-        //         Offset(0f, 1f) to PokemonTypesTheme.colorScheme.primary,
-        //         Offset(.33f, 1f) to PokemonTypesTheme.colorScheme.primary,
-        //         Offset(.67f, 1f) to PokemonTypesTheme.colorScheme.primary,
-        //         Offset(1f, 1f) to PokemonTypesTheme.colorScheme.primary,
-        //     ),
-        // )
+                listOf(
+                    Offset(0.0f, 0.0f) to analogousSurfaceColor,
+                    Offset(0.24099097f, 0.0f) to analogousSurfaceColor,
+                    Offset(0.5358101f, 0.0f) to analogousSurfaceColor,
+                    Offset(0.7894143f, 0.0f) to analogousSurfaceColor,
+                    Offset(1.0f, 0.0f) to pokemonTypeSurfaceColor,
+                ),
+                listOf(
+                    Offset(0.0f, 0.5f) to analogousSurfaceColor,
+                    Offset(0.24236615f, 0.6261937f) to pokemonTypeSurfaceColor,
+                    Offset(0.5254497f, 0.4176749f) to pokemonTypeSurfaceColor,
+                    Offset(0.802476f, 0.6690188f) to analogousSurfaceColor,
+                    Offset(1.0f, 0.35517487f) to pokemonTypeSurfaceColor,
+                ),
+                listOf(
+                    Offset(0.0f, 1.0f) to pokemonTypeSurfaceColor,
+                    Offset(0.23941448f, 1.0f) to pokemonTypeSurfaceColor,
+                    Offset(0.5159903f, 1.0f) to pokemonTypeSurfaceColor,
+                    Offset(0.7876128f, 1.0f) to pokemonTypeSurfaceColor,
+                    Offset(1.0f, 1.0f) to pokemonTypeSurfaceColor,
+                ),
+            )
+        }
 
         Surface(
             modifier = modifier
