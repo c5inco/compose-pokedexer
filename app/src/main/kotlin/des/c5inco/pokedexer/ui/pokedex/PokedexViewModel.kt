@@ -88,7 +88,7 @@ class PokedexViewModel @AssistedInject constructor(
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.Lazily,
             initialValue = PokedexUiState.Loading(
                 listLoadedState = listLoadedState
             )

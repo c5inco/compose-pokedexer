@@ -151,16 +151,16 @@ fun PokedexScreen(
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    LaunchedEffect(pastPokemonSelected, state) {
-        if (state is PokedexUiState.Ready && pastPokemonSelected != null) {
-            val pokemonToShow = state.pokemon
-            val index = pokemonToShow.indexOfFirst { it.id == pastPokemonSelected }
+    LaunchedEffect(pastPokemonSelected, state is PokedexUiState.Ready) {
+        if (pastPokemonSelected != null && state is PokedexUiState.Ready) {
+            val index = state.pokemon.indexOfFirst { it.id == pastPokemonSelected }
 
             if (index != -1) {
-                val visibleItems = listState.layoutInfo.visibleItemsInfo
-                val visible = visibleItems.filter { it.key == pastPokemonSelected }
+                val isVisible = listState.layoutInfo.visibleItemsInfo.any {
+                    it.key == pastPokemonSelected
+                }
 
-                if (visible.isEmpty()) {
+                if (!isVisible) {
                     listState.scrollToItem(index, -100)
                 }
             }

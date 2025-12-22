@@ -114,7 +114,7 @@ fun PokedexerApp(
                     popEnterTransition = { fadeIn() },
                     exitTransition = { fadeOut() }
                 ) {
-                    val pastPokemonId = it.savedStateHandle.get<Int>("pokemonId")
+                    val pastPokemonId = it.savedStateHandle.remove<Int>("pokemonId")
 
                     PokedexScreenRoute(
                         viewModel = metroViewModel(),
