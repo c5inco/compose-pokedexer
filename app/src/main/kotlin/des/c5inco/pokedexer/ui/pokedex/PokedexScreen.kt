@@ -218,7 +218,7 @@ fun PokedexScreen(
                                 listState = listState,
                                 listLoadedState = state.listLoadedState,
                                 pokemonToShow = state.pokemon,
-                                favorites = state.favorites,
+                                favoriteIds = state.favoriteIds,
                                 showFavorites = showFavorites,
                                 typeFilter = typeFilter,
                                 generationFilter = generationFilter,
@@ -330,7 +330,7 @@ private fun PokemonList(
     listState: LazyGridState,
     listLoadedState: MutableTransitionState<Boolean>,
     pokemonToShow: List<Pokemon>,
-    favorites: List<Pokemon>,
+    favoriteIds: Set<Int>,
     showFavorites: Boolean = false,
     typeFilter: Type? = null,
     generationFilter: Generation? = null,
@@ -404,7 +404,7 @@ private fun PokemonList(
                     ) {
                         PokedexCard(
                             pokemon = p,
-                            isFavorite = favorites.contains(p),
+                            isFavorite = favoriteIds.contains(p.id),
                             onPokemonSelected = onPokemonSelected,
                         )
                     }
@@ -673,11 +673,11 @@ private fun PokedexScreenPreview() {
     var generationFilter by remember { mutableStateOf<Generation?>(null) }
 
     var state by remember {
-        mutableStateOf(
+        mutableStateOf<PokedexUiState>(
             PokedexUiState.Ready(
                 listLoadedState = MutableTransitionState(true),
                 pokemon = SamplePokemonData.toList(),
-                favorites = SamplePokemonData.take(5),
+                favoriteIds = setOf(1, 4, 7),
             )
         )
     }
@@ -692,7 +692,8 @@ private fun PokedexScreenPreview() {
                 when (result) {
                     is FilterMenuEvent.ToggleFavorites -> {
                         showFavorites = !showFavorites
-                        state.copy(
+                        val readyState = state as PokedexUiState.Ready
+                        state = readyState.copy(
                             pokemon =
                                 if (showFavorites) {
                                     SamplePokemonData.take(5)
@@ -702,10 +703,10 @@ private fun PokedexScreenPreview() {
                         )
                     }
                     is FilterMenuEvent.FilterTypes -> {
-                        if (typeFilter != result.typeToFilter) result.typeToFilter else null
+                        typeFilter = if (typeFilter != result.typeToFilter) result.typeToFilter else null
                     }
                     is FilterMenuEvent.FilterGeneration -> {
-                        if (generationFilter != result.generationToFilter) result.generationToFilter
+                        generationFilter = if (generationFilter != result.generationToFilter) result.generationToFilter
                         else null
                     }
                     is FilterMenuEvent.ShowTypes -> {}

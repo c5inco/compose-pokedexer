@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -30,7 +29,7 @@ sealed interface PokedexUiState {
     data class Ready(
         val listLoadedState: MutableTransitionState<Boolean>,
         val pokemon: List<Pokemon>,
-        val favorites: List<Pokemon>,
+        val favoriteIds: Set<Int>,
     ) : PokedexUiState
 }
 
@@ -63,10 +62,10 @@ class PokedexViewModel @AssistedInject constructor(
                     ) { pokemon, userPreferences, favoritesOnly, typeFilter ->
                         listLoadedState.targetState = true
 
-                        val favorites = pokemonRepository.getPokemonByIds(userPreferences.favorites).first()
+                        val favoriteIds = userPreferences.favorites.toSet()
 
                         val filteredPokemon = pokemon.filter { p ->
-                            val isFavorite = userPreferences.favorites.contains(p.id)
+                            val isFavorite = favoriteIds.contains(p.id)
                             val matchesFavorites = if (favoritesOnly) isFavorite else true
                             val matchesType = if (typeFilter != null) {
                                 p.typeOfPokemon.contains(typeFilter.toString())
@@ -79,7 +78,7 @@ class PokedexViewModel @AssistedInject constructor(
                         PokedexUiState.Ready(
                             listLoadedState = listLoadedState,
                             pokemon = filteredPokemon,
-                            favorites = favorites.toList(),
+                            favoriteIds = favoriteIds,
                         )
                     }
                 )

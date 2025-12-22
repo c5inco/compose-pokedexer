@@ -1,10 +1,12 @@
 package des.c5inco.pokedexer.model
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Immutable
 @Entity
 data class Pokemon(
     @PrimaryKey val id: Int,
