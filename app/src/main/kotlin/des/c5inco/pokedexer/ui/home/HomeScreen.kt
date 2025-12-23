@@ -76,16 +76,7 @@ fun HomeScreen(
                         searchResponse = searchResponse,
                         selectedSearchResult = searchResult,
                         sharedTransitionScope = this@SharedTransitionLayout,
-                        onMenuItemSelected = {
-                            when (it) {
-                                MenuItem.Moves,
-                                MenuItem.Pokedex,
-                                MenuItem.Items ->
-                                    onMenuItemSelected(it)
-                                else ->
-                                    openAlertDialog = true
-                            }
-                        },
+                        onMenuItemSelected = onMenuItemSelected,
                         onSearchResultSelected = {
                             // TODO: Build Pokemon expanded result card later, for now navigate to details
                             if (it is SearchResult.PokemonEvent) {

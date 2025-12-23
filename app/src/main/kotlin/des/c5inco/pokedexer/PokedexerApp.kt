@@ -24,6 +24,7 @@ import des.c5inco.pokedexer.ui.moves.MovesListScreenRoute
 import des.c5inco.pokedexer.ui.navigation.Screen
 import des.c5inco.pokedexer.ui.pokedex.PokedexScreenRoute
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsScreenRoute
+import des.c5inco.pokedexer.ui.typechart.TypeChartScreenRoute
 import dev.zacsweers.metro.createGraphFactory
 
 class PokedexerApplication : Application() {
@@ -91,6 +92,9 @@ fun PokedexerApp(
                                 if (it == MenuItem.Items) {
                                     backStack.add(Screen.Items)
                                 }
+                                if (it == MenuItem.TypeCharts) {
+                                    backStack.add(Screen.TypeCharts)
+                                }
                             },
                             onSearchResultSelected = {
                                 when (it) {
@@ -135,6 +139,11 @@ fun PokedexerApp(
                     Screen.Items -> {
                         ItemsScreenRoute(
                             viewModel = metroViewModel(),
+                            onBackClick = { backStack.removeLast() }
+                        )
+                    }
+                    Screen.TypeCharts -> {
+                        TypeChartScreenRoute(
                             onBackClick = { backStack.removeLast() }
                         )
                     }

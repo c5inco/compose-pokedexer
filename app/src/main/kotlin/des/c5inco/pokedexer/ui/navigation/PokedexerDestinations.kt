@@ -18,4 +18,7 @@ sealed interface Screen {
 
     @Serializable
     data object Items : Screen
+
+    @Serializable
+    data object TypeCharts : Screen
 }
