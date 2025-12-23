@@ -93,7 +93,7 @@ import des.c5inco.pokedexer.ui.theme.mapTypeToSeedColor
 fun PokedexScreenRoute(
     viewModel: PokedexViewModel,
     onPokemonSelected: (Pokemon) -> Unit,
-    pastPokemonSelected: Int?,
+    pastPokemonSelected: Int? = null,
     onBackClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -204,6 +204,7 @@ fun PokedexScreen(
             Column(
                 modifier = Modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxWidth()
             ) {
+                // TODO: Investigate recomposition or performance issue to reenable this
                 // AnimatedContent(
                 //     targetState = state,
                 //     transitionSpec = {

@@ -20,11 +20,14 @@ room = "2.7.2"
 dataStore = "1.2.0"
 shapes = "1.0.1"
 materialKolor = "2.1.1"
+serialization = "1.8.0"
+navigation3 = "1.0.0"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom"}
@@ -58,6 +61,9 @@ androidx-benchmark-macro = { module = "androidx.benchmark:benchmark-macro-junit4
 androidx-profile-installer = { module = "androidx.profileinstaller:profileinstaller", version.ref = "profileInstaller" }
 
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor"}
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -67,3 +73,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKsp" }
 apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

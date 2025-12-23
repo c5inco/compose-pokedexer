@@ -19,7 +19,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -54,20 +56,20 @@ class PokemonDetailsViewModel @AssistedInject constructor(
     private val itemsRepository: ItemsRepository,
     private val abilitiesRepository: AbilitiesRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
-    @Assisted private val pokemon: Pokemon
+    @Assisted private val pokemonId: Int
 ) : ViewModel() {
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
-    private val activePokemon = MutableStateFlow(pokemon)
+    private val activePokemonId = MutableStateFlow(pokemonId)
     val pokemonSet = pokemonRepository.pokemon()
 
     @AssistedFactory
     interface PokemonDetailsViewModelFactory {
-        fun create(pokemon: Pokemon): PokemonDetailsViewModel
+        fun create(pokemonId: Int): PokemonDetailsViewModel
     }
 
-    val uiState: StateFlow<PokemonDetailsUiState> =
+    val uiState: StateFlow<PokemonDetailsUiState?> =
         combine(
-            activePokemon,
+            activePokemonId.flatMapLatest { pokemonRepository.getPokemonById(it) }.filterNotNull(),
             userPreferencesFlow,
         ) { incomingPokemon, userPreferences ->
             val evos = incomingPokemon.evolutionChain.mapNotNull {
@@ -119,17 +121,11 @@ class PokemonDetailsViewModel @AssistedInject constructor(
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = PokemonDetailsUiState(
-                details = pokemon,
-                evolutions = emptyList(),
-                moves = emptyList(),
-                abilities = emptyList(),
-                isFavorite = false,
-            )
+            initialValue = null
         )
 
     fun refresh(incomingPokemon: Pokemon) {
-        activePokemon.value = incomingPokemon
+        activePokemonId.value = incomingPokemon.id
     }
 
     fun toggleFavorite(pokemonId: Int) {

@@ -2,8 +2,6 @@ package des.c5inco.pokedexer.ui.pokedex
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -91,7 +89,6 @@ import des.c5inco.pokedexer.data.pokemon.mapSampleMovesToDetailsList
 import des.c5inco.pokedexer.model.Pokemon
 import des.c5inco.pokedexer.model.mapTypeToCuratedAnalogousHue
 import des.c5inco.pokedexer.ui.common.Emphasis
-import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels
@@ -111,24 +108,24 @@ import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlin.math.roundToInt
 
 @Composable
-fun AnimatedContentScope.PokemonDetailsScreenRoute(
+fun PokemonDetailsScreenRoute(
     detailsViewModel: PokemonDetailsViewModel,
     onBackClick: (Int) -> Unit,
 ) {
     val pokemonSet by detailsViewModel.pokemonSet.collectAsStateWithLifecycle(initialValue = emptyList())
     val uiState by detailsViewModel.uiState.collectAsStateWithLifecycle()
 
-    if (pokemonSet.isNotEmpty()) {
+    if (pokemonSet.isNotEmpty() && uiState != null) {
         PokemonTypesTheme(
-            types = uiState.details.typeOfPokemon
+            types = uiState!!.details.typeOfPokemon
         ) {
             PokemonDetailsScreen(
                 pokemonSet = pokemonSet,
-                pokemon = uiState.details,
-                evolutions = uiState.evolutions,
-                moves = uiState.moves,
-                abilities = uiState.abilities,
-                isFavorite = uiState.isFavorite,
+                pokemon = uiState!!.details,
+                evolutions = uiState!!.evolutions,
+                moves = uiState!!.moves,
+                abilities = uiState!!.abilities,
+                isFavorite = uiState!!.isFavorite,
                 onPage = {
                     detailsViewModel.refresh(it)
                 },
@@ -145,7 +142,7 @@ enum class DragValue { Start, Center, End }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AnimatedContentScope.PokemonDetailsScreen(
+fun PokemonDetailsScreen(
     pokemonSet: List<Pokemon>,
     pokemon: Pokemon,
     evolutions: List<PokemonDetailsEvolutions>,
@@ -341,10 +338,11 @@ fun AnimatedContentScope.PokemonDetailsScreen(
 
                 Surface(
                     modifier = Modifier
-                        .animateEnterExit(
-                            enter = Material3Transitions.SharedYAxisEnterTransition,
-                            exit = ExitTransition.None
-                        )
+                        // TODO: Add enterExit transition back
+                        // .animateEnterExit(
+                        //     enter = Material3Transitions.SharedYAxisEnterTransition,
+                        //     exit = ExitTransition.None
+                        // )
                         .align(Alignment.BottomCenter)
                         .layout { measurable, constraints ->
                             val placeable = measurable.measure(constraints.copy(
