@@ -83,7 +83,6 @@ class PokemonDetailsViewModel @AssistedInject constructor(
                         item = itemsRepository.getItemById(it.itemId).first()
                     )
                 } else {
-                    // TODO: Pokemon only queried from local database which currently limited to original 151
                     println("Pokemon not found: $it")
                     null
                 }
