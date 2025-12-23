@@ -105,16 +105,16 @@ fun PokedexerApp(
                         )
                     }
                     Screen.Pokedex -> {
+                        // Extract the pokemon ID from the previous screen (if it was PokemonDetails)
+                        // so we can scroll to it when returning from the details screen
+                        val pastPokemonId = (backStack.getOrNull(backStack.lastIndex - 1) as? Screen.PokemonDetails)?.id
+                        
                         PokedexScreenRoute(
                             viewModel = metroViewModel(),
                             onPokemonSelected = {
                                 backStack.add(Screen.PokemonDetails(it.id))
                             },
-                            // TODO: Restore to move list to focus on last selected Pokemon in the pager
-                            // pastPokemonSelected = pastPokemonId, // Ignoring this for now as we don't need to restore scroll state from details return if using standard nav?
-                            // Actually original code extracted it from savedStateHandle.
-                            // With Nav3 we have state restoration if we use rememberNavBackStack but here we use simple list.
-                            // Let's omit pastPokemonSelected for MVP migration.
+                            pastPokemonSelected = pastPokemonId,
                             onBackClick = { backStack.removeAt(backStack.lastIndex) }
                         )
                     }
