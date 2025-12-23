@@ -131,7 +131,7 @@ fun TypeChartScreen(onBackClick: () -> Unit = {}) {
             Box(
                 modifier =
                     Modifier
-                        .padding(start = CellSize)
+                        .padding(start = CellSize, top = CellSize)
                         .onSizeChanged { size ->
                             viewportWidth = size.width.toFloat()
                             viewportHeight = with (density) { size.height - topPadding.toPx() }
