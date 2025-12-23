@@ -41,7 +41,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -59,11 +58,13 @@ import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -145,10 +146,16 @@ fun PokedexScreen(
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
-    val listState = rememberLazyGridState()
+    val listState = rememberSaveable(
+        typeFilter, generationFilter, showFavorites, saver = LazyGridState.Saver) {
+        LazyGridState()
+    }
     var filterMenuState by remember { mutableStateOf(FilterMenuState.Hidden) }
-
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        state = rememberSaveable(typeFilter, generationFilter, showFavorites, saver = TopAppBarState.Saver) {
+            TopAppBarState(-Float.MAX_VALUE, 0f, 0f)
+        }
+    )
 
     LaunchedEffect(pastPokemonSelected, state is PokedexUiState.Ready) {
         if (pastPokemonSelected != null && state is PokedexUiState.Ready) {
