@@ -139,12 +139,12 @@ fun PokedexerApp(
                     Screen.Items -> {
                         ItemsScreenRoute(
                             viewModel = metroViewModel(),
-                            onBackClick = { backStack.removeLast() }
+                            onBackClick = { backStack.removeAt(backStack.lastIndex) }
                         )
                     }
                     Screen.TypeCharts -> {
                         TypeChartScreenRoute(
-                            onBackClick = { backStack.removeLast() }
+                            onBackClick = { backStack.removeAt(backStack.lastIndex) }
                         )
                     }
                 }
