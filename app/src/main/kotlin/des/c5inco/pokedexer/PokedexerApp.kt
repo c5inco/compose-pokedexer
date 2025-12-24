@@ -3,6 +3,9 @@ package des.c5inco.pokedexer
 import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -16,6 +19,7 @@ import androidx.navigation3.ui.NavDisplay
 import coil.ImageLoader
 import des.c5inco.pokedexer.di.ApplicationGraph
 import des.c5inco.pokedexer.di.metroViewModel
+import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.home.HomeScreenRoute
 import des.c5inco.pokedexer.ui.home.appbar.SearchResult
 import des.c5inco.pokedexer.ui.home.appbar.elements.MenuItem
@@ -68,12 +72,26 @@ fun PokedexerApp(
                 } else {
                     // TODO: Resolve what this does
                     // Quit app
-                    // (context as? Activity)?.finish() 
+                    // (context as? Activity)?.finish()
                     // or just let system handle back?
                     // For now, if size is 1, onBack typically doesn't trigger if handled by system back handler?
                     // Actually NavDisplay might request back handling.
                     // If we want to exit, we usually don't verify strict size > 1 here if back handler is intercepted.
                     // But simplest is removeLast.
+                }
+            },
+            transitionSpec = {
+                if (targetState.key is Screen.PokemonDetails) {
+                    Material3Transitions.SharedZAxisEnterTransition togetherWith fadeOut()
+                } else {
+                    Material3Transitions.SharedXAxisEnterTransition(density) togetherWith Material3Transitions.SharedXAxisExitTransition(density)
+                }
+            },
+            popTransitionSpec = {
+                if (initialState.key is Screen.PokemonDetails) {
+                    fadeIn() togetherWith Material3Transitions.SharedZAxisExitTransition
+                } else {
+                    Material3Transitions.SharedXAxisPopEnterTransition(density) togetherWith Material3Transitions.SharedXAxisPopExitTransition(density)
                 }
             }
         ) { screen ->
