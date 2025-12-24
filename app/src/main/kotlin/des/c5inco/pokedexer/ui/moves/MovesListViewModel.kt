@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import des.c5inco.pokedexer.data.moves.MovesRepository
 import des.c5inco.pokedexer.model.Move
 import dev.zacsweers.metro.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +22,6 @@ sealed interface MovesListUiState {
 class MovesListViewModel(
     movesRepository: MovesRepository
 ): ViewModel() {
-    @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<MovesListUiState> =
         movesRepository.moves().mapLatest {
             delay(500)

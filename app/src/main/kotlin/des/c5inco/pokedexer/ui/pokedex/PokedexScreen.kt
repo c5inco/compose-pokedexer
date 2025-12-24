@@ -21,7 +21,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
@@ -48,7 +47,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -134,7 +132,6 @@ enum class FilterMenuState {
     Generations,
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokedexScreen(
     state: PokedexUiState,
@@ -434,7 +431,6 @@ sealed class FilterMenuEvent {
     data class FilterGeneration(val generationToFilter: Generation) : FilterMenuEvent()
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun FilterMenu(
     modifier: Modifier = Modifier,

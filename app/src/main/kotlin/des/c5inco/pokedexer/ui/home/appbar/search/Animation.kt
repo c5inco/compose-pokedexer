@@ -2,9 +2,7 @@ package des.c5inco.pokedexer.ui.home.appbar.search
 
 import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.ArcMode
-import androidx.compose.animation.core.ExperimentalAnimationSpecApi
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring.DampingRatioMediumBouncy
 import androidx.compose.animation.core.keyframes
@@ -22,7 +20,6 @@ fun slideAndFadeEnterTransition(index: Int): EnterTransition {
             ) { it / 2 }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 internal val containerBoundsTransform = BoundsTransform { _, _ ->
     spring(
         dampingRatio = DampingRatioMediumBouncy,
@@ -30,7 +27,6 @@ internal val containerBoundsTransform = BoundsTransform { _, _ ->
     )
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationSpecApi::class)
 internal val textBoundsTransform = BoundsTransform { initialBounds, targetBounds ->
     keyframes {
         durationMillis = 300
@@ -39,7 +35,6 @@ internal val textBoundsTransform = BoundsTransform { initialBounds, targetBounds
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationSpecApi::class)
 internal val imageBoundsTransform = BoundsTransform { initialBounds, targetBounds ->
     keyframes {
         durationMillis = 200

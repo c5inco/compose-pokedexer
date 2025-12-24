@@ -2,7 +2,6 @@ package des.c5inco.pokedexer.ui.home.appbar.search
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
@@ -45,7 +44,6 @@ import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.ui.common.ItemImage
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.ItemResultCard(
     modifier: Modifier = Modifier,
@@ -95,7 +93,6 @@ fun SharedTransitionScope.ItemResultCard(
 }
 
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 fun ItemResultCardPreview() {
@@ -129,7 +126,6 @@ fun ItemResultCardPreview() {
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.ItemResultExpandedCard(
     modifier: Modifier = Modifier,
@@ -196,7 +192,6 @@ fun SharedTransitionScope.ItemResultExpandedCard(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 private fun ItemResultExpandedCardPreview() {

@@ -1,8 +1,6 @@
 package des.c5inco.pokedexer
 
 import android.app.Application
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -11,7 +9,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.navigation3.runtime.NavEntry
@@ -51,8 +48,6 @@ val LocalGifImageLoader = compositionLocalOf<ImageLoader> {
     error("No GIF ImageLoader provided")
 }
 
-@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PokedexerApp(
     viewModel: RootViewModel = metroViewModel()

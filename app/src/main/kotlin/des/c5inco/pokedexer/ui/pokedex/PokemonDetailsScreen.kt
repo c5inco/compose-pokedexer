@@ -16,7 +16,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.AnchoredDraggableDefaults
@@ -42,7 +41,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -140,7 +138,6 @@ fun PokemonDetailsScreenRoute(
 
 enum class DragValue { Start, Center, End }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PokemonDetailsScreen(
     pokemonSet: List<Pokemon>,
@@ -435,7 +432,6 @@ private enum class Sections(@StringRes val title: Int) {
     Moves(R.string.movesLabel)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CardContent(
     modifier: Modifier,

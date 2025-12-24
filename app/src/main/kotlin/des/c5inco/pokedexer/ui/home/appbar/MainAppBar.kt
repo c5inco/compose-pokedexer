@@ -3,7 +3,6 @@ package des.c5inco.pokedexer.ui.home.appbar
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.SizeTransform
@@ -73,7 +72,6 @@ sealed class SearchResult {
     data class ItemEvent(val item: Item) : SearchResult()
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainAppBar(
     searchText: TextFieldState,
@@ -161,7 +159,6 @@ fun MainAppBar(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun AnimatedContentScope.SearchResults(
     modifier: Modifier = Modifier,
@@ -289,7 +286,6 @@ private fun AnimatedContentScope.SearchResults(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @PreviewLightDark
 @Composable
 private fun SearchResultsPreview() {
@@ -310,7 +306,6 @@ private fun SearchResultsPreview() {
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @PreviewLightDark
 @Composable
 fun PreviewMainAppBar() {

@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.ui.pokedex.section
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,7 +33,6 @@ import des.c5inco.pokedexer.ui.common.TypeLabelMetrics
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsMoves
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MovesSection(
     modifier: Modifier = Modifier,

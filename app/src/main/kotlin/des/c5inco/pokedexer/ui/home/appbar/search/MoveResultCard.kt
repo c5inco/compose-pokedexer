@@ -3,7 +3,6 @@ package des.c5inco.pokedexer.ui.home.appbar.search
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
@@ -54,7 +53,6 @@ import des.c5inco.pokedexer.ui.common.TypeIconLabel
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.MoveCategoryTheme
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.MoveResultCard(
     modifier: Modifier = Modifier,
@@ -110,7 +108,6 @@ fun SharedTransitionScope.MoveResultCard(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @PreviewLightDark
 @Composable
 fun MoveResultCardPreview() {
@@ -145,7 +142,6 @@ fun MoveResultCardPreview() {
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.MoveResultExpandedCard(
     modifier: Modifier = Modifier,
@@ -260,7 +256,6 @@ private fun RowScope.ValuesText(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @PreviewLightDark
 @Composable
 private fun MoveResultExpandedCardPreview() {
@@ -293,7 +288,6 @@ private fun MoveResultExpandedCardPreview() {
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 private fun MoveResultTransitionPreview() {

@@ -13,8 +13,6 @@ import des.c5inco.pokedexer.model.Item
 import des.c5inco.pokedexer.model.Move
 import des.c5inco.pokedexer.model.Pokemon
 import dev.zacsweers.metro.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -30,7 +28,6 @@ data class SearchResponse(
     val foundItems: List<Item> = emptyList(),
 )
 
-@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @Inject
 class HomeViewModel(
     private val pokemonRepository: PokemonRepository,

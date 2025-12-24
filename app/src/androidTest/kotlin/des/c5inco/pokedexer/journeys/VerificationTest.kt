@@ -1,6 +1,5 @@
 package des.c5inco.pokedexer.journeys
 
-import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
@@ -44,7 +43,6 @@ class VerificationTest {
         composeTestRule.onNodeWithText("About").assertExists()
     }
     
-    @OptIn(ExperimentalTestApi::class)
     @Test
     fun testPokedexScrollsToLastViewedPokemon() {
         // This test verifies that when navigating back from Pokemon details,
