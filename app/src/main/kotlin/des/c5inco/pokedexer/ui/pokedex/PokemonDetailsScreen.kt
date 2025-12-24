@@ -391,7 +391,7 @@ fun PokemonDetailsScreen(
             NavigationTopAppBar(
                 modifier = Modifier
                     .statusBarsPadding()
-                    .padding(top = 16.dp)
+                    .padding(top = 8.dp, start = 12.dp, end = 12.dp)
                 ,
                 title = {
                     Text(
