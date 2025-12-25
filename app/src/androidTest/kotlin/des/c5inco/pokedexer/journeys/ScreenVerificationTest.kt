@@ -3,9 +3,13 @@ package des.c5inco.pokedexer.journeys
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
+import androidx.compose.ui.test.swipeLeft
+import androidx.compose.ui.test.swipeRight
 import androidx.compose.ui.test.swipeUp
 import des.c5inco.pokedexer.MainActivity
 import org.junit.Rule
@@ -35,9 +39,27 @@ class ScreenVerificationTest {
             composeTestRule.onAllNodesWithText("Potion", substring = true).fetchSemanticsNodes().isNotEmpty()
         }
 
-        // 4. Verify scrolling works - perform scroll gestures
-        // Note: Since ItemsScreen uses LazyColumn without a testTag, we'll scroll via touch input on the content
-        composeTestRule.waitForIdle()
+        // 4. Verify scrolling works - scroll down multiple times to reach the bottom
+        repeat(5) {
+            composeTestRule.onNodeWithTag("ItemsLazyColumn").performTouchInput {
+                swipeUp(
+                    startY = this.centerY,
+                    endY = this.centerY - 1000f
+                )
+            }
+            composeTestRule.waitForIdle()
+        }
+
+        // 5. Scroll back up to the top
+        repeat(5) {
+            composeTestRule.onNodeWithTag("ItemsLazyColumn").performTouchInput {
+                swipeDown(
+                    startY = this.centerY,
+                    endY = this.centerY + 1000f
+                )
+            }
+            composeTestRule.waitForIdle()
+        }
 
         // Verify back navigation button exists
         composeTestRule.onNodeWithContentDescription("Back").assertExists()
@@ -80,8 +102,27 @@ class ScreenVerificationTest {
             composeTestRule.onAllNodesWithText("Scratch", substring = true).fetchSemanticsNodes().isNotEmpty()
         }
 
-        // 5. Verify scrolling works
-        composeTestRule.waitForIdle()
+        // 5. Verify scrolling works - scroll down multiple times to see more moves
+        repeat(10) {
+            composeTestRule.onNodeWithTag("MovesLazyColumn").performTouchInput {
+                swipeUp(
+                    startY = this.centerY,
+                    endY = this.centerY - 1200f
+                )
+            }
+            composeTestRule.waitForIdle()
+        }
+
+        // 6. Scroll back up to the top
+        repeat(10) {
+            composeTestRule.onNodeWithTag("MovesLazyColumn").performTouchInput {
+                swipeDown(
+                    startY = this.centerY,
+                    endY = this.centerY + 1200f
+                )
+            }
+            composeTestRule.waitForIdle()
+        }
 
         // Verify back navigation button exists
         composeTestRule.onNodeWithContentDescription("Back").assertExists()
@@ -111,10 +152,52 @@ class ScreenVerificationTest {
         composeTestRule.onNodeWithText("½× Not Very Effective", substring = true).assertExists()
         composeTestRule.onNodeWithText("0 No Effect", substring = true).assertExists()
 
-        // 4. Verify type icons are present (content description for type icons)
-        // The TypeChartScreen should show type effectiveness grid which is scrollable
-        // Note: The screen has both horizontal and vertical scrolling capabilities
-        composeTestRule.waitForIdle()
+        // 4. Verify scrolling works in both directions
+        // The TypeChartScreen has both horizontal and vertical scrolling capabilities
+
+        // Scroll down vertically multiple times
+        repeat(3) {
+            composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
+                swipeUp(
+                    startY = this.centerY,
+                    endY = this.centerY - 800f
+                )
+            }
+            composeTestRule.waitForIdle()
+        }
+
+        // Scroll right horizontally multiple times
+        repeat(3) {
+            composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
+                swipeLeft(
+                    startX = this.centerX,
+                    endX = this.centerX - 800f
+                )
+            }
+            composeTestRule.waitForIdle()
+        }
+
+        // Scroll back left horizontally
+        repeat(3) {
+            composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
+                swipeRight(
+                    startX = this.centerX,
+                    endX = this.centerX + 800f
+                )
+            }
+            composeTestRule.waitForIdle()
+        }
+
+        // Scroll back up vertically
+        repeat(3) {
+            composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
+                swipeDown(
+                    startY = this.centerY,
+                    endY = this.centerY + 800f
+                )
+            }
+            composeTestRule.waitForIdle()
+        }
 
         // 5. Verify back navigation button exists
         composeTestRule.onNodeWithContentDescription("Back").assertExists()
