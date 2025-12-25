@@ -8,16 +8,24 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import androidx.room.Room
 import coil.ImageLoader
 import coil.decode.ImageDecoderDecoder
 import com.apollographql.apollo3.ApolloClient
 import des.c5inco.pokedexer.RootViewModel
-import des.c5inco.pokedexer.data.PokemonDatabase
-import des.c5inco.pokedexer.data.abilities.AbilitiesDao
-import des.c5inco.pokedexer.data.items.ItemsDao
-import des.c5inco.pokedexer.data.moves.MovesDao
-import des.c5inco.pokedexer.data.pokemon.PokemonDao
+import des.c5inco.pokedexer.shared.data.PokemonDatabase
+import des.c5inco.pokedexer.shared.data.abilities.AbilitiesDao
+import des.c5inco.pokedexer.shared.data.abilities.AbilitiesRepository
+import des.c5inco.pokedexer.shared.data.abilities.AbilitiesRepositoryImpl
+import des.c5inco.pokedexer.shared.data.getDatabaseBuilder
+import des.c5inco.pokedexer.shared.data.items.ItemsDao
+import des.c5inco.pokedexer.shared.data.items.ItemsRepository
+import des.c5inco.pokedexer.shared.data.items.ItemsRepositoryImpl
+import des.c5inco.pokedexer.shared.data.moves.MovesDao
+import des.c5inco.pokedexer.shared.data.moves.MovesRepository
+import des.c5inco.pokedexer.shared.data.moves.RemoteMovesRepository
+import des.c5inco.pokedexer.shared.data.pokemon.PokemonDao
+import des.c5inco.pokedexer.shared.data.pokemon.PokemonRepository
+import des.c5inco.pokedexer.shared.data.pokemon.RemotePokemonRepository
 import des.c5inco.pokedexer.ui.home.HomeViewModel
 import des.c5inco.pokedexer.ui.items.ItemsViewModel
 import des.c5inco.pokedexer.ui.moves.MovesListViewModel
@@ -44,17 +52,12 @@ annotation class AppScope
  */
 @ContributesTo(AppScope::class)
 interface ApplicationModule {
-    // Database
+    // Database (from shared module)
     @Provides
     @SingleIn(AppScope::class)
     fun provideDatabase(context: Context): PokemonDatabase {
-        return Room
-            .databaseBuilder(
-                context,
-                PokemonDatabase::class.java,
-                "pokemon.db"
-            )
-            .fallbackToDestructiveMigration()
+        return getDatabaseBuilder(context)
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
     }
 
@@ -85,6 +88,43 @@ interface ApplicationModule {
         return ApolloClient.Builder()
             .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
             .build()
+    }
+
+    // Repositories (from shared module - manually wired since we don't use @ContributesBinding in shared)
+    @Provides
+    @SingleIn(AppScope::class)
+    fun providePokemonRepository(
+        pokemonDao: PokemonDao,
+        apolloClient: ApolloClient
+    ): PokemonRepository {
+        return RemotePokemonRepository(pokemonDao, apolloClient)
+    }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideMovesRepository(
+        movesDao: MovesDao,
+        apolloClient: ApolloClient
+    ): MovesRepository {
+        return RemoteMovesRepository(movesDao, apolloClient)
+    }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideItemsRepository(
+        itemsDao: ItemsDao,
+        apolloClient: ApolloClient
+    ): ItemsRepository {
+        return ItemsRepositoryImpl(itemsDao, apolloClient)
+    }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideAbilitiesRepository(
+        abilitiesDao: AbilitiesDao,
+        apolloClient: ApolloClient
+    ): AbilitiesRepository {
+        return AbilitiesRepositoryImpl(abilitiesDao, apolloClient)
     }
 
     // DataStore

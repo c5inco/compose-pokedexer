@@ -14,9 +14,16 @@ google-services.json
 !/.idea/codeStyles/codeStyleConfig.xml
 
 .DS_Store
-/build
-/captures
+build/
+captures/
 .externalNativeBuild
 .cxx
 local.properties
 .kotlin/
+
+# JVM crash logs
+hs_err_pid*.log
+replay_pid*.log
+
+# Conductor context directory
+.context/

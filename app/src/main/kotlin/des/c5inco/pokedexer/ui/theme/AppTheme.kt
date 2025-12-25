@@ -13,8 +13,8 @@ import com.materialkolor.ktx.contrastRatio
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import com.materialkolor.rememberDynamicColorScheme
-import des.c5inco.pokedexer.model.MoveCategory
-import des.c5inco.pokedexer.model.Type
+import des.c5inco.pokedexer.shared.model.MoveCategory
+import des.c5inco.pokedexer.shared.model.Type
 
 @Composable
 fun AppTheme(

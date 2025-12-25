@@ -52,9 +52,9 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
-import des.c5inco.pokedexer.model.Item
-import des.c5inco.pokedexer.model.Move
-import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.shared.model.Item
+import des.c5inco.pokedexer.shared.model.Move
+import des.c5inco.pokedexer.shared.model.Pokemon
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.home.SearchResponse
 import des.c5inco.pokedexer.ui.home.appbar.elements.Menu

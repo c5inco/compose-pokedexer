@@ -36,7 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.materialkolor.PaletteStyle
-import des.c5inco.pokedexer.model.Type
+import des.c5inco.pokedexer.shared.model.Type
 import kotlinx.coroutines.launch
 
 class PokemonColors {

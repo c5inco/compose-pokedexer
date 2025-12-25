@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.core.graphics.ColorUtils
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
-import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.shared.model.Pokemon
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import org.intellij.lang.annotations.Language

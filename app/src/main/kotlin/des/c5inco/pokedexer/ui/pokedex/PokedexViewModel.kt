@@ -4,11 +4,11 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import des.c5inco.pokedexer.data.pokemon.PokemonRepository
+import des.c5inco.pokedexer.shared.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
-import des.c5inco.pokedexer.model.Generation
-import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.model.Type
+import des.c5inco.pokedexer.shared.model.Generation
+import des.c5inco.pokedexer.shared.model.Pokemon
+import des.c5inco.pokedexer.shared.model.Type
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject

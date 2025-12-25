@@ -40,7 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.items.SampleItems
-import des.c5inco.pokedexer.model.Item
+import des.c5inco.pokedexer.shared.model.Item
 import des.c5inco.pokedexer.ui.common.ItemImage
 import des.c5inco.pokedexer.ui.theme.AppTheme
 

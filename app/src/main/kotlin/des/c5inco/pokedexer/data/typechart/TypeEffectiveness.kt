@@ -1,6 +1,6 @@
 package des.c5inco.pokedexer.data.typechart
 
-import des.c5inco.pokedexer.model.Type
+import des.c5inco.pokedexer.shared.model.Type
 
 /**
  * Type effectiveness multipliers for Pokemon battles.

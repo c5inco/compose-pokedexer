@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
-import des.c5inco.pokedexer.model.EvolutionTrigger
-import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.shared.model.EvolutionTrigger
+import des.c5inco.pokedexer.shared.model.Pokemon
 import des.c5inco.pokedexer.ui.common.ItemImage
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonImage

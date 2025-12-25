@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import des.c5inco.pokedexer.data.PokemonDatabase
-import des.c5inco.pokedexer.data.moves.MovesDao
+import des.c5inco.pokedexer.shared.data.PokemonDatabase
+import des.c5inco.pokedexer.shared.data.moves.MovesDao
 import des.c5inco.pokedexer.data.moves.SampleMoves
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
