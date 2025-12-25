@@ -12,7 +12,7 @@ import des.c5inco.pokedexer.MainActivity
 import org.junit.Rule
 import org.junit.Test
 
-class VerificationTest {
+class PokedexNavigationTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 

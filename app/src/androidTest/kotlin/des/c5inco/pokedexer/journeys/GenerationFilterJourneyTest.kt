@@ -10,12 +10,12 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.FileOutputStream
 
-class TestGenerationLoadingJourneyTest {
+class GenerationFilterJourneyTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Test
-    fun testGenerationLoadingJourney() {
+    fun testGenerationFilterJourney() {
         // 1. Open Pokedex
         composeTestRule.onNodeWithText("Pokédex").performClick()
         
