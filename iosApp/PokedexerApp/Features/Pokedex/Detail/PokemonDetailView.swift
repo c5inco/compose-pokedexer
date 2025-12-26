@@ -81,13 +81,13 @@ struct PokemonDetailView: View {
                         ScrollView {
                             switch selectedTab {
                             case .about:
-                                AboutSection(pokemon: pokemon)
+                                AboutSection(pokemon: pokemon, abilities: viewModel.abilities)
                             case .stats:
                                 StatsSection(pokemon: pokemon)
                             case .evolution:
-                                EvolutionSection(pokemon: pokemon)
+                                EvolutionSection(evolutions: viewModel.evolutions)
                             case .moves:
-                                MovesSection(pokemon: pokemon)
+                                MovesSection(moves: viewModel.moves)
                             }
                         }
                     }
@@ -124,19 +124,123 @@ struct PokemonDetailView: View {
 // MARK: - Tab Sections
 struct AboutSection: View {
     let pokemon: Pokemon
+    let abilities: [PokemonDetailsAbility]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 28) {
+            // Description
             Text(pokemon.description)
                 .font(.body)
-
-            VStack(alignment: .leading, spacing: 8) {
-                InfoRow(label: "Height", value: pokemon.heightInMeters)
-                InfoRow(label: "Weight", value: pokemon.weightInKilograms)
-                InfoRow(label: "Gender Ratio", value: pokemon.genderRatio)
+                .lineSpacing(4)
+            
+            // Height/Weight Card
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Height")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(pokemon.heightInMeters)
+                        .font(.body)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Weight")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(pokemon.weightInKilograms)
+                        .font(.body)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(16)
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            
+            // Abilities Section
+            if !abilities.isEmpty {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Abilities")
+                        .font(.headline)
+                    
+                    VStack(spacing: 12) {
+                        ForEach(abilities) { ability in
+                            VStack(alignment: .leading, spacing: 8) {
+                                if ability.isHidden {
+                                    Text("HIDDEN")
+                                        .font(.caption2)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(.blue)
+                                }
+                                Text(ability.ability.name.capitalized)
+                                    .font(.body)
+                                Text(ability.ability.description_)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(16)
+                            .background(Color(.secondarySystemBackground))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                    }
+                }
+            }
+            
+            // Breeding Section
+            VStack(alignment: .leading, spacing: 24) {
+                Text("Breeding")
+                    .font(.headline)
+                
+                HStack {
+                    Text("Gender")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .frame(width: 80, alignment: .leading)
+                    
+                    if pokemon.genderRate != -1 {
+                        HStack(spacing: 12) {
+                            HStack(spacing: 2) {
+                                Image(systemName: "circle.fill")
+                                    .font(.system(size: 8))
+                                    .foregroundColor(.blue)
+                                Text("\(100.0 - Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%")
+                                    .font(.body)
+                            }
+                            HStack(spacing: 2) {
+                                Image(systemName: "circle.fill")
+                                    .font(.system(size: 8))
+                                    .foregroundColor(.pink)
+                                Text("\(Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%")
+                                    .font(.body)
+                            }
+                        }
+                    } else {
+                        Text("Genderless")
+                            .font(.body)
+                    }
+                }
+                
+                HStack {
+                    Text("Egg Groups")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .frame(width: 80, alignment: .leading)
+                    Text("-")
+                        .font(.body)
+                }
+                
+                HStack {
+                    Text("Egg Cycles")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .frame(width: 80, alignment: .leading)
+                    Text("-")
+                        .font(.body)
+                }
             }
         }
-        .padding()
+        .padding(24)
     }
 }
 
@@ -157,52 +261,82 @@ struct StatsSection: View {
 }
 
 struct EvolutionSection: View {
-    let pokemon: Pokemon
+    let evolutions: [PokemonDetailsEvolution]
 
     var body: some View {
-        let evolutions = Array(pokemon.evolutionChain)
         if evolutions.isEmpty {
             EmptyStateView(message: "No evolutions")
                 .frame(height: 200)
         } else {
-            VStack(spacing: 16) {
-                ForEach(evolutions.indices, id: \.self) { index in
-                    let evolution = evolutions[index]
-                    HStack {
-                        Text("→ Evolution #\(evolution.id)")
-                            .font(.headline)
+            VStack(spacing: 24) {
+                ForEach(evolutions) { evolution in
+                    HStack(spacing: 16) {
+                        // Pokemon image
+                        PokemonImage(pokemon: evolution.pokemon, size: 80)
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(evolution.pokemon.name.capitalized)
+                                .font(.headline)
+                            
+                            // Evolution trigger info
+                            HStack(spacing: 4) {
+                                if evolution.targetLevel > 0 {
+                                    Text("Level \(evolution.targetLevel)")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                if let item = evolution.item {
+                                    Text("(\(item.name.capitalized))")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        
                         Spacer()
-                        Text(evolution.triggerDisplayName)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
                     }
+                    .padding(.horizontal)
                 }
             }
-            .padding()
+            .padding(.vertical, 24)
         }
     }
 }
 
 struct MovesSection: View {
-    let pokemon: Pokemon
+    let moves: [PokemonDetailsMove]
 
     var body: some View {
-        let moves = Array(pokemon.movesList.prefix(20))
-        VStack(alignment: .leading, spacing: 8) {
-            ForEach(moves.indices, id: \.self) { index in
-                let move = moves[index]
-                HStack {
-                    Text(move.name.capitalized)
-                        .font(.body)
-                    Spacer()
-                    Text("Lv. \(move.level)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+        if moves.isEmpty {
+            EmptyStateView(message: "No moves found")
+                .frame(height: 200)
+        } else {
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(moves.prefix(20)) { move in
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(move.move.name.capitalized)
+                                .font(.body)
+                            Text(move.move.type.capitalized)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
+                        Text("Lv. \(move.targetLevel)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.vertical, 8)
+                    .padding(.horizontal)
+                    
+                    if move.id != moves.prefix(20).last?.id {
+                        Divider()
+                            .padding(.horizontal)
+                    }
                 }
-                .padding(.vertical, 4)
             }
+            .padding(.vertical, 16)
         }
-        .padding()
     }
 }
 
