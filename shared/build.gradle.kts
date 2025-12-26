@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.ksp)
     alias(libs.plugins.apollo)
     alias(libs.plugins.room)
@@ -8,7 +8,11 @@ plugins {
 }
 
 kotlin {
-    androidTarget {
+    androidLibrary {
+        namespace = "des.c5inco.pokedexer.shared"
+        compileSdk = 36
+        minSdk = 28
+
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
@@ -17,8 +21,10 @@ kotlin {
     // Enable expect/actual classes for Room KMP
     targets.all {
         compilations.all {
-            compilerOptions.configure {
-                freeCompilerArgs.add("-Xexpect-actual-classes")
+            compileTaskProvider.configure {
+                compilerOptions {
+                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                }
             }
         }
     }
@@ -62,20 +68,6 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-    }
-}
-
-android {
-    namespace = "des.c5inco.pokedexer.shared"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 28
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
