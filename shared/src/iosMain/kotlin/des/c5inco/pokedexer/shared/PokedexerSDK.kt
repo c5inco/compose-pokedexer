@@ -8,6 +8,7 @@ import des.c5inco.pokedexer.shared.data.items.ItemsRepositoryImpl
 import des.c5inco.pokedexer.shared.data.moves.RemoteMovesRepository
 import des.c5inco.pokedexer.shared.data.pokemon.RemotePokemonRepository
 import des.c5inco.pokedexer.shared.model.Ability
+import des.c5inco.pokedexer.shared.model.Generation
 import des.c5inco.pokedexer.shared.model.Item
 import des.c5inco.pokedexer.shared.model.Move
 import des.c5inco.pokedexer.shared.model.Pokemon
@@ -54,6 +55,11 @@ class PokedexerSDK {
     fun getPokemonById(id: Int): Flow<Pokemon?> = pokemonRepository.getPokemonById(id)
 
     fun getPokemonByName(name: String): Flow<List<Pokemon>> = pokemonRepository.getPokemonByName(name)
+    
+    fun getPokemonByGeneration(generationId: Int): Flow<List<Pokemon>> {
+        val generation = Generation.entries.firstOrNull { it.id == generationId } ?: Generation.I
+        return pokemonRepository.getPokemonByGeneration(generation)
+    }
 
     // Moves methods
     fun getAllMoves(): Flow<List<Move>> = movesRepository.moves()
