@@ -4,6 +4,7 @@ import shared
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @EnvironmentObject var coordinator: NavigationCoordinator
+    @EnvironmentObject var appViewModel: AppViewModel
 
     var body: some View {
         ZStack {
@@ -21,6 +22,19 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)
                 .padding(.top, 32)
+
+                // Syncing Indicator
+                if appViewModel.isSyncingData {
+                    HStack(spacing: 8) {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                        Text(appViewModel.syncProgress)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
 
                 // Search Bar
                 SearchBar(text: $viewModel.searchText, isLoading: viewModel.isLoading)
@@ -44,6 +58,7 @@ struct HomeView: View {
         .navigationBarHidden(true)
     }
 }
+
 
 // MARK: - Search Bar
 struct SearchBar: View {
