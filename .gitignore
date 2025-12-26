@@ -27,3 +27,17 @@ replay_pid*.log
 
 # Conductor context directory
 .context/
+
+# iOS/Xcode
+iosApp/PokedexerApp.xcodeproj/project.xcworkspace/xcuserdata/
+iosApp/PokedexerApp.xcodeproj/xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+# CocoaPods (if used in the future)
+iosApp/Pods/
+iosApp/Podfile.lock
+
+# Xcode DerivedData
+DerivedData/
