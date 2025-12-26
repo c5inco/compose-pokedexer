@@ -55,7 +55,7 @@
 		AA0000020000000000000001 /* PokedexerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokedexerApp.swift; sourceTree = "<group>"; };
 		AA0000020000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AA0000020000000000000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		AA0000020000000000000004 /* shared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = shared.framework; path = ../shared/build/bin/iosSimulatorArm64/releaseFramework/shared.framework; sourceTree = "<group>"; };
+		AA0000020000000000000004 /* shared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = shared.framework; path = "shared.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000050000000000000001 /* PokedexerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokedexerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000060000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DBE31B202EFE5CD800CF2CE7 /* FlowPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPublisher.swift; sourceTree = "<group>"; };
@@ -373,7 +373,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :shared:linkReleaseFrameworkIosSimulatorArm64\n";
+			shellScript = "cd \"$SRCROOT/..\"\n\nif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then\n    if [ \"$(uname -m)\" = \"arm64\" ]; then\n        GRADLE_TARGET=\":shared:linkReleaseFrameworkIosSimulatorArm64\"\n        FRAMEWORK_PATH=\"shared/build/bin/iosSimulatorArm64/releaseFramework\"\n    else\n        GRADLE_TARGET=\":shared:linkReleaseFrameworkIosX64\"\n        FRAMEWORK_PATH=\"shared/build/bin/iosX64/releaseFramework\"\n    fi\nelse\n    GRADLE_TARGET=\":shared:linkReleaseFrameworkIosArm64\"\n    FRAMEWORK_PATH=\"shared/build/bin/iosArm64/releaseFramework\"\nfi\n\n./gradlew $GRADLE_TARGET\n\n# Copy framework to build directory\nmkdir -p \"$BUILT_PRODUCTS_DIR\"\ncp -R \"$SRCROOT/../$FRAMEWORK_PATH/shared.framework\" \"$BUILT_PRODUCTS_DIR/\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -543,7 +543,7 @@
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../shared/build/bin/iosSimulatorArm64/releaseFramework",
+					"$(BUILT_PRODUCTS_DIR)",
 				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PokedexerApp/Info.plist;
@@ -577,7 +577,7 @@
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../shared/build/bin/iosSimulatorArm64/releaseFramework",
+					"$(BUILT_PRODUCTS_DIR)",
 				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PokedexerApp/Info.plist;
