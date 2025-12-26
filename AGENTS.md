@@ -69,6 +69,10 @@ This is an Android Pokédex app built with **Jetpack Compose** and following mod
 - Benchmark tests in separate `benchmark` module
 - Database tests for Pokemon and Moves functionality
 
+## Git Policy
+
+**CRITICAL**: Always ask for explicit permission before running git commit, git push, git rebase, or any other command that makes permanent changes to the repository. Do not assume permission from unrelated requests.
+
 ## Pull Request Guidelines for the Agent
 When the agent helps create a PR, please ensure it:
 
