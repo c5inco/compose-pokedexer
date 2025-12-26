@@ -8,7 +8,7 @@ extension Pokemon {
     }
 
     var primaryType: String? {
-        typeOfPokemon.first as? String
+        typeOfPokemon.first
     }
 
     var imageURL: URL? {

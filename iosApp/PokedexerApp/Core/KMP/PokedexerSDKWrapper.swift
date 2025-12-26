@@ -1,76 +1,125 @@
 import Foundation
 import shared
 
+/// Wrapper for the KMP PokedexerSDK that provides async initialization
+/// to avoid blocking the main thread during app launch.
 @MainActor
-class PokedexerSDKWrapper {
+class PokedexerSDKWrapper: ObservableObject {
     static let shared = PokedexerSDKWrapper()
-    private let sdk: PokedexerSDK
 
-    private init() {
-        self.sdk = PokedexerSDK()
+    private var sdk: PokedexerSDK?
+
+    /// Indicates whether the SDK has been initialized and is ready for use
+    @Published private(set) var isInitialized = false
+
+    /// Error that occurred during initialization, if any
+    @Published private(set) var initializationError: Error?
+
+    private init() {}
+
+    /// Initializes the SDK asynchronously on a background thread.
+    /// Safe to call multiple times - subsequent calls are no-ops if already initialized.
+    func initialize() async {
+        // Skip if already initialized
+        guard sdk == nil else { return }
+
+        do {
+            // Run SDK initialization on a background thread to avoid blocking main thread
+            // PokedexerSDK.Companion.shared.create() initializes Room database on Dispatchers.IO in Kotlin
+            let newSDK = try await Task.detached(priority: .userInitiated) {
+                try await PokedexerSDK.Companion.shared.create()
+            }.value
+
+            self.sdk = newSDK
+            self.isInitialized = true
+            self.initializationError = nil
+        } catch {
+            self.initializationError = error
+            print("Failed to initialize PokedexerSDK: \(error)")
+        }
     }
 
-    // Pokemon methods
-    func getAllPokemon() -> Kotlinx_coroutines_coreFlow {
-        return sdk.getAllPokemon()
+    // MARK: - SDK Access
+
+    /// Returns the initialized SDK, or nil if not yet initialized.
+    /// Check `isInitialized` before calling SDK methods.
+    private var initializedSDK: PokedexerSDK? {
+        guard isInitialized else {
+            print("Warning: Attempting to use SDK before initialization")
+            return nil
+        }
+        return sdk
     }
 
-    func getPokemonById(id: Int32) -> Kotlinx_coroutines_coreFlow {
-        return sdk.getPokemonById(id: id)
+    // MARK: - Pokemon methods
+
+    func getAllPokemon() -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getAllPokemon()
     }
 
-    func getPokemonByName(name: String) -> Kotlinx_coroutines_coreFlow {
-        return sdk.getPokemonByName(name: name)
+    func getPokemonById(id: Int32) -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getPokemonById(id: id)
     }
-    
-    func getPokemonByGeneration(generationId: Int32) -> Kotlinx_coroutines_coreFlow {
-        return sdk.getPokemonByGeneration(generationId: generationId)
+
+    func getPokemonByName(name: String) -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getPokemonByName(name: name)
+    }
+
+    func getPokemonByGeneration(generationId: Int32) -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getPokemonByGeneration(generationId: generationId)
     }
 
     func updatePokemon() async throws {
+        guard let sdk = initializedSDK else { return }
         try await sdk.updatePokemon()
     }
 
-    // Moves methods
-    func getAllMoves() -> Kotlinx_coroutines_coreFlow {
-        return sdk.getAllMoves()
+    // MARK: - Moves methods
+
+    func getAllMoves() -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getAllMoves()
     }
 
-    func getMoveById(id: Int32) -> Kotlinx_coroutines_coreFlow {
-        return sdk.getMoveById(id: id)
+    func getMoveById(id: Int32) -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getMoveById(id: id)
     }
 
-    func getMovesByName(name: String) -> Kotlinx_coroutines_coreFlow {
-        return sdk.getMovesByName(name: name)
+    func getMovesByName(name: String) -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getMovesByName(name: name)
     }
 
     func updateMoves() async throws {
+        guard let sdk = initializedSDK else { return }
         try await sdk.updateMoves()
     }
 
-    // Items methods
-    func getAllItems() -> Kotlinx_coroutines_coreFlow {
-        return sdk.getAllItems()
+    // MARK: - Items methods
+
+    func getAllItems() -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getAllItems()
     }
 
-    func getItemById(id: Int32) -> Kotlinx_coroutines_coreFlow {
-        return sdk.getItemById(id: id)
+    func getItemById(id: Int32) -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getItemById(id: id)
     }
 
-    func getItemsByName(name: String) -> Kotlinx_coroutines_coreFlow {
-        return sdk.getItemsByName(name: name)
+    func getItemsByName(name: String) -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getItemsByName(name: name)
     }
 
     func updateItems() async throws {
+        guard let sdk = initializedSDK else { return }
         try await sdk.updateItems()
     }
 
-    // Abilities methods
-    func getAbilityById(id: Int32) -> Kotlinx_coroutines_coreFlow {
-        return sdk.getAbilityById(id: id)
+    // MARK: - Abilities methods
+
+    func getAbilityById(id: Int32) -> Kotlinx_coroutines_coreFlow? {
+        return initializedSDK?.getAbilityById(id: id)
     }
 
     func updateAbilities() async throws {
+        guard let sdk = initializedSDK else { return }
         try await sdk.updateAbilities()
     }
 }

@@ -12,40 +12,70 @@ import des.c5inco.pokedexer.shared.model.Generation
 import des.c5inco.pokedexer.shared.model.Item
 import des.c5inco.pokedexer.shared.model.Move
 import des.c5inco.pokedexer.shared.model.Pokemon
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
 /**
  * Main entry point for iOS to access the shared Pokedex functionality.
  * This SDK provides access to Pokemon, Moves, Items, and Abilities data.
+ *
+ * Use [PokedexerSDK.create] to instantiate asynchronously off the main thread.
  */
-class PokedexerSDK {
-    private val database: PokemonDatabase = getDatabaseBuilder()
-        .fallbackToDestructiveMigration(dropAllTables = true)
-        .build()
+class PokedexerSDK private constructor(
+    private val database: PokemonDatabase,
+    private val apolloClient: ApolloClient,
+    private val pokemonRepository: RemotePokemonRepository,
+    private val movesRepository: RemoteMovesRepository,
+    private val itemsRepository: ItemsRepositoryImpl,
+    private val abilitiesRepository: AbilitiesRepositoryImpl
+) {
+    companion object {
+        /**
+         * Creates a PokedexerSDK instance asynchronously.
+         * Database and client initialization happens on Dispatchers.IO
+         * to avoid blocking the main thread.
+         */
+        suspend fun create(): PokedexerSDK = withContext(Dispatchers.IO) {
+            val database = getDatabaseBuilder()
+                .fallbackToDestructiveMigration(dropAllTables = true)
+                .build()
 
-    private val apolloClient: ApolloClient = ApolloClient.Builder()
-        .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
-        .build()
+            val apolloClient = ApolloClient.Builder()
+                .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
+                .build()
 
-    private val pokemonRepository = RemotePokemonRepository(
-        database.pokemonDao(),
-        apolloClient
-    )
+            val pokemonRepository = RemotePokemonRepository(
+                database.pokemonDao(),
+                apolloClient
+            )
 
-    private val movesRepository = RemoteMovesRepository(
-        database.movesDao(),
-        apolloClient
-    )
+            val movesRepository = RemoteMovesRepository(
+                database.movesDao(),
+                apolloClient
+            )
 
-    private val itemsRepository = ItemsRepositoryImpl(
-        database.itemsDao(),
-        apolloClient
-    )
+            val itemsRepository = ItemsRepositoryImpl(
+                database.itemsDao(),
+                apolloClient
+            )
 
-    private val abilitiesRepository = AbilitiesRepositoryImpl(
-        database.abilitiesDao(),
-        apolloClient
-    )
+            val abilitiesRepository = AbilitiesRepositoryImpl(
+                database.abilitiesDao(),
+                apolloClient
+            )
+
+            PokedexerSDK(
+                database,
+                apolloClient,
+                pokemonRepository,
+                movesRepository,
+                itemsRepository,
+                abilitiesRepository
+            )
+        }
+    }
 
     // Pokemon methods
     fun getAllPokemon(): Flow<List<Pokemon>> = pokemonRepository.pokemon()

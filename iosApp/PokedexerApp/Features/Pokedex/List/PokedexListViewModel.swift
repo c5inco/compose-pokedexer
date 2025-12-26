@@ -31,24 +31,28 @@ class PokedexListViewModel: ObservableObject {
     }
 
     func loadPokemon() async {
-        print("🔵 PokedexListViewModel: Loading Pokemon for generation \\(selectedGeneration)")
+        print("🔵 PokedexListViewModel: Loading Pokemon for generation \(selectedGeneration)")
         isLoading = true
 
         loadTask?.cancel()
         loadTask = Task {
             do {
-                print("🔵 PokedexListViewModel: Calling getPokemonByGeneration(\\(selectedGeneration))")
-                let flow = sdk.getPokemonByGeneration(generationId: Int32(selectedGeneration))
-                
+                print("🔵 PokedexListViewModel: Calling getPokemonByGeneration(\(selectedGeneration))")
+                guard let flow = sdk.getPokemonByGeneration(generationId: Int32(selectedGeneration)) else {
+                    print("🔴 SDK not initialized yet")
+                    self.isLoading = false
+                    return
+                }
+
                 for try await pokemonList in flow.asAsyncSequence() as AsyncThrowingStream<[Pokemon], Error> {
-                    print("🔵 PokedexListViewModel: Received \\(pokemonList.count) pokemon for gen \\(selectedGeneration)")
+                    print("🔵 PokedexListViewModel: Received \(pokemonList.count) pokemon for gen \(selectedGeneration)")
                     self.pokemon = pokemonList
                     self.isLoading = false
                     break
                 }
-                print("🔵 PokedexListViewModel: Finished loading generation \\(selectedGeneration)")
+                print("🔵 PokedexListViewModel: Finished loading generation \(selectedGeneration)")
             } catch {
-                print("🔴 Error loading Pokemon: \\(error)")
+                print("🔴 Error loading Pokemon: \(error)")
                 self.isLoading = false
             }
         }

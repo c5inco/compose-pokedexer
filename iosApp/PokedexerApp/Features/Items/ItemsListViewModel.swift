@@ -14,13 +14,22 @@ class ItemsListViewModel: ObservableObject {
 
         loadTask = Task {
             do {
+                // Check if SDK is initialized
+                guard sdk.isInitialized else {
+                    print("SDK not initialized yet")
+                    self.isLoading = false
+                    return
+                }
+
                 // Fetch items from API first
                 try await sdk.updateItems()
-                
-                for try await itemsList in sdk.getAllItems().asAsyncSequence() as AsyncThrowingStream<[Item], Error> {
-                    self.items = itemsList
-                    self.isLoading = false
-                    break
+
+                if let flow = sdk.getAllItems() {
+                    for try await itemsList in flow.asAsyncSequence() as AsyncThrowingStream<[Item], Error> {
+                        self.items = itemsList
+                        self.isLoading = false
+                        break
+                    }
                 }
             } catch {
                 print("Error loading items: \(error)")

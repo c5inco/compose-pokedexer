@@ -368,11 +368,14 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/../shared/build.gradle.kts",
+				"$(SRCROOT)/../gradle.properties",
 			);
 			name = "Build KMP Framework";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/shared.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

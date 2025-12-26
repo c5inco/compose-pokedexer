@@ -47,22 +47,33 @@ class PokemonDetailViewModel: ObservableObject {
 
         loadTask = Task {
             do {
+                // Check if SDK is initialized
+                guard sdk.isInitialized else {
+                    print("SDK not initialized yet")
+                    self.isLoading = false
+                    return
+                }
+
                 // Load current Pokemon
                 var loadedPokemon: Pokemon? = nil
-                for try await pokemonData in sdk.getPokemonById(id: Int32(currentPokemonId)).asAsyncSequence() as AsyncThrowingStream<Pokemon?, Error> {
-                    if let pokemonData = pokemonData {
-                        loadedPokemon = pokemonData
-                        self.pokemon = pokemonData
+                if let flow = sdk.getPokemonById(id: Int32(currentPokemonId)) {
+                    for try await pokemonData in flow.asAsyncSequence() as AsyncThrowingStream<Pokemon?, Error> {
+                        if let pokemonData = pokemonData {
+                            loadedPokemon = pokemonData
+                            self.pokemon = pokemonData
+                        }
+                        break
                     }
-                    break
                 }
 
                 // Load all Pokemon for paging
-                for try await allPokemon in sdk.getAllPokemon().asAsyncSequence() as AsyncThrowingStream<[Pokemon], Error> {
-                    self.pokemonSet = allPokemon
-                    break
+                if let flow = sdk.getAllPokemon() {
+                    for try await allPokemon in flow.asAsyncSequence() as AsyncThrowingStream<[Pokemon], Error> {
+                        self.pokemonSet = allPokemon
+                        break
+                    }
                 }
-                
+
                 // Load detailed evolution data
                 if let pokemon = loadedPokemon {
                     await loadEvolutions(for: pokemon)
@@ -80,25 +91,27 @@ class PokemonDetailViewModel: ObservableObject {
     
     private func loadEvolutions(for pokemon: Pokemon) async {
         var loadedEvolutions: [PokemonDetailsEvolution] = []
-        
+
         for evolution in pokemon.evolutionChain {
             do {
                 // Fetch Pokemon details for this evolution
                 var evoPokemon: Pokemon? = nil
-                for try await p in sdk.getPokemonById(id: evolution.id).asAsyncSequence() as AsyncThrowingStream<Pokemon?, Error> {
-                    evoPokemon = p
-                    break
+                if let flow = sdk.getPokemonById(id: evolution.id) {
+                    for try await p in flow.asAsyncSequence() as AsyncThrowingStream<Pokemon?, Error> {
+                        evoPokemon = p
+                        break
+                    }
                 }
-                
+
                 // Fetch Item if needed
                 var evoItem: Item? = nil
-                if evolution.itemId > 0 {
-                    for try await item in sdk.getItemById(id: evolution.itemId).asAsyncSequence() as AsyncThrowingStream<Item?, Error> {
+                if evolution.itemId > 0, let flow = sdk.getItemById(id: evolution.itemId) {
+                    for try await item in flow.asAsyncSequence() as AsyncThrowingStream<Item?, Error> {
                         evoItem = item
                         break
                     }
                 }
-                
+
                 if let evoPokemon = evoPokemon {
                     loadedEvolutions.append(PokemonDetailsEvolution(
                         id: Int(evolution.id),
@@ -112,51 +125,55 @@ class PokemonDetailViewModel: ObservableObject {
                 print("Error loading evolution \(evolution.id): \(error)")
             }
         }
-        
+
         self.evolutions = loadedEvolutions.sorted { $0.pokemon.id < $1.pokemon.id }
     }
-    
+
     private func loadMoves(for pokemon: Pokemon) async {
         var loadedMoves: [PokemonDetailsMove] = []
-        
+
         for pokemonMove in pokemon.movesList {
             do {
-                for try await move in sdk.getMoveById(id: pokemonMove.id).asAsyncSequence() as AsyncThrowingStream<Move?, Error> {
-                    if let move = move {
-                        loadedMoves.append(PokemonDetailsMove(
-                            move: move,
-                            targetLevel: pokemonMove.targetLevel
-                        ))
+                if let flow = sdk.getMoveById(id: pokemonMove.id) {
+                    for try await move in flow.asAsyncSequence() as AsyncThrowingStream<Move?, Error> {
+                        if let move = move {
+                            loadedMoves.append(PokemonDetailsMove(
+                                move: move,
+                                targetLevel: pokemonMove.targetLevel
+                            ))
+                        }
+                        break
                     }
-                    break
                 }
             } catch {
                 print("Error loading move \(pokemonMove.id): \(error)")
             }
         }
-        
+
         self.moves = loadedMoves.sorted { $0.targetLevel < $1.targetLevel }
     }
-    
+
     private func loadAbilities(for pokemon: Pokemon) async {
         var loadedAbilities: [PokemonDetailsAbility] = []
-        
+
         for pokemonAbility in pokemon.abilitiesList {
             do {
-                for try await ability in sdk.getAbilityById(id: pokemonAbility.id).asAsyncSequence() as AsyncThrowingStream<Ability?, Error> {
-                    if let ability = ability {
-                        loadedAbilities.append(PokemonDetailsAbility(
-                            ability: ability,
-                            isHidden: pokemonAbility.isHidden
-                        ))
+                if let flow = sdk.getAbilityById(id: pokemonAbility.id) {
+                    for try await ability in flow.asAsyncSequence() as AsyncThrowingStream<Ability?, Error> {
+                        if let ability = ability {
+                            loadedAbilities.append(PokemonDetailsAbility(
+                                ability: ability,
+                                isHidden: pokemonAbility.isHidden
+                            ))
+                        }
+                        break
                     }
-                    break
                 }
             } catch {
                 print("Error loading ability \(pokemonAbility.id): \(error)")
             }
         }
-        
+
         self.abilities = loadedAbilities
     }
 

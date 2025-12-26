@@ -24,7 +24,7 @@ class HomeViewModel: ObservableObject {
 
     init() {
         // Observe search text changes
-        Task {
+        searchTask = Task {
             for await searchText in $searchText.values {
                 await performSearch(query: searchText)
             }
@@ -69,8 +69,9 @@ class HomeViewModel: ObservableObject {
     }
 
     private func searchPokemon(query: String) async throws -> [Pokemon] {
+        guard let flow = sdk.getPokemonByName(name: query) else { return [] }
         var results: [Pokemon] = []
-        for try await pokemonList in sdk.getPokemonByName(name: query).asAsyncSequence() as AsyncThrowingStream<[Pokemon], Error> {
+        for try await pokemonList in flow.asAsyncSequence() as AsyncThrowingStream<[Pokemon], Error> {
             results = pokemonList
             break // Take first emission
         }
@@ -78,8 +79,9 @@ class HomeViewModel: ObservableObject {
     }
 
     private func searchMoves(query: String) async throws -> [Move] {
+        guard let flow = sdk.getMovesByName(name: query) else { return [] }
         var results: [Move] = []
-        for try await movesList in sdk.getMovesByName(name: query).asAsyncSequence() as AsyncThrowingStream<[Move], Error> {
+        for try await movesList in flow.asAsyncSequence() as AsyncThrowingStream<[Move], Error> {
             results = movesList
             break
         }
@@ -87,8 +89,9 @@ class HomeViewModel: ObservableObject {
     }
 
     private func searchItems(query: String) async throws -> [Item] {
+        guard let flow = sdk.getItemsByName(name: query) else { return [] }
         var results: [Item] = []
-        for try await itemsList in sdk.getItemsByName(name: query).asAsyncSequence() as AsyncThrowingStream<[Item], Error> {
+        for try await itemsList in flow.asAsyncSequence() as AsyncThrowingStream<[Item], Error> {
             results = itemsList
             break
         }
