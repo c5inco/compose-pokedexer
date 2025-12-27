@@ -90,6 +90,7 @@ struct PokemonDetailView: View {
                                 MovesSection(moves: viewModel.moves)
                             }
                         }
+                        .safeAreaPadding(.bottom)
                     }
                     .background(Color(.systemBackground))
                     .clipShape(RoundedRectangle(cornerRadius: 32))
@@ -109,6 +110,7 @@ struct PokemonDetailView: View {
                                 }
                             }
                     )
+                    .ignoresSafeArea()
                 }
             } else {
                 LoadingView()
