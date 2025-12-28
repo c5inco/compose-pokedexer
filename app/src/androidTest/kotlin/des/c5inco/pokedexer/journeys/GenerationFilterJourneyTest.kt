@@ -35,12 +35,12 @@ class GenerationFilterJourneyTest {
         
         // Wait for "All generations" to appear
         composeTestRule.waitUntil(10000) {
-             composeTestRule.onAllNodesWithText("All generations").fetchSemanticsNodes().isNotEmpty()
+             composeTestRule.onAllNodesWithText("Gen I").fetchSemanticsNodes().isNotEmpty()
         }
         
         takeScreenshot("2_filter_menu")
         
-        composeTestRule.onNodeWithText("All generations").performClick()
+        composeTestRule.onNodeWithText("Gen I").performClick()
         
         // Wait for Gen III option
         composeTestRule.waitUntil(5000) {
@@ -51,11 +51,8 @@ class GenerationFilterJourneyTest {
 
         composeTestRule.onNodeWithText("Gen III").performClick()
         takeScreenshot("4_filtered_gen_iii")
-
-        // 3. Wait for Torchic
-        composeTestRule.onNodeWithTag("PokedexLazyGrid").performScrollToNode(hasText("Torchic"))
         
-        // Wait for Torchic to be visible
+        // 3. Wait for Torchic to be visible
         composeTestRule.waitUntil(5000) {
             composeTestRule.onAllNodesWithText("Torchic").fetchSemanticsNodes().isNotEmpty()
         }
