@@ -1,5 +1,5 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
@@ -8,20 +8,11 @@ struct HomeView: View {
 
     var body: some View {
         ZStack {
-            // Background
-            PokeballBackground(opacity: 0.05)
-
-            VStack(spacing: 24) {
+            VStack(alignment: .leading, spacing: 32) {
                 // Title
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("What Pokémon")
-                        .font(.system(size: 36, weight: .bold))
-                    Text("are you looking for?")
-                        .font(.system(size: 36, weight: .bold))
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal)
-                .padding(.top, 32)
+                Text("What Pokémon are you looking for?")
+                    .font(.system(size: 36, weight: .bold))
+                    .padding(.top, 64)
 
                 // Syncing Indicator
                 if appViewModel.isSyncingData {
@@ -32,33 +23,44 @@ struct HomeView: View {
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
-                    .padding(.horizontal)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
                 // Search Bar
-                SearchBar(text: $viewModel.searchText, isLoading: viewModel.isLoading)
-                    .padding(.horizontal)
+                SearchBar(
+                    text: $viewModel.searchText,
+                    isLoading: viewModel.isLoading
+                )
 
                 // Search Results or Menu Grid
                 if viewModel.searchText.isEmpty {
                     MenuGridView(onMenuItemTap: { screen in
                         coordinator.push(screen)
                     })
-                    .padding(.horizontal)
                 } else {
-                    SearchResultsView(results: viewModel.searchResults, onPokemonTap: { pokemon in
-                        coordinator.push(.pokemonDetail(id: Int(pokemon.id)))
-                    })
+                    SearchResultsView(
+                        results: viewModel.searchResults,
+                        onPokemonTap: { pokemon in
+                            coordinator.push(
+                                .pokemonDetail(id: Int(pokemon.id))
+                            )
+                        }
+                    )
                 }
 
                 Spacer()
             }
+            .padding(.horizontal)
+            .padding(.top, 32)
+        }
+        .background(alignment: .topTrailing) {
+            PokeballBackground(opacity: 0.05, tint: .black)
+                .frame(width: 240, height: 240)
+                .offset(x: 90, y: -72)
         }
         .navigationBarHidden(true)
     }
 }
-
 
 // MARK: - Search Bar
 struct SearchBar: View {
@@ -94,14 +96,39 @@ struct MenuGridView: View {
     var onMenuItemTap: (Screen) -> Void
 
     let menuItems: [MenuItem] = [
-        MenuItem(title: "Pokédex", icon: "circle.grid.3x3.fill", color: Color(hex: 0x5AC178), screen: .pokedex),
-        MenuItem(title: "Moves", icon: "figure.strengthtraining.traditional", color: Color(hex: 0xE74347), screen: .moves),
-        MenuItem(title: "Type charts", icon: "chart.bar.xaxis", color: Color(hex: 0x429BED), screen: .typeChart),
-        MenuItem(title: "Items", icon: "bag.fill", color: Color(hex: 0xFBAE46), screen: .items)
+        MenuItem(
+            title: "Pokédex",
+            icon: "ic_pokeball",
+            color: Color(hex: 0x5AC178),
+            screen: .pokedex
+        ),
+        MenuItem(
+            title: "Moves",
+            icon: "dumbbell.fill",
+            color: Color(hex: 0xE74347),
+            screen: .moves
+        ),
+        MenuItem(
+            title: "Type charts",
+            icon: "chart.bar.xaxis",
+            color: Color(hex: 0x429BED),
+            screen: .typeChart
+        ),
+        MenuItem(
+            title: "Items",
+            icon: "storefront.fill",
+            color: Color(hex: 0xFBAE46),
+            screen: .items
+        ),
     ]
 
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+        LazyVGrid(
+            columns: [
+                GridItem(.flexible(), spacing: 16), GridItem(.flexible()),
+            ],
+            spacing: 16
+        ) {
             ForEach(menuItems) { item in
                 MenuCard(item: item)
                     .onTapGesture {
@@ -124,25 +151,30 @@ struct MenuCard: View {
     let item: MenuItem
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Spacer()
-
-            Image(systemName: item.icon)
-                .font(.system(size: 64))
-                .foregroundColor(item.color.opacity(0.6))
-
-            Spacer()
-
             Text(item.title)
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.white)
-                .padding(.bottom, 16)
         }
-        .frame(height: 160)
-        .frame(maxWidth: .infinity)
+        .padding(16)
+        .frame(height: 128)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(alignment: .topTrailing) {
+            if item.screen == .pokedex {
+                PokeballBackground(opacity: 0.3)
+                    .frame(width: 64, height: 64)
+                    .offset(x: -8, y: 8)
+            } else {
+                Image(systemName: item.icon)
+                    .font(.system(size: 48))
+                    .foregroundColor(Color.white.opacity(0.3))
+                    .offset(x: -10, y: 16)
+            }
+        }
         .background(item.color)
         .cornerRadius(16)
-        .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+        .shadow(color: item.color, radius: 8, x: 0, y: 4)
     }
 }
 
@@ -213,7 +245,8 @@ struct PokemonResultCard: View {
                     .font(.headline)
 
                 HStack(spacing: 4) {
-                    ForEach(pokemon.typeOfPokemon.prefix(2), id: \.self) { type in
+                    ForEach(pokemon.typeOfPokemon.prefix(2), id: \.self) {
+                        type in
                         TypeLabel(typeName: type, size: .small)
                     }
                 }
