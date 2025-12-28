@@ -2,7 +2,8 @@ import SwiftUI
 
 struct TypeLabel: View {
     let typeName: String
-    let size: TypeLabelSize
+    var size: TypeLabelSize = .medium
+    var colored: Bool = false
 
     enum TypeLabelSize {
         case small
@@ -31,10 +32,14 @@ struct TypeLabel: View {
             .font(.system(size: size.fontSize, weight: .semibold))
             .foregroundColor(.white)
             .padding(size.padding)
-            .background(
-                PokemonColors.color(for: typeName)
-                    .opacity(0.8)
-            )
+            .background {
+                if (colored) {
+                    PokemonColors.color(for: typeName)
+                        .opacity(0.8)
+                } else {
+                    Color.white.opacity(0.22)
+                }
+            }
             .cornerRadius(size.fontSize)
     }
 }
