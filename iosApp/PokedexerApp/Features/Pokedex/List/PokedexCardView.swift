@@ -5,8 +5,6 @@ import SwiftUI
 struct PokedexCardView: View {
     let pokemon: Pokemon
     let isFavorite: Bool
-    var onFavoriteTap: () -> Void = {
-    }
 
     var body: some View {
         let typeColor = PokemonColors.color(for: pokemon.primaryType)
@@ -64,14 +62,11 @@ struct PokedexCardView: View {
 struct PokedexCard: View {
     let pokemon: Pokemon
     let isFavorite: Bool
-    var onFavoriteTap: () -> Void = {
-    }
 
     var body: some View {
         PokedexCardView(
             pokemon: pokemon,
-            isFavorite: isFavorite,
-            onFavoriteTap: onFavoriteTap
+            isFavorite: isFavorite
         )
     }
 }

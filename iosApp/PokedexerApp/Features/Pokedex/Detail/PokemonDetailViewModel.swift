@@ -1,5 +1,6 @@
 import Foundation
 import Shared
+import Combine
 
 // MARK: - Detail Models (mirroring Android)
 struct PokemonDetailsEvolution: Identifiable {
@@ -27,7 +28,6 @@ class PokemonDetailViewModel: ObservableObject {
     @Published var pokemon: Pokemon?
     @Published var pokemonSet: [Pokemon] = []
     @Published var currentPokemonId: Int
-    @Published var isFavorite = false
     @Published var isLoading = false
     
     // Detailed data
@@ -35,11 +35,24 @@ class PokemonDetailViewModel: ObservableObject {
     @Published var moves: [PokemonDetailsMove] = []
     @Published var abilities: [PokemonDetailsAbility] = []
 
+    private let favoriteManager = FavoriteManager.shared
     private let sdk = PokedexerSDKWrapper.shared
     private var loadTask: Task<Void, Never>?
+    private var cancellables = Set<AnyCancellable>()
+    
+    var isFavorite: Bool {
+        favoriteManager.isFavorite(currentPokemonId)
+    }
 
     init(pokemonId: Int) {
         self.currentPokemonId = pokemonId
+        
+        // Observe changes to favoriteIds and trigger view updates
+        favoriteManager.$favoriteIds
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
     }
 
     func loadPokemon() async {
@@ -179,10 +192,11 @@ class PokemonDetailViewModel: ObservableObject {
     }
 
     func toggleFavorite() {
-        isFavorite.toggle()
+        favoriteManager.toggleFavorite(currentPokemonId)
     }
 
     deinit {
         loadTask?.cancel()
+        cancellables.removeAll()
     }
 }

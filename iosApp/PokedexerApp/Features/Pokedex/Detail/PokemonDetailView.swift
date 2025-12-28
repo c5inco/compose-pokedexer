@@ -64,9 +64,7 @@ struct PokemonDetailView: View {
                                     ? "heart.fill" : "heart"
                             )
                             .font(.title2)
-                            .foregroundColor(
-                                viewModel.isFavorite ? .red : .white
-                            )
+                            .foregroundColor(.white)
                         }
                     }
                     .padding()
@@ -201,8 +199,12 @@ struct AboutSection: View {
             // Breeding Section
             Text("Breeding")
                 .font(.headline)
-            
-            Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 18) {
+
+            Grid(
+                alignment: .leading,
+                horizontalSpacing: 24,
+                verticalSpacing: 18
+            ) {
                 GridRow {
                     Text("Gender")
                         .foregroundColor(.secondary)

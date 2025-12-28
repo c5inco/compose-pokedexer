@@ -1,5 +1,6 @@
 import Foundation
 import Shared
+import Combine
 
 @MainActor
 class PokedexListViewModel: ObservableObject {
@@ -9,10 +10,24 @@ class PokedexListViewModel: ObservableObject {
     @Published var selectedType: String?
     @Published var showFavorites = false
     @Published var showFilters = false
-    @Published var favoriteIds: Set<Int> = []
-
+    
+    private let favoriteManager = FavoriteManager.shared
     private let sdk = PokedexerSDKWrapper.shared
     private var loadTask: Task<Void, Never>?
+    private var cancellables = Set<AnyCancellable>()
+    
+    var favoriteIds: Set<Int> {
+        favoriteManager.favoriteIds
+    }
+    
+    init() {
+        // Observe changes to favoriteIds and trigger view updates
+        favoriteManager.$favoriteIds
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+    }
 
     var filteredPokemon: [Pokemon] {
         var filtered = pokemon
@@ -24,7 +39,7 @@ class PokedexListViewModel: ObservableObject {
 
         // Filter by favorites if enabled
         if showFavorites {
-            filtered = filtered.filter { favoriteIds.contains(Int($0.id)) }
+            filtered = filtered.filter { favoriteManager.favoriteIds.contains(Int($0.id)) }
         }
 
         return filtered
@@ -60,15 +75,11 @@ class PokedexListViewModel: ObservableObject {
     }
 
     func isFavorite(_ pokemonId: Int) -> Bool {
-        favoriteIds.contains(pokemonId)
+        favoriteManager.isFavorite(pokemonId)
     }
 
     func toggleFavorite(_ pokemonId: Int) {
-        if favoriteIds.contains(pokemonId) {
-            favoriteIds.remove(pokemonId)
-        } else {
-            favoriteIds.insert(pokemonId)
-        }
+        favoriteManager.toggleFavorite(pokemonId)
     }
 
     func toggleFavoritesFilter() {
@@ -89,5 +100,6 @@ class PokedexListViewModel: ObservableObject {
 
     deinit {
         loadTask?.cancel()
+        cancellables.removeAll()
     }
 }
