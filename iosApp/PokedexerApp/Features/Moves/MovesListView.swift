@@ -1,5 +1,5 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct MovesListView: View {
     @StateObject private var viewModel = MovesListViewModel()
@@ -86,6 +86,5 @@ struct MoveRow: View {
                 .font(.system(size: 14))
                 .frame(width: 45, alignment: .trailing)
         }
-        .padding(.vertical, 4)
     }
 }

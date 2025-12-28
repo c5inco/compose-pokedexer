@@ -213,14 +213,14 @@ struct AboutSection: View {
                         HStack(spacing: 12) {
                             HStack(spacing: 2) {
                                 Image("ic_male_gender")
-                                    .foregroundStyle(Color(hex: 0xFF6C79DB))
+                                    .foregroundStyle(Color(hex: 0xFF6C_79DB))
                                 Text(
                                     "\(100.0 - Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%"
                                 )
                             }
                             HStack(spacing: 2) {
                                 Image("ic_female_gender")
-                                    .foregroundStyle(Color(hex: 0xFFF0729F))
+                                    .foregroundStyle(Color(hex: 0xFFF0_729F))
                                 Text(
                                     "\(Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%"
                                 )
