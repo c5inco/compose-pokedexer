@@ -15,6 +15,7 @@ import com.materialkolor.ktx.lighten
 import com.materialkolor.rememberDynamicColorScheme
 import des.c5inco.pokedexer.shared.model.MoveCategory
 import des.c5inco.pokedexer.shared.model.Type
+import des.c5inco.pokedexer.shared.theme.getSeedColorForType
 
 @Composable
 fun AppTheme(
@@ -41,7 +42,8 @@ fun PokemonTypesTheme(
     paletteStyle: PaletteStyle = PaletteStyle.TonalSpot,
     content: @Composable () -> Unit
 ) {
-    val seedColor = mapTypeToSeedColor(types = types)
+    // Use shared module's getSeedColorForType (returns Int) and convert to Color
+    val seedColor = Color(getSeedColorForType(types))
 
     val kolorScheme = getDynamicColorScheme(
         seedColor = seedColor,
@@ -119,37 +121,6 @@ fun mapDynamicPokemonColorScheme(
             secondary = colorScheme.primary,
             tertiary = colorScheme.secondary,
         )
-    }
-}
-
-fun mapTypeToSeedColor(
-    types: List<String>,
-): Color {
-    val firstType = types.getOrNull(0) ?: return Color.Magenta
-
-    return try {
-        when (Type.valueOf(firstType.replaceFirstChar { it.uppercase() })) {
-            Type.Bug -> PokemonColors.Bug
-            Type.Dark -> PokemonColors.Dark
-            Type.Dragon -> PokemonColors.Dragon
-            Type.Electric -> PokemonColors.Electric
-            Type.Fairy -> PokemonColors.Fairy
-            Type.Fighting -> PokemonColors.Fighting
-            Type.Fire -> PokemonColors.Fire
-            Type.Flying -> PokemonColors.Flying
-            Type.Ghost -> PokemonColors.Ghost
-            Type.Grass -> PokemonColors.Grass
-            Type.Ground -> PokemonColors.Ground
-            Type.Ice -> PokemonColors.Ice
-            Type.Normal -> PokemonColors.Normal
-            Type.Poison -> PokemonColors.Poison
-            Type.Psychic -> PokemonColors.Psychic
-            Type.Rock -> PokemonColors.Rock
-            Type.Steel -> PokemonColors.Steel
-            Type.Water -> PokemonColors.Water
-        }
-    } catch (e: IllegalArgumentException) {
-        Color.Magenta
     }
 }
 

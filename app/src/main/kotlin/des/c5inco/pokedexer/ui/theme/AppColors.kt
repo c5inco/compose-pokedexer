@@ -37,30 +37,40 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.shared.model.Type
+import des.c5inco.pokedexer.shared.theme.PokemonTypeSeeds
+import des.c5inco.pokedexer.shared.theme.getSeedColorForType
 import kotlinx.coroutines.launch
 
-class PokemonColors {
-    companion object {
-        val Bug = Color(0xffAFC836)
-        val Dark = Color(0xff9298A4)
-        val Dragon = Color(0xff0180C7)
-        val Electric = Color(0xffF0C03E)
-        val Fairy = Color(0xffee99ee)
-        val Fighting = Color(0xffE74347)
-        val Fire = Color(0xffFBAE46)
-        val Flying = Color(0xffA6C2F2)
-        val Ghost = Color(0xff7773D4)
-        val Grass = Color(0xff5AC178)
-        val Ground = Color(0xffD29463)
-        val Ice = Color(0xff8CDDD4)
-        val Normal = Color(0xffA3A49E)
-        val Poison = Color(0xffC261D4)
-        val Psychic = Color(0xffFE9F92)
-        val Rock = Color(0xffD7CD90)
-        val Water = Color(0xff429BED)
-        val Steel = Color(0xff58A6AA)
-    }
+/**
+ * PokemonColors object using shared module's seed colors.
+ * Provides Compose Color values for use in Android UI.
+ */
+object PokemonColors {
+    val Bug = Color(PokemonTypeSeeds.Bug)
+    val Dark = Color(PokemonTypeSeeds.Dark)
+    val Dragon = Color(PokemonTypeSeeds.Dragon)
+    val Electric = Color(PokemonTypeSeeds.Electric)
+    val Fairy = Color(PokemonTypeSeeds.Fairy)
+    val Fighting = Color(PokemonTypeSeeds.Fighting)
+    val Fire = Color(PokemonTypeSeeds.Fire)
+    val Flying = Color(PokemonTypeSeeds.Flying)
+    val Ghost = Color(PokemonTypeSeeds.Ghost)
+    val Grass = Color(PokemonTypeSeeds.Grass)
+    val Ground = Color(PokemonTypeSeeds.Ground)
+    val Ice = Color(PokemonTypeSeeds.Ice)
+    val Normal = Color(PokemonTypeSeeds.Normal)
+    val Poison = Color(PokemonTypeSeeds.Poison)
+    val Psychic = Color(PokemonTypeSeeds.Psychic)
+    val Rock = Color(PokemonTypeSeeds.Rock)
+    val Steel = Color(PokemonTypeSeeds.Steel)
+    val Water = Color(PokemonTypeSeeds.Water)
 }
+
+/**
+ * Helper function that wraps getSeedColorForType() and returns a Compose Color.
+ * For backwards compatibility with existing code using mapTypeToSeedColor.
+ */
+fun mapTypeToSeedColor(types: List<String>): Color = Color(getSeedColorForType(types))
 
 @Immutable
 data class PokemonTypeColorScheme(
@@ -161,7 +171,7 @@ fun PokemonTypeColorOverlay(
             content()
 
             val swatchColors = listOf(
-                mapTypeToSeedColor(types),
+                Color(getSeedColorForType(types)),
                 PokemonTypesTheme.colorScheme.primary,
                 PokemonTypesTheme.colorScheme.surface,
                 PokemonTypesTheme.colorScheme.onSurface,

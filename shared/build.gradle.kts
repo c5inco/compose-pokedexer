@@ -55,6 +55,9 @@ kotlin {
 
             // Serialization
             implementation(libs.kotlinx.serialization.json)
+
+            // Material Kolor for dynamic color generation
+            implementation(libs.material.kolor)
         }
 
         androidMain.dependencies {

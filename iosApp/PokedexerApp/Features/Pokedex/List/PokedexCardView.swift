@@ -5,10 +5,11 @@ import SwiftUI
 struct PokedexCardView: View {
     let pokemon: Pokemon
     let isFavorite: Bool
+    
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.pokemonTheme) private var theme
 
     var body: some View {
-        let typeColor = PokemonColors.color(for: pokemon.primaryType)
-
         ZStack {
             // Mesh Gradient Background
             //  PokemonCardMeshGradient(pokemon: pokemon)
@@ -18,7 +19,7 @@ struct PokedexCardView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text(pokemon.name.capitalized)
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(theme.onSurface)
                 VStack(alignment: .leading, spacing: 4) {
                     ForEach(pokemon.typeOfPokemon.prefix(2), id: \.self) {
                         type in
@@ -34,7 +35,7 @@ struct PokedexCardView: View {
             .background(alignment: .topTrailing) {
                 Text(pokemon.formattedId)
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(.white.opacity(0.7))
+                    .opacity(colorScheme == .dark ? 0.5 : 0.7)
                     .padding(.top, 8)
                     .padding(.trailing, 12)
             }
@@ -42,7 +43,7 @@ struct PokedexCardView: View {
                 PokeballBackground(opacity: 0.25, tint: .white)
                     .frame(height: 88)
             }
-            .background(typeColor)
+            .background(theme.surface)
             .overlay(alignment: .bottomTrailing) {
                 PokemonImage(pokemon: pokemon, size: 80)
                     .padding([.bottom, .trailing], 6)
@@ -50,7 +51,6 @@ struct PokedexCardView: View {
             .overlay(alignment: .bottomTrailing) {
                 if isFavorite {
                     Image(systemName: "heart.fill")
-                        .foregroundColor(.white)
                         .padding(8)
                 }
             }
@@ -68,5 +68,6 @@ struct PokedexCard: View {
             pokemon: pokemon,
             isFavorite: isFavorite
         )
+        .pokemonTheme(pokemon)
     }
 }

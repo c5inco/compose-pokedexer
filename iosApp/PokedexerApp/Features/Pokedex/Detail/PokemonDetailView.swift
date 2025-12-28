@@ -4,16 +4,7 @@ import SwiftUI
 struct PokemonDetailView: View {
     let pokemonId: Int
     @StateObject private var viewModel: PokemonDetailViewModel
-    @State private var selectedTab: DetailTab = .stats
-    @State private var dragOffset: CGFloat = 0
     @Environment(\.dismiss) var dismiss
-
-    enum DetailTab: String, CaseIterable, Identifiable {
-        case about, stats, evolution, moves
-
-        var id: String { rawValue }
-        var title: String { rawValue.capitalized }
-    }
 
     init(pokemonId: Int) {
         self.pokemonId = pokemonId
@@ -25,104 +16,63 @@ struct PokemonDetailView: View {
     var body: some View {
         ZStack {
             if let pokemon = viewModel.pokemon {
-                // Background mesh gradient
-                if #available(iOS 18.0, *) {
-                    PokemonDetailMeshGradient(pokemon: pokemon)
-                } else {
-                    // Fallback linear gradient
-                    let typeColor = PokemonColors.color(
-                        for: pokemon.primaryType
-                    )
-                    LinearGradient(
-                        colors: [typeColor.opacity(0.6), typeColor],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .ignoresSafeArea()
-                }
+                ZStack {
+                    // Background mesh gradient
+                    if #available(iOS 18.0, *) {
+                        PokemonDetailMeshGradient(pokemon: pokemon)
+                    } else {
+                        // Fallback linear gradient
+                        let typeColor = PokemonColors.color(
+                            for: pokemon.primaryType
+                        )
+                        LinearGradient(
+                            colors: [typeColor.opacity(0.6), typeColor],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .ignoresSafeArea()
+                    }
 
-                VStack(spacing: 0) {
-                    // Header
-                    HStack {
-                        Button(action: { dismiss() }) {
-                            Image(systemName: "chevron.left")
+                    VStack(spacing: 0) {
+                        // Header
+                        HStack {
+                            Button(action: { dismiss() }) {
+                                Image(systemName: "chevron.left")
+                                    .font(.title2)
+                                    .foregroundColor(.white)
+                            }
+
+                            Spacer()
+
+                            Text(pokemon.name.capitalized)
+                                .font(.title2.bold())
+                                .foregroundColor(.white)
+
+                            Spacer()
+
+                            Button(action: viewModel.toggleFavorite) {
+                                Image(
+                                    systemName: viewModel.isFavorite
+                                        ? "heart.fill" : "heart"
+                                )
                                 .font(.title2)
                                 .foregroundColor(.white)
-                        }
-
-                        Spacer()
-
-                        Text(pokemon.name.capitalized)
-                            .font(.title2.bold())
-                            .foregroundColor(.white)
-
-                        Spacer()
-
-                        Button(action: viewModel.toggleFavorite) {
-                            Image(
-                                systemName: viewModel.isFavorite
-                                    ? "heart.fill" : "heart"
-                            )
-                            .font(.title2)
-                            .foregroundColor(.white)
-                        }
-                    }
-                    .padding()
-
-                    // Pokemon Image (with horizontal pager in full version)
-                    PokemonImage(pokemon: pokemon, size: 200)
-                        .padding(.vertical, 32)
-
-                    // Draggable card with tabs
-                    VStack(spacing: 0) {
-                        // Tab Picker
-                        Picker("Section", selection: $selectedTab) {
-                            ForEach(DetailTab.allCases) { tab in
-                                Text(tab.title).tag(tab)
                             }
                         }
-                        .pickerStyle(.segmented)
                         .padding()
 
-                        // Tab Content
-                        ScrollView {
-                            switch selectedTab {
-                            case .about:
-                                AboutSection(
-                                    pokemon: pokemon,
-                                    abilities: viewModel.abilities
-                                )
-                            case .stats:
-                                StatsSection(pokemon: pokemon)
-                            case .evolution:
-                                EvolutionSection(
-                                    evolutions: viewModel.evolutions
-                                )
-                            case .moves:
-                                MovesSection(moves: viewModel.moves)
-                            }
-                        }
-                        .safeAreaPadding(.bottom)
+                        // Pokemon Image (with horizontal pager in full version)
+                        PokemonImage(pokemon: pokemon, size: 200)
+                            .padding(.vertical, 32)
+
+                        CardContent(
+                            pokemon: pokemon,
+                            abilities: viewModel.abilities,
+                            evolutions: viewModel.evolutions,
+                            moves: viewModel.moves
+                        )
                     }
-                    .background(Color(.systemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 32))
-                    .offset(y: max(dragOffset, 0))
-                    .gesture(
-                        DragGesture()
-                            .onChanged { value in
-                                dragOffset = value.translation.height
-                            }
-                            .onEnded { value in
-                                if value.translation.height > 100 {
-                                    dismiss()
-                                } else {
-                                    withAnimation(.spring()) {
-                                        dragOffset = 0
-                                    }
-                                }
-                            }
-                    )
-                    .ignoresSafeArea()
+                    .pokemonTheme(pokemon)
                 }
             } else {
                 LoadingView()
@@ -132,6 +82,78 @@ struct PokemonDetailView: View {
         .task {
             await viewModel.loadPokemon()
         }
+    }
+}
+
+struct CardContent: View {
+    let pokemon: Pokemon
+    let abilities: [PokemonDetailsAbility]
+    let evolutions: [PokemonDetailsEvolution]
+    let moves: [PokemonDetailsMove]
+
+    @State private var selectedTab: DetailTab = .stats
+    @State private var dragOffset: CGFloat = 0
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.pokemonTheme) private var theme
+
+    enum DetailTab: String, CaseIterable, Identifiable {
+        case about, stats, evolution, moves
+
+        var id: String { rawValue }
+        var title: String { rawValue.capitalized }
+    }
+
+    var body: some View {
+        // Draggable card with tabs
+        VStack(spacing: 0) {
+            // Tab Picker
+            Picker("Section", selection: $selectedTab) {
+                ForEach(DetailTab.allCases) { tab in
+                    Text(tab.title).tag(tab)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding()
+
+            // Tab Content
+            ScrollView {
+                switch selectedTab {
+                case .about:
+                    AboutSection(
+                        pokemon: pokemon,
+                        abilities: abilities
+                    )
+                case .stats:
+                    StatsSection(pokemon: pokemon)
+                case .evolution:
+                    EvolutionSection(
+                        evolutions: evolutions
+                    )
+                case .moves:
+                    MovesSection(moves: moves)
+                }
+            }
+            .safeAreaPadding(.bottom)
+        }
+        .background(theme.surface)
+        .clipShape(RoundedRectangle(cornerRadius: 32))
+        .offset(y: max(dragOffset, 0))
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    dragOffset = value.translation.height
+                }
+                .onEnded { value in
+                    if value.translation.height > 100 {
+                        dismiss()
+                    } else {
+                        withAnimation(.spring()) {
+                            dragOffset = 0
+                        }
+                    }
+                }
+        )
+        .ignoresSafeArea()
     }
 }
 
@@ -376,7 +398,6 @@ struct StatBar: View {
     let label: String
     let value: Int
     let max: Int
-    @Environment(\.pokemonThemeColor) var currentTint
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -397,7 +418,7 @@ struct StatBar: View {
                         .cornerRadius(4)
 
                     Rectangle()
-                        .fill(currentTint)
+                        //                        .fill(currentTint)
                         .frame(
                             width: geometry.size.width * CGFloat(value)
                                 / CGFloat(max),

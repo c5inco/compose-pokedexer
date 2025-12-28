@@ -13,7 +13,7 @@ struct PokedexListView: View {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                         ForEach(Array(viewModel.filteredPokemon.enumerated()), id: \.element.id) { index, pokemon in
-                            PokedexCardView(
+                            PokedexCard(
                                 pokemon: pokemon,
                                 isFavorite: viewModel.isFavorite(Int(pokemon.id))
                             )
