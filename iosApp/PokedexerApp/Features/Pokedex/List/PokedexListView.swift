@@ -15,22 +15,11 @@ struct PokedexListView: View {
                         ForEach(Array(viewModel.filteredPokemon.enumerated()), id: \.element.id) { index, pokemon in
                             PokedexCardView(
                                 pokemon: pokemon,
-                                isFavorite: viewModel.isFavorite(Int(pokemon.id)),
-                                onFavoriteTap: {
-                                    viewModel.toggleFavorite(Int(pokemon.id))
-                                }
+                                isFavorite: viewModel.isFavorite(Int(pokemon.id))
                             )
                             .onTapGesture {
                                 coordinator.push(.pokemonDetail(id: Int(pokemon.id)))
                             }
-                            .transition(.asymmetric(
-                                insertion: .offset(y: 50).combined(with: .opacity),
-                                removal: .opacity
-                            ))
-                            .animation(
-                                .easeOut(duration: 0.5).delay(Double(index) * 0.06),
-                                value: viewModel.filteredPokemon.count
-                            )
                         }
                     }
                     .padding()
@@ -85,7 +74,7 @@ struct FilterSheet: View {
                             viewModel.selectType(viewModel.selectedType == type ? nil : type)
                         }) {
                             HStack {
-                                TypeLabel(typeName: type, size: .medium)
+                                TypeLabel(typeName: type, size: .medium, colored: true)
                                 Spacer()
                                 if viewModel.selectedType == type {
                                     Image(systemName: "checkmark")
