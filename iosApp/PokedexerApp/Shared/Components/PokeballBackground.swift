@@ -9,7 +9,7 @@ struct PokeballBackground: View {
         Image("ic_pokeball")
             .resizable()
             .scaledToFit()
-            .foregroundColor(tint)
+            .foregroundStyle(tint)
             .opacity(opacity)
     }
 }
