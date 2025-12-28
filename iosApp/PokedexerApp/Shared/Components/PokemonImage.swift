@@ -31,27 +31,22 @@ struct PokemonImage: View {
 
 struct ItemImage: View {
     let item: Item
-    var size: CGFloat = 56
+    var size: CGFloat = 45
 
     var body: some View {
-        AsyncImage(url: item.spriteURL) { phase in
-            switch phase {
-            case .empty:
-                ProgressView()
-                    .frame(width: size, height: size)
-            case .success(let image):
-                image
+        Group {
+            if let uiImage = item.bundleImage() {
+                Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: size, height: size)
-            case .failure:
+            } else {
+                // Fallback to default placeholder if bundle image not found
                 Image(systemName: "cube.box")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: size, height: size)
                     .foregroundColor(.gray)
-            @unknown default:
-                EmptyView()
             }
         }
     }

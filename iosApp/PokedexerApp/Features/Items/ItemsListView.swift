@@ -33,7 +33,7 @@ struct ItemCard: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            ItemImage(item: item, size: 56)
+            ItemImage(item: item, size: 45)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.name.capitalized)

@@ -1,5 +1,6 @@
 import Foundation
 import Shared
+import UIKit
 
 // MARK: - Pokemon Extensions
 extension Pokemon {
@@ -64,7 +65,19 @@ extension Move {
 // MARK: - Item Extensions
 extension Item {
     var spriteURL: URL? {
-        URL(string: sprite)
+        // Return bundle URL for local item images
+        bundleImageURL()
+    }
+    
+    /// Returns a bundle URL for the item's sprite image
+    func bundleImageURL() -> URL? {
+        Bundle.main.url(forResource: sprite, withExtension: "webp", subdirectory: "items")
+    }
+    
+    /// Loads the item image from bundle as UIImage, with fallback support
+    func bundleImage() -> UIImage? {
+        guard let url = bundleImageURL() else { return nil }
+        return UIImage(contentsOfFile: url.path)
     }
 }
 

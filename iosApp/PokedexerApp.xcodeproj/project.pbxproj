@@ -10,6 +10,7 @@
 		AA0000010000000000000001 /* PokedexerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000001 /* PokedexerApp.swift */; };
 		AA0000010000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000002 /* ContentView.swift */; };
 		AA0000010000000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000003 /* Assets.xcassets */; };
+		AA0000010000000000000010 /* items in Resources */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000010 /* items */; };
 		AA0000010000000000000004 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000004 /* Shared.framework */; };
 		AA0000010000000000000005 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000004 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AA0000010000000000000006 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000006 /* AppViewModel.swift */; };
@@ -57,6 +58,7 @@
 		AA0000020000000000000001 /* PokedexerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokedexerApp.swift; sourceTree = "<group>"; };
 		AA0000020000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AA0000020000000000000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AA0000020000000000000010 /* items */ = {isa = PBXFileReference; lastKnownFileType = folder; path = items; sourceTree = "<group>"; };
 		AA0000020000000000000004 /* Shared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000020000000000000006 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
 		AA0000050000000000000001 /* PokedexerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokedexerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				AA0000020000000000000003 /* Assets.xcassets */,
+				AA0000020000000000000010 /* items */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -365,6 +368,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA0000010000000000000003 /* Assets.xcassets in Resources */,
+				AA0000010000000000000010 /* items in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
