@@ -58,10 +58,10 @@ struct MoveRow: View {
 
     var categoryIcon: String {
         switch move.category.lowercased() {
-        case "physical": return "flame.fill"
-        case "special": return "sparkles"
-        case "status": return "star.fill"
-        default: return "circle.fill"
+        case "physical": return "ic_move_physical"
+        case "special": return "ic_move_special"
+        case "status": return "ic_move_status"
+        default: return "dumbbell.fill"
         }
     }
 
@@ -71,12 +71,11 @@ struct MoveRow: View {
                 .font(.system(size: 14))
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            TypeLabel(typeName: move.type, size: .small)
+            TypeLabel(typeName: move.type, colored: true)
                 .frame(width: 80)
 
-            Image(systemName: categoryIcon)
-                .font(.system(size: 12))
-                .foregroundColor(MoveCategoryColors.color(for: move.category))
+            Image(categoryIcon)
+                .foregroundStyle(MoveCategoryColors.color(for: move.category))
                 .frame(width: 48)
 
             Text(move.powerDisplay)
