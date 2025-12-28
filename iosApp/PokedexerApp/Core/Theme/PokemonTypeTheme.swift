@@ -1,5 +1,5 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 // MARK: - Pokemon Type Colors
 struct PokemonColors {
@@ -84,32 +84,54 @@ extension Color {
         var alpha: CGFloat = 0
 
         #if canImport(UIKit)
-        UIColor(self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+            UIColor(self).getHue(
+                &hue,
+                saturation: &saturation,
+                brightness: &brightness,
+                alpha: &alpha
+            )
         #else
-        NSColor(self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+            NSColor(self).getHue(
+                &hue,
+                saturation: &saturation,
+                brightness: &brightness,
+                alpha: &alpha
+            )
         #endif
 
         let offsetDegrees = offset / 360.0
 
         // Return 5 colors: 2 before, original, 2 after
         return [
-            Color(hue: (hue - offsetDegrees * 2).truncatingRemainder(dividingBy: 1.0),
-                  saturation: saturation,
-                  brightness: brightness,
-                  opacity: alpha),
-            Color(hue: (hue - offsetDegrees).truncatingRemainder(dividingBy: 1.0),
-                  saturation: saturation,
-                  brightness: brightness,
-                  opacity: alpha),
+            Color(
+                hue: (hue - offsetDegrees * 2).truncatingRemainder(
+                    dividingBy: 1.0
+                ),
+                saturation: saturation,
+                brightness: brightness,
+                opacity: alpha
+            ),
+            Color(
+                hue: (hue - offsetDegrees).truncatingRemainder(dividingBy: 1.0),
+                saturation: saturation,
+                brightness: brightness,
+                opacity: alpha
+            ),
             self,
-            Color(hue: (hue + offsetDegrees).truncatingRemainder(dividingBy: 1.0),
-                  saturation: saturation,
-                  brightness: brightness,
-                  opacity: alpha),
-            Color(hue: (hue + offsetDegrees * 2).truncatingRemainder(dividingBy: 1.0),
-                  saturation: saturation,
-                  brightness: brightness,
-                  opacity: alpha)
+            Color(
+                hue: (hue + offsetDegrees).truncatingRemainder(dividingBy: 1.0),
+                saturation: saturation,
+                brightness: brightness,
+                opacity: alpha
+            ),
+            Color(
+                hue: (hue + offsetDegrees * 2).truncatingRemainder(
+                    dividingBy: 1.0
+                ),
+                saturation: saturation,
+                brightness: brightness,
+                opacity: alpha
+            ),
         ]
     }
 }
@@ -142,5 +164,26 @@ extension Color {
             blue: Double(hex & 0xFF) / 255,
             opacity: alpha
         )
+    }
+}
+
+struct ThemeColorKey: EnvironmentKey {
+    // This is the default color if no theme is set
+    static let defaultValue: Color = .blue
+}
+
+extension EnvironmentValues {
+    var pokemonThemeColor: Color {
+        get { self[ThemeColorKey.self] }
+        set { self[ThemeColorKey.self] = newValue }
+    }
+}
+
+extension View {
+    func pokemonTheme(_ pokemon: Pokemon) -> some View {
+        let color = PokemonColors.color(for: pokemon.primaryType)
+        return self
+            .tint(color)  // Sets color for system controls (Buttons, etc.)
+            .environment(\.pokemonThemeColor, color)  // Sets color for your logic
     }
 }

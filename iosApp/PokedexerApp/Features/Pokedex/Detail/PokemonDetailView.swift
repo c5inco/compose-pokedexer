@@ -1,5 +1,5 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct PokemonDetailView: View {
     let pokemonId: Int
@@ -17,7 +17,9 @@ struct PokemonDetailView: View {
 
     init(pokemonId: Int) {
         self.pokemonId = pokemonId
-        _viewModel = StateObject(wrappedValue: PokemonDetailViewModel(pokemonId: pokemonId))
+        _viewModel = StateObject(
+            wrappedValue: PokemonDetailViewModel(pokemonId: pokemonId)
+        )
     }
 
     var body: some View {
@@ -28,7 +30,9 @@ struct PokemonDetailView: View {
                     PokemonDetailMeshGradient(pokemon: pokemon)
                 } else {
                     // Fallback linear gradient
-                    let typeColor = PokemonColors.color(for: pokemon.primaryType)
+                    let typeColor = PokemonColors.color(
+                        for: pokemon.primaryType
+                    )
                     LinearGradient(
                         colors: [typeColor.opacity(0.6), typeColor],
                         startPoint: .top,
@@ -55,9 +59,14 @@ struct PokemonDetailView: View {
                         Spacer()
 
                         Button(action: viewModel.toggleFavorite) {
-                            Image(systemName: viewModel.isFavorite ? "heart.fill" : "heart")
-                                .font(.title2)
-                                .foregroundColor(viewModel.isFavorite ? .red : .white)
+                            Image(
+                                systemName: viewModel.isFavorite
+                                    ? "heart.fill" : "heart"
+                            )
+                            .font(.title2)
+                            .foregroundColor(
+                                viewModel.isFavorite ? .red : .white
+                            )
                         }
                     }
                     .padding()
@@ -81,11 +90,16 @@ struct PokemonDetailView: View {
                         ScrollView {
                             switch selectedTab {
                             case .about:
-                                AboutSection(pokemon: pokemon, abilities: viewModel.abilities)
+                                AboutSection(
+                                    pokemon: pokemon,
+                                    abilities: viewModel.abilities
+                                )
                             case .stats:
                                 StatsSection(pokemon: pokemon)
                             case .evolution:
-                                EvolutionSection(evolutions: viewModel.evolutions)
+                                EvolutionSection(
+                                    evolutions: viewModel.evolutions
+                                )
                             case .moves:
                                 MovesSection(moves: viewModel.moves)
                             }
@@ -131,40 +145,35 @@ struct AboutSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 28) {
             // Description
-            Text(pokemon.description)
-                .font(.body)
+            Text(pokemon.desc)
                 .lineSpacing(4)
-            
+
             // Height/Weight Card
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Height")
-                        .font(.caption)
                         .foregroundColor(.secondary)
                     Text(pokemon.heightInMeters)
-                        .font(.body)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                
+
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Weight")
-                        .font(.caption)
                         .foregroundColor(.secondary)
                     Text(pokemon.weightInKilograms)
-                        .font(.body)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(16)
             .background(Color(.secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12))
-            
+
             // Abilities Section
             if !abilities.isEmpty {
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Abilities")
                         .font(.headline)
-                    
+
                     VStack(spacing: 12) {
                         ForEach(abilities) { ability in
                             VStack(alignment: .leading, spacing: 8) {
@@ -188,33 +197,31 @@ struct AboutSection: View {
                     }
                 }
             }
-            
+
             // Breeding Section
-            VStack(alignment: .leading, spacing: 24) {
-                Text("Breeding")
-                    .font(.headline)
-                
-                HStack {
+            Text("Breeding")
+                .font(.headline)
+            
+            Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 18) {
+                GridRow {
                     Text("Gender")
-                        .font(.caption)
                         .foregroundColor(.secondary)
-                        .frame(width: 80, alignment: .leading)
-                    
+
                     if pokemon.genderRate != -1 {
                         HStack(spacing: 12) {
                             HStack(spacing: 2) {
-                                Image(systemName: "circle.fill")
-                                    .font(.system(size: 8))
-                                    .foregroundColor(.blue)
-                                Text("\(100.0 - Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%")
-                                    .font(.body)
+                                Image("ic_male_gender")
+                                    .foregroundStyle(Color(hex: 0xFF6C79DB))
+                                Text(
+                                    "\(100.0 - Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%"
+                                )
                             }
                             HStack(spacing: 2) {
-                                Image(systemName: "circle.fill")
-                                    .font(.system(size: 8))
-                                    .foregroundColor(.pink)
-                                Text("\(Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%")
-                                    .font(.body)
+                                Image("ic_female_gender")
+                                    .foregroundStyle(Color(hex: 0xFFF0729F))
+                                Text(
+                                    "\(Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%"
+                                )
                             }
                         }
                     } else {
@@ -222,27 +229,23 @@ struct AboutSection: View {
                             .font(.body)
                     }
                 }
-                
-                HStack {
+
+                GridRow {
                     Text("Egg Groups")
-                        .font(.caption)
                         .foregroundColor(.secondary)
-                        .frame(width: 80, alignment: .leading)
                     Text("-")
                         .font(.body)
                 }
-                
-                HStack {
+
+                GridRow {
                     Text("Egg Cycles")
-                        .font(.caption)
                         .foregroundColor(.secondary)
-                        .frame(width: 80, alignment: .leading)
                     Text("-")
                         .font(.body)
                 }
             }
         }
-        .padding(24)
+        .padding(.horizontal, 24)
     }
 }
 
@@ -254,10 +257,19 @@ struct StatsSection: View {
             StatBar(label: "HP", value: Int(pokemon.hp), max: 255)
             StatBar(label: "Attack", value: Int(pokemon.attack), max: 255)
             StatBar(label: "Defense", value: Int(pokemon.defense), max: 255)
-            StatBar(label: "Sp. Atk", value: Int(pokemon.specialAttack), max: 255)
-            StatBar(label: "Sp. Def", value: Int(pokemon.specialDefense), max: 255)
+            StatBar(
+                label: "Sp. Atk",
+                value: Int(pokemon.specialAttack),
+                max: 255
+            )
+            StatBar(
+                label: "Sp. Def",
+                value: Int(pokemon.specialDefense),
+                max: 255
+            )
             StatBar(label: "Speed", value: Int(pokemon.speed), max: 255)
         }
+        .pokemonTheme(pokemon)
         .padding()
     }
 }
@@ -275,11 +287,11 @@ struct EvolutionSection: View {
                     HStack(spacing: 16) {
                         // Pokemon image
                         PokemonImage(pokemon: evolution.pokemon, size: 80)
-                        
+
                         VStack(alignment: .leading, spacing: 4) {
                             Text(evolution.pokemon.name.capitalized)
                                 .font(.headline)
-                            
+
                             // Evolution trigger info
                             HStack(spacing: 4) {
                                 if evolution.targetLevel > 0 {
@@ -294,7 +306,7 @@ struct EvolutionSection: View {
                                 }
                             }
                         }
-                        
+
                         Spacer()
                     }
                     .padding(.horizontal)
@@ -330,7 +342,7 @@ struct MovesSection: View {
                     }
                     .padding(.vertical, 8)
                     .padding(.horizontal)
-                    
+
                     if move.id != moves.prefix(20).last?.id {
                         Divider()
                             .padding(.horizontal)
@@ -362,6 +374,7 @@ struct StatBar: View {
     let label: String
     let value: Int
     let max: Int
+    @Environment(\.pokemonThemeColor) var currentTint
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -382,8 +395,12 @@ struct StatBar: View {
                         .cornerRadius(4)
 
                     Rectangle()
-                        .fill(Color.blue)
-                        .frame(width: geometry.size.width * CGFloat(value) / CGFloat(max), height: 8)
+                        .fill(currentTint)
+                        .frame(
+                            width: geometry.size.width * CGFloat(value)
+                                / CGFloat(max),
+                            height: 8
+                        )
                         .cornerRadius(4)
                 }
             }
