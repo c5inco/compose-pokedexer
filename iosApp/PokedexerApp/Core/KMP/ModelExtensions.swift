@@ -1,5 +1,5 @@
 import Foundation
-import shared
+import Shared
 
 // MARK: - Pokemon Extensions
 extension Pokemon {
@@ -71,15 +71,14 @@ extension Item {
 // MARK: - Evolution Extensions
 extension Evolution {
     var triggerDisplayName: String {
-        // Check the trigger value - Kotlin enum values from KMP are lowercase in Swift
-        if trigger == EvolutionTrigger.levelup {
+        // SKIE generates native Swift enums with camelCase names
+        switch trigger {
+        case .levelUp:
             return targetLevel > 0 ? "Level \(targetLevel)" : "Level Up"
-        } else if trigger == EvolutionTrigger.useitem {
+        case .useItem:
             return "Use Item"
-        } else if trigger == EvolutionTrigger.trade {
+        case .trade:
             return "Trade"
-        } else {
-            return "Unknown"
         }
     }
 }

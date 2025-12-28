@@ -1,5 +1,5 @@
 import SwiftUI
-import shared
+import Shared
 
 // MARK: - Pokemon Type Colors
 struct PokemonColors {

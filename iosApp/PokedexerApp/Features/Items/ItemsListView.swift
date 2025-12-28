@@ -1,5 +1,5 @@
 import SwiftUI
-import shared
+import Shared
 
 struct ItemsListView: View {
     @StateObject private var viewModel = ItemsListViewModel()
@@ -39,7 +39,7 @@ struct ItemCard: View {
                 Text(item.name.capitalized)
                     .font(.headline)
 
-                Text(item.description_)
+                Text(item.desc)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

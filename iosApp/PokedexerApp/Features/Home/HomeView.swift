@@ -1,5 +1,5 @@
 import SwiftUI
-import shared
+import Shared
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
@@ -271,7 +271,7 @@ struct ItemResultCard: View {
                 Text(item.name.capitalized)
                     .font(.headline)
 
-                Text(item.description_)
+                Text(item.desc)
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(2)

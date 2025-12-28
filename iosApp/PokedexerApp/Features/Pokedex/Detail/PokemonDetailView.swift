@@ -1,5 +1,5 @@
 import SwiftUI
-import shared
+import Shared
 
 struct PokemonDetailView: View {
     let pokemonId: Int
@@ -176,7 +176,7 @@ struct AboutSection: View {
                                 }
                                 Text(ability.ability.name.capitalized)
                                     .font(.body)
-                                Text(ability.ability.description_)
+                                Text(ability.ability.desc)
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }

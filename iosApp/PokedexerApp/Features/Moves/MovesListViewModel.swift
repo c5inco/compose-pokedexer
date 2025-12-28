@@ -1,5 +1,5 @@
 import Foundation
-import shared
+import Shared
 
 @MainActor
 class MovesListViewModel: ObservableObject {
@@ -25,7 +25,8 @@ class MovesListViewModel: ObservableObject {
                 try await sdk.updateMoves()
 
                 if let flow = sdk.getAllMoves() {
-                    for try await movesList in flow.asAsyncSequence() as AsyncThrowingStream<[Move], Error> {
+                    // SKIE's SkieSwiftFlow conforms to AsyncSequence, iterate directly
+                    for await movesList in flow {
                         self.moves = movesList
                         self.isLoading = false
                         break

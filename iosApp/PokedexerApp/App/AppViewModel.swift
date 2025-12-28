@@ -1,5 +1,5 @@
 import Foundation
-import shared
+import Shared
 
 @MainActor
 class AppViewModel: ObservableObject {

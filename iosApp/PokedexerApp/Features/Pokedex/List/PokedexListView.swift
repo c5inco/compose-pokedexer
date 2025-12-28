@@ -1,5 +1,5 @@
 import SwiftUI
-import shared
+import Shared
 
 struct PokedexListView: View {
     @StateObject private var viewModel = PokedexListViewModel()

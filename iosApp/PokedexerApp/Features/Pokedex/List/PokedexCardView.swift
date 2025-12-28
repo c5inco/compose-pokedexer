@@ -1,5 +1,5 @@
 import SwiftUI
-import shared
+import Shared
 
 @available(iOS 18.0, *)
 struct PokedexCardView: View {

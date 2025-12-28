@@ -2,12 +2,13 @@ package des.c5inco.pokedexer.shared.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlin.native.ObjCName
 
 @Entity
 data class Move(
     @PrimaryKey val id: Int,
     val name: String,
-    val description: String,
+    @property:ObjCName("desc") val description: String,
     val category: String,
     val type: String,
     val pp: Int,
@@ -15,10 +16,12 @@ data class Move(
     val accuracy: Int?
 )
 
+@ObjCName("moveCategory")
 fun Move.category(): MoveCategory {
     return MoveCategory.valueOf(category)
 }
 
+@ObjCName("moveType")
 fun Move.type(): Type {
     return Type.valueOf(type)
 }

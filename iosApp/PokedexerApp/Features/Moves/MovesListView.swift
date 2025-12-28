@@ -1,5 +1,5 @@
 import SwiftUI
-import shared
+import Shared
 
 struct MovesListView: View {
     @StateObject private var viewModel = MovesListViewModel()

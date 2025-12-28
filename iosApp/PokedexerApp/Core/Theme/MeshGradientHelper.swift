@@ -1,5 +1,5 @@
 import SwiftUI
-import shared
+import Shared
 
 // MARK: - Pokemon Mesh Gradient
 /// Port of MeshGradient from Android Compose to SwiftUI iOS 18+ native API

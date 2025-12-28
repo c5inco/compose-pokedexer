@@ -1,5 +1,5 @@
 import Foundation
-import shared
+import Shared
 
 /// Wrapper for the KMP PokedexerSDK that provides async initialization
 /// to avoid blocking the main thread during app launch.
@@ -51,21 +51,21 @@ class PokedexerSDKWrapper: ObservableObject {
         return sdk
     }
 
-    // MARK: - Pokemon methods
+    // MARK: - Pokemon methods (SKIE returns typed Swift Flows)
 
-    func getAllPokemon() -> Kotlinx_coroutines_coreFlow? {
+    func getAllPokemon() -> SkieSwiftFlow<[Pokemon]>? {
         return initializedSDK?.getAllPokemon()
     }
 
-    func getPokemonById(id: Int32) -> Kotlinx_coroutines_coreFlow? {
+    func getPokemonById(id: Int32) -> SkieSwiftOptionalFlow<Pokemon>? {
         return initializedSDK?.getPokemonById(id: id)
     }
 
-    func getPokemonByName(name: String) -> Kotlinx_coroutines_coreFlow? {
+    func getPokemonByName(name: String) -> SkieSwiftFlow<[Pokemon]>? {
         return initializedSDK?.getPokemonByName(name: name)
     }
 
-    func getPokemonByGeneration(generationId: Int32) -> Kotlinx_coroutines_coreFlow? {
+    func getPokemonByGeneration(generationId: Int32) -> SkieSwiftFlow<[Pokemon]>? {
         return initializedSDK?.getPokemonByGeneration(generationId: generationId)
     }
 
@@ -76,15 +76,15 @@ class PokedexerSDKWrapper: ObservableObject {
 
     // MARK: - Moves methods
 
-    func getAllMoves() -> Kotlinx_coroutines_coreFlow? {
+    func getAllMoves() -> SkieSwiftFlow<[Move]>? {
         return initializedSDK?.getAllMoves()
     }
 
-    func getMoveById(id: Int32) -> Kotlinx_coroutines_coreFlow? {
+    func getMoveById(id: Int32) -> SkieSwiftOptionalFlow<Move>? {
         return initializedSDK?.getMoveById(id: id)
     }
 
-    func getMovesByName(name: String) -> Kotlinx_coroutines_coreFlow? {
+    func getMovesByName(name: String) -> SkieSwiftFlow<[Move]>? {
         return initializedSDK?.getMovesByName(name: name)
     }
 
@@ -95,15 +95,15 @@ class PokedexerSDKWrapper: ObservableObject {
 
     // MARK: - Items methods
 
-    func getAllItems() -> Kotlinx_coroutines_coreFlow? {
+    func getAllItems() -> SkieSwiftFlow<[Item]>? {
         return initializedSDK?.getAllItems()
     }
 
-    func getItemById(id: Int32) -> Kotlinx_coroutines_coreFlow? {
+    func getItemById(id: Int32) -> SkieSwiftOptionalFlow<Item>? {
         return initializedSDK?.getItemById(id: id)
     }
 
-    func getItemsByName(name: String) -> Kotlinx_coroutines_coreFlow? {
+    func getItemsByName(name: String) -> SkieSwiftFlow<[Item]>? {
         return initializedSDK?.getItemsByName(name: name)
     }
 
@@ -114,7 +114,7 @@ class PokedexerSDKWrapper: ObservableObject {
 
     // MARK: - Abilities methods
 
-    func getAbilityById(id: Int32) -> Kotlinx_coroutines_coreFlow? {
+    func getAbilityById(id: Int32) -> SkieSwiftOptionalFlow<Ability>? {
         return initializedSDK?.getAbilityById(id: id)
     }
 

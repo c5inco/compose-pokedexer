@@ -1,5 +1,5 @@
 import Foundation
-import shared
+import Shared
 
 @MainActor
 class PokedexListViewModel: ObservableObject {
@@ -44,7 +44,8 @@ class PokedexListViewModel: ObservableObject {
                     return
                 }
 
-                for try await pokemonList in flow.asAsyncSequence() as AsyncThrowingStream<[Pokemon], Error> {
+                // SKIE's SkieSwiftFlow conforms to AsyncSequence, iterate directly
+                for await pokemonList in flow {
                     print("🔵 PokedexListViewModel: Received \(pokemonList.count) pokemon for gen \(selectedGeneration)")
                     self.pokemon = pokemonList
                     self.isLoading = false

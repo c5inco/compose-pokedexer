@@ -1,6 +1,6 @@
 import Foundation
 import Combine
-import shared
+import Shared
 
 @MainActor
 class HomeViewModel: ObservableObject {
@@ -70,32 +70,27 @@ class HomeViewModel: ObservableObject {
 
     private func searchPokemon(query: String) async throws -> [Pokemon] {
         guard let flow = sdk.getPokemonByName(name: query) else { return [] }
-        var results: [Pokemon] = []
-        for try await pokemonList in flow.asAsyncSequence() as AsyncThrowingStream<[Pokemon], Error> {
-            results = pokemonList
-            break // Take first emission
+        // SKIE's SkieSwiftFlow conforms to AsyncSequence, iterate directly
+        for await pokemonList in flow {
+            return Array(pokemonList.prefix(5)) // Limit to 5 results
         }
-        return Array(results.prefix(5)) // Limit to 5 results
+        return []
     }
 
     private func searchMoves(query: String) async throws -> [Move] {
         guard let flow = sdk.getMovesByName(name: query) else { return [] }
-        var results: [Move] = []
-        for try await movesList in flow.asAsyncSequence() as AsyncThrowingStream<[Move], Error> {
-            results = movesList
-            break
+        for await movesList in flow {
+            return Array(movesList.prefix(5))
         }
-        return Array(results.prefix(5))
+        return []
     }
 
     private func searchItems(query: String) async throws -> [Item] {
         guard let flow = sdk.getItemsByName(name: query) else { return [] }
-        var results: [Item] = []
-        for try await itemsList in flow.asAsyncSequence() as AsyncThrowingStream<[Item], Error> {
-            results = itemsList
-            break
+        for await itemsList in flow {
+            return Array(itemsList.prefix(5))
         }
-        return Array(results.prefix(5))
+        return []
     }
 
     deinit {

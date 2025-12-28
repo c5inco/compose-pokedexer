@@ -1,5 +1,5 @@
 import Foundation
-import shared
+import Shared
 
 // MARK: - Detail Models (mirroring Android)
 struct PokemonDetailsEvolution: Identifiable {
@@ -57,7 +57,8 @@ class PokemonDetailViewModel: ObservableObject {
                 // Load current Pokemon
                 var loadedPokemon: Pokemon? = nil
                 if let flow = sdk.getPokemonById(id: Int32(currentPokemonId)) {
-                    for try await pokemonData in flow.asAsyncSequence() as AsyncThrowingStream<Pokemon?, Error> {
+                    // SKIE's SkieSwiftOptionalFlow conforms to AsyncSequence
+                    for await pokemonData in flow {
                         if let pokemonData = pokemonData {
                             loadedPokemon = pokemonData
                             self.pokemon = pokemonData
@@ -68,7 +69,7 @@ class PokemonDetailViewModel: ObservableObject {
 
                 // Load all Pokemon for paging
                 if let flow = sdk.getAllPokemon() {
-                    for try await allPokemon in flow.asAsyncSequence() as AsyncThrowingStream<[Pokemon], Error> {
+                    for await allPokemon in flow {
                         self.pokemonSet = allPokemon
                         break
                     }
@@ -97,7 +98,7 @@ class PokemonDetailViewModel: ObservableObject {
                 // Fetch Pokemon details for this evolution
                 var evoPokemon: Pokemon? = nil
                 if let flow = sdk.getPokemonById(id: evolution.id) {
-                    for try await p in flow.asAsyncSequence() as AsyncThrowingStream<Pokemon?, Error> {
+                    for await p in flow {
                         evoPokemon = p
                         break
                     }
@@ -106,7 +107,7 @@ class PokemonDetailViewModel: ObservableObject {
                 // Fetch Item if needed
                 var evoItem: Item? = nil
                 if evolution.itemId > 0, let flow = sdk.getItemById(id: evolution.itemId) {
-                    for try await item in flow.asAsyncSequence() as AsyncThrowingStream<Item?, Error> {
+                    for await item in flow {
                         evoItem = item
                         break
                     }
@@ -135,7 +136,7 @@ class PokemonDetailViewModel: ObservableObject {
         for pokemonMove in pokemon.movesList {
             do {
                 if let flow = sdk.getMoveById(id: pokemonMove.id) {
-                    for try await move in flow.asAsyncSequence() as AsyncThrowingStream<Move?, Error> {
+                    for await move in flow {
                         if let move = move {
                             loadedMoves.append(PokemonDetailsMove(
                                 move: move,
@@ -159,7 +160,7 @@ class PokemonDetailViewModel: ObservableObject {
         for pokemonAbility in pokemon.abilitiesList {
             do {
                 if let flow = sdk.getAbilityById(id: pokemonAbility.id) {
-                    for try await ability in flow.asAsyncSequence() as AsyncThrowingStream<Ability?, Error> {
+                    for await ability in flow {
                         if let ability = ability {
                             loadedAbilities.append(PokemonDetailsAbility(
                                 ability: ability,

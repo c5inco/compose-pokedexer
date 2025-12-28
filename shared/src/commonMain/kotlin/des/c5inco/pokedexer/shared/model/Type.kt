@@ -1,5 +1,8 @@
 package des.c5inco.pokedexer.shared.model
 
+import kotlin.native.ObjCName
+
+@ObjCName("PokemonType")
 enum class Type {
     Bug,
     Dark,
