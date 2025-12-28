@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.apollo)
     alias(libs.plugins.room)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.skie)
 }
 
 kotlin {
