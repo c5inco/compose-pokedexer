@@ -137,7 +137,7 @@ fun PokedexerApp(
                     }
                     is Screen.PokemonDetails -> {
                         PokemonDetailsScreenRoute(
-                            detailsViewModel = metroViewModel { pokemonDetailsViewModelFactory.create(screen.id) },
+                            detailsViewModel = metroViewModel(key = "pokemon_${screen.id}") { pokemonDetailsViewModelFactory.create(screen.id) },
                             onBackClick = {
                                 backStack.removeAt(backStack.lastIndex)
                             }
