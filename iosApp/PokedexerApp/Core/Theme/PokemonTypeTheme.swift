@@ -77,11 +77,11 @@ struct MoveCategoryColors {
 // MARK: - Analogous Color Helpers
 extension Color {
     /// Calculate analogous colors by shifting hue
-    func analogousColors(offset: CGFloat = 18.0) -> [Color] {
+    func analogousColors(offset: CGFloat = 15.0) -> [Color] {
         var hue: CGFloat = 0
         var saturation: CGFloat = 0
         var brightness: CGFloat = 0
-        var alpha: CGFloat = 0
+        var alpha: CGFloat = 1
 
         #if canImport(UIKit)
             UIColor(self).getHue(
@@ -101,36 +101,31 @@ extension Color {
 
         let offsetDegrees = offset / 360.0
 
-        // Return 5 colors: 2 before, original, 2 after
+        // Return 4 colors: +1, -1, +2, -2
         return [
             Color(
-                hue: (hue - offsetDegrees * 2).truncatingRemainder(
-                    dividingBy: 1.0
-                ),
+                hue: (hue + offsetDegrees).truncatingRemainder(dividingBy: 1.0),
                 saturation: saturation,
-                brightness: brightness,
-                opacity: alpha
+                brightness: brightness
             ),
             Color(
                 hue: (hue - offsetDegrees).truncatingRemainder(dividingBy: 1.0),
                 saturation: saturation,
-                brightness: brightness,
-                opacity: alpha
-            ),
-            self,
-            Color(
-                hue: (hue + offsetDegrees).truncatingRemainder(dividingBy: 1.0),
-                saturation: saturation,
-                brightness: brightness,
-                opacity: alpha
+                brightness: brightness
             ),
             Color(
                 hue: (hue + offsetDegrees * 2).truncatingRemainder(
                     dividingBy: 1.0
                 ),
                 saturation: saturation,
-                brightness: brightness,
-                opacity: alpha
+                brightness: brightness
+            ),
+            Color(
+                hue: (hue - offsetDegrees * 2).truncatingRemainder(
+                    dividingBy: 1.0
+                ),
+                saturation: saturation,
+                brightness: brightness
             ),
         ]
     }

@@ -17,21 +17,7 @@ struct PokemonDetailView: View {
         ZStack {
             if let pokemon = viewModel.pokemon {
                 ZStack {
-                    // Background mesh gradient
-                    if #available(iOS 18.0, *) {
-                        PokemonDetailMeshGradient(pokemon: pokemon)
-                    } else {
-                        // Fallback linear gradient
-                        let typeColor = PokemonColors.color(
-                            for: pokemon.primaryType
-                        )
-                        LinearGradient(
-                            colors: [typeColor.opacity(0.6), typeColor],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                        .ignoresSafeArea()
-                    }
+                    PokemonDetailMeshGradient(type: pokemon.primaryType)
 
                     VStack(spacing: 0) {
                         // Header
@@ -72,8 +58,8 @@ struct PokemonDetailView: View {
                             moves: viewModel.moves
                         )
                     }
-                    .pokemonTheme(pokemon)
                 }
+                .pokemonTheme(pokemon)
             } else {
                 LoadingView()
             }
