@@ -161,6 +161,7 @@ struct CardContent: View {
 struct AboutSection: View {
     let pokemon: Pokemon
     let abilities: [PokemonDetailsAbility]
+    @Environment(\.pokemonTheme) var theme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 28) {
@@ -172,20 +173,20 @@ struct AboutSection: View {
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Height")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(theme.secondary)
                     Text(pokemon.heightInMeters)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Weight")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(theme.secondary)
                     Text(pokemon.weightInKilograms)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(16)
-            .background(Color(.secondarySystemBackground))
+            .padding()
+            .background(theme.surfaceContainer)
             .clipShape(RoundedRectangle(cornerRadius: 12))
 
             // Abilities Section

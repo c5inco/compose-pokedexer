@@ -23,35 +23,43 @@ fun generatePokemonThemeForIOS(
 ): PokemonThemeColors {
     val seedColorInt = getSeedColorForType(types)
     val seedColor = Color(seedColorInt)
-    
+
     val colorScheme = dynamicColorScheme(
         seedColor = seedColor,
         isDark = isDark,
         isAmoled = false,
         style = PaletteStyle.TonalSpot
     )
-    
+
     return if (isDark) {
         PokemonThemeColors(
             primary = colorScheme.primaryContainer.darken(0.4f).toArgb(),
-            surface = colorScheme.primaryContainer.toArgb(),
+            secondary = colorScheme.secondary.toArgb(),
+            tertiary = colorScheme.secondary.toArgb(),
+            background = colorScheme.primaryContainer.toArgb(),
+            onBackground = colorScheme.onPrimaryContainer.toArgb(),
+            surface = colorScheme.surface.toArgb(),
             onSurface = colorScheme.onSurface.toArgb(),
             surfaceVariant = colorScheme.onPrimary.toArgb(),
-            secondary = colorScheme.secondary.toArgb(),
-            tertiary = colorScheme.secondary.toArgb()
+            surfaceContainer = colorScheme.surfaceContainer.toArgb(),
+            surfaceContainerLow = colorScheme.surfaceContainerLow.toArgb(),
         )
     } else {
         PokemonThemeColors(
             primary = seedColor.lighten(0.7f).toArgb(),
-            surface = seedColor.toArgb(),
-            onSurface = if (seedColor.contrastRatio(colorScheme.onSecondary) > 2.2) {
+            secondary = colorScheme.primary.toArgb(),
+            tertiary = colorScheme.secondary.toArgb(),
+            background = seedColor.toArgb(),
+            onBackground = if (seedColor.contrastRatio(colorScheme.onSecondary) > 2.2) {
                 colorScheme.onSecondary.toArgb()
             } else {
                 colorScheme.onSecondaryContainer.toArgb()
             },
+            surface = colorScheme.surface.toArgb(),
+            onSurface = colorScheme.onSurface.toArgb(),
             surfaceVariant = seedColor.lighten(0.7f).toArgb(),
-            secondary = colorScheme.primary.toArgb(),
-            tertiary = colorScheme.secondary.toArgb()
+            surfaceContainer = colorScheme.surfaceContainer.toArgb(),
+            surfaceContainerLow = colorScheme.surfaceContainerLow.toArgb(),
         )
     }
 }

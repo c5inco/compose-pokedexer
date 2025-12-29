@@ -19,7 +19,6 @@ struct PokedexCardView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text(pokemon.name.capitalized)
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(theme.onSurface)
                 VStack(alignment: .leading, spacing: 4) {
                     ForEach(pokemon.typeOfPokemon.prefix(2), id: \.self) {
                         type in
@@ -32,6 +31,16 @@ struct PokedexCardView: View {
             .padding(.top, 24)
             .padding(.leading, 12)
             .frame(height: 124)
+            .overlay(alignment: .bottomTrailing) {
+                PokemonImage(pokemon: pokemon, size: 80)
+                    .padding([.bottom, .trailing], 6)
+            }
+            .overlay(alignment: .bottomTrailing) {
+                if isFavorite {
+                    Image(systemName: "heart.fill")
+                        .padding(8)
+                }
+            }
             .background(alignment: .topTrailing) {
                 Text(pokemon.formattedId)
                     .font(.system(size: 14, weight: .bold))
@@ -43,17 +52,8 @@ struct PokedexCardView: View {
                 PokeballBackground(opacity: 0.25, tint: .white)
                     .frame(height: 88)
             }
-            .background(theme.surface)
-            .overlay(alignment: .bottomTrailing) {
-                PokemonImage(pokemon: pokemon, size: 80)
-                    .padding([.bottom, .trailing], 6)
-            }
-            .overlay(alignment: .bottomTrailing) {
-                if isFavorite {
-                    Image(systemName: "heart.fill")
-                        .padding(8)
-                }
-            }
+            .background(theme.background)
+            .foregroundStyle(theme.onBackground)
         }
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }

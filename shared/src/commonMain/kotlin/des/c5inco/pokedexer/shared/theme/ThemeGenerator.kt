@@ -8,11 +8,15 @@ import des.c5inco.pokedexer.shared.model.Type
  */
 data class PokemonThemeColors(
     val primary: Int,
+    val secondary: Int,
+    val tertiary: Int,
+    val background: Int,
+    val onBackground: Int,
     val surface: Int,
     val onSurface: Int,
     val surfaceVariant: Int,
-    val secondary: Int,
-    val tertiary: Int
+    val surfaceContainer: Int,
+    val surfaceContainerLow: Int
 )
 
 /**
