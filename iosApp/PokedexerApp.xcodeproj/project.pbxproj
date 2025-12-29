@@ -385,6 +385,9 @@
 			inputPaths = (
 				"$(SRCROOT)/../shared/build.gradle.kts",
 				"$(SRCROOT)/../gradle.properties",
+				"$(SRCROOT)/../shared/src/commonMain/kotlin",
+				"$(SRCROOT)/../shared/src/iosMain/kotlin",
+				"$(SRCROOT)/../shared/src/commonMain/graphql",
 			);
 			name = "Build KMP Framework";
 			outputFileListPaths = (
@@ -394,7 +397,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/..\"\n\nif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then\n    if [ \"$(uname -m)\" = \"arm64\" ]; then\n        GRADLE_TARGET=\":shared:linkReleaseFrameworkIosSimulatorArm64\"\n        FRAMEWORK_PATH=\"shared/build/bin/iosSimulatorArm64/releaseFramework\"\n    else\n        GRADLE_TARGET=\":shared:linkReleaseFrameworkIosX64\"\n        FRAMEWORK_PATH=\"shared/build/bin/iosX64/releaseFramework\"\n    fi\nelse\n    GRADLE_TARGET=\":shared:linkReleaseFrameworkIosArm64\"\n    FRAMEWORK_PATH=\"shared/build/bin/iosArm64/releaseFramework\"\nfi\n\n./gradlew $GRADLE_TARGET\n\n# Copy framework to build directory\nmkdir -p \"$BUILT_PRODUCTS_DIR\"\ncp -R \"$SRCROOT/../$FRAMEWORK_PATH/Shared.framework\" \"$BUILT_PRODUCTS_DIR/\"\n";
+			shellScript = "cd \"$SRCROOT/..\"\n\n# Determine build configuration (Debug or Release)\nif [ \"$CONFIGURATION\" = \"Debug\" ]; then\n    FRAMEWORK_TYPE=\"Debug\"\nelse\n    FRAMEWORK_TYPE=\"Release\"\nfi\n\n# Convert to lowercase for path (portable sh-compatible method)\nFRAMEWORK_TYPE_LOWER=$(echo \"$FRAMEWORK_TYPE\" | tr '[:upper:]' '[:lower:]')\n\n# Determine target platform and architecture\nif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then\n    if [ \"$(uname -m)\" = \"arm64\" ]; then\n        GRADLE_TARGET=\":shared:link${FRAMEWORK_TYPE}FrameworkIosSimulatorArm64\"\n        FRAMEWORK_PATH=\"shared/build/bin/iosSimulatorArm64/${FRAMEWORK_TYPE_LOWER}Framework\"\n    else\n        GRADLE_TARGET=\":shared:link${FRAMEWORK_TYPE}FrameworkIosX64\"\n        FRAMEWORK_PATH=\"shared/build/bin/iosX64/${FRAMEWORK_TYPE_LOWER}Framework\"\n    fi\nelse\n    GRADLE_TARGET=\":shared:link${FRAMEWORK_TYPE}FrameworkIosArm64\"\n    FRAMEWORK_PATH=\"shared/build/bin/iosArm64/${FRAMEWORK_TYPE_LOWER}Framework\"\nfi\n\n# Build the framework with Gradle (using build cache)\n./gradlew $GRADLE_TARGET --build-cache\n\n# Copy framework to build directory\nmkdir -p \"$BUILT_PRODUCTS_DIR\"\ncp -R \"$SRCROOT/../$FRAMEWORK_PATH/Shared.framework\" \"$BUILT_PRODUCTS_DIR/\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -564,6 +567,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VHKCAUBAZH;
 				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "x86_64";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(BUILT_PRODUCTS_DIR)",
@@ -598,6 +602,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VHKCAUBAZH;
 				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "x86_64";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(BUILT_PRODUCTS_DIR)",
