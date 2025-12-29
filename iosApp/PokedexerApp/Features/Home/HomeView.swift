@@ -100,24 +100,28 @@ struct MenuGridView: View {
             title: "Pokédex",
             icon: "ic_pokeball",
             color: Color(hex: 0x5AC178),
+            type: PokemonType.grass,
             screen: .pokedex
         ),
         MenuItem(
             title: "Moves",
             icon: "dumbbell.fill",
             color: Color(hex: 0xE74347),
+            type: PokemonType.fighting,
             screen: .moves
         ),
         MenuItem(
             title: "Type charts",
             icon: "chart.bar.xaxis",
             color: Color(hex: 0x429BED),
+            type: PokemonType.water,
             screen: .typeChart
         ),
         MenuItem(
             title: "Items",
             icon: "storefront.fill",
             color: Color(hex: 0xFBAE46),
+            type: PokemonType.fire,
             screen: .items
         ),
     ]
@@ -134,6 +138,7 @@ struct MenuGridView: View {
                     .onTapGesture {
                         onMenuItemTap(item.screen)
                     }
+                    .pokemonTheme(type: item.type)
             }
         }
     }
@@ -144,11 +149,13 @@ struct MenuItem: Identifiable {
     let title: String
     let icon: String
     let color: Color
+    let type: PokemonType
     let screen: Screen
 }
 
 struct MenuCard: View {
     let item: MenuItem
+    @Environment(\.pokemonTheme) var theme
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -172,9 +179,9 @@ struct MenuCard: View {
                     .offset(x: -10, y: 16)
             }
         }
-        .background(item.color)
+        .background(theme.background)
         .cornerRadius(16)
-        .shadow(color: item.color, radius: 8, x: 0, y: 4)
+        .shadow(color: theme.background, radius: 8, x: 0, y: 4)
     }
 }
 

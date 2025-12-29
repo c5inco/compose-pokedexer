@@ -218,17 +218,17 @@ extension EnvironmentValues {
 // MARK: - Pokemon Theme View Modifier
 /// ViewModifier that automatically detects dark mode and applies Material Kolor-generated theme
 private struct PokemonThemeModifier: ViewModifier {
-    let pokemon: Pokemon
+    let types: [String]
     @Environment(\.colorScheme) var colorScheme
-    
+
     func body(content: Content) -> some View {
         let theme = PokemonThemeColorScheme(
             from: ThemeGeneratorIOSKt.generatePokemonThemeForIOS(
-                types: pokemon.typeOfPokemon,
+                types: types,
                 isDark: colorScheme == .dark
             )
         )
-        
+
         content
             .environment(\.pokemonTheme, theme)
     }
@@ -236,9 +236,13 @@ private struct PokemonThemeModifier: ViewModifier {
 
 extension View {
     /// Apply Material Kolor-generated theme for a Pokemon
-    /// Automatically adapts to system dark/light mode
     func pokemonTheme(_ pokemon: Pokemon) -> some View {
-        self.modifier(PokemonThemeModifier(pokemon: pokemon))
+        self.modifier(PokemonThemeModifier(types: pokemon.typeOfPokemon))
+    }
+
+    /// Apply theme based on a single type name
+    func pokemonTheme(type: PokemonType) -> some View {
+        self.modifier(PokemonThemeModifier(types: [type.name]))
     }
 }
 
