@@ -12,7 +12,8 @@ struct PokemonDetailsEvolution: Identifiable {
 }
 
 struct PokemonDetailsMove: Identifiable {
-    var id: Int32 { move.id }
+    let uuid = UUID()
+    var id: UUID { uuid }
     let move: Move
     let targetLevel: Int32
 }
@@ -145,8 +146,14 @@ class PokemonDetailViewModel: ObservableObject {
 
     private func loadMoves(for pokemon: Pokemon) async {
         var loadedMoves: [PokemonDetailsMove] = []
+        var seenMoveIds = Set<String>()
 
         for pokemonMove in pokemon.movesList {
+            // Create a unique key for deduplication
+            let key = "\(pokemonMove.id)-\(pokemonMove.targetLevel)"
+            if seenMoveIds.contains(key) { continue }
+            seenMoveIds.insert(key)
+
             do {
                 if let flow = sdk.getMoveById(id: pokemonMove.id) {
                     for await move in flow {
@@ -164,7 +171,13 @@ class PokemonDetailViewModel: ObservableObject {
             }
         }
 
-        self.moves = loadedMoves.sorted { $0.targetLevel < $1.targetLevel }
+        // Sort by level, then by name for consistency
+        self.moves = loadedMoves.sorted {
+            if $0.targetLevel != $1.targetLevel {
+                return $0.targetLevel < $1.targetLevel
+            }
+            return $0.move.name < $1.move.name
+        }
     }
 
     private func loadAbilities(for pokemon: Pokemon) async {

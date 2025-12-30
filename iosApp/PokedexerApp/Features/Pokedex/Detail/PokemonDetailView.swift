@@ -334,37 +334,34 @@ struct EvolutionSection: View {
 
 struct MovesSection: View {
     let moves: [PokemonDetailsMove]
+    @Environment(\.pokemonTheme) private var theme
 
     var body: some View {
         if moves.isEmpty {
             EmptyStateView(message: "No moves found")
                 .frame(height: 200)
         } else {
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(moves.prefix(20)) { move in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(move.move.name.capitalized)
-                                .font(.body)
-                            Text(move.move.type.capitalized)
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                        }
-                        Spacer()
-                        Text("Lv. \(move.targetLevel)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding(.vertical, 8)
-                    .padding(.horizontal)
+            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
+                Section {
+                    ForEach(moves) { move in
+                        VStack(spacing: 0) {
+                            PokemonMoveRow(move: move)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal)
 
-                    if move.id != moves.prefix(20).last?.id {
-                        Divider()
-                            .padding(.horizontal)
+                            if move.id != moves.last?.id {
+                                Divider()
+                                    .padding(.horizontal)
+                            }
+                        }
                     }
+                } header: {
+                    PokemonMoveTableHeader()
+                        .padding(.horizontal)
+                        .padding(.bottom, 8)
+                        .background(theme.surface)
                 }
             }
-            .padding(.vertical, 16)
         }
     }
 }
@@ -419,6 +416,81 @@ struct StatBar: View {
                         .cornerRadius(4)
                 }
             }
+        }
+    }
+}
+
+struct PokemonMoveTableHeader: View {
+    var body: some View {
+        HStack(spacing: 4) {
+            Text("Lvl")
+                .frame(width: 35, alignment: .leading)
+
+            Text("Name")
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Text("Type")
+                .frame(width: 80)
+
+            Text("Cat")
+                .frame(width: 40)
+
+            Text("Pwr")
+                .frame(width: 40, alignment: .trailing)
+
+            Text("Acc")
+                .frame(width: 40, alignment: .trailing)
+        }
+        .font(.caption.bold())
+        .foregroundColor(.secondary)
+        .padding(.vertical, 4)
+        .overlay(
+            Rectangle()
+                .frame(height: 1)
+                .foregroundColor(.secondary),
+            alignment: .bottom
+        )
+    }
+}
+
+struct PokemonMoveRow: View {
+    let move: PokemonDetailsMove
+    @Environment(\.pokemonTheme) var theme
+    @Environment(\.colorScheme) var colorScheme
+
+    var categoryIcon: String {
+        switch move.move.category.lowercased() {
+        case "physical": return "ic_move_physical"
+        case "special": return "ic_move_special"
+        case "status": return "ic_move_status"
+        default: return "dumbbell.fill"
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Text("\(move.targetLevel)")
+                .foregroundStyle(theme.secondary)
+                .frame(width: 35, alignment: .leading)
+
+            Text(move.move.name.capitalized)
+                .font(.system(size: 14))
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            TypeLabel(typeName: move.move.type, colored: true)
+                .frame(width: 80)
+
+            Image(categoryIcon)
+                .foregroundStyle(MoveCategoryColors.color(for: move.move.category, isDark: colorScheme == .dark))
+                .frame(width: 40)
+
+            Text(move.move.powerDisplay)
+                .font(.system(size: 14))
+                .frame(width: 40, alignment: .trailing)
+
+            Text(move.move.accuracyDisplay)
+                .font(.system(size: 14))
+                .frame(width: 40, alignment: .trailing)
         }
     }
 }
