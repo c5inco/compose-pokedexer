@@ -246,7 +246,7 @@ struct AboutSection: View {
                 }
             }
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal)
     }
 }
 
@@ -272,7 +272,7 @@ struct StatsSection: View {
             StatBar(label: "Speed", value: Int(pokemon.speed), progress: progressValues[5],)
         }
         .pokemonTheme(pokemon)
-        .padding()
+        .padding(.horizontal)
         .onAppear {
             startSequencedBuild()
         }
@@ -327,7 +327,7 @@ struct EvolutionSection: View {
                     .padding(.horizontal)
                 }
             }
-            .padding(.vertical, 24)
+            .padding(.horizontal)
         }
     }
 }
