@@ -122,7 +122,7 @@ struct CardContent: View {
             .safeAreaPadding(.bottom)
         }
         .background(theme.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 32))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
         .ignoresSafeArea()
     }
 }
@@ -190,53 +190,59 @@ struct AboutSection: View {
             }
 
             // Breeding Section
-            Text("Breeding")
-                .font(.headline)
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Breeding")
+                    .font(.headline)
 
-            Grid(
-                alignment: .leading,
-                horizontalSpacing: 24,
-                verticalSpacing: 18
-            ) {
-                GridRow {
-                    Text("Gender")
-                        .foregroundColor(.secondary)
+                Grid(
+                    alignment: .leading,
+                    horizontalSpacing: 24,
+                    verticalSpacing: 18
+                ) {
+                    GridRow {
+                        Text("Gender")
+                            .foregroundColor(.secondary)
 
-                    if pokemon.genderRate != -1 {
-                        HStack(spacing: 12) {
-                            HStack(spacing: 2) {
-                                Image("ic_male_gender")
-                                    .foregroundStyle(Color(hex: 0xFF6C_79DB))
-                                Text(
-                                    "\(100.0 - Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%"
-                                )
+                        if pokemon.genderRate != -1 {
+                            HStack(spacing: 12) {
+                                HStack(spacing: 2) {
+                                    Image("ic_male_gender")
+                                        .foregroundStyle(
+                                            Color(hex: 0xFF6C_79DB)
+                                        )
+                                    Text(
+                                        "\(100.0 - Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%"
+                                    )
+                                }
+                                HStack(spacing: 2) {
+                                    Image("ic_female_gender")
+                                        .foregroundStyle(
+                                            Color(hex: 0xFFF0_729F)
+                                        )
+                                    Text(
+                                        "\(Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%"
+                                    )
+                                }
                             }
-                            HStack(spacing: 2) {
-                                Image("ic_female_gender")
-                                    .foregroundStyle(Color(hex: 0xFFF0_729F))
-                                Text(
-                                    "\(Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%"
-                                )
-                            }
+                        } else {
+                            Text("Genderless")
+                                .font(.body)
                         }
-                    } else {
-                        Text("Genderless")
+                    }
+
+                    GridRow {
+                        Text("Egg Groups")
+                            .foregroundColor(.secondary)
+                        Text("-")
                             .font(.body)
                     }
-                }
 
-                GridRow {
-                    Text("Egg Groups")
-                        .foregroundColor(.secondary)
-                    Text("-")
-                        .font(.body)
-                }
-
-                GridRow {
-                    Text("Egg Cycles")
-                        .foregroundColor(.secondary)
-                    Text("-")
-                        .font(.body)
+                    GridRow {
+                        Text("Egg Cycles")
+                            .foregroundColor(.secondary)
+                        Text("-")
+                            .font(.body)
+                    }
                 }
             }
         }
@@ -246,26 +252,40 @@ struct AboutSection: View {
 
 struct StatsSection: View {
     let pokemon: Pokemon
+    @State private var progressValues: [Double] = [0, 0, 0, 0, 0, 0]
 
     var body: some View {
         VStack(spacing: 12) {
-            StatBar(label: "HP", value: Int(pokemon.hp), max: 255)
-            StatBar(label: "Attack", value: Int(pokemon.attack), max: 255)
-            StatBar(label: "Defense", value: Int(pokemon.defense), max: 255)
+            StatBar(label: "HP", value: Int(pokemon.hp), progress: progressValues[0])
+            StatBar(label: "Attack", value: Int(pokemon.attack), progress: progressValues[1])
+            StatBar(label: "Defense", value: Int(pokemon.defense), progress: progressValues[2])
             StatBar(
                 label: "Sp. Atk",
                 value: Int(pokemon.specialAttack),
-                max: 255
+                progress: progressValues[3],
             )
             StatBar(
                 label: "Sp. Def",
                 value: Int(pokemon.specialDefense),
-                max: 255
+                progress: progressValues[4],
             )
-            StatBar(label: "Speed", value: Int(pokemon.speed), max: 255)
+            StatBar(label: "Speed", value: Int(pokemon.speed), progress: progressValues[5],)
         }
         .pokemonTheme(pokemon)
         .padding()
+        .onAppear {
+            startSequencedBuild()
+        }
+    }
+    
+    func startSequencedBuild() {
+        for index in 0...5 {
+            let delay = Double(index) * 0.07
+            
+            withAnimation(.spring(duration: 0.3, bounce: 0.5).delay(delay)) {
+                progressValues[index] = 1.0
+            }
+        }
     }
 }
 
@@ -368,37 +388,37 @@ struct InfoRow: View {
 struct StatBar: View {
     let label: String
     let value: Int
-    let max: Int
+    let progress: Double
+    private let max: Int = 255
+    @Environment(\.pokemonTheme) var theme
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(label)
-                    .font(.caption)
                     .foregroundColor(.secondary)
                 Spacer()
                 Text("\(value)")
-                    .font(.caption.bold())
+                    .font(.body.bold())
             }
-
+            
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     Rectangle()
-                        .fill(Color(.systemGray5))
+                        .fill(theme.surfaceContainer)
                         .frame(height: 8)
                         .cornerRadius(4)
-
+                    
                     Rectangle()
-                        //                        .fill(currentTint)
+                        .fill(theme.primary)
                         .frame(
-                            width: geometry.size.width * CGFloat(value)
-                                / CGFloat(max),
+                            width: geometry.size.width * progress * (CGFloat(value)
+                            / CGFloat(max)),
                             height: 8
                         )
                         .cornerRadius(4)
                 }
             }
-            .frame(height: 8)
         }
     }
 }
