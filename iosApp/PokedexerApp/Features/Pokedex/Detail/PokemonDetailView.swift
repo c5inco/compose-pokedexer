@@ -16,8 +16,17 @@ struct PokemonDetailView: View {
     var body: some View {
         ZStack {
             if let pokemon = viewModel.pokemon {
-                ZStack {
+                ZStack(alignment: .topLeading) {
                     PokemonDetailMeshGradient(type: pokemon.primaryType)
+
+                    RoundedRectangleDecoration()
+                        .frame(
+                            width: 150,
+                            height: 150,
+                        )
+                        .ignoresSafeArea()
+                        .rotationEffect(.degrees(-20), anchor: .center)
+                        .offset(x: -60, y: -75)
 
                     VStack(spacing: 0) {
                         // Header
@@ -48,8 +57,9 @@ struct PokemonDetailView: View {
                         .padding()
 
                         // Pokemon Image (with horizontal pager in full version)
-                        PokemonImage(pokemon: pokemon, size: 200)
-                            .padding(.vertical, 32)
+                        PokemonImage(pokemon: pokemon, size: 240)
+                            .offset(x: 0, y: 24)
+                            .zIndex(2)
 
                         CardContent(
                             pokemon: pokemon,
@@ -57,6 +67,7 @@ struct PokemonDetailView: View {
                             evolutions: viewModel.evolutions,
                             moves: viewModel.moves
                         )
+                        .zIndex(1)
                     }
                 }
                 .pokemonTheme(pokemon)
@@ -68,6 +79,15 @@ struct PokemonDetailView: View {
         .task {
             await viewModel.loadPokemon()
         }
+    }
+}
+
+struct RoundedRectangleDecoration: View {
+    @Environment(\.pokemonTheme) var theme
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: 32)
+            .fill(Color.white.opacity(0.13))
     }
 }
 
@@ -256,9 +276,21 @@ struct StatsSection: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            StatBar(label: "HP", value: Int(pokemon.hp), progress: progressValues[0])
-            StatBar(label: "Attack", value: Int(pokemon.attack), progress: progressValues[1])
-            StatBar(label: "Defense", value: Int(pokemon.defense), progress: progressValues[2])
+            StatBar(
+                label: "HP",
+                value: Int(pokemon.hp),
+                progress: progressValues[0]
+            )
+            StatBar(
+                label: "Attack",
+                value: Int(pokemon.attack),
+                progress: progressValues[1]
+            )
+            StatBar(
+                label: "Defense",
+                value: Int(pokemon.defense),
+                progress: progressValues[2]
+            )
             StatBar(
                 label: "Sp. Atk",
                 value: Int(pokemon.specialAttack),
@@ -269,7 +301,11 @@ struct StatsSection: View {
                 value: Int(pokemon.specialDefense),
                 progress: progressValues[4],
             )
-            StatBar(label: "Speed", value: Int(pokemon.speed), progress: progressValues[5],)
+            StatBar(
+                label: "Speed",
+                value: Int(pokemon.speed),
+                progress: progressValues[5],
+            )
         }
         .pokemonTheme(pokemon)
         .padding(.horizontal)
@@ -277,11 +313,11 @@ struct StatsSection: View {
             startSequencedBuild()
         }
     }
-    
+
     func startSequencedBuild() {
         for index in 0...5 {
             let delay = Double(index) * 0.07
-            
+
             withAnimation(.spring(duration: 0.3, bounce: 0.5).delay(delay)) {
                 progressValues[index] = 1.0
             }
@@ -341,7 +377,11 @@ struct MovesSection: View {
             EmptyStateView(message: "No moves found")
                 .frame(height: 200)
         } else {
-            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
+            LazyVStack(
+                alignment: .leading,
+                spacing: 0,
+                pinnedViews: [.sectionHeaders]
+            ) {
                 Section {
                     ForEach(moves) { move in
                         VStack(spacing: 0) {
@@ -398,19 +438,20 @@ struct StatBar: View {
                 Text("\(value)")
                     .font(.body.bold())
             }
-            
+
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     Rectangle()
                         .fill(theme.surfaceContainer)
                         .frame(height: 8)
                         .cornerRadius(4)
-                    
+
                     Rectangle()
                         .fill(theme.primary)
                         .frame(
-                            width: geometry.size.width * progress * (CGFloat(value)
-                            / CGFloat(max)),
+                            width: geometry.size.width * progress
+                                * (CGFloat(value)
+                                    / CGFloat(max)),
                             height: 8
                         )
                         .cornerRadius(4)
@@ -481,7 +522,12 @@ struct PokemonMoveRow: View {
                 .frame(width: 80)
 
             Image(categoryIcon)
-                .foregroundStyle(MoveCategoryColors.color(for: move.move.category, isDark: colorScheme == .dark))
+                .foregroundStyle(
+                    MoveCategoryColors.color(
+                        for: move.move.category,
+                        isDark: colorScheme == .dark
+                    )
+                )
                 .frame(width: 40)
 
             Text(move.move.powerDisplay)
