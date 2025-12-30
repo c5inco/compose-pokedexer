@@ -123,22 +123,6 @@ struct CardContent: View {
         }
         .background(theme.surface)
         .clipShape(RoundedRectangle(cornerRadius: 32))
-        .offset(y: max(dragOffset, 0))
-        .gesture(
-            DragGesture()
-                .onChanged { value in
-                    dragOffset = value.translation.height
-                }
-                .onEnded { value in
-                    if value.translation.height > 100 {
-                        dismiss()
-                    } else {
-                        withAnimation(.spring()) {
-                            dragOffset = 0
-                        }
-                    }
-                }
-        )
         .ignoresSafeArea()
     }
 }
