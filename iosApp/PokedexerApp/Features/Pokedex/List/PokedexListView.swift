@@ -24,31 +24,25 @@ struct PokedexListView: View {
                     }
                     .padding()
                 }
-
-                // Filter FAB
-                Button(action: {
-                    viewModel.showFilters.toggle()
-                }) {
-                    Image(systemName: "line.3.horizontal.decrease.circle.fill")
-                        .font(.system(size: 56))
-                        .foregroundColor(.white)
-                        .background(
-                            Circle()
-                                .fill(Color.blue)
-                                .frame(width: 56, height: 56)
-                        )
-                }
-                .padding(24)
-                .shadow(color: .black.opacity(0.3), radius: 8, y: 4)
             }
         }
         .navigationTitle("Pokemon")
         .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    viewModel.showFilters.toggle()
+                }) {
+                    Label("Filter", systemImage: "line.3.horizontal.decrease")
+                }
+            }
+        }
         .task {
             await viewModel.loadPokemon()
         }
         .sheet(isPresented: $viewModel.showFilters) {
             FilterSheet(viewModel: viewModel)
+                .presentationDetents([.medium])
         }
     }
 }
