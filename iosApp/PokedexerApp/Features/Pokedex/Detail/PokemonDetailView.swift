@@ -5,6 +5,7 @@ struct PokemonDetailView: View {
     let pokemonId: Int
     @StateObject private var viewModel: PokemonDetailViewModel
     @Environment(\.dismiss) var dismiss
+    @State private var pokeballRotation: Double = 0
 
     init(pokemonId: Int) {
         self.pokemonId = pokemonId
@@ -57,7 +58,7 @@ struct PokemonDetailView: View {
                         .padding()
 
                         // Pokemon Image (with horizontal pager in full version)
-                        PokemonImage(pokemon: pokemon, size: 240)
+                        PokemonImage(pokemon: pokemon, size: 220)
                             .offset(x: 0, y: 24)
                             .zIndex(2)
 
@@ -69,6 +70,17 @@ struct PokemonDetailView: View {
                         )
                         .zIndex(1)
                     }
+                    .background(
+                        PokeballBackground(opacity: 0.15, tint: .white)
+                            .frame(width: 240, height: 240)
+                            .rotationEffect(.degrees(pokeballRotation))
+                            .offset(y: -150)
+                            .onAppear {
+                                withAnimation(.linear(duration: 4.0).repeatForever(autoreverses: false)) {
+                                    pokeballRotation = 360
+                                }
+                            }
+                    )
                 }
                 .pokemonTheme(pokemon)
             } else {
@@ -120,6 +132,24 @@ struct CardContent: View {
             }
             .pickerStyle(.segmented)
             .padding()
+            .onAppear {
+                let appearance = UISegmentedControl.appearance()
+                
+                // Background of the picker track
+                appearance.backgroundColor = UIColor(theme.surfaceContainer)
+                
+                appearance.selectedSegmentTintColor = UIColor(theme.surfaceContainerLow)
+                
+                // Text attributes for unselected state
+                appearance.setTitleTextAttributes([
+                    .foregroundColor: UIColor(theme.tertiary),
+                ], for: .normal)
+                
+                // Text attributes for selected state
+                appearance.setTitleTextAttributes([
+                    .foregroundColor: UIColor(theme.primary)
+                ], for: .selected)
+            }
 
             // Tab Content
             ScrollView {
@@ -442,7 +472,7 @@ struct StatBar: View {
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     Rectangle()
-                        .fill(theme.surfaceContainer)
+                        .fill(theme.surfaceContainerHigh)
                         .frame(height: 8)
                         .cornerRadius(4)
 
