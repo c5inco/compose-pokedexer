@@ -42,69 +42,9 @@ struct PokedexListView: View {
         }
         .sheet(isPresented: $viewModel.showFilters) {
             FilterSheet(viewModel: viewModel)
-                .presentationDetents([.medium])
+                .presentationDetents([.fraction(0.65)])
         }
     }
 }
 
-// MARK: - Filter Sheet
-struct FilterSheet: View {
-    @ObservedObject var viewModel: PokedexListViewModel
-    @Environment(\.dismiss) var dismiss
 
-    let allTypes = ["Bug", "Dark", "Dragon", "Electric", "Fairy", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"]
-    let generations = Array(1...9)
-
-    var body: some View {
-        NavigationView {
-            List {
-                Section("Options") {
-                    Toggle("Show Favorites Only", isOn: $viewModel.showFavorites)
-                }
-
-                Section("Filter by Type") {
-                    ForEach(allTypes, id: \.self) { type in
-                        Button(action: {
-                            viewModel.selectType(viewModel.selectedType == type ? nil : type)
-                        }) {
-                            HStack {
-                                TypeLabel(typeName: type, size: .medium, colored: true)
-                                Spacer()
-                                if viewModel.selectedType == type {
-                                    Image(systemName: "checkmark")
-                                        .foregroundColor(.blue)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Section("Filter by Generation") {
-                    ForEach(generations, id: \.self) { gen in
-                        Button(action: {
-                            viewModel.selectGeneration(gen)
-                        }) {
-                            HStack {
-                                Text("Generation \(gen)")
-                                Spacer()
-                                if viewModel.selectedGeneration == gen {
-                                    Image(systemName: "checkmark")
-                                        .foregroundColor(.blue)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Filters")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-}

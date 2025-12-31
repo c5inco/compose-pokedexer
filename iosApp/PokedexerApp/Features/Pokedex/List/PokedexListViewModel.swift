@@ -7,7 +7,7 @@ class PokedexListViewModel: ObservableObject {
     @Published var pokemon: [Pokemon] = []
     @Published var isLoading = false
     @Published var selectedGeneration: Int = 1
-    @Published var selectedType: String?
+    @Published var selectedTypes: Set<String> = []
     @Published var showFavorites = false
     @Published var showFilters = false
     
@@ -32,9 +32,12 @@ class PokedexListViewModel: ObservableObject {
     var filteredPokemon: [Pokemon] {
         var filtered = pokemon
 
-        // Filter by type if selected
-        if let type = selectedType {
-            filtered = filtered.filter { $0.typeOfPokemon.contains(type) }
+        // Filter by types if any selected
+        if !selectedTypes.isEmpty {
+            filtered = filtered.filter { pokemon in
+                // Matches if the pokemon has ANY of the selected types
+                !selectedTypes.isDisjoint(with: Set(pokemon.typeOfPokemon))
+            }
         }
 
         // Filter by favorites if enabled
@@ -86,16 +89,30 @@ class PokedexListViewModel: ObservableObject {
         showFavorites.toggle()
     }
 
-    func selectGeneration(_ generation: Int?) {
-        guard let gen = generation, gen != selectedGeneration else { return }
-        selectedGeneration = gen
+    func selectGeneration(_ generation: Int) {
+        guard generation != selectedGeneration else { return }
+        selectedGeneration = generation
         Task {
             await loadPokemon()
         }
     }
 
-    func selectType(_ type: String?) {
-        selectedType = type
+    func reloadForCurrentGeneration() {
+        Task {
+            await loadPokemon()
+        }
+    }
+
+    func toggleType(_ type: String) {
+        if selectedTypes.contains(type) {
+            selectedTypes.remove(type)
+        } else {
+            selectedTypes.insert(type)
+        }
+    }
+
+    func clearTypeFilters() {
+        selectedTypes.removeAll()
     }
 
     deinit {

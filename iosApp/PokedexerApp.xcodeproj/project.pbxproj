@@ -14,6 +14,8 @@
 		AA0000010000000000000005 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000004 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AA0000010000000000000006 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000006 /* AppViewModel.swift */; };
 		AA0000010000000000000010 /* items in Resources */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000010 /* items */; };
+		DB784D6C2F04DE45003CE4A4 /* FilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB784D6B2F04DE45003CE4A4 /* FilterSheet.swift */; };
+		DB784D6E2F04ECCF003CE4A4 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB784D6D2F04ECCF003CE4A4 /* FlowLayout.swift */; };
 		DB891CBB2F01BABF007FA072 /* FavoriteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB891CB92F01BABF007FA072 /* FavoriteManager.swift */; };
 		DBE31B462EFE5CD800CF2CE7 /* ItemsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE31B2F2EFE5CD800CF2CE7 /* ItemsListViewModel.swift */; };
 		DBE31B472EFE5CD800CF2CE7 /* PokedexListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE31B392EFE5CD800CF2CE7 /* PokedexListView.swift */; };
@@ -63,6 +65,8 @@
 		AA0000020000000000000010 /* items */ = {isa = PBXFileReference; lastKnownFileType = folder; path = items; sourceTree = "<group>"; };
 		AA0000050000000000000001 /* PokedexerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokedexerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000060000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DB784D6B2F04DE45003CE4A4 /* FilterSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSheet.swift; sourceTree = "<group>"; };
+		DB784D6D2F04ECCF003CE4A4 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		DB891CB92F01BABF007FA072 /* FavoriteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteManager.swift; sourceTree = "<group>"; };
 		DBE31B202EFE5CD800CF2CE7 /* FlowPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPublisher.swift; sourceTree = "<group>"; };
 		DBE31B212EFE5CD800CF2CE7 /* ModelExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelExtensions.swift; sourceTree = "<group>"; };
@@ -246,6 +250,7 @@
 			children = (
 				DBE31B382EFE5CD800CF2CE7 /* PokedexCardView.swift */,
 				DBE31B392EFE5CD800CF2CE7 /* PokedexListView.swift */,
+				DB784D6B2F04DE45003CE4A4 /* FilterSheet.swift */,
 				DBE31B3A2EFE5CD800CF2CE7 /* PokedexListViewModel.swift */,
 			);
 			path = List;
@@ -283,6 +288,7 @@
 		DBE31B442EFE5CD800CF2CE7 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				DB784D6D2F04ECCF003CE4A4 /* FlowLayout.swift */,
 				DBE31B402EFE5CD800CF2CE7 /* LoadingView.swift */,
 				DBE31B412EFE5CD800CF2CE7 /* PokeballBackground.swift */,
 				DBE31B422EFE5CD800CF2CE7 /* PokemonImage.swift */,
@@ -401,6 +407,7 @@
 				DBE31B462EFE5CD800CF2CE7 /* ItemsListViewModel.swift in Sources */,
 				DBE31B472EFE5CD800CF2CE7 /* PokedexListView.swift in Sources */,
 				DBE31B482EFE5CD800CF2CE7 /* ModelExtensions.swift in Sources */,
+				DB784D6E2F04ECCF003CE4A4 /* FlowLayout.swift in Sources */,
 				DB891CBB2F01BABF007FA072 /* FavoriteManager.swift in Sources */,
 				DBE31B492EFE5CD800CF2CE7 /* PokeballBackground.swift in Sources */,
 				DBE31B4A2EFE5CD800CF2CE7 /* HomeViewModel.swift in Sources */,
@@ -417,6 +424,7 @@
 				DBE31B552EFE5CD800CF2CE7 /* TypeLabel.swift in Sources */,
 				DBE31B562EFE5CD800CF2CE7 /* PokedexCardView.swift in Sources */,
 				DBE31B572EFE5CD800CF2CE7 /* NavigationCoordinator.swift in Sources */,
+				DB784D6C2F04DE45003CE4A4 /* FilterSheet.swift in Sources */,
 				DBE31B582EFE5CD800CF2CE7 /* MovesListView.swift in Sources */,
 				DBE31B592EFE5CD800CF2CE7 /* TypeChartView.swift in Sources */,
 				DBE31B5A2EFE5CD800CF2CE7 /* PokemonTypeTheme.swift in Sources */,
