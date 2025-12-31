@@ -15,8 +15,10 @@ data class PokemonThemeColors(
     val surface: Int,
     val onSurface: Int,
     val surfaceVariant: Int,
+    val onSurfaceVariant: Int,
     val surfaceContainer: Int,
-    val surfaceContainerLow: Int
+    val surfaceContainerLow: Int,
+    val surfaceContainerHigh: Int
 )
 
 /**

@@ -40,9 +40,11 @@ fun generatePokemonThemeForIOS(
             onBackground = colorScheme.onPrimaryContainer.toArgb(),
             surface = colorScheme.surface.toArgb(),
             onSurface = colorScheme.onSurface.toArgb(),
-            surfaceVariant = colorScheme.onPrimary.toArgb(),
+            surfaceVariant = colorScheme.surfaceVariant.toArgb(),
+            onSurfaceVariant = colorScheme.surfaceVariant.toArgb(),
             surfaceContainer = colorScheme.surfaceContainer.toArgb(),
             surfaceContainerLow = colorScheme.surfaceContainerLow.toArgb(),
+            surfaceContainerHigh = colorScheme.surfaceContainerHigh.toArgb(),
         )
     } else {
         PokemonThemeColors(
@@ -57,9 +59,11 @@ fun generatePokemonThemeForIOS(
             },
             surface = colorScheme.surface.toArgb(),
             onSurface = colorScheme.onSurface.toArgb(),
-            surfaceVariant = seedColor.lighten(0.7f).toArgb(),
+            surfaceVariant = colorScheme.surfaceVariant.toArgb(),
+            onSurfaceVariant = colorScheme.surfaceVariant.toArgb(),
             surfaceContainer = colorScheme.surfaceContainer.toArgb(),
             surfaceContainerLow = colorScheme.surfaceContainerLow.toArgb(),
+            surfaceContainerHigh = colorScheme.surfaceContainerHigh.toArgb(),
         )
     }
 }

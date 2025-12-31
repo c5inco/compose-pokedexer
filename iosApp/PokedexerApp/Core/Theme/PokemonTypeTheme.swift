@@ -173,8 +173,10 @@ struct PokemonThemeColorScheme {
     let surface: Color
     let onSurface: Color
     let surfaceVariant: Color
+    let onSurfaceVariant: Color
     let surfaceContainer: Color
     let surfaceContainerLow: Color
+    let surfaceContainerHigh: Color
     
     /// Initialize from KMP PokemonThemeColors (ARGB integers)
     init(from kmpColors: PokemonThemeColors) {
@@ -186,8 +188,10 @@ struct PokemonThemeColorScheme {
         self.surface = Color(argb: kmpColors.surface)
         self.onSurface = Color(argb: kmpColors.onSurface)
         self.surfaceVariant = Color(argb: kmpColors.surfaceVariant)
+        self.onSurfaceVariant = Color(argb: kmpColors.onSurfaceVariant)
         self.surfaceContainer = Color(argb: kmpColors.surfaceContainer)
         self.surfaceContainerLow = Color(argb: kmpColors.surfaceContainerLow)
+        self.surfaceContainerHigh = Color(argb: kmpColors.surfaceContainerHigh)
     }
 }
 
