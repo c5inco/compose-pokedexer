@@ -1,5 +1,6 @@
 import SwiftUI
 import Shared
+import Kingfisher
 
 struct PokedexListView: View {
     @StateObject private var viewModel = PokedexListViewModel()
@@ -19,6 +20,9 @@ struct PokedexListView: View {
                             )
                             .onTapGesture {
                                 coordinator.push(.pokemonDetail(id: Int(pokemon.id)))
+                            }
+                            .onAppear {
+                                prefetchImagesIfNeeded(for: index)
                             }
                         }
                     }
@@ -43,6 +47,23 @@ struct PokedexListView: View {
         .sheet(isPresented: $viewModel.showFilters) {
             FilterSheet(viewModel: viewModel)
                 .presentationDetents([.fraction(0.65)])
+        }
+    }
+
+    private func prefetchImagesIfNeeded(for index: Int) {
+        // Prefetch images for the next 10 items
+        let prefetchCount = 10
+        let startIndex = index + 1
+        let endIndex = min(startIndex + prefetchCount, viewModel.filteredPokemon.count)
+
+        guard startIndex < viewModel.filteredPokemon.count else { return }
+
+        let urls = (startIndex..<endIndex).compactMap { idx in
+            viewModel.filteredPokemon[idx].imageURL
+        }
+
+        if !urls.isEmpty {
+            ImagePrefetcher(urls: urls).start()
         }
     }
 }
