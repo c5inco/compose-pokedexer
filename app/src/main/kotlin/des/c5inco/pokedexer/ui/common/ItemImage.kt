@@ -6,7 +6,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import des.c5inco.pokedexer.R
-import des.c5inco.pokedexer.model.Item
+import des.c5inco.pokedexer.shared.model.Item
 
 @Composable
 fun ItemImage(

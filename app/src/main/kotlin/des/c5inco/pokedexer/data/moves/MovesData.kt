@@ -1,6 +1,6 @@
 package des.c5inco.pokedexer.data.moves
 
-import des.c5inco.pokedexer.model.Move
+import des.c5inco.pokedexer.shared.model.Move
 
 val SampleMoves = listOf(
     Move(

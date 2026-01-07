@@ -1,6 +1,6 @@
 package des.c5inco.pokedexer.data.abilities
 
-import des.c5inco.pokedexer.model.Ability
+import des.c5inco.pokedexer.shared.model.Ability
 
 val SampleAbilities = listOf(
     Ability(

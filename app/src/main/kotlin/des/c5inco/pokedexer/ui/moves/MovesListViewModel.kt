@@ -2,8 +2,8 @@ package des.c5inco.pokedexer.ui.moves
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import des.c5inco.pokedexer.data.moves.MovesRepository
-import des.c5inco.pokedexer.model.Move
+import des.c5inco.pokedexer.shared.data.moves.MovesRepository
+import des.c5inco.pokedexer.shared.model.Move
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted

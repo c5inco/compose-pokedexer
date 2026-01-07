@@ -1,6 +1,6 @@
 package des.c5inco.pokedexer.data.items
 
-import des.c5inco.pokedexer.model.Item
+import des.c5inco.pokedexer.shared.model.Item
 
 val SampleItems = listOf(
     Item(

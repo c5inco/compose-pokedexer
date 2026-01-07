@@ -34,8 +34,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
-import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.model.mapTypeToCuratedAnalogousHue
+import des.c5inco.pokedexer.shared.model.Pokemon
+import des.c5inco.pokedexer.shared.model.mapTypeToCuratedAnalogousHue
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.common.PokemonTypeLabels

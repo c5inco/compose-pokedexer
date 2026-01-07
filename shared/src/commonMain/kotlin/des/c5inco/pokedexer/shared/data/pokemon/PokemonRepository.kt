@@ -1,0 +1,27 @@
+package des.c5inco.pokedexer.shared.data.pokemon
+
+import des.c5inco.pokedexer.shared.data.Result
+import des.c5inco.pokedexer.shared.model.Generation
+import des.c5inco.pokedexer.shared.model.Pokemon
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * Interface to the Pokemon data layer.
+ */
+interface PokemonRepository {
+    fun pokemon(): Flow<List<Pokemon>>
+
+    suspend fun updatePokemon()
+
+    fun getPokemonById(id: Int): Flow<Pokemon?>
+
+    fun getPokemonByIds(ids: List<Int>): Flow<List<Pokemon>>
+
+    fun getPokemonByName(name: String): Flow<List<Pokemon>>
+
+    fun getPokemonByGeneration(generation: Generation): Flow<List<Pokemon>>
+
+    suspend fun addPokemon(pokemon: Pokemon): Result<Pokemon>
+
+    suspend fun deleteAllPokemon(): Result<Int>
+}

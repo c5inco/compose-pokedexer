@@ -45,9 +45,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.moves.SampleMoves
-import des.c5inco.pokedexer.model.Move
-import des.c5inco.pokedexer.model.category
-import des.c5inco.pokedexer.model.type
+import des.c5inco.pokedexer.shared.model.Move
+import des.c5inco.pokedexer.shared.model.category
+import des.c5inco.pokedexer.shared.model.type
 import des.c5inco.pokedexer.ui.common.CategoryIcon
 import des.c5inco.pokedexer.ui.common.TypeIconLabel
 import des.c5inco.pokedexer.ui.theme.AppTheme

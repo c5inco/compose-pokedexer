@@ -2,10 +2,10 @@ package des.c5inco.pokedexer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import des.c5inco.pokedexer.data.abilities.AbilitiesRepository
-import des.c5inco.pokedexer.data.items.ItemsRepository
-import des.c5inco.pokedexer.data.moves.MovesRepository
-import des.c5inco.pokedexer.data.pokemon.PokemonRepository
+import des.c5inco.pokedexer.shared.data.abilities.AbilitiesRepository
+import des.c5inco.pokedexer.shared.data.items.ItemsRepository
+import des.c5inco.pokedexer.shared.data.moves.MovesRepository
+import des.c5inco.pokedexer.shared.data.pokemon.PokemonRepository
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.launch
 

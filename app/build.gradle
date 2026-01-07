@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.apollo)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.metro)
     alias(libs.plugins.kotlin.serialization)
@@ -23,9 +21,6 @@ android {
             useSupportLibrary true
         }
 
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas".toString())
-        }
     }
 
     buildTypes {
@@ -70,9 +65,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    apollo {
-        packageName.set("des.c5inco.pokedexer")
-    }
 }
 
 metro {
@@ -80,6 +72,15 @@ metro {
 }
 
 dependencies {
+    // Shared KMP module
+    implementation(project(":shared"))
+
+    // Apollo (needed for Metro DI type resolution)
+    implementation(libs.apollo.runtime)
+
+    // Room (needed for database access from shared module)
+    implementation(libs.room.runtime)
+
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -102,11 +103,6 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.kotlinx.serialization.json)
 
-    // Room
-    ksp(libs.room.compiler)
-    implementation(libs.room.ktx)
-    implementation(libs.room.runtime)
-
     // Datastore
     implementation(libs.datastore)
 
@@ -121,9 +117,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    // Apollo
-    implementation(libs.apollo.runtime)
 
     // Coil
     implementation(libs.coil.compose)

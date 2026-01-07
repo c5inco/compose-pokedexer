@@ -7,8 +7,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
-import des.c5inco.pokedexer.model.Move
-import des.c5inco.pokedexer.model.MoveCategory
+import des.c5inco.pokedexer.shared.model.Move
+import des.c5inco.pokedexer.shared.model.MoveCategory
 import des.c5inco.pokedexer.model.categoryIcon
 import des.c5inco.pokedexer.ui.theme.MoveCategoryTheme
 import des.c5inco.pokedexer.ui.theme.PokemonColors

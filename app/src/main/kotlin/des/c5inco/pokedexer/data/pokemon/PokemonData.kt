@@ -4,9 +4,9 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.abilities.SampleAbilities
 import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.data.moves.SampleMoves
-import des.c5inco.pokedexer.model.Evolution
-import des.c5inco.pokedexer.model.EvolutionTrigger
-import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.shared.model.Evolution
+import des.c5inco.pokedexer.shared.model.EvolutionTrigger
+import des.c5inco.pokedexer.shared.model.Pokemon
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsAbilities
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsEvolutions
 import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsMoves

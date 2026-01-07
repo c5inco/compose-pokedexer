@@ -7,11 +7,11 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import coil.ImageLoader
 import des.c5inco.pokedexer.di.ApplicationGraph
@@ -52,7 +52,7 @@ val LocalGifImageLoader = compositionLocalOf<ImageLoader> {
 fun PokedexerApp(
     viewModel: RootViewModel = metroViewModel()
 ) {
-    val backStack = remember { mutableStateListOf<Screen>(Screen.Home) }
+    val backStack = rememberNavBackStack(Screen.Home)
     val density = LocalDensity.current
     val context = LocalContext.current
 
@@ -137,7 +137,7 @@ fun PokedexerApp(
                     }
                     is Screen.PokemonDetails -> {
                         PokemonDetailsScreenRoute(
-                            detailsViewModel = metroViewModel { pokemonDetailsViewModelFactory.create(screen.id) },
+                            detailsViewModel = metroViewModel(key = "pokemon_${screen.id}") { pokemonDetailsViewModelFactory.create(screen.id) },
                             onBackClick = {
                                 backStack.removeAt(backStack.lastIndex)
                             }

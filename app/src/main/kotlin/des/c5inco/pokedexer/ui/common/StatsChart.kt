@@ -32,7 +32,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
-import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.shared.model.Pokemon
 import des.c5inco.pokedexer.model.color
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import kotlin.math.tan
