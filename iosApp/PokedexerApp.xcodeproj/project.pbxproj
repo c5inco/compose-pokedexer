@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,6 +17,7 @@
 		DB784D6C2F04DE45003CE4A4 /* FilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB784D6B2F04DE45003CE4A4 /* FilterSheet.swift */; };
 		DB784D6E2F04ECCF003CE4A4 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB784D6D2F04ECCF003CE4A4 /* FlowLayout.swift */; };
 		DB891CBB2F01BABF007FA072 /* FavoriteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB891CB92F01BABF007FA072 /* FavoriteManager.swift */; };
+		DB8A9E422F3585560012597E /* AppTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8A9E412F3585560012597E /* AppTypography.swift */; };
 		DBE31B462EFE5CD800CF2CE7 /* ItemsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE31B2F2EFE5CD800CF2CE7 /* ItemsListViewModel.swift */; };
 		DBE31B472EFE5CD800CF2CE7 /* PokedexListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE31B392EFE5CD800CF2CE7 /* PokedexListView.swift */; };
 		DBE31B482EFE5CD800CF2CE7 /* ModelExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE31B212EFE5CD800CF2CE7 /* ModelExtensions.swift */; };
@@ -68,6 +69,7 @@
 		DB784D6B2F04DE45003CE4A4 /* FilterSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSheet.swift; sourceTree = "<group>"; };
 		DB784D6D2F04ECCF003CE4A4 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		DB891CB92F01BABF007FA072 /* FavoriteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteManager.swift; sourceTree = "<group>"; };
+		DB8A9E412F3585560012597E /* AppTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTypography.swift; sourceTree = "<group>"; };
 		DBE31B202EFE5CD800CF2CE7 /* FlowPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPublisher.swift; sourceTree = "<group>"; };
 		DBE31B212EFE5CD800CF2CE7 /* ModelExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelExtensions.swift; sourceTree = "<group>"; };
 		DBE31B222EFE5CD800CF2CE7 /* PokedexerSDKWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokedexerSDKWrapper.swift; sourceTree = "<group>"; };
@@ -92,6 +94,10 @@
 		DBE31B422EFE5CD800CF2CE7 /* PokemonImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonImage.swift; sourceTree = "<group>"; };
 		DBE31B432EFE5CD800CF2CE7 /* TypeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		DB8A9E3C2F3585120012597E /* Fonts */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Fonts; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		AA0000040000000000000001 /* Frameworks */ = {
@@ -156,6 +162,7 @@
 		AA00000F0000000000000001 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DB8A9E3C2F3585120012597E /* Fonts */,
 				AA0000020000000000000003 /* Assets.xcassets */,
 				AA0000020000000000000010 /* items */,
 			);
@@ -192,6 +199,7 @@
 		DBE31B292EFE5CD800CF2CE7 /* Theme */ = {
 			isa = PBXGroup;
 			children = (
+				DB8A9E412F3585560012597E /* AppTypography.swift */,
 				DBE31B272EFE5CD800CF2CE7 /* MeshGradientHelper.swift */,
 				DBE31B282EFE5CD800CF2CE7 /* PokemonTypeTheme.swift */,
 			);
@@ -322,6 +330,9 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				DB8A9E3C2F3585120012597E /* Fonts */,
+			);
 			name = PokedexerApp;
 			productName = PokedexerApp;
 			productReference = AA0000050000000000000001 /* PokedexerApp.app */;
@@ -432,6 +443,7 @@
 				DBE31B5C2EFE5CD800CF2CE7 /* MeshGradientHelper.swift in Sources */,
 				AA0000010000000000000001 /* PokedexerApp.swift in Sources */,
 				AA0000010000000000000006 /* AppViewModel.swift in Sources */,
+				DB8A9E422F3585560012597E /* AppTypography.swift in Sources */,
 				AA0000010000000000000002 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

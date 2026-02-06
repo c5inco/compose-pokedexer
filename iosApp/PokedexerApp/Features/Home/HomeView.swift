@@ -11,7 +11,7 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 32) {
                 // Title
                 Text("What Pokémon are you looking for?")
-                    .font(.system(size: 36, weight: .bold))
+                    .font(AppTypography.largeTitle)
                     .padding(.top, 64)
 
                 // Syncing Indicator
@@ -20,7 +20,7 @@ struct HomeView: View {
                         ProgressView()
                             .scaleEffect(0.8)
                         Text(appViewModel.syncProgress)
-                            .font(.subheadline)
+                            .font(AppTypography.footnote)
                             .foregroundColor(.secondary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -74,6 +74,7 @@ struct SearchBar: View {
 
             TextField("Search Pokemon, Move, Item, etc", text: $text)
                 .textFieldStyle(.plain)
+                .font(AppTypography.body)
 
             if isLoading {
                 ProgressView()
@@ -161,7 +162,7 @@ struct MenuCard: View {
         VStack(alignment: .leading) {
             Spacer()
             Text(item.title)
-                .font(.system(size: 18, weight: .semibold))
+                .font(AppTypography.headline)
                 .foregroundColor(.white)
         }
         .padding(16)
@@ -232,7 +233,7 @@ struct SearchSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.headline)
+                .font(AppTypography.headline)
                 .foregroundColor(.secondary)
 
             content()
@@ -249,7 +250,7 @@ struct PokemonResultCard: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(pokemon.name.capitalized)
-                    .font(.headline)
+                    .font(AppTypography.body.weight(.bold))
 
                 HStack(spacing: 4) {
                     ForEach(pokemon.typeOfPokemon.prefix(2), id: \.self) {
@@ -262,7 +263,7 @@ struct PokemonResultCard: View {
             Spacer()
 
             Text(pokemon.formattedId)
-                .font(.caption)
+                .font(AppTypography.footnote)
                 .foregroundColor(.secondary)
         }
         .padding(12)
@@ -278,7 +279,7 @@ struct MoveResultCard: View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(move.name.capitalized)
-                    .font(.headline)
+                    .font(AppTypography.body.weight(.bold))
 
                 TypeLabel(typeName: move.type, size: .small)
             }
@@ -287,10 +288,10 @@ struct MoveResultCard: View {
 
             VStack(alignment: .trailing, spacing: 2) {
                 Text("Pwr: \(move.powerDisplay)")
-                    .font(.caption)
+                    .font(AppTypography.footnote)
                     .foregroundColor(.secondary)
                 Text("Acc: \(move.accuracyDisplay)")
-                    .font(.caption)
+                    .font(AppTypography.footnote)
                     .foregroundColor(.secondary)
             }
         }
@@ -309,10 +310,10 @@ struct ItemResultCard: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.name.capitalized)
-                    .font(.headline)
+                    .font(AppTypography.body.weight(.bold))
 
                 Text(item.desc)
-                    .font(.caption)
+                    .font(AppTypography.footnote)
                     .foregroundColor(.secondary)
                     .lineLimit(2)
             }

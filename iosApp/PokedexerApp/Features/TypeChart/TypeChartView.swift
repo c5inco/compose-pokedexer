@@ -27,7 +27,7 @@ struct TypeChartView: View {
                             let effectiveness = getEffectiveness(attacking: attackingType, defending: defendingType)
 
                             Text(effectiveness.symbol)
-                                .font(.caption)
+                                .font(AppTypography.caption1)
                                 .frame(width: 40, height: 40)
                                 .background(effectiveness.color)
                                 .border(Color.gray.opacity(0.2), width: 0.5)

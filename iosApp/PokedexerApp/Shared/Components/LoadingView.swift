@@ -7,7 +7,7 @@ struct LoadingView: View {
                 .scaleEffect(1.5)
 
             Text("Loading...")
-                .font(.caption)
+                .font(AppTypography.footnote)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -25,7 +25,7 @@ struct EmptyStateView: View {
                 .foregroundColor(.secondary)
 
             Text(message)
-                .font(.body)
+                .font(AppTypography.subheadline)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -43,17 +43,17 @@ struct ErrorView: View {
                 .foregroundColor(.red)
 
             Text("An error occurred")
-                .font(.headline)
+                .font(AppTypography.headline)
 
             Text(error.localizedDescription)
-                .font(.caption)
+                .font(AppTypography.footnote)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
 
             Button(action: retry) {
                 Text("Retry")
-                    .fontWeight(.semibold)
+                    .font(AppTypography.callout(weight: .semibold))
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
                     .background(Color.blue)

@@ -68,5 +68,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>circularstd_black.ttf</string>
+		<string>circularstd_bold.ttf</string>
+		<string>circularstd_book.ttf</string>
+		<string>circularstd_medium.ttf</string>
+	</array>
 </dict>
 </plist>

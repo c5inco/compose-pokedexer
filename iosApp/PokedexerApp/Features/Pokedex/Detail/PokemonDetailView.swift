@@ -41,7 +41,7 @@ struct PokemonDetailView: View {
                             Spacer()
 
                             Text(pokemon.name.capitalized)
-                                .font(.title2.bold())
+                                .font(AppTypography.title3(weight: .bold))
                                 .foregroundColor(.white)
 
                             Spacer()
@@ -143,11 +143,13 @@ struct CardContent: View {
                 // Text attributes for unselected state
                 appearance.setTitleTextAttributes([
                     .foregroundColor: UIColor(theme.tertiary),
+                    .font: UIFont(name: "CircularStd-Book", size: 13)!
                 ], for: .normal)
                 
                 // Text attributes for selected state
                 appearance.setTitleTextAttributes([
-                    .foregroundColor: UIColor(theme.primary)
+                    .foregroundColor: UIColor(theme.primary),
+                    .font: UIFont(name: "CircularStd-Bold", size: 13)!
                 ], for: .selected)
             }
 
@@ -187,52 +189,57 @@ struct AboutSection: View {
         VStack(alignment: .leading, spacing: 28) {
             // Description
             Text(pokemon.desc)
+                .font(AppTypography.body)
                 .lineSpacing(4)
 
             // Height/Weight Card
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Height")
+                        .font(AppTypography.callout)
                         .foregroundColor(theme.secondary)
                     Text(pokemon.heightInMeters)
+                        .font(AppTypography.body)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Weight")
+                        .font(AppTypography.callout)
                         .foregroundColor(theme.secondary)
                     Text(pokemon.weightInKilograms)
+                        .font(AppTypography.body)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding()
-            .background(theme.surfaceContainer)
+            .background(theme.surfaceContainerHigh)
             .clipShape(RoundedRectangle(cornerRadius: 12))
 
             // Abilities Section
             if !abilities.isEmpty {
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Abilities")
-                        .font(.headline)
+                        .font(AppTypography.headline)
 
                     VStack(spacing: 12) {
                         ForEach(abilities) { ability in
                             VStack(alignment: .leading, spacing: 8) {
                                 if ability.isHidden {
-                                    Text("HIDDEN")
-                                        .font(.caption2)
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(.blue)
+                                    Text("Hidden")
+                                        .font(AppTypography.caption1)
+                                        .textCase(.uppercase)
+                                        .foregroundColor(theme.primary)
                                 }
                                 Text(ability.ability.name.capitalized)
-                                    .font(.body)
+                                    .font(AppTypography.body)
                                 Text(ability.ability.desc)
-                                    .font(.caption)
+                                    .font(AppTypography.footnote)
                                     .foregroundColor(.secondary)
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(16)
-                            .background(Color(.secondarySystemBackground))
+                            .padding()
+                            .background(theme.surfaceContainerHigh)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
                     }
@@ -242,7 +249,7 @@ struct AboutSection: View {
             // Breeding Section
             VStack(alignment: .leading, spacing: 16) {
                 Text("Breeding")
-                    .font(.headline)
+                    .font(AppTypography.headline)
 
                 Grid(
                     alignment: .leading,
@@ -251,6 +258,7 @@ struct AboutSection: View {
                 ) {
                     GridRow {
                         Text("Gender")
+                            .font(AppTypography.subheadline)
                             .foregroundColor(.secondary)
 
                         if pokemon.genderRate != -1 {
@@ -263,6 +271,7 @@ struct AboutSection: View {
                                     Text(
                                         "\(100.0 - Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%"
                                     )
+                                    .font(AppTypography.subheadline)
                                 }
                                 HStack(spacing: 2) {
                                     Image("ic_female_gender")
@@ -272,26 +281,29 @@ struct AboutSection: View {
                                     Text(
                                         "\(Double(pokemon.genderRate) * 12.5, specifier: "%.1f")%"
                                     )
+                                    .font(AppTypography.subheadline)
                                 }
                             }
                         } else {
                             Text("Genderless")
-                                .font(.body)
+                                .font(AppTypography.subheadline)
                         }
                     }
 
                     GridRow {
                         Text("Egg Groups")
+                            .font(AppTypography.subheadline)
                             .foregroundColor(.secondary)
                         Text("-")
-                            .font(.body)
+                            .font(AppTypography.subheadline)
                     }
 
                     GridRow {
                         Text("Egg Cycles")
+                            .font(AppTypography.subheadline)
                             .foregroundColor(.secondary)
                         Text("-")
-                            .font(.body)
+                            .font(AppTypography.subheadline)
                     }
                 }
             }
@@ -371,18 +383,18 @@ struct EvolutionSection: View {
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text(evolution.pokemon.name.capitalized)
-                                .font(.headline)
+                                .font(AppTypography.headline)
 
                             // Evolution trigger info
                             HStack(spacing: 4) {
                                 if evolution.targetLevel > 0 {
                                     Text("Level \(evolution.targetLevel)")
-                                        .font(.caption)
+                                        .font(AppTypography.footnote)
                                         .foregroundColor(.secondary)
                                 }
                                 if let item = evolution.item {
                                     Text("(\(item.name.capitalized))")
-                                        .font(.caption)
+                                        .font(AppTypography.footnote)
                                         .foregroundColor(.secondary)
                                 }
                             }
@@ -444,10 +456,11 @@ struct InfoRow: View {
     var body: some View {
         HStack {
             Text(label)
+                .font(AppTypography.subheadline)
                 .foregroundColor(.secondary)
             Spacer()
             Text(value)
-                .fontWeight(.semibold)
+                .font(AppTypography.subheadline(weight: .semibold))
         }
     }
 }
@@ -463,10 +476,11 @@ struct StatBar: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(label)
+                    .font(AppTypography.subheadline)
                     .foregroundColor(.secondary)
                 Spacer()
                 Text("\(value)")
-                    .font(.body.bold())
+                    .font(AppTypography.subheadline(weight: .bold))
             }
 
             GeometryReader { geometry in
@@ -512,7 +526,7 @@ struct PokemonMoveTableHeader: View {
             Text("Acc")
                 .frame(width: 40, alignment: .trailing)
         }
-        .font(.caption.bold())
+        .font(AppTypography.caption1)
         .foregroundColor(.secondary)
         .padding(.vertical, 4)
         .overlay(
@@ -541,11 +555,12 @@ struct PokemonMoveRow: View {
     var body: some View {
         HStack(spacing: 4) {
             Text("\(move.targetLevel)")
+                .font(AppTypography.subheadline)
                 .foregroundStyle(theme.secondary)
                 .frame(width: 35, alignment: .leading)
 
             Text(move.move.name.capitalized)
-                .font(.system(size: 14))
+                .font(AppTypography.subheadline)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             TypeLabel(typeName: move.move.type, colored: true)
@@ -561,11 +576,11 @@ struct PokemonMoveRow: View {
                 .frame(width: 40)
 
             Text(move.move.powerDisplay)
-                .font(.system(size: 14))
+                .font(AppTypography.subheadline)
                 .frame(width: 40, alignment: .trailing)
 
             Text(move.move.accuracyDisplay)
-                .font(.system(size: 14))
+                .font(AppTypography.subheadline)
                 .frame(width: 40, alignment: .trailing)
         }
     }

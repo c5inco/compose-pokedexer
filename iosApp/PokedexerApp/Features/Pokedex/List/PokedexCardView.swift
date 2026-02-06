@@ -12,7 +12,7 @@ struct PokedexCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(pokemon.name.capitalized)
-                .font(.system(size: 14, weight: .bold))
+                .font(AppTypography.subheadline(weight: .bold))
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(pokemon.typeOfPokemon.prefix(2), id: \.self) {
                     type in
@@ -37,7 +37,7 @@ struct PokedexCardView: View {
         }
         .background(alignment: .topTrailing) {
             Text(pokemon.formattedId)
-                .font(.system(size: 14, weight: .bold))
+                .font(AppTypography.subheadline(weight: .bold))
                 .opacity(colorScheme == .dark ? 0.5 : 0.7)
                 .padding(.top, 8)
                 .padding(.trailing, 12)

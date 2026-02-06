@@ -47,7 +47,7 @@ struct MoveTableHeader: View {
             Text("Acc")
                 .frame(width: 45, alignment: .trailing)
         }
-        .font(.caption.bold())
+        .font(AppTypography.caption1)
         .foregroundColor(.secondary)
         .padding(.vertical, 4)
     }
@@ -68,7 +68,7 @@ struct MoveRow: View {
     var body: some View {
         HStack(spacing: 8) {
             Text(move.name.capitalized)
-                .font(.system(size: 14))
+                .font(AppTypography.body)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             TypeLabel(typeName: move.type, colored: true)
@@ -79,11 +79,11 @@ struct MoveRow: View {
                 .frame(width: 48)
 
             Text(move.powerDisplay)
-                .font(.system(size: 14))
+                .font(AppTypography.subheadline)
                 .frame(width: 45, alignment: .trailing)
 
             Text(move.accuracyDisplay)
-                .font(.system(size: 14))
+                .font(AppTypography.subheadline)
                 .frame(width: 45, alignment: .trailing)
         }
     }

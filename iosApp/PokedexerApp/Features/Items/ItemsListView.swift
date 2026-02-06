@@ -37,10 +37,10 @@ struct ItemCard: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.name.capitalized)
-                    .font(.headline)
+                    .font(AppTypography.headline)
 
                 Text(item.desc)
-                    .font(.caption)
+                    .font(AppTypography.footnote)
                     .foregroundColor(.secondary)
             }
 

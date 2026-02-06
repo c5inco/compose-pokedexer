@@ -15,9 +15,9 @@ struct TypeLabel: View {
 
         var fontSize: CGFloat {
             switch self {
-            case .small: return 10
-            case .medium: return 12
-            case .large: return 14
+            case .small: return 11
+            case .medium: return 13
+            case .large: return 15
             }
         }
 
@@ -71,7 +71,7 @@ private struct TypeLabelContent: View {
             }
 
             Text(typeName.capitalized)
-                .font(.system(size: size.fontSize, weight: .semibold))
+                .font(.circularStd(size: size.fontSize, weight: .semibold))
                 .foregroundColor(isSelected ? theme.onBackground : .primary)
         }
         .padding(size.padding)
@@ -96,15 +96,12 @@ struct TypeIcon: View {
     var body: some View {
         let iconName = mapTypeToIcon(typeName: typeName)
 
-        // Try to load as a local asset first, then fallback to SF Symbol or default
         Image(iconName)
             .resizable()
             .aspectRatio(contentMode: .fit)
     }
 }
 
-/// Maps a Pokemon type to its corresponding local asset name.
-/// Based on the Android implementation in PokemonTypeLabels.kt
 func mapTypeToIcon(typeName: String) -> String {
     switch typeName.lowercased() {
     case "normal": return "ic_type_normal"
