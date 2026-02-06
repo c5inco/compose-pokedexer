@@ -21,6 +21,8 @@ class AppViewModel: ObservableObject {
             try await sdk.updateMoves()
             syncProgress = "Syncing Items..."
             try await sdk.updateItems()
+            syncProgress = "Syncing Abilities..."
+            try await sdk.updateAbilities()
         } catch {
             print("Error syncing data: \(error)")
         }
