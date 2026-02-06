@@ -7,16 +7,14 @@ Adapted fork of original [compose-pokedex](https://github.com/zsoltk/compose-pok
 
 ## Features
 
-- Browse Pokemon with a 2-column grid and animated mesh gradient cards
-- Detailed Pokemon info: stats radar chart, evolutions, moves, abilities
-- Horizontal pager to swipe between Pokemon
-- Search across Pokemon, Moves, and Items with debounced input
-- Filter by generation, type, and favorites
-- Moves listing, Items listing, and Type Chart screens
-- Dynamic theming per Pokemon type (Material Kolor)
-- Dark theme support
-- Shared data layer via Kotlin Multiplatform (Room KMP + Apollo GraphQL)
-- Native iOS app with SwiftUI and iOS 18 MeshGradient support
+- Explore the full Pokedex with fast, visual browsing
+- Dive into rich detail pages with stats, evolutions, moves, and abilities
+- Discover moves and items in their own dedicated catalogs
+- Understand type matchups quickly with a built-in type chart
+- Find what you want instantly with unified search
+- Narrow the world by generation, type, or your favorites
+- Make it yours with favorites and dynamic type-based theming
+- Consistent experience across Android and iOS with a shared data layer
 
 ## Notable Technical Choices
 
