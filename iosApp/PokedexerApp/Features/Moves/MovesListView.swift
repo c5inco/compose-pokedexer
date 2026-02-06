@@ -56,26 +56,28 @@ struct MoveTableHeader: View {
 struct MoveRow: View {
     let move: Move
 
-    var categoryIcon: String {
-        switch move.category.lowercased() {
-        case "physical": return "ic_move_physical"
-        case "special": return "ic_move_special"
-        case "status": return "ic_move_status"
-        default: return "dumbbell.fill"
-        }
+    var body: some View {
+        MoveRowContent(move: move)
+            .pokemonTheme(types: [move.type])
     }
+}
+
+private struct MoveRowContent: View {
+    let move: Move
+    @Environment(\.pokemonTheme) var theme
 
     var body: some View {
         HStack(spacing: 8) {
             Text(move.name.capitalized)
                 .font(AppTypography.body)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundColor(theme.onSurface)
 
-            TypeLabel(typeName: move.type, colored: true)
+            TypeLabel(typeName: move.type, size: .small, colored: true)
                 .frame(width: 80)
 
-            Image(categoryIcon)
-                .foregroundStyle(MoveCategoryColors.color(for: move.category))
+            CategoryIcon(category: move.category)
+                .frame(width: 24, height: 24)
                 .frame(width: 48)
 
             Text(move.powerDisplay)

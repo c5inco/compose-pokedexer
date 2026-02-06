@@ -540,17 +540,16 @@ struct PokemonMoveTableHeader: View {
 
 struct PokemonMoveRow: View {
     let move: PokemonDetailsMove
-    @Environment(\.pokemonTheme) var theme
-    @Environment(\.colorScheme) var colorScheme
 
-    var categoryIcon: String {
-        switch move.move.category.lowercased() {
-        case "physical": return "ic_move_physical"
-        case "special": return "ic_move_special"
-        case "status": return "ic_move_status"
-        default: return "dumbbell.fill"
-        }
+    var body: some View {
+        PokemonMoveRowContent(move: move)
+            .pokemonTheme(types: [move.move.type])
     }
+}
+
+private struct PokemonMoveRowContent: View {
+    let move: PokemonDetailsMove
+    @Environment(\.pokemonTheme) var theme
 
     var body: some View {
         HStack(spacing: 4) {
@@ -566,13 +565,8 @@ struct PokemonMoveRow: View {
             TypeLabel(typeName: move.move.type, colored: true)
                 .frame(width: 80)
 
-            Image(categoryIcon)
-                .foregroundStyle(
-                    MoveCategoryColors.color(
-                        for: move.move.category,
-                        isDark: colorScheme == .dark
-                    )
-                )
+            CategoryIcon(category: move.move.category)
+                .frame(width: 20, height: 20)
                 .frame(width: 40)
 
             Text(move.move.powerDisplay)

@@ -51,23 +51,14 @@ struct PokemonColors {
 
 // MARK: - Move Category Colors
 struct MoveCategoryColors {
-    static let physicalLight = PokemonColors.fighting
-    static let physicalDark = Color(hex: 0xE3300E)
-
-    static let specialLight = PokemonColors.flying
-    static let specialDark = Color(hex: 0xC7BFFF)
-
-    static let statusLight = PokemonColors.fire
-    static let statusDark = Color(hex: 0xFFB691)
-
-    static func color(for category: String, isDark: Bool = false) -> Color {
+    static func color(for category: String) -> Color {
         switch category.lowercased() {
         case "physical":
-            return isDark ? physicalDark : physicalLight
+            return PokemonColors.fighting
         case "special":
-            return isDark ? specialDark : specialLight
+            return PokemonColors.flying
         case "status":
-            return isDark ? statusDark : statusLight
+            return PokemonColors.fire
         default:
             return .gray
         }
@@ -242,6 +233,11 @@ extension View {
     /// Apply theme based on a single type name
     func pokemonTheme(type: PokemonType) -> some View {
         self.modifier(PokemonThemeModifier(types: [type.name]))
+    }
+
+    /// Apply theme based on a list of type names
+    func pokemonTheme(types: [String]) -> some View {
+        self.modifier(PokemonThemeModifier(types: types))
     }
 }
 

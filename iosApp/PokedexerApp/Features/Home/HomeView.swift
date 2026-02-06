@@ -245,17 +245,28 @@ struct PokemonResultCard: View {
     let pokemon: Pokemon
 
     var body: some View {
+        PokemonResultCardContent(pokemon: pokemon)
+            .pokemonTheme(pokemon)
+    }
+}
+
+private struct PokemonResultCardContent: View {
+    let pokemon: Pokemon
+    @Environment(\.pokemonTheme) var theme
+
+    var body: some View {
         HStack(spacing: 12) {
             PokemonImage(pokemon: pokemon, size: 48)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(pokemon.name.capitalized)
                     .font(AppTypography.body.weight(.bold))
+                    .foregroundColor(theme.onSurface)
 
                 HStack(spacing: 4) {
                     ForEach(pokemon.typeOfPokemon.prefix(2), id: \.self) {
                         type in
-                        TypeLabel(typeName: type, size: .small)
+                        TypeLabel(typeName: type, size: .small, colored: true)
                     }
                 }
             }
@@ -267,7 +278,7 @@ struct PokemonResultCard: View {
                 .foregroundColor(.secondary)
         }
         .padding(12)
-        .background(Color(.systemGray6))
+        .background(theme.surfaceContainer)
         .cornerRadius(12)
     }
 }
@@ -276,12 +287,27 @@ struct MoveResultCard: View {
     let move: Move
 
     var body: some View {
+        MoveResultCardContent(move: move)
+            .pokemonTheme(types: [move.type])
+    }
+}
+
+private struct MoveResultCardContent: View {
+    let move: Move
+    @Environment(\.pokemonTheme) var theme
+
+    var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(move.name.capitalized)
                     .font(AppTypography.body.weight(.bold))
+                    .foregroundColor(theme.onSurface)
 
-                TypeLabel(typeName: move.type, size: .small)
+                HStack(spacing: 8) {
+                    TypeLabel(typeName: move.type, size: .small, colored: true)
+                    CategoryIcon(category: move.category)
+                        .frame(width: 16, height: 16)
+                }
             }
 
             Spacer()
@@ -289,14 +315,14 @@ struct MoveResultCard: View {
             VStack(alignment: .trailing, spacing: 2) {
                 Text("Pwr: \(move.powerDisplay)")
                     .font(AppTypography.footnote)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(theme.onSurfaceVariant)
                 Text("Acc: \(move.accuracyDisplay)")
                     .font(AppTypography.footnote)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(theme.onSurfaceVariant)
             }
         }
         .padding(12)
-        .background(Color(.systemGray6))
+        .background(theme.surfaceContainer)
         .cornerRadius(12)
     }
 }
