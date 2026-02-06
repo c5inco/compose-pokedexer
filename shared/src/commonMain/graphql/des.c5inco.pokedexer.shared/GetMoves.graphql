@@ -1,0 +1,23 @@
+query PokemonOriginalMoves {
+  info: pokemon_v2_move_aggregate(where: {generation_id: {_eq: 1}}) {
+    total: aggregate {
+      count
+    }
+  }
+  moves: pokemon_v2_move(where: {generation_id: {_eq: 1}}) {
+    id
+    name
+    accuracy
+    category: pokemon_v2_movedamageclass {
+      name
+    }
+    description: pokemon_v2_moveflavortexts(where: {version_group_id: {_eq: 7}}) {
+      flavorText: flavor_text
+    }
+    pp
+    power
+    type: pokemon_v2_type {
+      name
+    }
+  }
+}

@@ -76,9 +76,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.materialkolor.PaletteStyle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
-import des.c5inco.pokedexer.model.Generation
-import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.model.Type
+import des.c5inco.pokedexer.shared.model.Generation
+import des.c5inco.pokedexer.shared.model.Pokemon
+import des.c5inco.pokedexer.shared.model.Type
 import des.c5inco.pokedexer.ui.common.LoadingIndicator
 import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon

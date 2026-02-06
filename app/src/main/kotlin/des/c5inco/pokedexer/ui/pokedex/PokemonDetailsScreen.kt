@@ -84,8 +84,8 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.data.pokemon.mapSampleAbilitiesToDetailsList
 import des.c5inco.pokedexer.data.pokemon.mapSampleEvolutionsToList
 import des.c5inco.pokedexer.data.pokemon.mapSampleMovesToDetailsList
-import des.c5inco.pokedexer.model.Pokemon
-import des.c5inco.pokedexer.model.mapTypeToCuratedAnalogousHue
+import des.c5inco.pokedexer.shared.model.Pokemon
+import des.c5inco.pokedexer.shared.model.mapTypeToCuratedAnalogousHue
 import des.c5inco.pokedexer.ui.common.Emphasis
 import des.c5inco.pokedexer.ui.common.NavigationTopAppBar
 import des.c5inco.pokedexer.ui.common.Pokeball

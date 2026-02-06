@@ -14,9 +14,30 @@ google-services.json
 !/.idea/codeStyles/codeStyleConfig.xml
 
 .DS_Store
-/build
-/captures
+build/
+captures/
 .externalNativeBuild
 .cxx
 local.properties
 .kotlin/
+
+# JVM crash logs
+hs_err_pid*.log
+replay_pid*.log
+
+# Conductor context directory
+.context/
+
+# iOS/Xcode
+iosApp/PokedexerApp.xcodeproj/project.xcworkspace/xcuserdata/
+iosApp/PokedexerApp.xcodeproj/xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+# CocoaPods (if used in the future)
+iosApp/Pods/
+iosApp/Podfile.lock
+
+# Xcode DerivedData
+DerivedData/

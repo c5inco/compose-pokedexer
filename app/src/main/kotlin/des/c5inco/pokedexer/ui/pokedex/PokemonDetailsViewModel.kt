@@ -2,16 +2,16 @@ package des.c5inco.pokedexer.ui.pokedex
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import des.c5inco.pokedexer.data.abilities.AbilitiesRepository
-import des.c5inco.pokedexer.data.items.ItemsRepository
-import des.c5inco.pokedexer.data.moves.MovesRepository
-import des.c5inco.pokedexer.data.pokemon.PokemonRepository
+import des.c5inco.pokedexer.shared.data.abilities.AbilitiesRepository
+import des.c5inco.pokedexer.shared.data.items.ItemsRepository
+import des.c5inco.pokedexer.shared.data.moves.MovesRepository
+import des.c5inco.pokedexer.shared.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
-import des.c5inco.pokedexer.model.Ability
-import des.c5inco.pokedexer.model.EvolutionTrigger
-import des.c5inco.pokedexer.model.Item
-import des.c5inco.pokedexer.model.Move
-import des.c5inco.pokedexer.model.Pokemon
+import des.c5inco.pokedexer.shared.model.Ability
+import des.c5inco.pokedexer.shared.model.EvolutionTrigger
+import des.c5inco.pokedexer.shared.model.Item
+import des.c5inco.pokedexer.shared.model.Move
+import des.c5inco.pokedexer.shared.model.Pokemon
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
