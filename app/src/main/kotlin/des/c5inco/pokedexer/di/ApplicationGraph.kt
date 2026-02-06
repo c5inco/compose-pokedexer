@@ -86,7 +86,7 @@ interface ApplicationModule {
     @SingleIn(AppScope::class)
     fun provideApolloClient(): ApolloClient {
         return ApolloClient.Builder()
-            .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
+            .serverUrl("https://beta.pokeapi.co/graphql/v1beta2")
             .build()
     }
 
