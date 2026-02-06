@@ -19,9 +19,11 @@ if [ ! -d "PokedexerApp.xcodeproj" ]; then
 fi
 
 echo -e "${BLUE}Step 1:${NC} Building KMP Framework..."
-cd ../shared
-./gradlew linkReleaseFrameworkIosSimulatorArm64 linkReleaseFrameworkIosArm64
-cd ../iosApp
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${REPO_ROOT}"
+./gradlew :shared:linkReleaseFrameworkIosSimulatorArm64 :shared:linkReleaseFrameworkIosArm64
+cd "${SCRIPT_DIR}"
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ KMP Framework built successfully${NC}"
