@@ -13,7 +13,6 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
@@ -167,7 +166,6 @@ fun PokemonDetailsScreen(
         }
     }
 
-    val defaultDecayAnimationSpec = rememberSplineBasedDecay<Float>()
     val anchorDraggableState = remember {
         AnchoredDraggableState(
             initialValue = DragValue.Start,
@@ -583,17 +581,17 @@ private fun PokemonDetailsPreview(
     AppTheme {
         Surface {
             AnimatedContent(
-                targetState = true,
-                label = ""
-            ) { _ ->
+                targetState = activePokemon,
+                label = "pokemonDetailsPreview"
+            ) { targetPokemon ->
                 PokemonTypesTheme(
-                    types = activePokemon.typeOfPokemon
+                    types = targetPokemon.typeOfPokemon
                 ) {
                     PokemonDetailsScreen(
                         pokemonSet = SamplePokemonData,
-                        pokemon = activePokemon,
+                        pokemon = targetPokemon,
                         evolutions = mapSampleEvolutionsToList(
-                            activePokemon.evolutionChain
+                            targetPokemon.evolutionChain
                         ),
                         moves = mapSampleMovesToDetailsList(),
                         abilities = mapSampleAbilitiesToDetailsList(),
@@ -619,20 +617,22 @@ private fun PokemonDetailsPalettePreview(
             AnimatedContent(
                 targetState = true,
                 label = ""
-            ) { _ ->
-                PokemonTypeColorOverlay(
-                    types = activePokemon.typeOfPokemon,
-                    paletteStyle = paletteStyle
-                ) {
-                    PokemonDetailsScreen(
-                        pokemonSet = SamplePokemonData,
-                        pokemon = activePokemon,
-                        evolutions = mapSampleEvolutionsToList(
-                            activePokemon.evolutionChain
-                        ),
-                        moves = mapSampleMovesToDetailsList(),
-                        abilities = mapSampleAbilitiesToDetailsList()
-                    )
+            ) { targetState ->
+                if (targetState) {
+                    PokemonTypeColorOverlay(
+                        types = activePokemon.typeOfPokemon,
+                        paletteStyle = paletteStyle
+                    ) {
+                        PokemonDetailsScreen(
+                            pokemonSet = SamplePokemonData,
+                            pokemon = activePokemon,
+                            evolutions = mapSampleEvolutionsToList(
+                                activePokemon.evolutionChain
+                            ),
+                            moves = mapSampleMovesToDetailsList(),
+                            abilities = mapSampleAbilitiesToDetailsList()
+                        )
+                    }
                 }
             }
         }
