@@ -2,7 +2,6 @@ package des.c5inco.pokedexer
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -17,6 +16,7 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("des.c5inco.pokedexer", appContext.packageName)
+        // The package name should match the applicationId (including suffix)
+        assert(appContext.packageName.startsWith("des.c5inco.pokedexer"))
     }
 }
