@@ -8,6 +8,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -18,6 +19,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +43,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -455,28 +458,9 @@ private fun FilterMenu(
                     modifier = Modifier.padding(horizontal = 24.dp),
                 ) {
                     Type.entries.forEachIndexed { idx, type ->
-                        val selected = type == typeFilter
-
-                        val seedColor = mapTypeToSeedColor(types = listOf(type.toString()))
-                        val kolorScheme = getDynamicColorScheme(seedColor, PaletteStyle.Rainbow)
-                        val pokemonColorScheme =
-                            mapDynamicPokemonColorScheme(
-                                seedColor = seedColor,
-                                colorScheme = kolorScheme,
-                            )
-
                         FilterTypeItem(
                             type = type,
-                            colors =
-                                if (selected) {
-                                    ButtonDefaults.filledTonalButtonColors(
-                                        containerColor = pokemonColorScheme.surface,
-                                        contentColor = pokemonColorScheme.onSurface,
-                                    )
-                                } else {
-                                    ButtonDefaults.filledTonalButtonColors()
-                                },
-                            selected = selected,
+                            selected = type == typeFilter,
                             index = idx,
                             onClick = { onMenuItemClick(FilterMenuEvent.FilterTypes(type)) },
                             modifier = Modifier.padding(horizontal = 4.dp),
@@ -490,20 +474,9 @@ private fun FilterMenu(
                     modifier = Modifier.padding(horizontal = 24.dp),
                 ) {
                     Generation.entries.forEachIndexed { idx, generation ->
-                        val selected = generation == generationFilter
-
                         FilterGenerationItem(
                             generation = generation,
-                            colors =
-                                if (selected) {
-                                    ButtonDefaults.filledTonalButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                                    )
-                                } else {
-                                    ButtonDefaults.filledTonalButtonColors()
-                                },
-                            selected = selected,
+                            selected = generation == generationFilter,
                             index = idx,
                             onClick = {
                                 onMenuItemClick(FilterMenuEvent.FilterGeneration(generation))
@@ -600,18 +573,37 @@ private fun AnimatedVisibilityScope.FilterMenuItem(
 }
 
 @Composable
-private fun AnimatedVisibilityScope.FilterTypeItem(
+private fun AnimatedVisibilityScope.FilterChip(
     modifier: Modifier = Modifier,
-    type: Type,
-    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(),
-    selected: Boolean = false,
     index: Int,
-    onClick: () -> Unit = {},
+    colors: ButtonColors,
+    selected: Boolean,
+    onClick: () -> Unit,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    content: @Composable RowScope.() -> Unit,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val cornerRadius by animateDpAsState(
+        targetValue = when {
+            isPressed -> 8.dp
+            selected -> 12.dp
+            else -> 24.dp
+        },
+        animationSpec = spring(
+            dampingRatio = 0.9f,
+            stiffness = 1400f
+        ),
+        label = "cornerRadius"
+    )
+
     FilledTonalButton(
-        contentPadding = PaddingValues(start = 12.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+        contentPadding = contentPadding,
         onClick = onClick,
         colors = colors,
+        shape = RoundedCornerShape(cornerRadius),
+        interactionSource = interactionSource,
         modifier =
             modifier.animateEnterExit(
                 enter =
@@ -624,8 +616,45 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
                                 tween(durationMillis = 150, delayMillis = index * 15 + 60),
                         ),
                 exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
-                label = "{$type}TypeTransition",
+                label = "filterChipTransition",
             ),
+    ) {
+        content()
+    }
+}
+
+@Composable
+private fun AnimatedVisibilityScope.FilterTypeItem(
+    modifier: Modifier = Modifier,
+    type: Type,
+    selected: Boolean = false,
+    index: Int,
+    onClick: () -> Unit = {},
+) {
+    val seedColor = mapTypeToSeedColor(types = listOf(type.toString()))
+    val kolorScheme = getDynamicColorScheme(seedColor, PaletteStyle.Rainbow)
+    val pokemonColorScheme =
+        mapDynamicPokemonColorScheme(
+            seedColor = seedColor,
+            colorScheme = kolorScheme,
+        )
+
+    val colors = if (selected) {
+        ButtonDefaults.filledTonalButtonColors(
+            containerColor = pokemonColorScheme.surface,
+            contentColor = pokemonColorScheme.onSurface,
+        )
+    } else {
+        ButtonDefaults.filledTonalButtonColors()
+    }
+
+    FilterChip(
+        modifier = modifier,
+        index = index,
+        colors = colors,
+        selected = selected,
+        onClick = onClick,
+        contentPadding = PaddingValues(start = 12.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
     ) {
         Icon(
             painter = painterResource(id = mapTypeToIcon(type)),
@@ -641,29 +670,26 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
 private fun AnimatedVisibilityScope.FilterGenerationItem(
     modifier: Modifier = Modifier,
     generation: Generation,
-    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(),
     selected: Boolean = false,
     index: Int,
     onClick: () -> Unit = {},
 ) {
-    FilledTonalButton(
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-        onClick = onClick,
+    val colors = if (selected) {
+        ButtonDefaults.filledTonalButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+        )
+    } else {
+        ButtonDefaults.filledTonalButtonColors()
+    }
+
+    FilterChip(
+        modifier = modifier,
+        index = index,
         colors = colors,
-        modifier =
-            modifier.animateEnterExit(
-                enter =
-                    fadeIn(
-                        animationSpec = tween(durationMillis = 240, delayMillis = index * 15 + 60)
-                    ) +
-                        slideInVertically(
-                            initialOffsetY = { it / 2 },
-                            animationSpec =
-                                tween(durationMillis = 150, delayMillis = index * 15 + 60),
-                        ),
-                exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
-                label = "Gen${generation.id}Transition",
-            ),
+        selected = selected,
+        onClick = onClick,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
     ) {
         Text(text = "Gen ${generation.romanNumeral}")
     }
