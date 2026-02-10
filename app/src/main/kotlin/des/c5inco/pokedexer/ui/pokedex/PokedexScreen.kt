@@ -183,7 +183,7 @@ fun PokedexScreen(
                     }
                 },
                 colors =
-                    TopAppBarDefaults.mediumTopAppBarColors(
+                    TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
                     ),
                 scrollBehavior = scrollBehavior,
