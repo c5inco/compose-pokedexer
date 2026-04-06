@@ -1,0 +1,45 @@
+# detekt.yml
+
+complexity:
+  LongMethod:
+    active: true
+    threshold: 100
+  LargeClass:
+    active: true
+    threshold: 500
+
+style:
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+  WildcardImport:
+    active: true
+  UnusedPrivateMember:
+    active: true
+
+Compose:
+  active: true
+  CompositionLocalAllowlist:
+    active: true
+  ComposableNaming:
+    active: true
+  ComposableParamOrder:
+    active: true
+  ModifierReused:
+    active: true
+  MutableStateAutoboxing:
+    active: true
+  ParameterNaming:
+    active: true
+  PreviewNaming:
+    active: true
+  PreviewPublic:
+    active: true
+  RememberMissing:
+    active: true
+  UnstableCollections:
+    active: true
+  ViewModelForwarding:
+    active: true
+  ViewModelInjection:
+    active: true

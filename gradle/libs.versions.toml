@@ -25,6 +25,9 @@ serialization = "1.8.0"
 navigation3 = "1.0.0"
 skie = "0.10.8"
 sqlite = "2.5.0"
+detekt = "1.23.8"
+ktfmt = "0.26.0"
+composeRulesDetekt = "0.5.6"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -77,6 +80,7 @@ material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "m
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+detekt-plugin-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "composeRulesDetekt" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -92,3 +96,5 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }

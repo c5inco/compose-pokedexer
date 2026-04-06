@@ -11,4 +11,26 @@ plugins {
     alias(libs.plugins.compose.compiler).apply(false)
     alias(libs.plugins.metro).apply(false)
     alias(libs.plugins.kotlin.serialization).apply(false)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.ktfmt)
+}
+
+subprojects {
+    apply {
+        plugin("io.gitlab.arturbosch.detekt")
+        plugin("com.ncorti.ktfmt.gradle")
+    }
+
+    detekt {
+        buildUponDefaultConfig = true
+        config.setFrom(rootProject.files("detekt.yml"))
+    }
+
+    dependencies {
+        detektPlugins(rootProject.libs.detekt.plugin.compose)
+    }
+
+    ktfmt {
+        kotlinLangStyle()
+    }
 }
