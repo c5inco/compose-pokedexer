@@ -42,8 +42,8 @@ import des.c5inco.pokedexer.shared.theme.getSeedColorForType
 import kotlinx.coroutines.launch
 
 /**
- * PokemonColors object using shared module's seed colors.
- * Provides Compose Color values for use in Android UI.
+ * PokemonColors object using shared module's seed colors. Provides Compose Color values for use in
+ * Android UI.
  */
 object PokemonColors {
     val Bug = Color(PokemonTypeSeeds.Bug)
@@ -67,8 +67,8 @@ object PokemonColors {
 }
 
 /**
- * Helper function that wraps getSeedColorForType() and returns a Compose Color.
- * For backwards compatibility with existing code using mapTypeToSeedColor.
+ * Helper function that wraps getSeedColorForType() and returns a Compose Color. For backwards
+ * compatibility with existing code using mapTypeToSeedColor.
  */
 fun mapTypeToSeedColor(types: List<String>): Color = Color(getSeedColorForType(types))
 
@@ -80,7 +80,7 @@ data class PokemonTypeColorScheme(
     val onSurface: Color,
     val surfaceVariant: Color,
     val secondary: Color = primary,
-    val tertiary: Color = primary
+    val tertiary: Color = primary,
 )
 
 val LocalPokemonTypeColorScheme = staticCompositionLocalOf {
@@ -88,16 +88,12 @@ val LocalPokemonTypeColorScheme = staticCompositionLocalOf {
         primary = Color.Magenta,
         surface = Color.Magenta,
         onSurface = Color.Magenta,
-        surfaceVariant = Color.Magenta
+        surfaceVariant = Color.Magenta,
     )
 }
 
 @Immutable
-data class MoveCategoryColorScheme(
-    val primary: Color,
-    val surface: Color,
-    val onSurface: Color,
-)
+data class MoveCategoryColorScheme(val primary: Color, val surface: Color, val onSurface: Color)
 
 val LocalMoveCategoryColorScheme = staticCompositionLocalOf {
     MoveCategoryColorScheme(
@@ -117,69 +113,74 @@ data class MoveCategoryColors(
     val onSurfaceLight: Color = Color.Unspecified,
 )
 
-val PhysicalColors = MoveCategoryColors(
-    primaryDark = Color(0xffE3300E),
-    primaryLight = PokemonColors.Fighting,
-    surfaceDark = Color(0xff561F14),
-    surfaceLight = Color(0xffFFDAD3),
-    onSurfaceDark = Color(0xffFFDAD3),
-    onSurfaceLight = Color(0xff3A0A03)
-)
+val PhysicalColors =
+    MoveCategoryColors(
+        primaryDark = Color(0xffE3300E),
+        primaryLight = PokemonColors.Fighting,
+        surfaceDark = Color(0xff561F14),
+        surfaceLight = Color(0xffFFDAD3),
+        onSurfaceDark = Color(0xffFFDAD3),
+        onSurfaceLight = Color(0xff3A0A03),
+    )
 
-val SpecialColors = MoveCategoryColors(
-    primaryDark = Color(0xffC7BFFF),
-    primaryLight = PokemonColors.Flying,
-    surfaceDark = Color(0xff2F295F),
-    surfaceLight = Color(0xffE4DFFF),
-    onSurfaceDark = Color(0xffE4DFFF),
-    onSurfaceLight = Color(0xff1A1249)
-)
+val SpecialColors =
+    MoveCategoryColors(
+        primaryDark = Color(0xffC7BFFF),
+        primaryLight = PokemonColors.Flying,
+        surfaceDark = Color(0xff2F295F),
+        surfaceLight = Color(0xffE4DFFF),
+        onSurfaceDark = Color(0xffE4DFFF),
+        onSurfaceLight = Color(0xff1A1249),
+    )
 
-val StatusColors = MoveCategoryColors(
-    primaryDark = Color(0xffFFB691),
-    primaryLight = PokemonColors.Fire,
-    surfaceDark = Color(0xff542102),
-    surfaceLight = Color(0xffFFDBCB),
-    onSurfaceDark = Color(0xffFFDBCB),
-    onSurfaceLight = Color(0xff341100)
-)
+val StatusColors =
+    MoveCategoryColors(
+        primaryDark = Color(0xffFFB691),
+        primaryLight = PokemonColors.Fire,
+        surfaceDark = Color(0xff542102),
+        surfaceLight = Color(0xffFFDBCB),
+        onSurfaceDark = Color(0xffFFDBCB),
+        onSurfaceLight = Color(0xff341100),
+    )
 
-val AppPaletteStyles = listOf(
-    PaletteStyle.TonalSpot,
-    PaletteStyle.Rainbow,
-    PaletteStyle.Vibrant,
-    PaletteStyle.Expressive,
-    PaletteStyle.Neutral
-)
+val AppPaletteStyles =
+    listOf(
+        PaletteStyle.TonalSpot,
+        PaletteStyle.Rainbow,
+        PaletteStyle.Vibrant,
+        PaletteStyle.Expressive,
+        PaletteStyle.Neutral,
+    )
 
 @Composable
 fun PokemonTypeColorOverlay(
     types: List<String>,
     paletteStyle: PaletteStyle = PaletteStyle.TonalSpot,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    var activePaletteStyleIndex by remember { mutableIntStateOf(AppPaletteStyles.indexOf(paletteStyle)) }
-    val activePaletteStyle by remember(activePaletteStyleIndex) { mutableStateOf(AppPaletteStyles[activePaletteStyleIndex]) }
+    var activePaletteStyleIndex by remember {
+        mutableIntStateOf(AppPaletteStyles.indexOf(paletteStyle))
+    }
+    val activePaletteStyle by
+        remember(activePaletteStyleIndex) {
+            mutableStateOf(AppPaletteStyles[activePaletteStyleIndex])
+        }
 
-    PokemonTypesTheme(
-        types = types,
-        paletteStyle = activePaletteStyle
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
+    PokemonTypesTheme(types = types, paletteStyle = activePaletteStyle) {
+        Box(modifier = Modifier.fillMaxSize()) {
             content()
 
-            val swatchColors = listOf(
-                Color(getSeedColorForType(types)),
-                PokemonTypesTheme.colorScheme.primary,
-                PokemonTypesTheme.colorScheme.surface,
-                PokemonTypesTheme.colorScheme.onSurface,
-                PokemonTypesTheme.colorScheme.surfaceVariant,
-                MaterialTheme.colorScheme.secondary,
-                MaterialTheme.colorScheme.primaryContainer,
-                MaterialTheme.colorScheme.secondaryContainer
-            )
+            val swatchColors =
+                listOf(
+                    Color(getSeedColorForType(types)),
+                    PokemonTypesTheme.colorScheme.primary,
+                    PokemonTypesTheme.colorScheme.surface,
+                    PokemonTypesTheme.colorScheme.onSurface,
+                    PokemonTypesTheme.colorScheme.surfaceVariant,
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.primaryContainer,
+                    MaterialTheme.colorScheme.secondaryContainer,
+                )
 
             val popupAlpha = remember { Animatable(1f) }
             val popupYOffset = remember { Animatable(0f) }
@@ -187,54 +188,50 @@ fun PokemonTypeColorOverlay(
             LaunchedEffect(activePaletteStyle) {
                 popupAlpha.animateTo(1f)
                 popupYOffset.animateTo(200f)
-                launch {
-                    popupAlpha.animateTo(0f, animationSpec = tween(300, 1000))
-                }
-                launch {
-                    popupYOffset.animateTo(0f, animationSpec = tween(500, 1000))
-                }
+                launch { popupAlpha.animateTo(0f, animationSpec = tween(300, 1000)) }
+                launch { popupYOffset.animateTo(0f, animationSpec = tween(500, 1000)) }
             }
 
             Text(
                 text = activePaletteStyle.toString(),
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-                    .padding(bottom = 32.dp)
-                    .navigationBarsPadding()
-                    .align(Alignment.BottomCenter)
-                    .offset { IntOffset(x = 0, y = -popupYOffset.value.toInt()) }
-                    .background(
-                        MaterialTheme.colorScheme.surfaceContainerHigh,
-                        RoundedCornerShape(4.dp)
-                    )
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                modifier =
+                    Modifier.padding(bottom = 32.dp)
+                        .navigationBarsPadding()
+                        .align(Alignment.BottomCenter)
+                        .offset { IntOffset(x = 0, y = -popupYOffset.value.toInt()) }
+                        .background(
+                            MaterialTheme.colorScheme.surfaceContainerHigh,
+                            RoundedCornerShape(4.dp),
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
             )
 
             FlowRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .padding(16.dp)
-                    .navigationBarsPadding()
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        shape = CircleShape
-                    )
-                    .border(
-                        width = 2.dp,
-                        color = MaterialTheme.colorScheme.outline,
-                        shape = CircleShape
-                    )
-                    .clip(CircleShape)
-                    .clickable {
-                        if (activePaletteStyleIndex < AppPaletteStyles.size - 1) {
-                            activePaletteStyleIndex++
-                        } else {
-                            activePaletteStyleIndex = 0
+                modifier =
+                    Modifier.padding(16.dp)
+                        .navigationBarsPadding()
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            shape = CircleShape,
+                        )
+                        .border(
+                            width = 2.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = CircleShape,
+                        )
+                        .clip(CircleShape)
+                        .clickable {
+                            if (activePaletteStyleIndex < AppPaletteStyles.size - 1) {
+                                activePaletteStyleIndex++
+                            } else {
+                                activePaletteStyleIndex = 0
+                            }
                         }
-                    }
-                    .padding(16.dp)
-                    .align(Alignment.BottomCenter)
+                        .padding(16.dp)
+                        .align(Alignment.BottomCenter),
             ) {
                 QuadrantCircle(swatchColors[0], swatchColors[1], swatchColors[2], swatchColors[3])
                 QuadrantCircle(swatchColors[4], swatchColors[5], swatchColors[6], swatchColors[7])
@@ -244,12 +241,7 @@ fun PokemonTypeColorOverlay(
 }
 
 @Composable
-fun QuadrantCircle(
-    firstColor: Color,
-    secondColor: Color,
-    thirdColor: Color,
-    fourthColor: Color
-) {
+fun QuadrantCircle(firstColor: Color, secondColor: Color, thirdColor: Color, fourthColor: Color) {
     Canvas(modifier = Modifier.size(40.dp)) {
         val canvasWidth = size.width
         val radius = canvasWidth / 2
@@ -262,7 +254,7 @@ fun QuadrantCircle(
             sweepAngle = 90f,
             useCenter = true,
             topLeft = offset,
-            size = size
+            size = size,
         )
         drawArc(
             color = secondColor,
@@ -270,7 +262,7 @@ fun QuadrantCircle(
             sweepAngle = 90f,
             useCenter = true,
             topLeft = offset,
-            size = size
+            size = size,
         )
         drawArc(
             color = thirdColor,
@@ -278,7 +270,7 @@ fun QuadrantCircle(
             sweepAngle = 90f,
             useCenter = true,
             topLeft = offset,
-            size = size
+            size = size,
         )
         drawArc(
             color = fourthColor,
@@ -286,7 +278,7 @@ fun QuadrantCircle(
             sweepAngle = 90f,
             useCenter = true,
             topLeft = offset,
-            size = size
+            size = size,
         )
     }
 }

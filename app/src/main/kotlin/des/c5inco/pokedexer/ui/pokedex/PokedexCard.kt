@@ -51,99 +51,94 @@ fun PokedexCard(
     modifier: Modifier = Modifier,
     pokemon: Pokemon,
     isFavorite: Boolean = false,
-    onPokemonSelected: (Pokemon) -> Unit = {}
+    onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
     PokemonTypesTheme(types = pokemon.typeOfPokemon) {
         val pokemonTypeSurfaceColor = PokemonTypesTheme.colorScheme.surface
         val hueIndex = mapTypeToCuratedAnalogousHue(PokemonTypesTheme.colorScheme.type)
-        val analogousSurfaceColor = remember(pokemonTypeSurfaceColor) {
-            calculateAnalogousColors(pokemonTypeSurfaceColor, 18f)[hueIndex]
-        }
+        val analogousSurfaceColor =
+            remember(pokemonTypeSurfaceColor) {
+                calculateAnalogousColors(pokemonTypeSurfaceColor, 18f)[hueIndex]
+            }
 
-        val colors = remember(analogousSurfaceColor, pokemonTypeSurfaceColor) {
-            listOf(
+        val colors =
+            remember(analogousSurfaceColor, pokemonTypeSurfaceColor) {
                 listOf(
-                    Offset(0.0f, 0.0f) to analogousSurfaceColor,
-                    Offset(0.24099097f, 0.0f) to analogousSurfaceColor,
-                    Offset(0.5358101f, 0.0f) to analogousSurfaceColor,
-                    Offset(0.7894143f, 0.0f) to analogousSurfaceColor,
-                    Offset(1.0f, 0.0f) to pokemonTypeSurfaceColor,
-                ),
-                listOf(
-                    Offset(0.0f, 0.5f) to analogousSurfaceColor,
-                    Offset(0.24236615f, 0.6261937f) to pokemonTypeSurfaceColor,
-                    Offset(0.5254497f, 0.4176749f) to pokemonTypeSurfaceColor,
-                    Offset(0.802476f, 0.6690188f) to analogousSurfaceColor,
-                    Offset(1.0f, 0.35517487f) to pokemonTypeSurfaceColor,
-                ),
-                listOf(
-                    Offset(0.0f, 1.0f) to pokemonTypeSurfaceColor,
-                    Offset(0.23941448f, 1.0f) to pokemonTypeSurfaceColor,
-                    Offset(0.5159903f, 1.0f) to pokemonTypeSurfaceColor,
-                    Offset(0.7876128f, 1.0f) to pokemonTypeSurfaceColor,
-                    Offset(1.0f, 1.0f) to pokemonTypeSurfaceColor,
-                ),
-            )
-        }
+                    listOf(
+                        Offset(0.0f, 0.0f) to analogousSurfaceColor,
+                        Offset(0.24099097f, 0.0f) to analogousSurfaceColor,
+                        Offset(0.5358101f, 0.0f) to analogousSurfaceColor,
+                        Offset(0.7894143f, 0.0f) to analogousSurfaceColor,
+                        Offset(1.0f, 0.0f) to pokemonTypeSurfaceColor,
+                    ),
+                    listOf(
+                        Offset(0.0f, 0.5f) to analogousSurfaceColor,
+                        Offset(0.24236615f, 0.6261937f) to pokemonTypeSurfaceColor,
+                        Offset(0.5254497f, 0.4176749f) to pokemonTypeSurfaceColor,
+                        Offset(0.802476f, 0.6690188f) to analogousSurfaceColor,
+                        Offset(1.0f, 0.35517487f) to pokemonTypeSurfaceColor,
+                    ),
+                    listOf(
+                        Offset(0.0f, 1.0f) to pokemonTypeSurfaceColor,
+                        Offset(0.23941448f, 1.0f) to pokemonTypeSurfaceColor,
+                        Offset(0.5159903f, 1.0f) to pokemonTypeSurfaceColor,
+                        Offset(0.7876128f, 1.0f) to pokemonTypeSurfaceColor,
+                        Offset(1.0f, 1.0f) to pokemonTypeSurfaceColor,
+                    ),
+                )
+            }
 
         Surface(
-            modifier = modifier
-                .clip(MaterialTheme.shapes.large)
-                .meshGradient(
-                    points = colors,
-                    resolutionX = 10,
-                    resolutionY = 10,
-                ),
+            modifier =
+                modifier
+                    .clip(MaterialTheme.shapes.large)
+                    .meshGradient(points = colors, resolutionX = 10, resolutionY = 10),
             shape = MaterialTheme.shapes.large,
             color = Color.Transparent,
-            contentColor = PokemonTypesTheme.colorScheme.onSurface
+            contentColor = PokemonTypesTheme.colorScheme.onSurface,
         ) {
-            Box(
-                modifier
-                    .height(124.dp)
-                    .clickable { onPokemonSelected(pokemon) }
-            ) {
-                Column(
-                    Modifier.padding(top = 24.dp, start = 12.dp)
-                ) {
+            Box(modifier.height(124.dp).clickable { onPokemonSelected(pokemon) }) {
+                Column(Modifier.padding(top = 24.dp, start = 12.dp)) {
                     PokemonName(pokemon.name)
                     Spacer(Modifier.height(8.dp))
-                    PokemonTypeLabels(types = pokemon.typeOfPokemon, metrics = TypeLabelMetrics.SMALL)
+                    PokemonTypeLabels(
+                        types = pokemon.typeOfPokemon,
+                        metrics = TypeLabelMetrics.SMALL,
+                    )
                 }
                 val idAlpha = if (isSystemInDarkTheme()) 0.5f else 0.7f
                 Text(
                     text = formatId(pokemon.id),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    modifier = Modifier
-                        .graphicsLayer { alpha = idAlpha }
-                        .padding(top = 8.dp, end = 12.dp)
-                        .align(Alignment.TopEnd)
+                    modifier =
+                        Modifier.graphicsLayer { alpha = idAlpha }
+                            .padding(top = 8.dp, end = 12.dp)
+                            .align(Alignment.TopEnd),
                 )
                 Pokeball(
                     tint = Color.White,
-                    modifier = Modifier
-                        .requiredSize(88.dp)
-                        .graphicsLayer { alpha = 0.25f }
-                        .align(Alignment.BottomEnd)
-                        .offset(x = 0.dp, y = 0.dp)
+                    modifier =
+                        Modifier.requiredSize(88.dp)
+                            .graphicsLayer { alpha = 0.25f }
+                            .align(Alignment.BottomEnd)
+                            .offset(x = 0.dp, y = 0.dp),
                 )
 
                 PokemonImage(
                     image = pokemon.image,
                     description = pokemon.name,
-                    modifier = Modifier
-                        .padding(bottom = 6.dp, end = 6.dp)
-                        .size(80.dp)
-                        .align(Alignment.BottomEnd)
+                    modifier =
+                        Modifier.padding(bottom = 6.dp, end = 6.dp)
+                            .size(80.dp)
+                            .align(Alignment.BottomEnd),
                 )
                 if (isFavorite) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = null,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(bottom = 8.dp, end = 8.dp)
+                        modifier =
+                            Modifier.align(Alignment.BottomEnd).padding(bottom = 8.dp, end = 8.dp),
                     )
                 }
             }
@@ -153,11 +148,7 @@ fun PokedexCard(
 
 @Composable
 private fun PokemonName(name: String?) {
-    Text(
-        text = name ?: "",
-        fontWeight = FontWeight.Bold,
-        fontSize = 14.sp,
-    )
+    Text(text = name ?: "", fontWeight = FontWeight.Bold, fontSize = 14.sp)
 }
 
 @PreviewLightDark
@@ -170,13 +161,9 @@ private fun PokedexCardPreview() {
                 columns = GridCells.Fixed(2),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(12.dp)
+                contentPadding = PaddingValues(12.dp),
             ) {
-                items(ids) {
-                    PokedexCard(
-                        pokemon = SamplePokemonData[it],
-                    )
-                }
+                items(ids) { PokedexCard(pokemon = SamplePokemonData[it]) }
             }
         }
     }

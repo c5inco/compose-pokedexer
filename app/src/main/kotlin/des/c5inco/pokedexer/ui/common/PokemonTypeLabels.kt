@@ -35,32 +35,35 @@ data class TypeLabelMetrics(
     val fontWeight: FontWeight = FontWeight.Normal,
     val verticalPadding: Dp,
     val horizontalPadding: Dp,
-    val elementSpacing: Dp
+    val elementSpacing: Dp,
 ) {
     companion object {
-        val SMALL = TypeLabelMetrics(
-            cornerRadius = 24.dp,
-            fontSize = 10.sp,
-            verticalPadding = 0.dp,
-            horizontalPadding = 10.dp,
-            elementSpacing = 4.dp
-        )
-        val MEDIUM = TypeLabelMetrics(
-            cornerRadius = 24.dp,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            verticalPadding = 0.dp,
-            horizontalPadding = 12.dp,
-            elementSpacing = 8.dp
-        )
-        val LARGE = TypeLabelMetrics(
-            cornerRadius = 24.dp,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal,
-            verticalPadding = 4.dp,
-            horizontalPadding = 16.dp,
-            elementSpacing = 12.dp
-        )
+        val SMALL =
+            TypeLabelMetrics(
+                cornerRadius = 24.dp,
+                fontSize = 10.sp,
+                verticalPadding = 0.dp,
+                horizontalPadding = 10.dp,
+                elementSpacing = 4.dp,
+            )
+        val MEDIUM =
+            TypeLabelMetrics(
+                cornerRadius = 24.dp,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                verticalPadding = 0.dp,
+                horizontalPadding = 12.dp,
+                elementSpacing = 8.dp,
+            )
+        val LARGE =
+            TypeLabelMetrics(
+                cornerRadius = 24.dp,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                verticalPadding = 4.dp,
+                horizontalPadding = 16.dp,
+                elementSpacing = 12.dp,
+            )
     }
 }
 
@@ -68,7 +71,7 @@ data class TypeLabelMetrics(
 fun PokemonTypeLabels(
     modifier: Modifier = Modifier,
     types: List<String>,
-    metrics: TypeLabelMetrics = TypeLabelMetrics.MEDIUM
+    metrics: TypeLabelMetrics = TypeLabelMetrics.MEDIUM,
 ) {
     PokemonTypesTheme(types = listOf(types[0])) {
         types.forEach {
@@ -83,25 +86,26 @@ fun TypeLabel(
     modifier: Modifier = Modifier,
     text: String,
     colored: Boolean = false,
-    metrics: TypeLabelMetrics = TypeLabelMetrics.MEDIUM
+    metrics: TypeLabelMetrics = TypeLabelMetrics.MEDIUM,
 ) {
     Surface(
         modifier = modifier,
         color = if (colored) PokemonTypesTheme.colorScheme.surface else Color(0x38FFFFFF),
         contentColor = PokemonTypesTheme.colorScheme.onSurface,
-        shape = RoundedCornerShape(metrics.cornerRadius)
+        shape = RoundedCornerShape(metrics.cornerRadius),
     ) {
         Text(
             text = text,
             fontSize = metrics.fontSize,
             fontWeight = metrics.fontWeight,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(
-                start = metrics.horizontalPadding,
-                end = metrics.horizontalPadding,
-                top = metrics.verticalPadding,
-                bottom = metrics.verticalPadding
-            ),
+            modifier =
+                Modifier.padding(
+                    start = metrics.horizontalPadding,
+                    end = metrics.horizontalPadding,
+                    top = metrics.verticalPadding,
+                    bottom = metrics.verticalPadding,
+                ),
         )
     }
 }
@@ -113,7 +117,7 @@ private fun PokemonTypeLabelsPreview() {
         Surface {
             Column(
                 modifier = Modifier.padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text("Small")
                 FlowRow(
@@ -121,13 +125,11 @@ private fun PokemonTypeLabelsPreview() {
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Type.entries.forEach {
-                        PokemonTypesTheme(
-                            types = listOf(it.toString())
-                        ) {
+                        PokemonTypesTheme(types = listOf(it.toString())) {
                             TypeLabel(
                                 text = it.toString(),
                                 colored = true,
-                                metrics = TypeLabelMetrics.SMALL
+                                metrics = TypeLabelMetrics.SMALL,
                             )
                         }
                     }
@@ -138,13 +140,8 @@ private fun PokemonTypeLabelsPreview() {
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Type.entries.forEach {
-                        PokemonTypesTheme(
-                            types = listOf(it.toString())
-                        ) {
-                            TypeLabel(
-                                text = it.toString(),
-                                colored = true
-                            )
+                        PokemonTypesTheme(types = listOf(it.toString())) {
+                            TypeLabel(text = it.toString(), colored = true)
                         }
                     }
                 }
@@ -154,13 +151,11 @@ private fun PokemonTypeLabelsPreview() {
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Type.entries.forEach {
-                        PokemonTypesTheme(
-                            types = listOf(it.toString())
-                        ) {
+                        PokemonTypesTheme(types = listOf(it.toString())) {
                             TypeLabel(
                                 text = it.toString(),
                                 colored = true,
-                                metrics = TypeLabelMetrics.LARGE
+                                metrics = TypeLabelMetrics.LARGE,
                             )
                         }
                     }
@@ -171,24 +166,19 @@ private fun PokemonTypeLabelsPreview() {
 }
 
 @Composable
-fun TypeIconLabel(
-    modifier: Modifier = Modifier,
-    type: Type
-) {
+fun TypeIconLabel(modifier: Modifier = Modifier, type: Type) {
     val shape = remember { SuperEllipse() }
 
     PokemonTypesTheme(types = listOf(type.toString())) {
         Surface(
             modifier = modifier.clip(shape),
             color = PokemonTypesTheme.colorScheme.surface,
-            contentColor = PokemonTypesTheme.colorScheme.onSurface
+            contentColor = PokemonTypesTheme.colorScheme.onSurface,
         ) {
             Icon(
                 painter = painterResource(id = mapTypeToIcon(type)),
                 contentDescription = null,
-                modifier = Modifier
-                    .padding(1.dp)
-                    .size(24.dp)
+                modifier = Modifier.padding(1.dp).size(24.dp),
             )
         }
     }
@@ -225,11 +215,9 @@ private fun TypeIconLabelPreview() {
             FlowRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
             ) {
-                Type.entries.forEach {
-                    TypeIconLabel(type = it)
-                }
+                Type.entries.forEach { TypeIconLabel(type = it) }
             }
         }
     }
