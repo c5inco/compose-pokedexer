@@ -35,46 +35,34 @@ import des.c5inco.pokedexer.shared.model.Type
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
-sealed class MenuItem(
-    @StringRes val label: Int,
-    val typeColor: Type
-) {
+sealed class MenuItem(@StringRes val label: Int, val typeColor: Type) {
     object Pokedex : MenuItem(R.string.pokedexLabel, Type.Grass)
+
     object Moves : MenuItem(R.string.movesLabel, Type.Fighting)
+
     object Abilities : MenuItem(R.string.abilitiesLabel, Type.Water)
+
     object Items : MenuItem(R.string.itemsLabel, Type.Fire)
+
     object Locations : MenuItem(R.string.locationsLabel, Type.Dragon)
+
     object TypeCharts : MenuItem(R.string.typeChartsLabel, Type.Water)
 }
 
 @Composable
-fun Menu(
-    modifier: Modifier = Modifier,
-    onMenuItemSelected: (MenuItem) -> Unit = {}
-) {
+fun Menu(modifier: Modifier = Modifier, onMenuItemSelected: (MenuItem) -> Unit = {}) {
     val menuItems = listOf(MenuItem.Pokedex, MenuItem.Moves, MenuItem.TypeCharts, MenuItem.Items)
 
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         for (i in menuItems.indices step 2) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 PokemonTypesTheme(types = listOf(menuItems[i].typeColor.name)) {
-                    MenuItemButton(
-                        modifier = Modifier.weight(1f),
-                        item = menuItems[i]
-                    ) {
+                    MenuItemButton(modifier = Modifier.weight(1f), item = menuItems[i]) {
                         onMenuItemSelected(menuItems[i])
                     }
                 }
                 PokemonTypesTheme(types = listOf(menuItems[i + 1].typeColor.name)) {
-                    MenuItemButton(
-                        modifier = Modifier.weight(1f),
-                        item = menuItems[i + 1]
-                    ) {
+                    MenuItemButton(modifier = Modifier.weight(1f), item = menuItems[i + 1]) {
                         onMenuItemSelected(menuItems[i + 1])
                     }
                 }
@@ -84,56 +72,42 @@ fun Menu(
 }
 
 @Composable
-fun MenuItemButton(
-    modifier: Modifier = Modifier,
-    item: MenuItem,
-    onClick: () -> Unit = {}
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.BottomCenter
-    ) {
+fun MenuItemButton(modifier: Modifier = Modifier, item: MenuItem, onClick: () -> Unit = {}) {
+    Box(modifier = modifier, contentAlignment = Alignment.BottomCenter) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Box(
-                modifier = Modifier
-                    .offset(y = 3.dp)
-                    .customShadow(PokemonTypesTheme.colorScheme.surface)
+                modifier =
+                    Modifier.offset(y = 3.dp).customShadow(PokemonTypesTheme.colorScheme.surface)
             )
         }
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            color = PokemonTypesTheme.colorScheme.surface
+            color = PokemonTypesTheme.colorScheme.surface,
         ) {
-            Box(
-                modifier = Modifier
-                    .height(128.dp)
-                    .clickable { onClick() },
-            ) {
+            Box(modifier = Modifier.height(128.dp).clickable { onClick() }) {
                 Text(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(start = 16.dp, bottom = 16.dp),
+                    modifier =
+                        Modifier.align(Alignment.BottomStart)
+                            .padding(start = 16.dp, bottom = 16.dp),
                     text = stringResource(id = item.label),
-                    color = Color.White
+                    color = Color.White,
                 )
                 Icon(
                     painter = painterResource(id = mapMenuItemToIcon(item)),
                     contentDescription = stringResource(R.string.pokemonLabel),
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .offset(x = (-8).dp, y = 16.dp)
-                        .requiredSize(72.dp),
-                    tint = Color.White.copy(alpha = 0.3f)
+                    modifier =
+                        Modifier.align(Alignment.TopEnd)
+                            .offset(x = (-8).dp, y = 16.dp)
+                            .requiredSize(72.dp),
+                    tint = Color.White.copy(alpha = 0.3f),
                 )
             }
         }
     }
 }
 
-fun mapMenuItemToIcon(
-    item: MenuItem
-): Int {
+fun mapMenuItemToIcon(item: MenuItem): Int {
     return when (item) {
         MenuItem.Pokedex -> R.drawable.ic_catching_pokemon
         MenuItem.Moves -> R.drawable.ic_fitness_center
@@ -145,19 +119,14 @@ fun mapMenuItemToIcon(
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
-private fun Modifier.customShadow(
-    color: Color,
-): Modifier {
+private fun Modifier.customShadow(color: Color): Modifier {
     return this.then(
-        Modifier
-            .height(12.dp)
+        Modifier.height(12.dp)
             .fillMaxWidth(0.8f)
             .graphicsLayer {
-                renderEffect = RenderEffect
-                    .createBlurEffect(
-                        40f, 40f, Shader.TileMode.DECAL
-                    )
-                    .asComposeRenderEffect()
+                renderEffect =
+                    RenderEffect.createBlurEffect(40f, 40f, Shader.TileMode.DECAL)
+                        .asComposeRenderEffect()
             }
             .background(color, RoundedCornerShape(100))
     )
@@ -166,9 +135,5 @@ private fun Modifier.customShadow(
 @Preview
 @Composable
 fun MenuPreview() {
-    AppTheme {
-        Surface {
-            Menu()
-        }
-    }
+    AppTheme { Surface { Menu() } }
 }
