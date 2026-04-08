@@ -13,22 +13,22 @@ import kotlinx.coroutines.flow.stateIn
 
 sealed interface MovesListUiState {
     data object Loading : MovesListUiState
-    data class Ready(
-        val moves: List<Move>,
-    ) : MovesListUiState
+
+    data class Ready(val moves: List<Move>) : MovesListUiState
 }
 
 @Inject
-class MovesListViewModel(
-    movesRepository: MovesRepository
-): ViewModel() {
+class MovesListViewModel(movesRepository: MovesRepository) : ViewModel() {
     val state: StateFlow<MovesListUiState> =
-        movesRepository.moves().mapLatest {
-            delay(500)
-            MovesListUiState.Ready(it)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = MovesListUiState.Loading
-        )
+        movesRepository
+            .moves()
+            .mapLatest {
+                delay(500)
+                MovesListUiState.Ready(it)
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = MovesListUiState.Loading,
+            )
 }

@@ -9,11 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AbilitiesDao {
-    @Query("SELECT * FROM ability")
-    fun getAll(): Flow<List<Ability>>
+    @Query("SELECT * FROM ability") fun getAll(): Flow<List<Ability>>
 
-    @Query("SELECT * FROM ability WHERE id = :id LIMIT 1")
-    fun findById(id: Int): Flow<Ability?>
+    @Query("SELECT * FROM ability WHERE id = :id LIMIT 1") fun findById(id: Int): Flow<Ability?>
 
     @Query("SELECT * FROM ability WHERE id IN (:ids)")
     suspend fun findByIds(ids: List<Int>): List<Ability>
@@ -21,12 +19,9 @@ interface AbilitiesDao {
     @Query("SELECT * FROM ability WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
     suspend fun findByName(name: String): List<Ability>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(item: Ability)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insert(item: Ability)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(vararg item: Ability)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertAll(vararg item: Ability)
 
-    @Query("DELETE FROM ability")
-    suspend fun deleteAll()
+    @Query("DELETE FROM ability") suspend fun deleteAll()
 }

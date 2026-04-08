@@ -34,15 +34,16 @@ import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.shared.model.Pokemon
 import des.c5inco.pokedexer.ui.common.PokemonImage
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import org.intellij.lang.annotations.Language
 import kotlin.math.absoluteValue
+import org.intellij.lang.annotations.Language
 
 @Language("AGSL")
-private val PROGRESSIVE_TINT_SHADER = """
+private val PROGRESSIVE_TINT_SHADER =
+    """
     layout(color) uniform vec4 tintColor;
     uniform float progress;
     uniform shader contents; 
-    
+
     vec4 main(in vec2 fragCoord) {
         vec4 currentValue = contents.eval(fragCoord);
         
@@ -51,7 +52,8 @@ private val PROGRESSIVE_TINT_SHADER = """
         }            
         return currentValue;
     }
-""".trimIndent()
+    """
+        .trimIndent()
 
 @Composable
 fun PagerPokemonImage(
@@ -59,7 +61,7 @@ fun PagerPokemonImage(
     image: Int,
     description: String?,
     tint: Color,
-    progress: Float
+    progress: Float,
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         val shader = remember { RuntimeShader(PROGRESSIVE_TINT_SHADER) }
@@ -67,29 +69,23 @@ fun PagerPokemonImage(
         PokemonImage(
             image = image,
             description = description,
-            modifier = modifier.graphicsLayer {
-                shader.setColorUniform("tintColor", tint.toArgb())
-                shader.setFloatUniform("progress", progress)
-                renderEffect = RenderEffect.createRuntimeShaderEffect(
-                    shader,
-                    "contents"
-                ).asComposeRenderEffect()
-            }
+            modifier =
+                modifier.graphicsLayer {
+                    shader.setColorUniform("tintColor", tint.toArgb())
+                    shader.setFloatUniform("progress", progress)
+                    renderEffect =
+                        RenderEffect.createRuntimeShaderEffect(shader, "contents")
+                            .asComposeRenderEffect()
+                },
         )
     } else {
         Box {
-            PokemonImage(
-                image = image,
-                description = description,
-                modifier = modifier
-            )
+            PokemonImage(image = image, description = description, modifier = modifier)
             PokemonImage(
                 image = image,
                 description = null,
                 tint = tint,
-                modifier = modifier.graphicsLayer {
-                    alpha = progress
-                }
+                modifier = modifier.graphicsLayer { alpha = progress },
             )
         }
     }
@@ -103,19 +99,17 @@ fun PokemonPager(
     backgroundColor: Color,
     enabled: Boolean = true,
     pagerState: PagerState,
-    pagerContent: @Composable BoxScope.(Pokemon, Float, Color) -> Unit
+    pagerContent: @Composable BoxScope.(Pokemon, Float, Color) -> Unit,
 ) {
-    val foregroundTint = Color(
-        ColorUtils.compositeColors(
-            foregroundColor.copy(alpha = 0.25f).toArgb(),
-            backgroundColor.toArgb()
+    val foregroundTint =
+        Color(
+            ColorUtils.compositeColors(
+                foregroundColor.copy(alpha = 0.25f).toArgb(),
+                backgroundColor.toArgb(),
+            )
         )
-    )
 
-    Box(
-        modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
+    Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
         HorizontalPager(
             state = pagerState,
             key = { pokemonList[it].id },
@@ -124,23 +118,20 @@ fun PokemonPager(
             modifier = Modifier.testTag("PokemonPager"),
         ) { page ->
             val pokemon = pokemonList[page]
-            val pageOffset = ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+            val pageOffset =
+                ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction)
+                    .absoluteValue
             val progress = pageOffset.coerceIn(0f, 1f)
-            val scale = lerp(
-                start = 0.5f, stop = 1f, fraction = 1f - progress
-            )
-            val yPos = lerp(
-                start = 48f, stop = 0f, fraction = 1f - progress
-            )
+            val scale = lerp(start = 0.5f, stop = 1f, fraction = 1f - progress)
+            val yPos = lerp(start = 48f, stop = 0f, fraction = 1f - progress)
 
             Box(
-                modifier = Modifier
-                    .padding(top = 24.dp)
-                    .graphicsLayer {
+                modifier =
+                    Modifier.padding(top = 24.dp).graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                         translationY = yPos
-                    },
+                    }
             ) {
                 pagerContent(pokemon, progress, foregroundTint)
             }
@@ -153,20 +144,17 @@ fun PokemonPager(
 fun PokemonPagerPreview() {
     AppTheme {
         Surface {
-            Column(
-                Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center
-            ) {
+            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                 PokemonPager(
                     pokemonList = SamplePokemonData,
                     backgroundColor = MaterialTheme.colorScheme.surface,
-                    pagerState = rememberPagerState { SamplePokemonData.size }
+                    pagerState = rememberPagerState { SamplePokemonData.size },
                 ) { it, progress, tint ->
                     PagerPokemonImage(
                         image = it.image,
                         description = it.name,
                         tint = tint,
-                        progress = progress
+                        progress = progress,
                     )
                 }
             }

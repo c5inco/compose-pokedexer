@@ -6,13 +6,9 @@ import kotlin.native.ObjCName
 
 @Entity
 data class Ability(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey val id: Int,
     val name: String,
-    @property:ObjCName("desc") val description: String
+    @property:ObjCName("desc") val description: String,
 )
 
-data class PokemonAbility(
-    val id: Int,
-    val isHidden: Boolean
-)
+data class PokemonAbility(val id: Int, val isHidden: Boolean)
