@@ -27,7 +27,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
+
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,7 +53,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
@@ -95,7 +94,6 @@ fun PokedexScreenRoute(
     viewModel: PokedexViewModel,
     onPokemonSelected: (Pokemon) -> Unit,
     pastPokemonSelected: Int? = null,
-    onBackClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showFavorites by viewModel.showFavorites.collectAsStateWithLifecycle()
@@ -124,7 +122,6 @@ fun PokedexScreenRoute(
                 is FilterMenuEvent.ShowGenerations -> {}
             }
         },
-        onBackClick = onBackClick,
     )
 }
 
@@ -144,27 +141,32 @@ fun PokedexScreen(
     pastPokemonSelected: Int? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
-    onBackClick: () -> Unit = {},
 ) {
-    val listState = rememberSaveable(
-        typeFilter, generationFilter, showFavorites, saver = LazyGridState.Saver) {
-        LazyGridState()
-    }
-    var filterMenuState by remember { mutableStateOf(FilterMenuState.Hidden) }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        state = rememberSaveable(typeFilter, generationFilter, showFavorites, saver = TopAppBarState.Saver) {
-            TopAppBarState(-Float.MAX_VALUE, 0f, 0f)
+    val listState =
+        rememberSaveable(typeFilter, generationFilter, showFavorites, saver = LazyGridState.Saver) {
+            LazyGridState()
         }
-    )
+    var filterMenuState by remember { mutableStateOf(FilterMenuState.Hidden) }
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            state =
+                rememberSaveable(
+                    typeFilter,
+                    generationFilter,
+                    showFavorites,
+                    saver = TopAppBarState.Saver,
+                ) {
+                    TopAppBarState(-Float.MAX_VALUE, 0f, 0f)
+                }
+        )
 
     LaunchedEffect(pastPokemonSelected, state is PokedexUiState.Ready) {
         if (pastPokemonSelected != null && state is PokedexUiState.Ready) {
             val index = state.pokemon.indexOfFirst { it.id == pastPokemonSelected }
 
             if (index != -1) {
-                val isVisible = listState.layoutInfo.visibleItemsInfo.any {
-                    it.key == pastPokemonSelected
-                }
+                val isVisible =
+                    listState.layoutInfo.visibleItemsInfo.any { it.key == pastPokemonSelected }
 
                 if (!isVisible) {
                     listState.scrollToItem(index, -100)
@@ -177,14 +179,6 @@ fun PokedexScreen(
         topBar = {
             MediumTopAppBar(
                 title = { Text("Pokemon") },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
@@ -194,46 +188,52 @@ fun PokedexScreen(
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
-        Box(Modifier.fillMaxSize()) {
+        Box(
+            Modifier.fillMaxSize()
+                // We don't apply top padding here so the Pokeball and list can draw behind the
+                // transparent TopAppBar
+                // The top padding is instead applied to the LazyVerticalGrid's contentPadding
+        ) {
             Pokeball(
                 tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
                 modifier =
                     Modifier.size(256.dp).align(Alignment.TopEnd).offset(x = 90.dp, y = (-72).dp),
             )
 
-            Column(
-                modifier = Modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxWidth()
-            ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 // TODO: Investigate recomposition or performance issue to reenable this
                 // AnimatedContent(
                 //     targetState = state,
                 //     transitionSpec = {
-                //         if (initialState is PokedexUiState.Loading && targetState is PokedexUiState.Ready) {
-                //             (Material3Transitions.SharedYAxisEnterTransition).togetherWith(fadeOut())
+                //         if (initialState is PokedexUiState.Loading && targetState is
+                // PokedexUiState.Ready) {
+                //
+                // (Material3Transitions.SharedYAxisEnterTransition).togetherWith(fadeOut())
                 //         } else {
                 //             fadeIn().togetherWith(fadeOut())
                 //         }.using(SizeTransform(clip = false))
                 //     },
                 //     label = "pokedexContentTransition"
                 // ) { targetState ->
-                    when (state) {
-                        is PokedexUiState.Loading -> {
-                            LoadingIndicator()
-                        }
-
-                        is PokedexUiState.Ready -> {
-                            PokemonList(
-                                listState = listState,
-                                listLoadedState = state.listLoadedState,
-                                pokemonToShow = state.pokemon,
-                                favoriteIds = state.favoriteIds,
-                                showFavorites = showFavorites,
-                                typeFilter = typeFilter,
-                                generationFilter = generationFilter,
-                                onPokemonSelected = onPokemonSelected,
-                            )
-                        }
+                when (state) {
+                    is PokedexUiState.Loading -> {
+                        LoadingIndicator()
                     }
+
+                    is PokedexUiState.Ready -> {
+                        PokemonList(
+                            contentPadding = innerPadding,
+                            listState = listState,
+                            listLoadedState = state.listLoadedState,
+                            pokemonToShow = state.pokemon,
+                            favoriteIds = state.favoriteIds,
+                            showFavorites = showFavorites,
+                            typeFilter = typeFilter,
+                            generationFilter = generationFilter,
+                            onPokemonSelected = onPokemonSelected,
+                        )
+                    }
+                }
                 // }
             }
             AnimatedVisibility(
@@ -257,8 +257,7 @@ fun PokedexScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier =
                     Modifier.align(Alignment.BottomCenter)
-                        .padding(WindowInsets.navigationBars.asPaddingValues())
-                        .padding(bottom = 24.dp),
+                        .padding(bottom = 24.dp + innerPadding.calculateBottomPadding()),
             ) {
                 if (filterMenuState != FilterMenuState.Hidden) {
                     FilterMenu(
@@ -335,6 +334,7 @@ fun PokedexScreen(
 @Composable
 private fun PokemonList(
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     listState: LazyGridState,
     listLoadedState: MutableTransitionState<Boolean>,
     pokemonToShow: List<Pokemon>,
@@ -345,7 +345,7 @@ private fun PokemonList(
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
     val bottomContentPadding =
-        96.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+        96.dp + contentPadding.calculateBottomPadding()
 
     LazyVerticalGrid(
         modifier = modifier.testTag("PokedexLazyGrid"),
@@ -354,7 +354,12 @@ private fun PokemonList(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding =
-            PaddingValues(top = 12.dp, start = 16.dp, end = 16.dp, bottom = bottomContentPadding),
+            PaddingValues(
+                top = 12.dp + contentPadding.calculateTopPadding(),
+                start = 16.dp,
+                end = 16.dp,
+                bottom = bottomContentPadding,
+            ),
         content = {
             if (pokemonToShow.isEmpty()) {
                 item(span = { GridItemSpan(2) }) {
@@ -585,18 +590,17 @@ private fun AnimatedVisibilityScope.FilterChip(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    val cornerRadius by animateDpAsState(
-        targetValue = when {
-            isPressed -> 8.dp
-            selected -> 12.dp
-            else -> 24.dp
-        },
-        animationSpec = spring(
-            dampingRatio = 0.9f,
-            stiffness = 1400f
-        ),
-        label = "cornerRadius"
-    )
+    val cornerRadius by
+        animateDpAsState(
+            targetValue =
+                when {
+                    isPressed -> 8.dp
+                    selected -> 12.dp
+                    else -> 24.dp
+                },
+            animationSpec = spring(dampingRatio = 0.9f, stiffness = 1400f),
+            label = "cornerRadius",
+        )
 
     FilledTonalButton(
         contentPadding = contentPadding,
@@ -634,19 +638,17 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
     val seedColor = mapTypeToSeedColor(types = listOf(type.toString()))
     val kolorScheme = getDynamicColorScheme(seedColor, PaletteStyle.Rainbow)
     val pokemonColorScheme =
-        mapDynamicPokemonColorScheme(
-            seedColor = seedColor,
-            colorScheme = kolorScheme,
-        )
+        mapDynamicPokemonColorScheme(seedColor = seedColor, colorScheme = kolorScheme)
 
-    val colors = if (selected) {
-        ButtonDefaults.filledTonalButtonColors(
-            containerColor = pokemonColorScheme.surface,
-            contentColor = pokemonColorScheme.onSurface,
-        )
-    } else {
-        ButtonDefaults.filledTonalButtonColors()
-    }
+    val colors =
+        if (selected) {
+            ButtonDefaults.filledTonalButtonColors(
+                containerColor = pokemonColorScheme.surface,
+                contentColor = pokemonColorScheme.onSurface,
+            )
+        } else {
+            ButtonDefaults.filledTonalButtonColors()
+        }
 
     FilterChip(
         modifier = modifier,
@@ -674,14 +676,15 @@ private fun AnimatedVisibilityScope.FilterGenerationItem(
     index: Int,
     onClick: () -> Unit = {},
 ) {
-    val colors = if (selected) {
-        ButtonDefaults.filledTonalButtonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-        )
-    } else {
-        ButtonDefaults.filledTonalButtonColors()
-    }
+    val colors =
+        if (selected) {
+            ButtonDefaults.filledTonalButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            )
+        } else {
+            ButtonDefaults.filledTonalButtonColors()
+        }
 
     FilterChip(
         modifier = modifier,
@@ -723,21 +726,25 @@ private fun PokedexScreenPreview() {
                     is FilterMenuEvent.ToggleFavorites -> {
                         showFavorites = !showFavorites
                         val readyState = state as PokedexUiState.Ready
-                        state = readyState.copy(
-                            pokemon =
-                                if (showFavorites) {
-                                    SamplePokemonData.take(5)
-                                } else {
-                                    SamplePokemonData.toList()
-                                }
-                        )
+                        state =
+                            readyState.copy(
+                                pokemon =
+                                    if (showFavorites) {
+                                        SamplePokemonData.take(5)
+                                    } else {
+                                        SamplePokemonData.toList()
+                                    }
+                            )
                     }
                     is FilterMenuEvent.FilterTypes -> {
-                        typeFilter = if (typeFilter != result.typeToFilter) result.typeToFilter else null
+                        typeFilter =
+                            if (typeFilter != result.typeToFilter) result.typeToFilter else null
                     }
                     is FilterMenuEvent.FilterGeneration -> {
-                        generationFilter = if (generationFilter != result.generationToFilter) result.generationToFilter
-                        else null
+                        generationFilter =
+                            if (generationFilter != result.generationToFilter)
+                                result.generationToFilter
+                            else null
                     }
                     is FilterMenuEvent.ShowTypes -> {}
                     is FilterMenuEvent.ShowGenerations -> {}
