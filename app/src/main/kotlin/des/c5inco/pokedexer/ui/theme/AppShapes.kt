@@ -18,29 +18,24 @@ import androidx.graphics.shapes.rectangle
 import androidx.graphics.shapes.toPath
 import kotlin.math.max
 
-val AppShapes = Shapes(
-    small = RoundedCornerShape(4.dp),
-    medium = RoundedCornerShape(4.dp),
-    large = RoundedCornerShape(16.dp)
-)
+val AppShapes =
+    Shapes(
+        small = RoundedCornerShape(4.dp),
+        medium = RoundedCornerShape(4.dp),
+        large = RoundedCornerShape(16.dp),
+    )
 
 fun RoundedPolygon.getBounds() = calculateBounds().let { Rect(it[0], it[1], it[2], it[3]) }
 
-class SuperEllipse(
-    private var matrix: Matrix = Matrix(),
-) : Shape {
+class SuperEllipse(private var matrix: Matrix = Matrix()) : Shape {
     private var path = Path()
-    private val polygon = RoundedPolygon.rectangle(
-        rounding = CornerRounding(
-            radius = 0.6f,
-            smoothing = 1f
-        )
-    )
+    private val polygon =
+        RoundedPolygon.rectangle(rounding = CornerRounding(radius = 0.6f, smoothing = 1f))
 
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
-        density: Density
+        density: Density,
     ): Outline {
         path.rewind()
         path = polygon.toPath().asComposePath()

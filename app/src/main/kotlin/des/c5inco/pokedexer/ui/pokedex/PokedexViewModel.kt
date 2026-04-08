@@ -4,8 +4,8 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import des.c5inco.pokedexer.shared.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
+import des.c5inco.pokedexer.shared.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.shared.model.Generation
 import des.c5inco.pokedexer.shared.model.Pokemon
 import des.c5inco.pokedexer.shared.model.Type
@@ -22,9 +22,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 
 sealed interface PokedexUiState {
-    data class Loading(
-        val listLoadedState: MutableTransitionState<Boolean>
-    ) : PokedexUiState
+    data class Loading(val listLoadedState: MutableTransitionState<Boolean>) : PokedexUiState
 
     data class Ready(
         val listLoadedState: MutableTransitionState<Boolean>,
@@ -33,71 +31,74 @@ sealed interface PokedexUiState {
     ) : PokedexUiState
 }
 
-class PokedexViewModel @AssistedInject constructor(
+class PokedexViewModel
+@AssistedInject
+constructor(
     private val pokemonRepository: PokemonRepository,
     userPreferencesRepository: UserPreferencesRepository,
     @Assisted private val savedStateHandle: SavedStateHandle,
-): ViewModel() {
+) : ViewModel() {
     private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
 
     val showFavorites = savedStateHandle.getStateFlow("showFavorites", false)
     val typeFilters = savedStateHandle.getStateFlow<Type?>("typeFilters", null)
     val generationFilters = savedStateHandle.getStateFlow("generationFilters", Generation.I)
 
-    val state: StateFlow<PokedexUiState> = generationFilters
-        .flatMapLatest { generation ->
-            val listLoadedState = MutableTransitionState(false)
+    val state: StateFlow<PokedexUiState> =
+        generationFilters
+            .flatMapLatest { generation ->
+                val listLoadedState = MutableTransitionState(false)
 
-            val pokemonFlow = pokemonRepository.getPokemonByGeneration(generation)
+                val pokemonFlow = pokemonRepository.getPokemonByGeneration(generation)
 
-            flow {
-                emit(PokedexUiState.Loading(listLoadedState))
-                delay(500)
-                emitAll(
-                    combine(
-                        pokemonFlow,
-                        userPreferencesFlow,
-                        showFavorites,
-                        typeFilters
-                    ) { pokemon, userPreferences, favoritesOnly, typeFilter ->
-                        listLoadedState.targetState = true
+                flow {
+                    emit(PokedexUiState.Loading(listLoadedState))
+                    delay(500)
+                    emitAll(
+                        combine(pokemonFlow, userPreferencesFlow, showFavorites, typeFilters) {
+                            pokemon,
+                            userPreferences,
+                            favoritesOnly,
+                            typeFilter ->
+                            listLoadedState.targetState = true
 
-                        val favoriteIds = userPreferences.favorites.toSet()
+                            val favoriteIds = userPreferences.favorites.toSet()
 
-                        val filteredPokemon = pokemon.filter { p ->
-                            val isFavorite = favoriteIds.contains(p.id)
-                            val matchesFavorites = if (favoritesOnly) isFavorite else true
-                            val matchesType = if (typeFilter != null) {
-                                p.typeOfPokemon.contains(typeFilter.toString())
-                            } else {
-                                true
+                            val filteredPokemon = pokemon.filter { p ->
+                                val isFavorite = favoriteIds.contains(p.id)
+                                val matchesFavorites = if (favoritesOnly) isFavorite else true
+                                val matchesType =
+                                    if (typeFilter != null) {
+                                        p.typeOfPokemon.contains(typeFilter.toString())
+                                    } else {
+                                        true
+                                    }
+                                matchesFavorites && matchesType
                             }
-                            matchesFavorites && matchesType
-                        }
 
-                        PokedexUiState.Ready(
-                            listLoadedState = listLoadedState,
-                            pokemon = filteredPokemon,
-                            favoriteIds = favoriteIds,
-                        )
-                    }
-                )
+                            PokedexUiState.Ready(
+                                listLoadedState = listLoadedState,
+                                pokemon = filteredPokemon,
+                                favoriteIds = favoriteIds,
+                            )
+                        }
+                    )
+                }
             }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = PokedexUiState.Loading(
-                listLoadedState = MutableTransitionState(false)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue =
+                    PokedexUiState.Loading(listLoadedState = MutableTransitionState(false)),
             )
-        )
 
     fun toggleFavorites() {
         savedStateHandle["showFavorites"] = !showFavorites.value
     }
 
     fun filterByType(typeToFilter: Type?) {
-        savedStateHandle["typeFilters"] = if (typeFilters.value != typeToFilter) typeToFilter else null
+        savedStateHandle["typeFilters"] =
+            if (typeFilters.value != typeToFilter) typeToFilter else null
     }
 
     fun filterByGeneration(generationToFilter: Generation?) {

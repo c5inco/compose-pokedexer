@@ -6,9 +6,8 @@ import kotlin.native.ObjCName
 
 @Entity
 data class Item(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey val id: Int,
     val name: String,
     @property:ObjCName("desc") val description: String,
-    val sprite: String
+    val sprite: String,
 )

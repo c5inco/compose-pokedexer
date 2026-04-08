@@ -13,11 +13,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-        }
-    }
+    kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
 
     defaultConfig {
         minSdk = 28
@@ -60,8 +56,4 @@ dependencies {
     implementation(libs.androidx.benchmark.macro)
 }
 
-androidComponents {
-    beforeVariants(selector().all()) {
-        it.enable = it.buildType == "benchmark"
-    }
-}
+androidComponents { beforeVariants(selector().all()) { it.enable = it.buildType == "benchmark" } }

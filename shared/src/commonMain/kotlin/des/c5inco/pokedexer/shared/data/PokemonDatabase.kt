@@ -26,14 +26,17 @@ expect object PokemonDatabaseConstructor : RoomDatabaseConstructor<PokemonDataba
 @Database(
     version = 7,
     entities = [Pokemon::class, Move::class, Item::class, Ability::class],
-    exportSchema = true
+    exportSchema = true,
 )
 @ConstructedBy(PokemonDatabaseConstructor::class)
 @TypeConverters(Converters::class)
 abstract class PokemonDatabase : RoomDatabase() {
     abstract fun pokemonDao(): PokemonDao
+
     abstract fun movesDao(): MovesDao
+
     abstract fun itemsDao(): ItemsDao
+
     abstract fun abilitiesDao(): AbilitiesDao
 }
 
@@ -60,7 +63,7 @@ class Converters {
                         id = evo[0].toInt(),
                         targetLevel = evo[1].toInt(),
                         trigger = EvolutionTrigger.fromInt(evo[2].toInt()),
-                        itemId = evo[3].toInt()
+                        itemId = evo[3].toInt(),
                     )
                 } else null
             } catch (e: NumberFormatException) {

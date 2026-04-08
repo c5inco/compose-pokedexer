@@ -33,33 +33,23 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlinx.coroutines.delay
 
-data class Stat(
-    @StringRes val label: Int,
-    val value: Int?,
-    val max: Int = 200
-) {
-    val progress: Float =
-        1f * (value ?: 0) / max
+data class Stat(@StringRes val label: Int, val value: Int?, val max: Int = 200) {
+    val progress: Float = 1f * (value ?: 0) / max
 }
 
 @Composable
-fun BaseStatsSection(
-    modifier: Modifier = Modifier,
-    pokemon: Pokemon
-) {
-    val stats = listOf(
-        Stat(R.string.hitPointsStatLabel, pokemon.hp),
-        Stat(R.string.attackStatLabel, pokemon.attack),
-        Stat(R.string.defenseStatLabel, pokemon.defense),
-        Stat(R.string.specialAttackStatLabel, pokemon.specialAttack),
-        Stat(R.string.specialDefenseStatLabel, pokemon.specialDefense),
-        Stat(R.string.speedStatLabel, pokemon.speed),
-    )
+fun BaseStatsSection(modifier: Modifier = Modifier, pokemon: Pokemon) {
+    val stats =
+        listOf(
+            Stat(R.string.hitPointsStatLabel, pokemon.hp),
+            Stat(R.string.attackStatLabel, pokemon.attack),
+            Stat(R.string.defenseStatLabel, pokemon.defense),
+            Stat(R.string.specialAttackStatLabel, pokemon.specialAttack),
+            Stat(R.string.specialDefenseStatLabel, pokemon.specialDefense),
+            Stat(R.string.speedStatLabel, pokemon.speed),
+        )
 
-    Column(modifier
-        .padding(24.dp)
-        .fillMaxWidth()
-    ) {
+    Column(modifier.padding(24.dp).fillMaxWidth()) {
         stats.forEachIndexed { idx, stat ->
             val statValue = remember { Animatable(0f) }
 
@@ -67,46 +57,36 @@ fun BaseStatsSection(
                 delay(70L * idx)
                 statValue.animateTo(
                     targetValue = stat.progress,
-                    animationSpec = spring(
-                        0.6f,
-                        1000f
-                    )
+                    animationSpec = spring(0.6f, 1000f),
                 )
             }
 
             Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Label(
                     text = stringResource(stat.label),
-                    modifier = Modifier
-                        .weight(1f)
-                        .graphicsLayer { alpha = 0.7f }
+                    modifier = Modifier.weight(1f).graphicsLayer { alpha = 0.7f },
                 )
                 Text(
                     "${stat.value}",
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .weight(0.6f)
+                    modifier = Modifier.padding(end = 16.dp).weight(0.6f),
                 )
 
-                val indicatorColor by animateColorAsState(
-                    targetValue = PokemonTypesTheme.colorScheme.primary,
-                    tween(durationMillis = 500),
-                    label = "statsProgressIndicatorColor"
-                )
+                val indicatorColor by
+                    animateColorAsState(
+                        targetValue = PokemonTypesTheme.colorScheme.primary,
+                        tween(durationMillis = 500),
+                        label = "statsProgressIndicatorColor",
+                    )
 
                 LinearProgressIndicator(
                     progress = { statValue.value },
                     color = indicatorColor,
                     drawStopIndicator = {},
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(100))
-                        .weight(2.5f)
+                    modifier = Modifier.clip(RoundedCornerShape(100)).weight(2.5f),
                 )
             }
         }
@@ -120,11 +100,7 @@ fun BaseStatsSectionPreview() {
 
     AppTheme {
         Surface(Modifier.fillMaxWidth()) {
-            PokemonTypesTheme(
-                types = pokemon.typeOfPokemon
-            ) {
-                BaseStatsSection(pokemon = pokemon)
-            }
+            PokemonTypesTheme(types = pokemon.typeOfPokemon) { BaseStatsSection(pokemon = pokemon) }
         }
     }
 }

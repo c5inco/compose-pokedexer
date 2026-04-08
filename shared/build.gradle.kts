@@ -14,9 +14,7 @@ kotlin {
         compileSdk = 36
         minSdk = 28
 
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-        }
+        compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
     }
 
     // Enable expect/actual classes for Room KMP
@@ -31,11 +29,7 @@ kotlin {
         }
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
+    listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach {
         it.binaries.framework {
             baseName = "Shared"
             isStatic = true
@@ -70,16 +64,12 @@ kotlin {
             implementation(libs.sqlite.bundled)
         }
 
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-        }
+        commonTest.dependencies { implementation(libs.kotlin.test) }
     }
 }
 
 // Room KMP configuration
-room {
-    schemaDirectory("$projectDir/schemas")
-}
+room { schemaDirectory("$projectDir/schemas") }
 
 // Apollo configuration
 apollo {

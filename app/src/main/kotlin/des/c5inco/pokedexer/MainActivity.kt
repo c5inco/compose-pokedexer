@@ -26,17 +26,18 @@ class MainActivity : ComponentActivity() {
             val useDarkIcons = isSystemInDarkTheme()
             DisposableEffect(useDarkIcons) {
                 enableEdgeToEdge(
-                    statusBarStyle = SystemBarStyle.auto(
-                        android.graphics.Color.TRANSPARENT,
-                        android.graphics.Color.TRANSPARENT,
-                    ) { useDarkIcons },
+                    statusBarStyle =
+                        SystemBarStyle.auto(
+                            android.graphics.Color.TRANSPARENT,
+                            android.graphics.Color.TRANSPARENT,
+                        ) {
+                            useDarkIcons
+                        }
                 )
                 onDispose {}
             }
 
-            AppTheme {
-                PokedexerApp()
-            }
+            AppTheme { PokedexerApp() }
         }
     }
 }
@@ -44,7 +45,5 @@ class MainActivity : ComponentActivity() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun DefaultPreview() {
-    AppTheme {
-        PokedexerApp()
-    }
+    AppTheme { PokedexerApp() }
 }

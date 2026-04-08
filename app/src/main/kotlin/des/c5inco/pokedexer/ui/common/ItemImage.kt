@@ -12,13 +12,13 @@ import des.c5inco.pokedexer.shared.model.Item
 fun ItemImage(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Inside,
-    item: Item
+    item: Item,
 ) {
     AsyncImage(
         model = itemAssetsUri(item.sprite),
         placeholder = painterResource(id = R.drawable.item_flame_orb),
         contentDescription = null,
         contentScale = contentScale,
-        modifier = modifier
+        modifier = modifier,
     )
 }

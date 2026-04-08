@@ -58,50 +58,54 @@ fun SharedTransitionScope.MoveResultCard(
     modifier: Modifier = Modifier,
     move: Move = SampleMoves.first(),
     animatedVisibilityScope: AnimatedVisibilityScope,
-    onSelected: (Move) -> Unit = { }
+    onSelected: (Move) -> Unit = {},
 ) {
-    MoveCategoryTheme(
-        category = move.category()
-    ) {
+    MoveCategoryTheme(category = move.category()) {
         Card(
-            modifier = modifier
-                .width(200.dp)
-                .clickable { onSelected(move) }
-                .sharedBounds(
-                    sharedContentState = rememberSharedContentState(key = "move-${move.id}-bounds"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.large)
-                ),
+            modifier =
+                modifier
+                    .width(200.dp)
+                    .clickable { onSelected(move) }
+                    .sharedBounds(
+                        sharedContentState =
+                            rememberSharedContentState(key = "move-${move.id}-bounds"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.large),
+                    ),
             shape = MaterialTheme.shapes.large,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            ),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                ),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 12.dp),
+                modifier =
+                    Modifier.fillMaxSize()
+                        .padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = move.name,
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.sharedBounds(
-                        sharedContentState = rememberSharedContentState(key = "move-name-${move.id}"),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        boundsTransform = textBoundsTransform,
-                    )
+                    modifier =
+                        Modifier.sharedBounds(
+                            sharedContentState =
+                                rememberSharedContentState(key = "move-name-${move.id}"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            boundsTransform = textBoundsTransform,
+                        ),
                 )
                 CategoryIcon(
                     move = move,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .sharedBounds(
-                            sharedContentState = rememberSharedContentState(key = "category-icon-${move.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = imageBoundsTransform,
-                        )
+                    modifier =
+                        Modifier.size(36.dp)
+                            .sharedBounds(
+                                sharedContentState =
+                                    rememberSharedContentState(key = "category-icon-${move.id}"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                boundsTransform = imageBoundsTransform,
+                            ),
                 )
             }
         }
@@ -112,27 +116,20 @@ fun SharedTransitionScope.MoveResultCard(
 @Composable
 fun MoveResultCardPreview() {
     AppTheme {
-        Surface(
-            tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp,
-        ) {
+        Surface(tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp) {
             SharedTransitionLayout {
-                AnimatedVisibility(
-                    visible = true,
-                    modifier = Modifier.padding(vertical = 20.dp)
-                ) {
+                AnimatedVisibility(visible = true, modifier = Modifier.padding(vertical = 20.dp)) {
                     LazyHorizontalGrid(
                         rows = GridCells.Fixed(4),
                         contentPadding = PaddingValues(horizontal = 20.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .height(240.dp)
-                            .fillMaxWidth()
+                        modifier = Modifier.height(240.dp).fillMaxWidth(),
                     ) {
                         items(5) {
                             MoveResultCard(
                                 move = SampleMoves[it],
-                                animatedVisibilityScope = this@AnimatedVisibility
+                                animatedVisibilityScope = this@AnimatedVisibility,
                             )
                         }
                     }
@@ -148,65 +145,60 @@ fun SharedTransitionScope.MoveResultExpandedCard(
     move: Move = SampleMoves.first(),
     animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
-    MoveCategoryTheme(
-        category = move.category()
-    ) {
+    MoveCategoryTheme(category = move.category()) {
         Card(
-            modifier = modifier
-                .width(260.dp)
-                .sharedBounds(
-                    sharedContentState = rememberSharedContentState(key = "move-${move.id}-bounds"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    boundsTransform = containerBoundsTransform,
-                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.large)
-                ),
+            modifier =
+                modifier
+                    .width(260.dp)
+                    .sharedBounds(
+                        sharedContentState =
+                            rememberSharedContentState(key = "move-${move.id}-bounds"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = containerBoundsTransform,
+                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.large),
+                    ),
             shape = MaterialTheme.shapes.large,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            )
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                ),
         ) {
             Box {
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                ) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
                     Text(
                         text = move.name,
                         style = MaterialTheme.typography.titleLarge,
                         color = MoveCategoryTheme.colorScheme.primary,
-                        modifier = Modifier.sharedBounds(
-                            sharedContentState = rememberSharedContentState(key = "move-name-${move.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = textBoundsTransform
-                        )
+                        modifier =
+                            Modifier.sharedBounds(
+                                sharedContentState =
+                                    rememberSharedContentState(key = "move-name-${move.id}"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                boundsTransform = textBoundsTransform,
+                            ),
                     )
                     Spacer(Modifier.height(6.dp))
                     with(animatedVisibilityScope) {
                         Column(
                             Modifier.animateEnterExit(
-                                    enter = fadeIn(tween(400)) + slideInVertically(tween(300)) { -it / 2 },
-                                    exit = fadeOut()
-                                )
+                                enter =
+                                    fadeIn(tween(400)) + slideInVertically(tween(300)) { -it / 2 },
+                                exit = fadeOut(),
+                            )
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 TypeIconLabel(type = move.type())
                                 Spacer(Modifier.width(6.dp))
                                 ValuesText(
                                     label = "PP",
                                     value = move.pp,
-                                    modifier = Modifier.weight(0.75f)
+                                    modifier = Modifier.weight(0.75f),
                                 )
-                                ValuesText(
-                                    label = "PWR",
-                                    value = move.power ?: -1,
-                                )
-                                ValuesText(
-                                    label = "ACC",
-                                    value = move.accuracy ?: -1,
-                                )
+                                ValuesText(label = "PWR", value = move.power ?: -1)
+                                ValuesText(label = "ACC", value = move.accuracy ?: -1)
                             }
                             Spacer(Modifier.height(12.dp))
                             Text(
@@ -218,16 +210,17 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                 }
                 CategoryIcon(
                     move = move,
-                    modifier = Modifier
-                        .size(64.dp)
-                        .align(Alignment.TopEnd)
-                        .offset(x = 16.dp, y = (-16).dp)
-                        .sharedBounds(
-                            sharedContentState = rememberSharedContentState(key = "category-icon-${move.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = imageBoundsTransform,
-                        )
-                        .graphicsLayer { alpha = 0.4f }
+                    modifier =
+                        Modifier.size(64.dp)
+                            .align(Alignment.TopEnd)
+                            .offset(x = 16.dp, y = (-16).dp)
+                            .sharedBounds(
+                                sharedContentState =
+                                    rememberSharedContentState(key = "category-icon-${move.id}"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                boundsTransform = imageBoundsTransform,
+                            )
+                            .graphicsLayer { alpha = 0.4f },
                 )
             }
         }
@@ -238,15 +231,13 @@ fun SharedTransitionScope.MoveResultExpandedCard(
 private fun RowScope.ValuesText(
     modifier: Modifier = Modifier.weight(1f),
     label: String,
-    value: Int
+    value: Int,
 ) {
-    Row(
-        modifier = modifier
-    ) {
+    Row(modifier = modifier) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.graphicsLayer { alpha = 0.7f }
+            modifier = Modifier.graphicsLayer { alpha = 0.7f },
         )
         Spacer(Modifier.width(4.dp))
         Text(
@@ -261,26 +252,23 @@ private fun RowScope.ValuesText(
 private fun MoveResultExpandedCardPreview() {
     AppTheme {
         SharedTransitionLayout {
-            AnimatedVisibility(
-                visible = true
-            ) {
+            AnimatedVisibility(visible = true) {
                 Column(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(20.dp),
+                    modifier =
+                        Modifier.background(MaterialTheme.colorScheme.background).padding(20.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     MoveResultExpandedCard(
                         move = SampleMoves[3],
-                        animatedVisibilityScope = this@AnimatedVisibility
+                        animatedVisibilityScope = this@AnimatedVisibility,
                     )
                     MoveResultExpandedCard(
                         move = SampleMoves[1],
-                        animatedVisibilityScope = this@AnimatedVisibility
+                        animatedVisibilityScope = this@AnimatedVisibility,
                     )
                     MoveResultExpandedCard(
                         move = SampleMoves[2],
-                        animatedVisibilityScope = this@AnimatedVisibility
+                        animatedVisibilityScope = this@AnimatedVisibility,
                     )
                 }
             }
@@ -297,26 +285,24 @@ private fun MoveResultTransitionPreview() {
     AppTheme {
         SharedTransitionLayout {
             Box(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .fillMaxSize()
-                    .padding(20.dp),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier.background(MaterialTheme.colorScheme.surface)
+                        .fillMaxSize()
+                        .padding(20.dp),
+                contentAlignment = Alignment.Center,
             ) {
-                AnimatedContent(
-                    targetState = expanded,
-                ) { targetState ->
+                AnimatedContent(targetState = expanded) { targetState ->
                     if (targetState) {
                         MoveResultExpandedCard(
                             move = sampleMove,
                             modifier = Modifier.clickable { expanded = false },
-                            animatedVisibilityScope = this@AnimatedContent
+                            animatedVisibilityScope = this@AnimatedContent,
                         )
                     } else {
                         MoveResultCard(
                             move = sampleMove,
                             animatedVisibilityScope = this@AnimatedContent,
-                            onSelected = { expanded = !expanded }
+                            onSelected = { expanded = !expanded },
                         )
                     }
                 }

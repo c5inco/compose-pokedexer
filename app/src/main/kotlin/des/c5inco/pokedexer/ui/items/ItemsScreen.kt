@@ -5,27 +5,21 @@ import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
@@ -50,82 +44,64 @@ import des.c5inco.pokedexer.ui.common.LoadingIndicator
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
-fun ItemsScreenRoute(
-    viewModel: ItemsViewModel,
-    onBackClick: () -> Unit = {}
-) {
+fun ItemsScreenRoute(viewModel: ItemsViewModel) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    ItemsScreen(
-        state = state,
-        onBackClick = onBackClick
-    )
+    ItemsScreen(state = state)
 }
 
 @Composable
-fun ItemsScreen(
-    state: ItemsListUiState,
-    onBackClick: () -> Unit = {}
-) {
+fun ItemsScreen(state: ItemsListUiState) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
         topBar = {
             MediumTopAppBar(
                 title = { Text(stringResource(R.string.itemsLabel)) },
-                navigationIcon =  {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.backActionContentDescription)
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         },
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
-        Column(
-            Modifier
-                .padding(top = innerPadding.calculateTopPadding())
-                .fillMaxSize()
-        ) {
-            AnimatedContent(
-                targetState = state,
-                transitionSpec = {
-                    fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false))
-                },
-                label = "itemsListContentTransition"
-            ) { targetState ->
-                when (val s = targetState) {
-                    is ItemsListUiState.Ready -> {
-                        LazyColumn(
-                            contentPadding = PaddingValues(
-                                top = 12.dp,
-                                bottom = 12.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-                            ),
-                            content = {
-                                itemsIndexed(s.items) { index, item ->
-                                    ItemCard(
-                                        item = item,
-                                        containerColor = if (index % 2 == 0) {
-                                            MaterialTheme.colorScheme.surfaceContainerHigh
-                                        } else {
-                                            MaterialTheme.colorScheme.surfaceContainerLow
-                                        }
-                                    )
-                                    Spacer(Modifier.height(8.dp))
-                                }
-                            },
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp)
-                                .testTag("ItemsLazyColumn")
-                        )
-                    }
-                    is ItemsListUiState.Loading -> {
-                        LoadingIndicator()
+        Box(Modifier.fillMaxSize()) {
+            Column(Modifier.fillMaxSize()) {
+                AnimatedContent(
+                    targetState = state,
+                    transitionSpec = {
+                        fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false))
+                    },
+                    label = "itemsListContentTransition",
+                ) { targetState ->
+                    when (val s = targetState) {
+                        is ItemsListUiState.Ready -> {
+                            LazyColumn(
+                                contentPadding =
+                                    PaddingValues(
+                                        top = innerPadding.calculateTopPadding(),
+                                        bottom = innerPadding.calculateBottomPadding(),
+                                    ),
+                                content = {
+                                    itemsIndexed(s.items) { index, item ->
+                                        ItemCard(
+                                            item = item,
+                                            containerColor =
+                                                if (index % 2 == 0) {
+                                                    MaterialTheme.colorScheme.surfaceContainerHigh
+                                                } else {
+                                                    MaterialTheme.colorScheme.surfaceContainerLow
+                                                },
+                                        )
+                                        Spacer(Modifier.height(8.dp))
+                                    }
+                                },
+                                modifier =
+                                    Modifier.padding(horizontal = 16.dp).testTag("ItemsLazyColumn"),
+                            )
+                        }
+
+                        is ItemsListUiState.Loading -> {
+                            LoadingIndicator()
+                        }
                     }
                 }
             }
@@ -137,33 +113,20 @@ fun ItemsScreen(
 private fun ItemCard(
     modifier: Modifier = Modifier,
     item: Item,
-    containerColor: Color = CardDefaults.cardColors().containerColor
+    containerColor: Color = CardDefaults.cardColors().containerColor,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = containerColor)
+        colors = CardDefaults.cardColors(containerColor = containerColor),
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-        ) {
-            ItemImage(
-                item = item,
-                modifier = Modifier.size(56.dp)
-            )
+        Row(modifier = Modifier.padding(16.dp)) {
+            ItemImage(item = item, modifier = Modifier.size(56.dp))
             Spacer(Modifier.width(16.dp))
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = item.name,
-                    style = MaterialTheme.typography.titleMedium,
-                )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = item.name, style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(4.dp))
-                Text(
-                    text = item.description,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                Text(text = item.description, style = MaterialTheme.typography.bodySmall)
             }
         }
     }
@@ -172,13 +135,7 @@ private fun ItemCard(
 @Preview
 @Composable
 fun ItemsScreenPreview() {
-    val state: ItemsListUiState = ItemsListUiState.Ready(
-        items = SampleItems
-    )
+    val state: ItemsListUiState = ItemsListUiState.Ready(items = SampleItems)
 
-    AppTheme {
-        Surface {
-            ItemsScreen(state)
-        }
-    }
+    AppTheme { Surface { ItemsScreen(state) } }
 }

@@ -13,7 +13,7 @@ data class Move(
     val type: String,
     val pp: Int,
     val power: Int?,
-    val accuracy: Int?
+    val accuracy: Int?,
 )
 
 @ObjCName("moveCategory")
@@ -29,10 +29,7 @@ fun Move.type(): Type {
 enum class MoveCategory {
     Physical,
     Special,
-    Status
+    Status,
 }
 
-data class PokemonMove(
-    val id: Int,
-    val targetLevel: Int
-)
+data class PokemonMove(val id: Int, val targetLevel: Int)

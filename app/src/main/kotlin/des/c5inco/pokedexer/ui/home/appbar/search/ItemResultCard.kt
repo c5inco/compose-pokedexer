@@ -49,76 +49,65 @@ fun SharedTransitionScope.ItemResultCard(
     modifier: Modifier = Modifier,
     item: Item = SampleItems.first(),
     animatedVisibilityScope: AnimatedVisibilityScope,
-    onSelected: (Item) -> Unit = { }
+    onSelected: (Item) -> Unit = {},
 ) {
     Card(
-        modifier = modifier
-            .width(200.dp)
-            .clickable { onSelected(item) }
-            .sharedBounds(
-                sharedContentState = rememberSharedContentState(key = "item-${item.id}-bounds"),
-                animatedVisibilityScope = animatedVisibilityScope,
-            ),
+        modifier =
+            modifier
+                .width(200.dp)
+                .clickable { onSelected(item) }
+                .sharedBounds(
+                    sharedContentState = rememberSharedContentState(key = "item-${item.id}-bounds"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                ),
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        )
+        colors =
+            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 20.dp),
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 20.dp),
             verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 text = item.name,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.sharedBounds(
-                    sharedContentState = rememberSharedContentState(key = "item-name-${item.id}"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    boundsTransform = textBoundsTransform
-                )
+                modifier =
+                    Modifier.sharedBounds(
+                        sharedContentState =
+                            rememberSharedContentState(key = "item-name-${item.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = textBoundsTransform,
+                    ),
             )
             ItemImage(
                 item = item,
-                modifier = Modifier.sharedElement(
-                    sharedContentState = rememberSharedContentState(key = "image-${item.id}"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    boundsTransform = imageBoundsTransform
-                )
+                modifier =
+                    Modifier.sharedElement(
+                        sharedContentState = rememberSharedContentState(key = "image-${item.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = imageBoundsTransform,
+                    ),
             )
         }
     }
 }
 
-
 @Preview
 @Composable
 fun ItemResultCardPreview() {
     AppTheme {
-        Column(
-            modifier = Modifier
-                .padding(vertical = 20.dp)
-        ) {
+        Column(modifier = Modifier.padding(vertical = 20.dp)) {
             SharedTransitionLayout {
-                AnimatedContent(
-                    targetState = true,
-                ) { _ ->
+                AnimatedContent(targetState = true) { _ ->
                     LazyHorizontalGrid(
                         rows = GridCells.Fixed(3),
                         contentPadding = PaddingValues(horizontal = 20.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier
-                            .height(240.dp)
-                            .fillMaxWidth()
+                        modifier = Modifier.height(240.dp).fillMaxWidth(),
                     ) {
-                        items(5) {
-                            ItemResultCard(
-                                animatedVisibilityScope = this@AnimatedContent
-                            )
-                        }
+                        items(5) { ItemResultCard(animatedVisibilityScope = this@AnimatedContent) }
                     }
                 }
             }
@@ -130,25 +119,28 @@ fun ItemResultCardPreview() {
 fun SharedTransitionScope.ItemResultExpandedCard(
     modifier: Modifier = Modifier,
     item: Item = SampleItems.first(),
-    animatedVisibilityScope: AnimatedVisibilityScope
+    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
     Box {
         Card(
-            modifier = modifier
-                .width(300.dp)
-                .sharedBounds(
-                    sharedContentState = rememberSharedContentState(key = "item-${item.id}-bounds"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    boundsTransform = containerBoundsTransform
-                ),
+            modifier =
+                modifier
+                    .width(300.dp)
+                    .sharedBounds(
+                        sharedContentState =
+                            rememberSharedContentState(key = "item-${item.id}-bounds"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = containerBoundsTransform,
+                    ),
             shape = MaterialTheme.shapes.large,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
-            )
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                ),
         ) {
             Column(
-                modifier = Modifier
-                    .padding(top = 32.dp, start = 12.dp, end = 12.dp, bottom = 20.dp),
+                modifier =
+                    Modifier.padding(top = 32.dp, start = 12.dp, end = 12.dp, bottom = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
@@ -156,22 +148,26 @@ fun SharedTransitionScope.ItemResultExpandedCard(
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.sharedBounds(
-                        sharedContentState = rememberSharedContentState(key = "item-name-${item.id}"),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        boundsTransform = textBoundsTransform
-                    )
+                    modifier =
+                        Modifier.sharedBounds(
+                            sharedContentState =
+                                rememberSharedContentState(key = "item-name-${item.id}"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            boundsTransform = textBoundsTransform,
+                        ),
                 )
                 Spacer(Modifier.height(4.dp))
-                with (animatedVisibilityScope) {
+                with(animatedVisibilityScope) {
                     Text(
                         text = item.description,
                         style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.animateEnterExit(
-                            enter = fadeIn(tween(400)) + slideInVertically(tween(300)) { -it / 2 },
-                            exit = fadeOut()
-                        )
+                        modifier =
+                            Modifier.animateEnterExit(
+                                enter =
+                                    fadeIn(tween(400)) + slideInVertically(tween(300)) { -it / 2 },
+                                exit = fadeOut(),
+                            ),
                     )
                 }
             }
@@ -179,15 +175,15 @@ fun SharedTransitionScope.ItemResultExpandedCard(
         ItemImage(
             item = item,
             contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .size(48.dp)
-                .align(Alignment.TopCenter)
-                .offset(y = -24.dp)
-                .sharedElement(
-                    sharedContentState = rememberSharedContentState(key = "image-${item.id}"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    boundsTransform = imageBoundsTransform
-                )
+            modifier =
+                Modifier.size(48.dp)
+                    .align(Alignment.TopCenter)
+                    .offset(y = -24.dp)
+                    .sharedElement(
+                        sharedContentState = rememberSharedContentState(key = "image-${item.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = imageBoundsTransform,
+                    ),
         )
     }
 }
@@ -201,26 +197,22 @@ private fun ItemResultExpandedCardPreview() {
     AppTheme {
         SharedTransitionLayout {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize().padding(20.dp),
+                contentAlignment = Alignment.Center,
             ) {
-                AnimatedContent(
-                    targetState = expanded,
-                    modifier = Modifier.fillMaxSize(0.5f),
-                ) { targetState ->
+                AnimatedContent(targetState = expanded, modifier = Modifier.fillMaxSize(0.5f)) {
+                    targetState ->
                     if (targetState) {
                         ItemResultExpandedCard(
                             item = sampleItem,
                             modifier = Modifier.clickable { expanded = false },
-                            animatedVisibilityScope = this@AnimatedContent
+                            animatedVisibilityScope = this@AnimatedContent,
                         )
                     } else {
                         ItemResultCard(
                             item = sampleItem,
                             animatedVisibilityScope = this@AnimatedContent,
-                            onSelected = { expanded = !expanded }
+                            onSelected = { expanded = !expanded },
                         )
                     }
                 }

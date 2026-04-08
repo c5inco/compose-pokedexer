@@ -10,17 +10,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PokemonDao {
-    @Query("SELECT * FROM pokemon")
-    suspend fun getAll(): List<Pokemon>
+    @Query("SELECT * FROM pokemon") suspend fun getAll(): List<Pokemon>
 
-    @Query("SELECT * FROM pokemon")
-    fun getAllFlow(): Flow<List<Pokemon>>
+    @Query("SELECT * FROM pokemon") fun getAllFlow(): Flow<List<Pokemon>>
 
     @Query("SELECT * FROM pokemon WHERE generationId = :generationId")
     fun getAllByGeneration(generationId: Int = 1): Flow<List<Pokemon>>
 
-    @Query("SELECT * FROM pokemon WHERE id = :id LIMIT 1")
-    fun findById(id: Int): Flow<Pokemon?>
+    @Query("SELECT * FROM pokemon WHERE id = :id LIMIT 1") fun findById(id: Int): Flow<Pokemon?>
 
     @Query("SELECT * FROM pokemon WHERE id IN (:ids)")
     fun findByIds(ids: List<Int>): Flow<List<Pokemon>>
@@ -28,15 +25,11 @@ interface PokemonDao {
     @Query("SELECT * FROM pokemon WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
     fun findByName(name: String): Flow<List<Pokemon>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(pokemon: Pokemon)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insert(pokemon: Pokemon)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(vararg pokemon: Pokemon)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertAll(vararg pokemon: Pokemon)
 
-    @Delete
-    suspend fun delete(pokemon: Pokemon)
+    @Delete suspend fun delete(pokemon: Pokemon)
 
-    @Query("DELETE FROM pokemon")
-    suspend fun deleteAll()
+    @Query("DELETE FROM pokemon") suspend fun deleteAll()
 }

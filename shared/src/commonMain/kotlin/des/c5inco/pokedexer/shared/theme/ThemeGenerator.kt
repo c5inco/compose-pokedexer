@@ -3,8 +3,8 @@ package des.c5inco.pokedexer.shared.theme
 import des.c5inco.pokedexer.shared.model.Type
 
 /**
- * Represents a Pokemon theme color scheme that can be used cross-platform.
- * Colors are represented as ARGB integers for easy conversion to platform-specific color types.
+ * Represents a Pokemon theme color scheme that can be used cross-platform. Colors are represented
+ * as ARGB integers for easy conversion to platform-specific color types.
  */
 data class PokemonThemeColors(
     val primary: Int,
@@ -18,12 +18,12 @@ data class PokemonThemeColors(
     val onSurfaceVariant: Int,
     val surfaceContainer: Int,
     val surfaceContainerLow: Int,
-    val surfaceContainerHigh: Int
+    val surfaceContainerHigh: Int,
 )
 
 /**
- * Pokemon type seed colors as ARGB integers.
- * This is the cross-platform color definition used by both Android and iOS.
+ * Pokemon type seed colors as ARGB integers. This is the cross-platform color definition used by
+ * both Android and iOS.
  */
 object PokemonTypeSeeds {
     const val Bug = 0xffAFC836.toInt()
@@ -47,8 +47,8 @@ object PokemonTypeSeeds {
 }
 
 /**
- * Maps Pokemon types to their seed color as ARGB integer.
- * This is the shared implementation used by both Android and iOS.
+ * Maps Pokemon types to their seed color as ARGB integer. This is the shared implementation used by
+ * both Android and iOS.
  */
 fun getSeedColorForType(types: List<String>): Int {
     val firstType = types.firstOrNull() ?: return 0xFFFF00FF.toInt() // Magenta fallback
