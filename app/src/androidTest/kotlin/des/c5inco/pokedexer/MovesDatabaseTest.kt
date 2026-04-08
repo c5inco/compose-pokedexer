@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.shared.data.PokemonDatabase
 import des.c5inco.pokedexer.shared.data.moves.MovesDao
-import des.c5inco.pokedexer.data.moves.SampleMoves
+import java.io.IOException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -14,7 +15,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class MovesDatabaseTest {
@@ -26,8 +26,7 @@ class MovesDatabaseTest {
         // TODO: Use Hilt in the future
         val context = ApplicationProvider.getApplicationContext<Context>()
 
-        db = Room.inMemoryDatabaseBuilder(context, PokemonDatabase::class.java)
-            .build()
+        db = Room.inMemoryDatabaseBuilder(context, PokemonDatabase::class.java).build()
 
         movesDao = db.movesDao()
     }
