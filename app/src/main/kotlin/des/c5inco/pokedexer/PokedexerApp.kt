@@ -49,7 +49,7 @@ class PokedexerApplication : Application() {
 val Application.appGraph: ApplicationGraph
     get() = (this as PokedexerApplication).appGraph
 
-val LocalGifImageLoader = compositionLocalOf<ImageLoader> { error("No GIF ImageLoader provided") }
+val LocalAppImageLoader = compositionLocalOf<ImageLoader> { error("No app ImageLoader provided") }
 
 @Composable
 fun PokedexerApp(viewModel: RootViewModel = metroViewModel()) {
@@ -58,8 +58,8 @@ fun PokedexerApp(viewModel: RootViewModel = metroViewModel()) {
     val context = LocalContext.current
 
     CompositionLocalProvider(
-        LocalGifImageLoader provides
-            (context.applicationContext as Application).appGraph.gifImageLoader
+        LocalAppImageLoader provides
+            (context.applicationContext as Application).appGraph.imageLoader
     ) {
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),

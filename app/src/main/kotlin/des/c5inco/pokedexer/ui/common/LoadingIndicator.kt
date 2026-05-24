@@ -19,14 +19,14 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import des.c5inco.pokedexer.LocalGifImageLoader
+import des.c5inco.pokedexer.LocalAppImageLoader
 import des.c5inco.pokedexer.R
 
 @Composable
 fun LoadingIndicator(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val density = LocalDensity.current
-    val imageLoader = LocalGifImageLoader.current
+    val imageLoader = LocalAppImageLoader.current
     val imageSize = 56.dp
 
     var containerWidth by remember { mutableIntStateOf(0) }

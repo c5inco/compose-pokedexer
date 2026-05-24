@@ -131,7 +131,7 @@ interface ApplicationModule {
     // Image Loading
     @Provides
     @SingleIn(AppScope::class)
-    fun provideGifImageLoader(context: Context): ImageLoader {
+    fun provideImageLoader(context: Context): ImageLoader {
         return ImageLoader.Builder(context)
             .components { add(ImageDecoderDecoder.Factory()) }
             .build()
@@ -153,7 +153,7 @@ interface ApplicationGraph {
     val pokemonDetailsViewModelFactory: PokemonDetailsViewModel.PokemonDetailsViewModelFactory
 
     // Image loading
-    val gifImageLoader: ImageLoader
+    val imageLoader: ImageLoader
 
     /** Factory to create the ApplicationGraph with external dependencies. */
     @DependencyGraph.Factory

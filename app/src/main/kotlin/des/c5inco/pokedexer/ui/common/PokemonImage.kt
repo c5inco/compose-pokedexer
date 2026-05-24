@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import des.c5inco.pokedexer.LocalAppImageLoader
 import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 
 @Composable
@@ -18,12 +19,11 @@ fun PokemonImage(
     description: String? = null,
     tint: Color? = null,
 ) {
+    val context = LocalContext.current
+
     AsyncImage(
-        model =
-            ImageRequest.Builder(LocalContext.current)
-                .data(artworkUrl(image))
-                .crossfade(300)
-                .build(),
+        model = ImageRequest.Builder(context).data(artworkUrl(image)).crossfade(300).build(),
+        imageLoader = LocalAppImageLoader.current,
         placeholder =
             if (LocalInspectionMode.current) {
                 painterResource(id = placeholderPokemonImage(image))

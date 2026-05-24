@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
+import des.c5inco.pokedexer.LocalAppImageLoader
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.shared.model.Item
 
@@ -16,6 +17,7 @@ fun ItemImage(
 ) {
     AsyncImage(
         model = itemAssetsUri(item.sprite),
+        imageLoader = LocalAppImageLoader.current,
         placeholder = painterResource(id = R.drawable.item_flame_orb),
         contentDescription = null,
         contentScale = contentScale,
