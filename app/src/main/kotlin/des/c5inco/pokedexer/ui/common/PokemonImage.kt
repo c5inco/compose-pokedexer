@@ -20,9 +20,10 @@ fun PokemonImage(
     tint: Color? = null,
 ) {
     val context = LocalContext.current
+    val imageModel = rememberArtworkModel(image)
 
     AsyncImage(
-        model = ImageRequest.Builder(context).data(artworkUrl(image)).crossfade(300).build(),
+        model = ImageRequest.Builder(context).data(imageModel).crossfade(300).build(),
         imageLoader = LocalAppImageLoader.current,
         placeholder =
             if (LocalInspectionMode.current) {
