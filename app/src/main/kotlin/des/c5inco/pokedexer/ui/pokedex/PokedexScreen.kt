@@ -27,12 +27,9 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -190,9 +187,9 @@ fun PokedexScreen(
     ) { innerPadding ->
         Box(
             Modifier.fillMaxSize()
-                // We don't apply top padding here so the Pokeball and list can draw behind the
-                // transparent TopAppBar
-                // The top padding is instead applied to the LazyVerticalGrid's contentPadding
+            // We don't apply top padding here so the Pokeball and list can draw behind the
+            // transparent TopAppBar
+            // The top padding is instead applied to the LazyVerticalGrid's contentPadding
         ) {
             Pokeball(
                 tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
@@ -344,8 +341,7 @@ private fun PokemonList(
     generationFilter: Generation? = null,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
-    val bottomContentPadding =
-        96.dp + contentPadding.calculateBottomPadding()
+    val bottomContentPadding = 96.dp + contentPadding.calculateBottomPadding()
 
     LazyVerticalGrid(
         modifier = modifier.testTag("PokedexLazyGrid"),
