@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Density
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
@@ -26,7 +27,6 @@ import des.c5inco.pokedexer.di.ApplicationGraph
 import des.c5inco.pokedexer.di.metroViewModel
 import des.c5inco.pokedexer.ui.common.Material3Transitions
 import des.c5inco.pokedexer.ui.home.HomeScreenRoute
-import des.c5inco.pokedexer.ui.home.appbar.SearchResult
 import des.c5inco.pokedexer.ui.items.ItemsScreenRoute
 import des.c5inco.pokedexer.ui.moves.MovesListScreenRoute
 import des.c5inco.pokedexer.ui.navigation.Screen
@@ -65,12 +65,16 @@ fun PokedexerApp(viewModel: RootViewModel = metroViewModel()) {
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             bottomBar = {
-                pokedexerBottomBar(
-                    currentScreen = currentTopLevelDestination(backStack),
-                    onDestinationSelected = { destination: Screen ->
-                        navigateToTopLevelDestination(backStack, destination)
-                    },
-                )
+                val lastScreen = backStack.lastOrNull()
+                if (lastScreen !is Screen.PokemonDetails) {
+                    pokedexerBottomBar(
+                        currentScreen = currentTopLevelDestination(backStack),
+                        onDestinationSelected = { destination: Screen ->
+                            navigateToTopLevelDestination(backStack, destination)
+                        },
+                        modifier = Modifier.testTag("pokedexerBottomBar"),
+                    )
+                }
             },
         ) { innerPadding ->
             PokedexerNavDisplay(
@@ -93,7 +97,7 @@ private fun currentTopLevelDestination(backStack: NavBackStack<NavKey>): Screen 
 
 private fun navigateToTopLevelDestination(backStack: NavBackStack<NavKey>, destination: Screen) {
     val currentDestination = currentTopLevelDestination(backStack)
-    if (destination == currentDestination) return
+    if (destination == currentDestination && backStack.size == 1) return
 
     while (backStack.size > 1) {
         backStack.removeAt(backStack.lastIndex)
@@ -158,19 +162,7 @@ private fun pokemonDetailsTransitionMetadata(screen: NavKey, density: Density): 
 private fun PokedexerDestinationContent(screen: Screen, backStack: NavBackStack<NavKey>) {
     when (screen) {
         Screen.Home -> {
-            HomeScreenRoute(
-                viewModel = metroViewModel(),
-                onSearchResultSelected = {
-                    when (it) {
-                        is SearchResult.PokemonEvent -> {
-                            backStack.add(Screen.PokemonDetails(it.pokemon.id))
-                        }
-
-                        is SearchResult.ItemEvent -> TODO()
-                        is SearchResult.MoveEvent -> TODO()
-                    }
-                },
-            )
+            HomeScreenRoute(viewModel = metroViewModel())
         }
 
         Screen.Pokedex -> {

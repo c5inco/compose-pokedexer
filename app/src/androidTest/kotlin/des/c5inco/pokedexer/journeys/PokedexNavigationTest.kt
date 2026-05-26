@@ -37,9 +37,7 @@ class PokedexNavigationTest {
         // Assertions for details screen
         composeTestRule.onNodeWithText("Base stats").assertExists()
         composeTestRule.onNodeWithText("About").assertExists()
-        composeTestRule.onNodeWithText("Moves").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Items").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Type Charts").assertDoesNotExist()
+        composeTestRule.onNodeWithTag("pokedexerBottomBar").assertDoesNotExist()
     }
 
     @Test
@@ -99,9 +97,7 @@ class PokedexNavigationTest {
 
         // Verify we're on the details screen
         composeTestRule.onNodeWithText("Base stats").assertExists()
-        composeTestRule.onNodeWithText("Moves").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Items").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Type Charts").assertDoesNotExist()
+        composeTestRule.onNodeWithTag("pokedexerBottomBar").assertDoesNotExist()
 
         // 6. Go back to the Pokedex
         composeTestRule.activityRule.scenario.onActivity { activity ->
