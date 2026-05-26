@@ -1,8 +1,6 @@
 package des.c5inco.pokedexer
 
 import android.app.Application
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -11,13 +9,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import androidx.navigation3.ui.defaultPopTransitionSpec
+import androidx.navigation3.ui.defaultTransitionSpec
 import coil.ImageLoader
 import des.c5inco.pokedexer.di.ApplicationGraph
 import des.c5inco.pokedexer.di.metroViewModel
@@ -52,6 +55,7 @@ val LocalGifImageLoader = compositionLocalOf<ImageLoader> { error("No GIF ImageL
 @Composable
 fun PokedexerApp(viewModel: RootViewModel = metroViewModel()) {
     val backStack = rememberNavBackStack(Screen.Pokedex)
+    val density = LocalDensity.current
     val context = LocalContext.current
 
     CompositionLocalProvider(
@@ -71,6 +75,7 @@ fun PokedexerApp(viewModel: RootViewModel = metroViewModel()) {
         ) { innerPadding ->
             PokedexerNavDisplay(
                 backStack = backStack,
+                density = density,
                 innerPadding = innerPadding,
             )
         }
@@ -100,8 +105,12 @@ private fun navigateToTopLevelDestination(backStack: NavBackStack<NavKey>, desti
 @Composable
 private fun PokedexerNavDisplay(
     backStack: NavBackStack<NavKey>,
+    density: Density,
     innerPadding: PaddingValues,
 ) {
+    val transitionMetadataForScreen =
+        remember(density) { pokemonDetailsTransitionMetadataProvider(density) }
+
     NavDisplay(
         backStack = backStack,
         modifier = Modifier.padding(innerPadding),
@@ -110,26 +119,38 @@ private fun PokedexerNavDisplay(
                 backStack.removeAt(backStack.lastIndex)
             }
         },
-        transitionSpec = {
-            if (targetState.key is Screen.PokemonDetails) {
-                Material3Transitions.SharedZAxisEnterTransition togetherWith fadeOut()
-            } else {
-                Material3Transitions.FadeThroughEnterTransition togetherWith
-                    Material3Transitions.FadeThroughExitTransition
-            }
-        },
-        popTransitionSpec = {
-            if (initialState.key is Screen.PokemonDetails) {
-                fadeIn() togetherWith Material3Transitions.SharedZAxisExitTransition
-            } else {
-                Material3Transitions.FadeThroughEnterTransition togetherWith
-                    Material3Transitions.FadeThroughExitTransition
-            }
-        },
+        transitionSpec = defaultTransitionSpec(),
+        popTransitionSpec = defaultPopTransitionSpec(),
     ) { screen ->
-        NavEntry(screen) {
+        NavEntry(key = screen, metadata = transitionMetadataForScreen(screen)) {
             PokedexerDestinationContent(screen = screen as Screen, backStack = backStack)
         }
+    }
+}
+
+internal fun pokemonDetailsTransitionMetadataProvider(
+    density: Density
+): (NavKey) -> Map<String, Any> {
+    val cache = mutableMapOf<NavKey, Map<String, Any>>()
+    return { screen ->
+        cache.getOrPut(screen) {
+            pokemonDetailsTransitionMetadata(screen = screen, density = density)
+        }
+    }
+}
+
+private fun pokemonDetailsTransitionMetadata(screen: NavKey, density: Density): Map<String, Any> {
+    return if (screen is Screen.PokemonDetails) {
+        NavDisplay.transitionSpec {
+            Material3Transitions.SharedXAxisEnterTransition(density) togetherWith
+                Material3Transitions.SharedXAxisExitTransition(density)
+        } +
+            NavDisplay.popTransitionSpec {
+                Material3Transitions.SharedXAxisPopEnterTransition(density) togetherWith
+                    Material3Transitions.SharedXAxisPopExitTransition(density)
+            }
+    } else {
+        emptyMap()
     }
 }
 

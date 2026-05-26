@@ -100,44 +100,36 @@ object Material3Transitions {
     val SharedXAxisEnterTransition: (Density) -> EnterTransition = { density ->
         fadeIn(animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing)) +
             slideInHorizontally(
-                animationSpec = tween(durationMillis = DurationLong2, easing = EmphasizedEasing)
+                animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing)
             ) {
-                it / 2
+                sharedXAxisEnterOffset(density)
             }
     }
 
     val SharedXAxisPopEnterTransition: (Density) -> EnterTransition = { density ->
         fadeIn(animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing)) +
             slideInHorizontally(
-                animationSpec = tween(durationMillis = DurationLong2, easing = EmphasizedEasing)
+                animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing)
             ) {
-                -it / 2
+                sharedXAxisPopEnterOffset(density)
             }
     }
 
     val SharedXAxisExitTransition: (Density) -> ExitTransition = { density ->
-        fadeOut(
-            animationSpec =
-                tween(durationMillis = DurationMedium1, easing = EmphasizedAccelerateEasing)
-        ) +
+        fadeOut(animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing)) +
             slideOutHorizontally(
-                animationSpec =
-                    tween(durationMillis = DurationMedium2, easing = EmphasizedAccelerateEasing)
+                animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing)
             ) {
-                with(density) { -30.dp.roundToPx() }
+                -sharedAxisSlideDistancePx(density)
             }
     }
 
     val SharedXAxisPopExitTransition: (Density) -> ExitTransition = { density ->
-        fadeOut(
-            animationSpec =
-                tween(durationMillis = DurationMedium1, easing = EmphasizedAccelerateEasing)
-        ) +
+        fadeOut(animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing)) +
             slideOutHorizontally(
-                animationSpec =
-                    tween(durationMillis = DurationMedium2, easing = EmphasizedAccelerateEasing)
+                animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing)
             ) {
-                with(density) { 30.dp.roundToPx() }
+                sharedAxisSlideDistancePx(density)
             }
     }
 
@@ -196,6 +188,7 @@ object Material3Transitions {
 
     val FadeThroughExitTransition: ExitTransition =
         fadeOut(
-            animationSpec = tween(durationMillis = FadeThroughExitDuration, easing = EmphasizedAccelerateEasing)
+            animationSpec =
+                tween(durationMillis = FadeThroughExitDuration, easing = EmphasizedAccelerateEasing)
         )
 }
