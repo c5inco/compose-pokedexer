@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer
 
 import android.app.Application
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -11,7 +12,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
@@ -64,14 +67,19 @@ fun PokedexerApp(viewModel: RootViewModel = metroViewModel()) {
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             bottomBar = {
-                if (shouldShowBottomBar(backStack)) {
-                    pokedexerBottomBar(
-                        currentScreen = currentTopLevelDestination(backStack),
-                        onDestinationSelected = { destination: Screen ->
-                            navigateToTopLevelDestination(backStack, destination)
-                        },
+                val bottomBarTranslation by
+                    animateFloatAsState(
+                        targetValue = if (shouldShowBottomBar(backStack)) 0f else 1f,
+                        label = "bottomBarTranslation",
                     )
-                }
+                pokedexerBottomBar(
+                    currentScreen = currentTopLevelDestination(backStack),
+                    onDestinationSelected = { destination: Screen ->
+                        navigateToTopLevelDestination(backStack, destination)
+                    },
+                    modifier =
+                        Modifier.graphicsLayer { translationY = size.height * bottomBarTranslation },
+                )
             },
         ) { innerPadding ->
             PokedexerNavDisplay(
@@ -125,16 +133,16 @@ private fun PokedexerNavDisplay(
             if (targetState.key is Screen.PokemonDetails) {
                 Material3Transitions.SharedZAxisEnterTransition togetherWith fadeOut()
             } else {
-                Material3Transitions.SharedXAxisEnterTransition(density) togetherWith
-                    Material3Transitions.SharedXAxisExitTransition(density)
+                Material3Transitions.FadeThroughEnterTransition togetherWith
+                    Material3Transitions.FadeThroughExitTransition
             }
         },
         popTransitionSpec = {
             if (initialState.key is Screen.PokemonDetails) {
                 fadeIn() togetherWith Material3Transitions.SharedZAxisExitTransition
             } else {
-                Material3Transitions.SharedXAxisPopEnterTransition(density) togetherWith
-                    Material3Transitions.SharedXAxisPopExitTransition(density)
+                Material3Transitions.FadeThroughEnterTransition togetherWith
+                    Material3Transitions.FadeThroughExitTransition
             }
         },
     ) { screen ->
