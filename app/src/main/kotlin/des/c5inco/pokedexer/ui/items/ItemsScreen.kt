@@ -100,7 +100,10 @@ fun ItemsScreen(state: ItemsListUiState) {
                         }
 
                         is ItemsListUiState.Loading -> {
-                            LoadingIndicator()
+                            LoadingIndicator(
+                                modifier =
+                                    Modifier.padding(top = innerPadding.calculateTopPadding())
+                            )
                         }
                     }
                 }

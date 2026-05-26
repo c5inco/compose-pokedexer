@@ -84,7 +84,10 @@ fun MovesListScreen(state: MovesListUiState = MovesListUiState.Loading) {
                         }
 
                         is MovesListUiState.Loading -> {
-                            LoadingIndicator()
+                            LoadingIndicator(
+                                modifier =
+                                    Modifier.padding(top = innerPadding.calculateTopPadding())
+                            )
                         }
                     }
                 }
