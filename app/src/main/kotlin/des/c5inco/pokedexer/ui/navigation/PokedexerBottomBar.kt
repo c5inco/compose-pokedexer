@@ -17,8 +17,12 @@ import des.c5inco.pokedexer.R
 private val BottomNavIconSize = 24.dp
 
 @Composable
-fun pokedexerBottomBar(currentScreen: Screen, onDestinationSelected: (Screen) -> Unit) {
-    NavigationBar {
+fun pokedexerBottomBar(
+    currentScreen: Screen,
+    onDestinationSelected: (Screen) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    NavigationBar(modifier = modifier) {
         bottomNavDestinations.forEach { destination ->
             NavigationBarItem(
                 selected = destination.screen == currentScreen,

@@ -1,7 +1,6 @@
 package des.c5inco.pokedexer
 
 import android.app.Application
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -12,12 +11,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Density
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
@@ -57,7 +52,6 @@ val LocalGifImageLoader = compositionLocalOf<ImageLoader> { error("No GIF ImageL
 @Composable
 fun PokedexerApp(viewModel: RootViewModel = metroViewModel()) {
     val backStack = rememberNavBackStack(Screen.Pokedex)
-    val density = LocalDensity.current
     val context = LocalContext.current
 
     CompositionLocalProvider(
@@ -67,24 +61,16 @@ fun PokedexerApp(viewModel: RootViewModel = metroViewModel()) {
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             bottomBar = {
-                val bottomBarTranslation by
-                    animateFloatAsState(
-                        targetValue = if (shouldShowBottomBar(backStack)) 0f else 1f,
-                        label = "bottomBarTranslation",
-                    )
                 pokedexerBottomBar(
                     currentScreen = currentTopLevelDestination(backStack),
                     onDestinationSelected = { destination: Screen ->
                         navigateToTopLevelDestination(backStack, destination)
                     },
-                    modifier =
-                        Modifier.graphicsLayer { translationY = size.height * bottomBarTranslation },
                 )
             },
         ) { innerPadding ->
             PokedexerNavDisplay(
                 backStack = backStack,
-                density = density,
                 innerPadding = innerPadding,
             )
         }
@@ -111,14 +97,9 @@ private fun navigateToTopLevelDestination(backStack: NavBackStack<NavKey>, desti
     backStack[0] = destination
 }
 
-private fun shouldShowBottomBar(backStack: NavBackStack<NavKey>): Boolean {
-    return backStack.lastOrNull() !is Screen.PokemonDetails
-}
-
 @Composable
 private fun PokedexerNavDisplay(
     backStack: NavBackStack<NavKey>,
-    density: Density,
     innerPadding: PaddingValues,
 ) {
     NavDisplay(
