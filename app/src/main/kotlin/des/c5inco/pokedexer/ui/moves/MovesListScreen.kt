@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
@@ -44,6 +45,7 @@ import des.c5inco.pokedexer.data.moves.SampleMoves
 import des.c5inco.pokedexer.shared.model.Move
 import des.c5inco.pokedexer.ui.common.CategoryIcon
 import des.c5inco.pokedexer.ui.common.LoadingIndicator
+import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.TypeLabel
 import des.c5inco.pokedexer.ui.common.TypeLabelMetrics.Companion.MEDIUM
 import des.c5inco.pokedexer.ui.theme.AppTheme
@@ -65,11 +67,20 @@ fun MovesListScreen(state: MovesListUiState = MovesListUiState.Loading) {
         topBar = {
             MediumTopAppBar(
                 title = { Text(stringResource(R.string.movesLabel)) },
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
+                    ),
                 scrollBehavior = scrollBehavior,
             )
         },
     ) { innerPadding ->
         Box(Modifier.fillMaxSize()) {
+            Pokeball(
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                modifier =
+                    Modifier.size(256.dp).align(Alignment.TopEnd).offset(x = 90.dp, y = (-72).dp),
+            )
             Column(Modifier.fillMaxSize()) {
                 AnimatedContent(
                     targetState = state,

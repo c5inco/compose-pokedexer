@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -41,6 +43,7 @@ import des.c5inco.pokedexer.data.items.SampleItems
 import des.c5inco.pokedexer.shared.model.Item
 import des.c5inco.pokedexer.ui.common.ItemImage
 import des.c5inco.pokedexer.ui.common.LoadingIndicator
+import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
@@ -58,12 +61,21 @@ fun ItemsScreen(state: ItemsListUiState) {
         topBar = {
             MediumTopAppBar(
                 title = { Text(stringResource(R.string.itemsLabel)) },
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
+                    ),
                 scrollBehavior = scrollBehavior,
             )
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         Box(Modifier.fillMaxSize()) {
+            Pokeball(
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                modifier =
+                    Modifier.size(256.dp).align(Alignment.TopEnd).offset(x = 90.dp, y = (-72).dp),
+            )
             Column(Modifier.fillMaxSize()) {
                 AnimatedContent(
                     targetState = state,

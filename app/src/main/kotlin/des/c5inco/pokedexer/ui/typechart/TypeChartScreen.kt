@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.shared.data.typechart.TypeEffectiveness
 import des.c5inco.pokedexer.shared.model.Type
+import des.c5inco.pokedexer.ui.common.Pokeball
 import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
@@ -59,60 +61,68 @@ fun TypeChartScreen() {
                 title = { Text("Type Chart") },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
                     ),
             )
         }
     ) { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-            // Top header row (frozen X-axis)
-            Row {
-                // Empty corner cell
-                Box(modifier = Modifier.size(HeaderCellSize))
+        Box(Modifier.fillMaxSize()) {
+            Pokeball(
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                modifier =
+                    Modifier.size(256.dp).align(Alignment.TopEnd).offset(x = 90.dp, y = (-72).dp),
+            )
+            Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+                // Top header row (frozen X-axis)
+                Row {
+                    // Empty corner cell
+                    Box(modifier = Modifier.size(HeaderCellSize))
 
-                // Column headers (defending types) - scrolls horizontally
-                Row(
-                    modifier = Modifier.padding(end = 8.dp).horizontalScroll(horizontalScrollState)
-                ) {
-                    types.forEach { defenderType -> TypeHeaderCell(type = defenderType) }
+                    // Column headers (defending types) - scrolls horizontally
+                    Row(
+                        modifier =
+                            Modifier.padding(end = 8.dp).horizontalScroll(horizontalScrollState)
+                    ) {
+                        types.forEach { defenderType -> TypeHeaderCell(type = defenderType) }
+                    }
                 }
-            }
 
-            // Content area with frozen Y-axis
-            Row(modifier = Modifier.weight(1f)) {
-                // Row headers (attacking types) - scrolls vertically
-                Column(modifier = Modifier.verticalScroll(verticalScrollState)) {
-                    types.forEach { attackerType -> TypeHeaderCell(type = attackerType) }
-                }
+                // Content area with frozen Y-axis
+                Row(modifier = Modifier.weight(1f)) {
+                    // Row headers (attacking types) - scrolls vertically
+                    Column(modifier = Modifier.verticalScroll(verticalScrollState)) {
+                        types.forEach { attackerType -> TypeHeaderCell(type = attackerType) }
+                    }
 
-                // Data cells - scrolls both directions
-                Box(
-                    modifier =
-                        Modifier.padding(end = 8.dp)
-                            .weight(1f)
-                            .horizontalScroll(horizontalScrollState)
-                            .verticalScroll(verticalScrollState)
-                            .testTag("TypeChartScrollableBox")
-                ) {
-                    Column {
-                        types.forEach { attackerType ->
-                            Row {
-                                types.forEach { defenderType ->
-                                    val effectiveness =
-                                        TypeEffectiveness.getEffectiveness(
-                                            attacker = attackerType,
-                                            defender = defenderType,
-                                        )
-                                    EffectivenessCell(effectiveness = effectiveness)
+                    // Data cells - scrolls both directions
+                    Box(
+                        modifier =
+                            Modifier.padding(end = 8.dp)
+                                .weight(1f)
+                                .horizontalScroll(horizontalScrollState)
+                                .verticalScroll(verticalScrollState)
+                                .testTag("TypeChartScrollableBox")
+                    ) {
+                        Column {
+                            types.forEach { attackerType ->
+                                Row {
+                                    types.forEach { defenderType ->
+                                        val effectiveness =
+                                            TypeEffectiveness.getEffectiveness(
+                                                attacker = attackerType,
+                                                defender = defenderType,
+                                            )
+                                        EffectivenessCell(effectiveness = effectiveness)
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            // Legend
-            LegendRow(modifier = Modifier.padding(top = 8.dp, bottom = 8.dp))
+                // Legend
+                LegendRow(modifier = Modifier.padding(top = 8.dp, bottom = 8.dp))
+            }
         }
     }
 }
