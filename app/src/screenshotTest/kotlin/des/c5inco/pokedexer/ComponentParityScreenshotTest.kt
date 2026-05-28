@@ -1,11 +1,12 @@
 package des.c5inco.pokedexer
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -107,18 +108,17 @@ class ComponentParityScreenshotTest {
         }
     }
 
-    @Preview(name = "FilterChip Baseline", showBackground = true)
+    @Preview(name = "GenerationFilterChip Baseline", showBackground = true)
     @PreviewTest
     @Composable
-    fun filterChipBaseline() {
+    fun generationFilterChipBaseline() {
         AppTheme {
             Surface {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    Text("Generation")
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box(modifier = Modifier.size(width = 214.dp, height = 105.dp)) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
                         FilterGenerationItemScreenshotPreview(
                             generation = Generation.I,
                             selected = false,
@@ -130,18 +130,31 @@ class ComponentParityScreenshotTest {
                             index = 1,
                         )
                     }
+                }
+            }
+        }
+    }
 
-                    Text("Type")
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    @Preview(name = "TypeFilterChip Baseline", showBackground = true)
+    @PreviewTest
+    @Composable
+    fun typeFilterChipBaseline() {
+        AppTheme {
+            Surface {
+                Box(modifier = Modifier.size(width = 265.5.dp, height = 105.dp)) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
                         FilterTypeItemScreenshotPreview(
                             type = Type.Grass,
                             selected = false,
-                            index = 2,
+                            index = 0,
                         )
                         FilterTypeItemScreenshotPreview(
                             type = Type.Fire,
                             selected = true,
-                            index = 3,
+                            index = 1,
                         )
                     }
                 }
