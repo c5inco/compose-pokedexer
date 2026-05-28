@@ -696,6 +696,37 @@ private fun AnimatedVisibilityScope.FilterGenerationItem(
     }
 }
 
+@Composable
+internal fun FilterGenerationItemScreenshotPreview(
+    modifier: Modifier = Modifier,
+    generation: Generation,
+    selected: Boolean,
+    index: Int = 0,
+) {
+    val visibleState = remember { MutableTransitionState(initialState = true) }
+    AnimatedVisibility(visibleState = visibleState) {
+        FilterGenerationItem(
+            modifier = modifier,
+            generation = generation,
+            selected = selected,
+            index = index,
+        )
+    }
+}
+
+@Composable
+internal fun FilterTypeItemScreenshotPreview(
+    modifier: Modifier = Modifier,
+    type: Type,
+    selected: Boolean,
+    index: Int = 0,
+) {
+    val visibleState = remember { MutableTransitionState(initialState = true) }
+    AnimatedVisibility(visibleState = visibleState) {
+        FilterTypeItem(modifier = modifier, type = type, selected = selected, index = index)
+    }
+}
+
 @PreviewLightDark
 @Composable
 private fun PokedexScreenPreview() {

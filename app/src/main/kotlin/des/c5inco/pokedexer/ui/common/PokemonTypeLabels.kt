@@ -75,7 +75,7 @@ fun PokemonTypeLabels(
 ) {
     PokemonTypesTheme(types = listOf(types[0])) {
         types.forEach {
-            TypeLabel(modifier = modifier, text = it, metrics = metrics)
+            TypeLabel(modifier = modifier, text = it, colored = false, metrics = metrics)
             Spacer(modifier = Modifier.size(metrics.elementSpacing))
         }
     }

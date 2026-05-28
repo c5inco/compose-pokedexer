@@ -2,7 +2,8 @@
 activityCompose = "1.12.3"
 androidGradlePlugin = "8.13.1"
 apollo = "3.8.6"
-composeBom = "2026.01.01"
+composeBom = "2026.04.01"
+screenshot = "0.0.1-alpha15"
 coreKtx = "1.17.0"
 coroutines = "1.9.0"
 espressoCore = "3.7.0"
@@ -81,6 +82,7 @@ androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runt
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 detekt-plugin-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "composeRulesDetekt" }
+screenshot-validation-api = { group = "com.android.tools.screenshot", name = "screenshot-validation-api", version.ref = "screenshot" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -98,3 +100,4 @@ room = { id = "androidx.room", version.ref = "room" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
+screenshot = { id = "com.android.compose.screenshot", version.ref = "screenshot" }

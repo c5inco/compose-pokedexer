@@ -1,18 +1,23 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.metro)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.screenshot)
 }
 
 android {
     namespace "des.c5inco.pokedexer"
-    compileSdk 36
+    compileSdk = 37
+
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
 
     defaultConfig {
         applicationId "des.c5inco.pokedexer"
-        minSdk 28
+        minSdk = 28
         versionCode 1
         versionName "1.0"
 
@@ -43,19 +48,21 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs += [
-            "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-            "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
-            "-opt-in=androidx.compose.animation.ExperimentalSharedTransitionApi",
-            "-opt-in=androidx.compose.layout.ExperimentalLayoutApi",
-            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-opt-in=kotlinx.coroutines.FlowPreview",
-            "-opt-in=androidx.compose.animation.core.ExperimentalAnimationSpecApi",
-            "-opt-in=androidx.compose.ui.test.ExperimentalTestApi"
-        ]
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+            freeCompilerArgs.addAll([
+                "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+                "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
+                "-opt-in=androidx.compose.animation.ExperimentalSharedTransitionApi",
+                "-opt-in=androidx.compose.layout.ExperimentalLayoutApi",
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.FlowPreview",
+                "-opt-in=androidx.compose.animation.core.ExperimentalAnimationSpecApi",
+                "-opt-in=androidx.compose.ui.test.ExperimentalTestApi"
+            ])
+        }
     }
     buildFeatures {
         compose true
@@ -124,4 +131,8 @@ dependencies {
 
     // Benchmark
     implementation(libs.androidx.profile.installer)
+
+    // Screenshot Tests
+    screenshotTestImplementation(libs.screenshot.validation.api)
+    screenshotTestImplementation(libs.androidx.compose.ui.tooling)
 }
