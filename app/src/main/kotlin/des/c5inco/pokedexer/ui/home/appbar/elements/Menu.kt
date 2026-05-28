@@ -5,8 +5,10 @@ import android.graphics.Shader
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,10 +19,14 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.rememberUpdatedStyleState
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -72,7 +78,16 @@ fun Menu(modifier: Modifier = Modifier, onMenuItemSelected: (MenuItem) -> Unit =
 }
 
 @Composable
-fun MenuItemButton(modifier: Modifier = Modifier, item: MenuItem, onClick: () -> Unit = {}) {
+fun MenuItemButton(
+    modifier: Modifier = Modifier,
+    item: MenuItem,
+    style: Style = Style,
+    enabled: Boolean = true,
+    onClick: () -> Unit = {},
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val styleState = rememberUpdatedStyleState(interactionSource) { it.isEnabled = enabled }
+
     Box(modifier = modifier, contentAlignment = Alignment.BottomCenter) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Box(
@@ -80,29 +95,36 @@ fun MenuItemButton(modifier: Modifier = Modifier, item: MenuItem, onClick: () ->
                     Modifier.offset(y = 3.dp).customShadow(PokemonTypesTheme.colorScheme.surface)
             )
         }
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            color = PokemonTypesTheme.colorScheme.surface,
+        Box(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .styleable(
+                        styleState,
+                        des.c5inco.pokedexer.ui.theme.AppComponentStyles.menuItemButtonStyle,
+                        style,
+                    )
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = LocalIndication.current,
+                        enabled = enabled,
+                        onClick = onClick,
+                    )
         ) {
-            Box(modifier = Modifier.height(128.dp).clickable { onClick() }) {
-                Text(
-                    modifier =
-                        Modifier.align(Alignment.BottomStart)
-                            .padding(start = 16.dp, bottom = 16.dp),
-                    text = stringResource(id = item.label),
-                    color = Color.White,
-                )
-                Icon(
-                    painter = painterResource(id = mapMenuItemToIcon(item)),
-                    contentDescription = stringResource(R.string.pokemonLabel),
-                    modifier =
-                        Modifier.align(Alignment.TopEnd)
-                            .offset(x = (-8).dp, y = 16.dp)
-                            .requiredSize(72.dp),
-                    tint = Color.White.copy(alpha = 0.3f),
-                )
-            }
+            Text(
+                modifier =
+                    Modifier.align(Alignment.BottomStart).padding(start = 16.dp, bottom = 16.dp),
+                text = stringResource(id = item.label),
+                color = Color.White,
+            )
+            Icon(
+                painter = painterResource(id = mapMenuItemToIcon(item)),
+                contentDescription = stringResource(R.string.pokemonLabel),
+                modifier =
+                    Modifier.align(Alignment.TopEnd)
+                        .offset(x = (-8).dp, y = 16.dp)
+                        .requiredSize(72.dp),
+                tint = Color.White.copy(alpha = 0.3f),
+            )
         }
     }
 }

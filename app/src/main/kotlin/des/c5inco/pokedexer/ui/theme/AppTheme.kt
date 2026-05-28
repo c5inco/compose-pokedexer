@@ -19,6 +19,7 @@ import des.c5inco.pokedexer.shared.theme.getSeedColorForType
 
 @Composable
 fun AppTheme(useDarkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+    androidx.compose.foundation.ComposeFoundationFlags.isInheritedTextStyleEnabled = true
     val colors =
         rememberDynamicColorScheme(
             seedColor = Color(0xff673AB7),

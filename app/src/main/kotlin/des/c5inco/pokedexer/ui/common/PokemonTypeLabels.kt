@@ -1,20 +1,23 @@
 package des.c5inco.pokedexer.ui.common
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.MutableStyleState
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,9 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.shared.model.Type
+import des.c5inco.pokedexer.ui.theme.AppComponentStyles
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import des.c5inco.pokedexer.ui.theme.SuperEllipse
+import des.c5inco.pokedexer.ui.theme.isColored
 
 data class TypeLabelMetrics(
     val cornerRadius: Dp,
@@ -87,26 +92,23 @@ fun TypeLabel(
     text: String,
     colored: Boolean = false,
     metrics: TypeLabelMetrics = TypeLabelMetrics.MEDIUM,
+    style: Style = Style,
 ) {
-    Surface(
-        modifier = modifier,
-        color = if (colored) PokemonTypesTheme.colorScheme.surface else Color(0x38FFFFFF),
-        contentColor = PokemonTypesTheme.colorScheme.onSurface,
-        shape = RoundedCornerShape(metrics.cornerRadius),
+    val resolvedStyle =
+        when (metrics) {
+            TypeLabelMetrics.SMALL -> AppComponentStyles.smallTypeLabelStyle
+            TypeLabelMetrics.MEDIUM -> AppComponentStyles.mediumTypeLabelStyle
+            TypeLabelMetrics.LARGE -> AppComponentStyles.largeTypeLabelStyle
+            else -> AppComponentStyles.mediumTypeLabelStyle
+        }
+    val styleState = remember { MutableStyleState(null) }
+    styleState.isColored = colored
+
+    Box(
+        modifier = modifier.styleable(styleState, resolvedStyle, style),
+        contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = text,
-            fontSize = metrics.fontSize,
-            fontWeight = metrics.fontWeight,
-            textAlign = TextAlign.Center,
-            modifier =
-                Modifier.padding(
-                    start = metrics.horizontalPadding,
-                    end = metrics.horizontalPadding,
-                    top = metrics.verticalPadding,
-                    bottom = metrics.verticalPadding,
-                ),
-        )
+        Text(text = text, textAlign = TextAlign.Center)
     }
 }
 
