@@ -103,23 +103,21 @@ object AppComponentStyles {
 
             return Style {
                 shape(RoundedCornerShape(24.dp))
-                contentPadding(horizontal = 11.2.dp, vertical = 8.dp)
+                contentPadding(horizontal = 12.dp, vertical = 8.dp)
                 background(colorScheme.secondaryContainer)
                 contentColor(colorScheme.onSecondaryContainer)
-                height(40.dp)
+                minHeight(40.dp)
                 minWidth(58.dp)
-                fontWeight(typography.labelLarge.fontWeight ?: FontWeight.Medium)
-                fontSize(typography.labelLarge.fontSize)
 
                 selected {
                     shape(RoundedCornerShape(12.dp))
-                    animate {
-                        background(pokemonColorScheme.surface)
-                        contentColor(pokemonColorScheme.onSurface)
-                    }
+                    background(pokemonColorScheme.surface)
+                    contentColor(pokemonColorScheme.onSurface)
                 }
 
-                pressed { animate { shape(RoundedCornerShape(8.dp)) } }
+                pressed {
+                    shape(RoundedCornerShape(8.dp))
+                }
             }
         }
 }

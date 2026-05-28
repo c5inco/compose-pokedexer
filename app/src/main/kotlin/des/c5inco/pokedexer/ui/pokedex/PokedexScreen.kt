@@ -598,11 +598,11 @@ private fun AnimatedVisibilityScope.FilterChip(
     val directColorsStyle = Style {
         if (containerColor != Color.Unspecified) {
             background(containerColor)
-            selected { animate { background(containerColor) } }
+            selected { background(containerColor) }
         }
         if (contentColor != Color.Unspecified) {
             contentColor(contentColor)
-            selected { animate { contentColor(contentColor) } }
+            selected { contentColor(contentColor) }
         }
     }
     val combinedStyle =
@@ -610,16 +610,9 @@ private fun AnimatedVisibilityScope.FilterChip(
             directColorsStyle then
             style
 
-    Box(
+    Row(
         modifier =
             modifier
-                .height(48.dp)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = LocalIndication.current,
-                    enabled = enabled,
-                    onClick = onClick,
-                )
                 .animateEnterExit(
                     enter =
                         fadeIn(
@@ -633,14 +626,18 @@ private fun AnimatedVisibilityScope.FilterChip(
                             ),
                     exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
                     label = "filterChipTransition",
+                )
+                .styleable(styleState, combinedStyle)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current,
+                    enabled = enabled,
+                    onClick = onClick,
                 ),
-        contentAlignment = Alignment.Center,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier.styleable(styleState, combinedStyle),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        androidx.compose.material3.ProvideTextStyle(value = androidx.compose.material3.MaterialTheme.typography.labelLarge) {
             content()
         }
     }
@@ -670,8 +667,8 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
             style =
                 Style {
                     contentPadding(
-                        start = if (selected) 11.6.dp else 11.6.dp,
-                        end = if (selected) 15.6.dp else 15.6.dp,
+                        start = 12.dp,
+                        end = 16.dp,
                         top = 8.dp,
                         bottom = 8.dp,
                     )
