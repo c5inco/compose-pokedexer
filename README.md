@@ -5,6 +5,10 @@ A **Kotlin Multiplatform** Pokedex app with native **Android (Jetpack Compose)**
 
 Adapted fork of original [compose-pokedex](https://github.com/zsoltk/compose-pokedex) project.
 
+## PokeAPI
+
+Compose Pokedexer uses the [PokeAPI GraphQL API](https://pokeapi.co/docs/graphql#v1beta2) to load all data and images pertaining to Pokémon.
+
 ## Features
 
 - Explore the full Pokedex with fast, visual browsing
