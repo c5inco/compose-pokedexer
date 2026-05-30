@@ -59,6 +59,10 @@ Notable additions:
 - Designs for Move, Abilities, and Items screens
 - Designs for search
 
+## Disclaimer
+
+This sample app is not affiliated or endorsed by the creators, distributors, or the copyright or trademark holders of the series of games Compose Pokedexer relates to. The character names and information are trademarks of Nintendo. No copyright infringement is intended, this sample app is a fair-use reference for their works.,
+
 ## License
 
 All the code available under the MIT license. See [LICENSE](LICENSE).
