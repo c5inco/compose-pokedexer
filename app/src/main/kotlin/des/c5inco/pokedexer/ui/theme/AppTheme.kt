@@ -18,21 +18,19 @@ import des.c5inco.pokedexer.shared.model.Type
 import des.c5inco.pokedexer.shared.theme.getSeedColorForType
 
 @Composable
-fun AppTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
-) {
-    val colors = rememberDynamicColorScheme(
-        seedColor = Color(0xff673AB7),
-        isDark = useDarkTheme,
-        isAmoled = false
-    )
+fun AppTheme(useDarkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+    val colors =
+        rememberDynamicColorScheme(
+            seedColor = Color(0xff673AB7),
+            isDark = useDarkTheme,
+            isAmoled = false,
+        )
 
     MaterialTheme(
         colorScheme = colors,
         typography = AppTypography,
         shapes = AppShapes,
-        content = content
+        content = content,
     )
 }
 
@@ -40,64 +38,57 @@ fun AppTheme(
 fun PokemonTypesTheme(
     types: List<String>,
     paletteStyle: PaletteStyle = PaletteStyle.TonalSpot,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     // Use shared module's getSeedColorForType (returns Int) and convert to Color
     val seedColor = Color(getSeedColorForType(types))
 
-    val kolorScheme = getDynamicColorScheme(
-        seedColor = seedColor,
-        paletteStyle = paletteStyle
-    )
+    val kolorScheme = getDynamicColorScheme(seedColor = seedColor, paletteStyle = paletteStyle)
 
-    val extendedTypesColors = mapDynamicPokemonColorScheme(
-        seedColor = seedColor,
-        colorScheme = kolorScheme,
-    ).copy(
-        type = types.getOrNull(0)?.let {
-            try {
-                Type.valueOf(it.replaceFirstChar { it.uppercase() })
-            } catch (e: IllegalArgumentException) {
-                null
-            }
-        }
-    )
+    val extendedTypesColors =
+        mapDynamicPokemonColorScheme(seedColor = seedColor, colorScheme = kolorScheme)
+            .copy(
+                type =
+                    types.getOrNull(0)?.let {
+                        try {
+                            Type.valueOf(it.replaceFirstChar { it.uppercase() })
+                        } catch (e: IllegalArgumentException) {
+                            null
+                        }
+                    }
+            )
 
     CompositionLocalProvider(
         LocalPokemonTypeColorScheme provides extendedTypesColors,
-        LocalContentColor provides extendedTypesColors.onSurface
+        LocalContentColor provides extendedTypesColors.onSurface,
     ) {
-        MaterialTheme(
-            colorScheme = kolorScheme
-        ) {
-            content()
-        }
+        MaterialTheme(colorScheme = kolorScheme) { content() }
     }
 }
 
 object PokemonTypesTheme {
     val colorScheme: PokemonTypeColorScheme
-        @Composable
-        get() = LocalPokemonTypeColorScheme.current
+        @Composable get() = LocalPokemonTypeColorScheme.current
 }
 
 @Composable
 fun getDynamicColorScheme(
     seedColor: Color,
     paletteStyle: PaletteStyle,
-    isDark: Boolean = isSystemInDarkTheme()
-) = rememberDynamicColorScheme(
-    seedColor = seedColor,
-    isDark = isDark,
-    isAmoled = false,
-    style = paletteStyle
-)
+    isDark: Boolean = isSystemInDarkTheme(),
+) =
+    rememberDynamicColorScheme(
+        seedColor = seedColor,
+        isDark = isDark,
+        isAmoled = false,
+        style = paletteStyle,
+    )
 
 @Composable
 fun mapDynamicPokemonColorScheme(
     seedColor: Color,
     colorScheme: ColorScheme,
-    useDarkTheme: Boolean = isSystemInDarkTheme()
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
 ): PokemonTypeColorScheme {
     return if (useDarkTheme) {
         PokemonTypeColorScheme(
@@ -112,11 +103,12 @@ fun mapDynamicPokemonColorScheme(
         PokemonTypeColorScheme(
             primary = seedColor.lighten(0.7f),
             surface = seedColor,
-            onSurface = if (seedColor.contrastRatio(colorScheme.onSecondary) > 2.2) {
-                colorScheme.onSecondary
-            } else {
-                colorScheme.onSecondaryContainer
-            },
+            onSurface =
+                if (seedColor.contrastRatio(colorScheme.onSecondary) > 2.2) {
+                    colorScheme.onSecondary
+                } else {
+                    colorScheme.onSecondaryContainer
+                },
             surfaceVariant = seedColor.lighten(0.7f),
             secondary = colorScheme.primary,
             tertiary = colorScheme.secondary,
@@ -128,17 +120,19 @@ fun mapDynamicPokemonColorScheme(
 fun MoveCategoryTheme(
     category: MoveCategory,
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable() () -> Unit,
 ) {
-    val extendedCategoryColors = mapCategoryToColorScheme(category = category, isDark = useDarkTheme)
+    val extendedCategoryColors =
+        mapCategoryToColorScheme(category = category, isDark = useDarkTheme)
 
     CompositionLocalProvider(
         LocalMoveCategoryColorScheme provides extendedCategoryColors,
-        LocalContentColor provides if (extendedCategoryColors.onSurface != Color.Unspecified) {
-            extendedCategoryColors.onSurface
-        } else {
-            contentColorFor(extendedCategoryColors.surface)
-        }
+        LocalContentColor provides
+            if (extendedCategoryColors.onSurface != Color.Unspecified) {
+                extendedCategoryColors.onSurface
+            } else {
+                contentColorFor(extendedCategoryColors.surface)
+            },
     ) {
         content()
     }
@@ -146,14 +140,13 @@ fun MoveCategoryTheme(
 
 object MoveCategoryTheme {
     val colorScheme: MoveCategoryColorScheme
-        @Composable
-        get() = LocalMoveCategoryColorScheme.current
+        @Composable get() = LocalMoveCategoryColorScheme.current
 }
 
 @Composable
 private fun mapCategoryToColorScheme(
     category: MoveCategory,
-    isDark: Boolean
+    isDark: Boolean,
 ): MoveCategoryColorScheme {
     if (!isDark) {
         return when (category) {
@@ -161,19 +154,19 @@ private fun mapCategoryToColorScheme(
                 MoveCategoryColorScheme(
                     primary = PhysicalColors.primaryLight,
                     surface = PhysicalColors.surfaceLight,
-                    onSurface = PhysicalColors.onSurfaceLight
+                    onSurface = PhysicalColors.onSurfaceLight,
                 )
             MoveCategory.Special ->
                 MoveCategoryColorScheme(
                     primary = SpecialColors.primaryLight,
                     surface = SpecialColors.surfaceLight,
-                    onSurface = SpecialColors.onSurfaceLight
+                    onSurface = SpecialColors.onSurfaceLight,
                 )
             MoveCategory.Status ->
                 MoveCategoryColorScheme(
                     primary = StatusColors.primaryLight,
                     surface = StatusColors.surfaceLight,
-                    onSurface = StatusColors.onSurfaceLight
+                    onSurface = StatusColors.onSurfaceLight,
                 )
         }
     } else {
@@ -182,19 +175,19 @@ private fun mapCategoryToColorScheme(
                 MoveCategoryColorScheme(
                     primary = PhysicalColors.primaryDark,
                     surface = PhysicalColors.surfaceDark,
-                    onSurface = PhysicalColors.onSurfaceDark
+                    onSurface = PhysicalColors.onSurfaceDark,
                 )
             MoveCategory.Special ->
                 MoveCategoryColorScheme(
                     primary = SpecialColors.primaryDark,
                     surface = SpecialColors.surfaceDark,
-                    onSurface = SpecialColors.onSurfaceDark
+                    onSurface = SpecialColors.onSurfaceDark,
                 )
             MoveCategory.Status ->
                 MoveCategoryColorScheme(
                     primary = StatusColors.primaryDark,
                     surface = StatusColors.surfaceDark,
-                    onSurface = StatusColors.onSurfaceDark
+                    onSurface = StatusColors.onSurfaceDark,
                 )
         }
     }

@@ -2,7 +2,6 @@ package des.c5inco.pokedexer.journeys
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -16,12 +15,11 @@ import org.junit.Rule
 import org.junit.Test
 
 class MenuScreensJourneyTest {
-    @get:Rule
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Test
     fun testItemsScreenNavigationAndScrolling() {
-        // 1. Open Items screen from home menu
+        // 1. Open Items screen from bottom navigation
         composeTestRule.onNodeWithText("Items").performClick()
 
         // 2. Verify we are on Items screen
@@ -31,21 +29,24 @@ class MenuScreensJourneyTest {
         }
 
         // Verify the Items title is present
-        composeTestRule.onNodeWithText("Items").assertExists()
+        composeTestRule.onAllNodesWithText("Items")[0].assertExists()
 
         // 3. Wait for content to load - we should see items with names and descriptions
         composeTestRule.waitUntil(10000) {
-            composeTestRule.onAllNodesWithText("Master Ball", substring = true).fetchSemanticsNodes().isNotEmpty() ||
-            composeTestRule.onAllNodesWithText("Potion", substring = true).fetchSemanticsNodes().isNotEmpty()
+            composeTestRule
+                .onAllNodesWithText("Master Ball", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty() ||
+                composeTestRule
+                    .onAllNodesWithText("Potion", substring = true)
+                    .fetchSemanticsNodes()
+                    .isNotEmpty()
         }
 
         // 4. Verify scrolling works - scroll down multiple times to reach the bottom
         repeat(5) {
             composeTestRule.onNodeWithTag("ItemsLazyColumn").performTouchInput {
-                swipeUp(
-                    startY = this.centerY,
-                    endY = this.centerY - 1000f
-                )
+                swipeUp(startY = this.centerY, endY = this.centerY - 1000f)
             }
             composeTestRule.waitForIdle()
         }
@@ -53,25 +54,21 @@ class MenuScreensJourneyTest {
         // 5. Scroll back up to the top
         repeat(5) {
             composeTestRule.onNodeWithTag("ItemsLazyColumn").performTouchInput {
-                swipeDown(
-                    startY = this.centerY,
-                    endY = this.centerY + 1000f
-                )
+                swipeDown(startY = this.centerY, endY = this.centerY + 1000f)
             }
             composeTestRule.waitForIdle()
         }
 
-        // Verify back navigation button exists
-        composeTestRule.onNodeWithContentDescription("Back").assertExists()
-
-        // Go back to home
-        composeTestRule.onNodeWithContentDescription("Back").performClick()
-        composeTestRule.waitForIdle()
+        // Verify bottom navigation remains visible on top-level screen
+        composeTestRule.onNodeWithText("Pokédex").assertExists()
+        composeTestRule.onAllNodesWithText("Moves")[0].assertExists()
+        composeTestRule.onAllNodesWithText("Items")[0].assertExists()
+        composeTestRule.onNodeWithText("Type Charts").assertExists()
     }
 
     @Test
     fun testMovesScreenNavigationAndScrolling() {
-        // 1. Open Moves screen from home menu
+        // 1. Open Moves screen from bottom navigation
         composeTestRule.onNodeWithText("Moves").performClick()
 
         // 2. Verify we are on Moves screen
@@ -81,7 +78,7 @@ class MenuScreensJourneyTest {
         }
 
         // Verify the Moves title is present
-        composeTestRule.onNodeWithText("Moves").assertExists()
+        composeTestRule.onAllNodesWithText("Moves")[0].assertExists()
 
         // 3. Wait for table headers to appear
         composeTestRule.waitUntil(10000) {
@@ -98,17 +95,20 @@ class MenuScreensJourneyTest {
         // 4. Wait for move data to load
         composeTestRule.waitUntil(10000) {
             // Wait for at least one move to be visible
-            composeTestRule.onAllNodesWithText("Pound", substring = true).fetchSemanticsNodes().isNotEmpty() ||
-            composeTestRule.onAllNodesWithText("Scratch", substring = true).fetchSemanticsNodes().isNotEmpty()
+            composeTestRule
+                .onAllNodesWithText("Pound", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty() ||
+                composeTestRule
+                    .onAllNodesWithText("Scratch", substring = true)
+                    .fetchSemanticsNodes()
+                    .isNotEmpty()
         }
 
         // 5. Verify scrolling works - scroll down multiple times to see more moves
         repeat(10) {
             composeTestRule.onNodeWithTag("MovesLazyColumn").performTouchInput {
-                swipeUp(
-                    startY = this.centerY,
-                    endY = this.centerY - 1200f
-                )
+                swipeUp(startY = this.centerY, endY = this.centerY - 1200f)
             }
             composeTestRule.waitForIdle()
         }
@@ -116,26 +116,22 @@ class MenuScreensJourneyTest {
         // 6. Scroll back up to the top
         repeat(10) {
             composeTestRule.onNodeWithTag("MovesLazyColumn").performTouchInput {
-                swipeDown(
-                    startY = this.centerY,
-                    endY = this.centerY + 1200f
-                )
+                swipeDown(startY = this.centerY, endY = this.centerY + 1200f)
             }
             composeTestRule.waitForIdle()
         }
 
-        // Verify back navigation button exists
-        composeTestRule.onNodeWithContentDescription("Back").assertExists()
-
-        // Go back to home
-        composeTestRule.onNodeWithContentDescription("Back").performClick()
-        composeTestRule.waitForIdle()
+        // Verify bottom navigation remains visible on top-level screen
+        composeTestRule.onNodeWithText("Pokédex").assertExists()
+        composeTestRule.onAllNodesWithText("Moves")[0].assertExists()
+        composeTestRule.onAllNodesWithText("Items")[0].assertExists()
+        composeTestRule.onNodeWithText("Type Charts").assertExists()
     }
 
     @Test
     fun testTypeChartScreenNavigationAndScrolling() {
-        // 1. Open Type charts screen from home menu
-        composeTestRule.onNodeWithText("Type charts").performClick()
+        // 1. Open Type charts screen from bottom navigation
+        composeTestRule.onNodeWithText("Type Charts").performClick()
 
         // 2. Verify we are on Type Chart screen
         composeTestRule.waitForIdle()
@@ -158,10 +154,7 @@ class MenuScreensJourneyTest {
         // Scroll down vertically multiple times
         repeat(3) {
             composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
-                swipeUp(
-                    startY = this.centerY,
-                    endY = this.centerY - 800f
-                )
+                swipeUp(startY = this.centerY, endY = this.centerY - 800f)
             }
             composeTestRule.waitForIdle()
         }
@@ -169,10 +162,7 @@ class MenuScreensJourneyTest {
         // Scroll right horizontally multiple times
         repeat(3) {
             composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
-                swipeLeft(
-                    startX = this.centerX,
-                    endX = this.centerX - 800f
-                )
+                swipeLeft(startX = this.centerX, endX = this.centerX - 800f)
             }
             composeTestRule.waitForIdle()
         }
@@ -180,10 +170,7 @@ class MenuScreensJourneyTest {
         // Scroll back left horizontally
         repeat(3) {
             composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
-                swipeRight(
-                    startX = this.centerX,
-                    endX = this.centerX + 800f
-                )
+                swipeRight(startX = this.centerX, endX = this.centerX + 800f)
             }
             composeTestRule.waitForIdle()
         }
@@ -191,25 +178,22 @@ class MenuScreensJourneyTest {
         // Scroll back up vertically
         repeat(3) {
             composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
-                swipeDown(
-                    startY = this.centerY,
-                    endY = this.centerY + 800f
-                )
+                swipeDown(startY = this.centerY, endY = this.centerY + 800f)
             }
             composeTestRule.waitForIdle()
         }
 
-        // 5. Verify back navigation button exists
-        composeTestRule.onNodeWithContentDescription("Back").assertExists()
-
-        // Go back to home
-        composeTestRule.onNodeWithContentDescription("Back").performClick()
-        composeTestRule.waitForIdle()
+        // 5. Verify bottom navigation remains visible on top-level screen
+        composeTestRule.onNodeWithText("Pokédex").assertExists()
+        composeTestRule.onNodeWithText("Moves").assertExists()
+        composeTestRule.onNodeWithText("Items").assertExists()
+        composeTestRule.onNodeWithText("Type Charts").assertExists()
     }
 
     @Test
     fun testItemsScreenDataPersistenceAfterNavigation() {
-        // This test verifies that the Items screen maintains its data after navigating away and back
+        // This test verifies that the Items screen maintains its data after navigating away and
+        // back
 
         // 1. Navigate to Items
         composeTestRule.onNodeWithText("Items").performClick()
@@ -217,12 +201,18 @@ class MenuScreensJourneyTest {
         // 2. Wait for items to load
         composeTestRule.waitForIdle()
         composeTestRule.waitUntil(10000) {
-            composeTestRule.onAllNodesWithText("Master Ball", substring = true).fetchSemanticsNodes().isNotEmpty() ||
-            composeTestRule.onAllNodesWithText("Potion", substring = true).fetchSemanticsNodes().isNotEmpty()
+            composeTestRule
+                .onAllNodesWithText("Master Ball", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty() ||
+                composeTestRule
+                    .onAllNodesWithText("Potion", substring = true)
+                    .fetchSemanticsNodes()
+                    .isNotEmpty()
         }
 
-        // 3. Go back to home
-        composeTestRule.onNodeWithContentDescription("Back").performClick()
+        // 3. Switch to another top-level destination and back to Items
+        composeTestRule.onNodeWithText("Moves").performClick()
         composeTestRule.waitForIdle()
 
         // 4. Navigate back to Items
@@ -231,16 +221,23 @@ class MenuScreensJourneyTest {
 
         // 5. Verify items are still loaded (should be faster this time due to caching)
         composeTestRule.waitUntil(8000) {
-            composeTestRule.onAllNodesWithText("Master Ball", substring = true).fetchSemanticsNodes().isNotEmpty() ||
-            composeTestRule.onAllNodesWithText("Potion", substring = true).fetchSemanticsNodes().isNotEmpty()
+            composeTestRule
+                .onAllNodesWithText("Master Ball", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty() ||
+                composeTestRule
+                    .onAllNodesWithText("Potion", substring = true)
+                    .fetchSemanticsNodes()
+                    .isNotEmpty()
         }
 
-        composeTestRule.onNodeWithText("Items").assertExists()
+        composeTestRule.onAllNodesWithText("Items")[0].assertExists()
     }
 
     @Test
     fun testMovesScreenDataPersistenceAfterNavigation() {
-        // This test verifies that the Moves screen maintains its data after navigating away and back
+        // This test verifies that the Moves screen maintains its data after navigating away and
+        // back
 
         // 1. Navigate to Moves
         composeTestRule.onNodeWithText("Moves").performClick()
@@ -254,8 +251,8 @@ class MenuScreensJourneyTest {
         // Verify table headers
         composeTestRule.onNodeWithText("Name").assertExists()
 
-        // 3. Go back to home
-        composeTestRule.onNodeWithContentDescription("Back").performClick()
+        // 3. Switch to another top-level destination and back to Moves
+        composeTestRule.onNodeWithText("Items").performClick()
         composeTestRule.waitForIdle()
 
         // 4. Navigate back to Moves
@@ -267,7 +264,7 @@ class MenuScreensJourneyTest {
             composeTestRule.onAllNodesWithText("Name").fetchSemanticsNodes().isNotEmpty()
         }
 
-        composeTestRule.onNodeWithText("Moves").assertExists()
+        composeTestRule.onAllNodesWithText("Moves")[0].assertExists()
         composeTestRule.onNodeWithText("Name").assertExists()
     }
 }

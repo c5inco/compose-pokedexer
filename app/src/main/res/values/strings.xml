@@ -11,6 +11,7 @@
     <string name="locationsLabel">Locations</string>
     <string name="abilitiesLabel">Abilities</string>
     <string name="typeChartsLabel">Type charts</string>
+    <string name="typeChartsNavLabel">Type Charts</string>
     <string name="searchPlaceholderText">Search Pokemon, Move, Item, etc</string>
     <string name="clearSearchContentDescription">Clear search</string>
     <string name="backActionContentDescription">Back</string>

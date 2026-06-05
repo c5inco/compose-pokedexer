@@ -37,28 +37,16 @@ import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 fun AboutSection(
     modifier: Modifier = Modifier,
     pokemon: Pokemon,
-    abilities: List<PokemonDetailsAbilities>
+    abilities: List<PokemonDetailsAbilities>,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(28.dp),
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp)
-            .navigationBarsPadding()
+        modifier =
+            modifier.verticalScroll(rememberScrollState()).padding(24.dp).navigationBarsPadding(),
     ) {
-        Text(
-            text = pokemon.description,
-            lineHeight = 24.sp
-        )
-        Surface(
-            shape = RoundedCornerShape(12.dp),
-            tonalElevation = 3.dp
-        ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
+        Text(text = pokemon.description, lineHeight = 24.sp)
+        Surface(shape = RoundedCornerShape(12.dp), tonalElevation = 3.dp) {
+            Row(Modifier.fillMaxWidth().padding(16.dp)) {
                 Column(Modifier.weight(1f)) {
                     Label(text = stringResource(R.string.heightLabel))
                     Spacer(Modifier.height(12.dp))
@@ -81,35 +69,24 @@ fun AboutSection(
 @Composable
 private fun AbilitiesDetails(
     modifier: Modifier = Modifier,
-    abilities: List<PokemonDetailsAbilities>
+    abilities: List<PokemonDetailsAbilities>,
 ) {
-    Column(
-        modifier = modifier,
-    ) {
+    Column(modifier = modifier) {
         Text(
             text = stringResource(R.string.abilitiesLabel),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
         Spacer(Modifier.height(16.dp))
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             abilities.forEach {
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    tonalElevation = 3.dp,
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
+                Surface(shape = RoundedCornerShape(12.dp), tonalElevation = 3.dp) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                         if (it.isHidden) {
                             Text(
                                 text = stringResource(R.string.hiddenLabel).uppercase(),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
                             )
                             Spacer(Modifier.height(8.dp))
                         }
@@ -124,10 +101,7 @@ private fun AbilitiesDetails(
 }
 
 @Composable
-private fun BreedingDetails(
-    modifier: Modifier = Modifier,
-    pokemon: Pokemon
-) {
+private fun BreedingDetails(modifier: Modifier = Modifier, pokemon: Pokemon) {
     Column(modifier) {
         Text(
             text = stringResource(R.string.breedingLabel),
@@ -137,9 +111,7 @@ private fun BreedingDetails(
         Row(Modifier.fillMaxWidth()) {
             Label(
                 text = stringResource(R.string.genderLabel),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 12.dp)
+                modifier = Modifier.weight(1f).padding(end = 12.dp),
             )
             if (pokemon.genderRate != -1) {
                 Row(Modifier.weight(2f)) {
@@ -148,7 +120,7 @@ private fun BreedingDetails(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_outline_male_20),
                             contentDescription = null,
-                            tint = Color(0xff6C79DB)
+                            tint = Color(0xff6C79DB),
                         )
                         Spacer(Modifier.width(2.dp))
                         Text("${100 - femaleGenderRate}%")
@@ -158,7 +130,7 @@ private fun BreedingDetails(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_outline_female_20),
                             contentDescription = null,
-                            tint = Color(0xffF0729F)
+                            tint = Color(0xffF0729F),
                         )
                         Spacer(Modifier.width(2.dp))
                         Text("$femaleGenderRate%")
@@ -167,7 +139,7 @@ private fun BreedingDetails(
             } else {
                 Text(
                     text = stringResource(R.string.genderlessLabel),
-                    modifier = Modifier.weight(2.2f)
+                    modifier = Modifier.weight(2.2f),
                 )
             }
         }
@@ -175,27 +147,17 @@ private fun BreedingDetails(
         Row(Modifier.fillMaxWidth()) {
             Label(
                 text = stringResource(R.string.eggGroupsLabel),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 12.dp)
+                modifier = Modifier.weight(1f).padding(end = 12.dp),
             )
-            Text(
-                "-",
-                modifier = Modifier.weight(2f)
-            )
+            Text("-", modifier = Modifier.weight(2f))
         }
         Spacer(Modifier.height(18.dp))
         Row(Modifier.fillMaxWidth()) {
             Label(
                 text = stringResource(R.string.eggCyclesLabel),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 12.dp)
+                modifier = Modifier.weight(1f).padding(end = 12.dp),
             )
-            Text(
-                "-",
-                modifier = Modifier.weight(2f)
-            )
+            Text("-", modifier = Modifier.weight(2f))
         }
     }
 }
@@ -206,13 +168,11 @@ fun AboutSectionPreview() {
     val pokemon = SamplePokemonData[0]
 
     AppTheme {
-        PokemonTypesTheme(
-            types = pokemon.typeOfPokemon
-        ) {
+        PokemonTypesTheme(types = pokemon.typeOfPokemon) {
             Surface(Modifier.fillMaxWidth()) {
                 AboutSection(
                     pokemon = pokemon,
-                    abilities = mapSampleAbilitiesToDetailsList().take(2)
+                    abilities = mapSampleAbilitiesToDetailsList().take(2),
                 )
             }
         }

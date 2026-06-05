@@ -34,39 +34,35 @@ import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsMoves
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
-fun MovesSection(
-    modifier: Modifier = Modifier,
-    moves: List<PokemonDetailsMoves>
-) {
+fun MovesSection(modifier: Modifier = Modifier, moves: List<PokemonDetailsMoves>) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(
-            top = 24.dp,
-            start = 24.dp,
-            end = 24.dp,
-            bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 60.dp
-        )
+        contentPadding =
+            PaddingValues(
+                top = 24.dp,
+                start = 24.dp,
+                end = 24.dp,
+                bottom =
+                    WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 60.dp,
+            ),
     ) {
         stickyHeader {
             val textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
 
             CompositionLocalProvider(
                 LocalTextStyle provides textStyle,
-                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant
+                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
             ) {
                 Row(
-                    Modifier
-                        .fillMaxWidth()
+                    Modifier.fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(bottom = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         text = stringResource(R.string.levelTableHeader),
                         textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .requiredWidth(40.dp)
-                            .padding(end = 12.dp)
+                        modifier = Modifier.requiredWidth(40.dp).padding(end = 12.dp),
                     )
                     Text(
                         text = stringResource(R.string.nameTableHeader),
@@ -75,73 +71,61 @@ fun MovesSection(
                     Text(
                         text = stringResource(R.string.typeTableHeader),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.requiredWidth(75.dp)
+                        modifier = Modifier.requiredWidth(75.dp),
                     )
                     Text(
                         text = stringResource(R.string.categoryTableHeader),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.requiredWidth(48.dp)
+                        modifier = Modifier.requiredWidth(48.dp),
                     )
                     Text(
                         text = stringResource(R.string.powerTableHeader),
                         textAlign = TextAlign.End,
-                        modifier = Modifier.requiredWidth(40.dp)
+                        modifier = Modifier.requiredWidth(40.dp),
                     )
                     Text(
                         text = stringResource(R.string.accuracyTableHeader),
                         textAlign = TextAlign.End,
-                        modifier = Modifier.requiredWidth(40.dp)
+                        modifier = Modifier.requiredWidth(40.dp),
                     )
                 }
             }
         }
         items(moves) { (move, targetLevel) ->
             Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = "$targetLevel",
                     textAlign = TextAlign.End,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier
-                        .requiredWidth(40.dp)
-                        .padding(end = 12.dp)
+                    modifier = Modifier.requiredWidth(40.dp).padding(end = 12.dp),
                 )
                 Text(
-                    move.name.split("-").joinToString(" ") {
-                        it[0].uppercase() + it.substring(1)
-                    },
-                    Modifier.weight(1f)
+                    move.name.split("-").joinToString(" ") { it[0].uppercase() + it.substring(1) },
+                    Modifier.weight(1f),
                 )
                 PokemonTypesTheme(types = listOf(move.type)) {
                     TypeLabel(
                         modifier = Modifier.requiredWidth(75.dp),
                         text = move.type,
                         colored = true,
-                        metrics = TypeLabelMetrics.MEDIUM
+                        metrics = TypeLabelMetrics.MEDIUM,
                     )
                 }
-                Box(
-                    Modifier.requiredWidth(48.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CategoryIcon(
-                        modifier = Modifier.size(24.dp),
-                        move = move
-                    )
+                Box(Modifier.requiredWidth(48.dp), contentAlignment = Alignment.Center) {
+                    CategoryIcon(modifier = Modifier.size(24.dp), move = move)
                 }
                 Text(
                     "${move.power ?: "—"}",
                     textAlign = TextAlign.End,
-                    modifier = Modifier.requiredWidth(40.dp)
+                    modifier = Modifier.requiredWidth(40.dp),
                 )
                 Text(
                     text = "${move.accuracy ?: "—"}",
                     textAlign = TextAlign.End,
-                    modifier = Modifier.requiredWidth(40.dp)
+                    modifier = Modifier.requiredWidth(40.dp),
                 )
             }
         }

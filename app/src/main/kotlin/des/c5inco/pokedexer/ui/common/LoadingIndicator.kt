@@ -32,15 +32,17 @@ fun LoadingIndicator(modifier: Modifier = Modifier) {
     var containerWidth by remember { mutableIntStateOf(0) }
 
     val infiniteTransition = rememberInfiniteTransition(label = "pika_loader_transition")
-    val xOffset by infiniteTransition.animateFloat(
-        initialValue = with (density) { -imageSize.toPx() },
-        targetValue = containerWidth.toFloat(),
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "pika_loader_offset"
-    )
+    val xOffset by
+        infiniteTransition.animateFloat(
+            initialValue = with(density) { -imageSize.toPx() },
+            targetValue = containerWidth.toFloat(),
+            animationSpec =
+                infiniteRepeatable(
+                    animation = tween(durationMillis = 2000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart,
+                ),
+            label = "pika_loader_offset",
+        )
 
     Layout(
         content = {

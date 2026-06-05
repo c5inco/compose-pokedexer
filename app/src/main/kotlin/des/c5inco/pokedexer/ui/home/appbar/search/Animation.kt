@@ -12,19 +12,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInHorizontally
 
 fun slideAndFadeEnterTransition(index: Int): EnterTransition {
-    return fadeIn(
-        tween(durationMillis = 300, delayMillis = index / 2 * 100)
-    ) +
-            slideInHorizontally(
-                tween(durationMillis = 300, delayMillis = index / 2 * 100)
-            ) { it / 2 }
+    return fadeIn(tween(durationMillis = 300, delayMillis = index / 2 * 100)) +
+        slideInHorizontally(tween(durationMillis = 300, delayMillis = index / 2 * 100)) { it / 2 }
 }
 
 internal val containerBoundsTransform = BoundsTransform { _, _ ->
-    spring(
-        dampingRatio = DampingRatioMediumBouncy,
-        stiffness = 1200f
-    )
+    spring(dampingRatio = DampingRatioMediumBouncy, stiffness = 1200f)
 }
 
 internal val textBoundsTransform = BoundsTransform { initialBounds, targetBounds ->

@@ -53,56 +53,48 @@ fun EvolutionSection(
             evolutions.forEachIndexed { idx, evo ->
                 if (idx < evolutions.size - 1) {
                     Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp),
+                        Modifier.fillMaxWidth().padding(vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         val e1 = evo
                         val e2 = evolutions[idx + 1]
 
                         EvolutionCard(e1.pokemon)
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.surfaceTint
+                                tint = MaterialTheme.colorScheme.surfaceTint,
                             )
                             Spacer(Modifier.height(4.dp))
 
                             e2.item?.let {
-                                ItemImage(
-                                    item = e2.item,
-                                    modifier = Modifier.size(18.dp)
-                                )
+                                ItemImage(item = e2.item, modifier = Modifier.size(18.dp))
                                 Spacer(Modifier.height(4.dp))
                                 Text(
                                     text = e2.item.name,
                                     style = MaterialTheme.typography.bodySmall,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            } ?: run {
-                                Text(
-                                    text = when (e2.trigger) {
-                                        EvolutionTrigger.Trade ->
-                                            "Trade"
-
-                                        else ->
-                                            "Lvl ${e2.targetLevel}"
-                                    },
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
                                 )
                             }
+                                ?: run {
+                                    Text(
+                                        text =
+                                            when (e2.trigger) {
+                                                EvolutionTrigger.Trade -> "Trade"
+
+                                                else -> "Lvl ${e2.targetLevel}"
+                                            },
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                }
                         }
                         EvolutionCard(e2.pokemon)
                     }
                 }
-                if (idx < evolutions.size - 2)
-                    HorizontalDivider()
+                if (idx < evolutions.size - 2) HorizontalDivider()
             }
         } else {
             Text(text = stringResource(R.string.evolutionsEmptyText))
@@ -119,15 +111,14 @@ fun EvolutionsSectionPreview() {
             Column {
                 EvolutionSection(
                     modifier = Modifier.padding(vertical = 32.dp),
-                    evolutions = mapSampleEvolutionsToList(
-                        SamplePokemonData.first { it.name == "Pikachu" }.evolutionChain
-                    )
+                    evolutions =
+                        mapSampleEvolutionsToList(
+                            SamplePokemonData.first { it.name == "Pikachu" }.evolutionChain
+                        ),
                 )
                 EvolutionSection(
                     modifier = Modifier.padding(vertical = 32.dp),
-                    evolutions = mapSampleEvolutionsToList(
-                        SamplePokemonData[3].evolutionChain
-                    )
+                    evolutions = mapSampleEvolutionsToList(SamplePokemonData[3].evolutionChain),
                 )
             }
         }
@@ -135,28 +126,21 @@ fun EvolutionsSectionPreview() {
 }
 
 @Composable
-private fun EvolutionCard(
-    pokemon: Pokemon,
-    modifier: Modifier = Modifier
-) {
+private fun EvolutionCard(pokemon: Pokemon, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .width(128.dp)
-            .padding(horizontal = 8.dp, vertical = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(20.dp))
+                .width(128.dp)
+                .padding(horizontal = 8.dp, vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
+        Box(contentAlignment = Alignment.Center) {
             Pokeball(
                 tint = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
                 modifier = Modifier.size(80.dp),
             )
-            PokemonImage(
-                image = pokemon.id,
-                modifier = Modifier.size(72.dp)
-            )
+            PokemonImage(image = pokemon.id, modifier = Modifier.size(72.dp))
         }
         Spacer(Modifier.height(4.dp))
         Text(pokemon.name)

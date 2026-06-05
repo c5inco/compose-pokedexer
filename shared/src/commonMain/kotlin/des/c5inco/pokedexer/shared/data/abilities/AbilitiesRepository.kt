@@ -14,15 +14,18 @@ import kotlinx.coroutines.withContext
 
 interface AbilitiesRepository {
     suspend fun updateAbilities()
+
     fun getAbilityById(id: Int): Flow<Ability?>
+
     suspend fun getAbilitiesByIds(ids: List<Int>): Result<List<Ability>>
+
     suspend fun getAbilitiesByName(name: String): Result<List<Ability>>
 }
 
 class AbilitiesRepositoryImpl(
     private val abilitiesDao: AbilitiesDao,
-    private val apolloClient: ApolloClient
-): AbilitiesRepository {
+    private val apolloClient: ApolloClient,
+) : AbilitiesRepository {
     override suspend fun updateAbilities() {
         val localAbilities = abilitiesDao.getAll().first()
 
@@ -32,15 +35,18 @@ class AbilitiesRepositoryImpl(
                 val response = apolloClient.query(AbilitiesQuery()).execute()
 
                 if (!response.hasErrors()) {
-                    val abilitiesFromServer = response.data!!.abilities.map { model ->
-                        Ability(
-                            id = model.id,
-                            name = model.name.split("-").joinToString(" ") { part ->
-                                part.replaceFirstChar { it.uppercase() }
-                            },
-                            description = cleanupDescriptionText(model.flavorText.first().description),
-                        )
-                    }
+                    val abilitiesFromServer =
+                        response.data!!.abilities.map { model ->
+                            Ability(
+                                id = model.id,
+                                name =
+                                    model.name.split("-").joinToString(" ") { part ->
+                                        part.replaceFirstChar { it.uppercase() }
+                                    },
+                                description =
+                                    cleanupDescriptionText(model.flavorText.first().description),
+                            )
+                        }
 
                     abilitiesDao.deleteAll()
                     abilitiesDao.insertAll(*abilitiesFromServer.toTypedArray())

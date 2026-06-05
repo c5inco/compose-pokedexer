@@ -10,11 +10,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovesDao {
-    @Query("SELECT * FROM move")
-    fun getAll(): Flow<List<Move>>
+    @Query("SELECT * FROM move") fun getAll(): Flow<List<Move>>
 
-    @Query("SELECT * FROM move WHERE id = :id LIMIT 1")
-    fun findById(id: Int): Flow<Move?>
+    @Query("SELECT * FROM move WHERE id = :id LIMIT 1") fun findById(id: Int): Flow<Move?>
 
     @Query("SELECT * FROM move WHERE id IN (:ids)")
     suspend fun findByIds(ids: List<Int>): List<Move>
@@ -22,15 +20,11 @@ interface MovesDao {
     @Query("SELECT * FROM move WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
     fun findByName(name: String): Flow<List<Move>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(move: Move)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insert(move: Move)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(vararg move: Move)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertAll(vararg move: Move)
 
-    @Delete
-    suspend fun delete(move: Move)
+    @Delete suspend fun delete(move: Move)
 
-    @Query("DELETE FROM move")
-    suspend fun deleteAll()
+    @Query("DELETE FROM move") suspend fun deleteAll()
 }

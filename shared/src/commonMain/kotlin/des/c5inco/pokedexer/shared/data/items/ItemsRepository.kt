@@ -14,16 +14,18 @@ import kotlinx.coroutines.withContext
 
 interface ItemsRepository {
     fun items(): Flow<List<Item>>
+
     suspend fun updateItems()
+
     fun getItemById(id: Int): Flow<Item?>
+
     suspend fun getItemByIds(ids: List<Int>): Result<List<Item>>
+
     fun getItemsByName(name: String): Flow<List<Item>>
 }
 
-class ItemsRepositoryImpl(
-    private val itemsDao: ItemsDao,
-    private val apolloClient: ApolloClient
-): ItemsRepository {
+class ItemsRepositoryImpl(private val itemsDao: ItemsDao, private val apolloClient: ApolloClient) :
+    ItemsRepository {
     override fun items(): Flow<List<Item>> {
         return itemsDao.getAll()
     }
@@ -37,16 +39,18 @@ class ItemsRepositoryImpl(
                 val response = apolloClient.query(ItemsQuery()).execute()
 
                 if (!response.hasErrors()) {
-                    val itemsFromServer = response.data!!.info.items.map { model ->
-                        Item(
-                            id = model.id,
-                            name = model.name.split("-").joinToString(" ") { part ->
-                                part.replaceFirstChar { it.uppercase() }
-                            },
-                            description = cleanupDescriptionText(model.flavorText.first().text),
-                            sprite = model.name,
-                        )
-                    }
+                    val itemsFromServer =
+                        response.data!!.info.items.map { model ->
+                            Item(
+                                id = model.id,
+                                name =
+                                    model.name.split("-").joinToString(" ") { part ->
+                                        part.replaceFirstChar { it.uppercase() }
+                                    },
+                                description = cleanupDescriptionText(model.flavorText.first().text),
+                                sprite = model.name,
+                            )
+                        }
 
                     itemsDao.deleteAll()
                     itemsDao.insertAll(*itemsFromServer.toTypedArray())

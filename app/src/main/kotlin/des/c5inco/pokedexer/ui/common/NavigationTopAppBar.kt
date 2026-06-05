@@ -21,33 +21,20 @@ fun NavigationTopAppBar(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
 ) {
-    Box(
-        modifier.fillMaxWidth()
-    ) {
-        IconButton(
-            modifier = Modifier.align(Alignment.CenterStart),
-            onClick = { onBackClick() }
-        ) {
+    Box(modifier.fillMaxWidth()) {
+        IconButton(modifier = Modifier.align(Alignment.CenterStart), onClick = { onBackClick() }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = stringResource(R.string.backActionContentDescription),
             )
         }
 
-        Row(
-            modifier = Modifier.align(Alignment.Center),
-        ) {
-            ProvideTextStyle(
-                value = MaterialTheme.typography.titleMedium,
-                content = title
-            )
+        Row(modifier = Modifier.align(Alignment.Center)) {
+            ProvideTextStyle(value = MaterialTheme.typography.titleMedium, content = title)
         }
 
-        Row(
-            modifier = Modifier.align(Alignment.CenterEnd),
-            content = actions
-        )
+        Row(modifier = Modifier.align(Alignment.CenterEnd), content = actions)
     }
 }
