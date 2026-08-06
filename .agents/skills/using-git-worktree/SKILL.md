@@ -77,7 +77,8 @@ From the new worktree:
 
 - Use the Gradle tasks configured by this repository, not a separately installed ktfmt CLI.
 - Run `./gradlew ktfmtFormat` before committing and inspect any formatting changes.
-- Run targeted tests during development and `./gradlew check` before every push or PR.
+- Run targeted tests during development and `./gradlew check` before every push or PR. If it fails, follow the
+  pre-existing check failure exception in `AGENTS.md`; never infer an exception from worktree isolation alone.
 - After an approved rebase or merge, find the merge base, inspect the branch diff, and verify that key changes survived
   before rerunning `./gradlew check`.
 - Treat `.gradle/`, `build/`, `.kotlin/`, IDE state, and Android SDK configuration as checkout-local or ignored state;
@@ -110,5 +111,5 @@ Always:
 - select the base branch explicitly;
 - use the worktree path for every later operation;
 - verify a clean baseline;
-- run `./gradlew check` before pushing;
+- run and resolve `./gradlew check`, or satisfy the documented pre-existing failure exception, before pushing;
 - preserve all uncommitted work during cleanup.

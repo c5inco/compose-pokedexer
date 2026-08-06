@@ -70,7 +70,9 @@ and follow `.agents/skills/git-github-ops/SKILL.md`; when creating or using a li
   characters.
 - **Pre-Commit**: Run `./gradlew ktfmtFormat`, inspect the resulting diff, and run the targeted tests required by the
   TDD cycle.
-- **Pre-Push / PR**: Run `./gradlew check` and confirm it passes before pushing or opening a PR.
+- **Pre-Push / PR**: Run `./gradlew check` and confirm it passes before pushing or opening a PR. The narrowly scoped
+  pre-existing-failure exception in `AGENTS.md` applies only to non-code changes with targeted validation, a follow-up
+  issue, and explicit user approval; the full check must still be run and reported.
 - **Pull Requests**: Use a focused title and description, reference related issues (for example, `Fixes #27`), and add
   screenshots for UI changes.
 - **Worktrees**: Offer a linked worktree before the first tracked edit when the session is still on the default branch

@@ -83,6 +83,20 @@ request for analysis or a question about an approach is not approval.
 Never push directly to the default branch without the user explicitly requesting that exact action. Before pushing or
 opening a PR, complete the TDD cycle, run `./gradlew ktfmtFormat`, then run `./gradlew check` and confirm it passes.
 
+### Pre-Existing Check Failure Exception
+
+A failing `./gradlew check` may be deferred only when every condition below is met:
+
+1. The check is still run and its exact failure is reported.
+2. The change does not touch Kotlin, Swift, Gradle/build configuration, Detekt configuration, or runtime source.
+3. The failure is demonstrably pre-existing on the base revision, or every reported failure is confined to files and
+   build inputs unchanged by the proposed push.
+4. Targeted validation for the files actually changed passes.
+5. An open follow-up issue tracks the deferred failure without adding a Detekt baseline, suppression, or exclusion.
+6. The user explicitly approves pushing with the documented failure.
+
+This exception never applies to behavior changes, build changes, or failures plausibly caused by the current work.
+
 ## Local Skills
 
 Before falling back to “I can't do that,” check `.agents/skills/` for a project-local workflow. For any matching skill,

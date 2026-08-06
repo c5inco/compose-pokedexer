@@ -59,7 +59,8 @@ Do not amend, reset, rebase, or otherwise rewrite a commit unless the user expli
 - Before creating or switching branches, inspect the current branch, status, and worktree list.
 - Never pull, merge, or rebase merely to make a branch current. Report the state and ask which update strategy the user
   wants.
-- Before every push or PR, run `./gradlew check` and confirm it passes.
+- Before every push or PR, run `./gradlew check` and confirm it passes. If it fails, stop unless every pre-existing check
+  failure exception requirement in `AGENTS.md` is documented and satisfied.
 - Push the explicit branch name; use `git push --set-upstream origin <branch>` for its first push.
 - Never push directly to the default branch unless the user explicitly requests that exact action.
 
@@ -111,7 +112,8 @@ Before an approval-gated Git or GitHub mutation:
 - Confirm unrelated changes are excluded and preserved.
 - Confirm TDD evidence exists for behavior changes.
 - Before commits, confirm formatting and targeted tests pass.
-- Before pushes and PRs, confirm `./gradlew check` passes.
+- Before pushes and PRs, confirm `./gradlew check` passes or document how every `AGENTS.md` pre-existing failure
+  exception requirement is satisfied.
 
 ## Handoff
 
