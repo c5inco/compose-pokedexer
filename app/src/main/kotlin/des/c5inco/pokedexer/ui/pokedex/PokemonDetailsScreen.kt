@@ -109,13 +109,12 @@ fun PokemonDetailsScreenRoute(
     detailsViewModel: PokemonDetailsViewModel,
     onBackClick: (Int) -> Unit,
 ) {
-    val pokemonSet by detailsViewModel.pokemonSet.collectAsStateWithLifecycle(initialValue = emptyList())
+    val pokemonSet by
+        detailsViewModel.pokemonSet.collectAsStateWithLifecycle(initialValue = emptyList())
     val uiState by detailsViewModel.uiState.collectAsStateWithLifecycle()
 
     if (pokemonSet.isNotEmpty() && uiState != null) {
-        PokemonTypesTheme(
-            types = uiState!!.details.typeOfPokemon
-        ) {
+        PokemonTypesTheme(types = uiState!!.details.typeOfPokemon) {
             PokemonDetailsScreen(
                 pokemonSet = pokemonSet,
                 pokemon = uiState!!.details,
@@ -123,19 +122,19 @@ fun PokemonDetailsScreenRoute(
                 moves = uiState!!.moves,
                 abilities = uiState!!.abilities,
                 isFavorite = uiState!!.isFavorite,
-                onPage = {
-                    detailsViewModel.refresh(it)
-                },
-                onFavoriteClick = {
-                    detailsViewModel.toggleFavorite(it)
-                },
+                onPage = { detailsViewModel.refresh(it) },
+                onFavoriteClick = { detailsViewModel.toggleFavorite(it) },
                 onBackClick = onBackClick,
             )
         }
     }
 }
 
-enum class DragValue { Start, Center, End }
+enum class DragValue {
+    Start,
+    Center,
+    End,
+}
 
 @Composable
 fun PokemonDetailsScreen(
@@ -151,31 +150,23 @@ fun PokemonDetailsScreen(
 ) {
     val density = LocalDensity.current
 
-    val initialPage = remember {
-        pokemonSet.indexOfFirst { it.id == pokemon.id }.coerceAtLeast(0)
-    }
+    val initialPage = remember { pokemonSet.indexOfFirst { it.id == pokemon.id }.coerceAtLeast(0) }
 
-    val pagerState = rememberPagerState(initialPage = initialPage) {
-        pokemonSet.size
-    }
+    val pagerState = rememberPagerState(initialPage = initialPage) { pokemonSet.size }
 
-    val draggableAnchors = with(density) {
-        DraggableAnchors {
-            DragValue.Start at 324.dp.toPx()
-            DragValue.End at (16 + 16 + 48).dp.toPx()
+    val draggableAnchors =
+        with(density) {
+            DraggableAnchors {
+                DragValue.Start at 324.dp.toPx()
+                DragValue.End at (16 + 16 + 48).dp.toPx()
+            }
         }
-    }
 
     val anchorDraggableState = remember {
-        AnchoredDraggableState(
-            initialValue = DragValue.Start,
-            anchors = draggableAnchors,
-        )
+        AnchoredDraggableState(initialValue = DragValue.Start, anchors = draggableAnchors)
     }
     val anchorDraggableProgress by remember {
-        derivedStateOf {
-            anchorDraggableState.progress(DragValue.Start, DragValue.End)
-        }
+        derivedStateOf { anchorDraggableState.progress(DragValue.Start, DragValue.End) }
     }
 
     val scaleTarget by remember {
@@ -192,18 +183,9 @@ fun PokemonDetailsScreen(
         scaleY = scaleTarget
     }
 
-    val textAlphaTarget by remember {
-        derivedStateOf {
-            1f - anchorDraggableProgress
-        }
-    }
+    val textAlphaTarget by remember { derivedStateOf { 1f - anchorDraggableProgress } }
 
-    val imageAlphaTarget by remember {
-        derivedStateOf {
-            1f - anchorDraggableProgress * 4f
-        }
-    }
-
+    val imageAlphaTarget by remember { derivedStateOf { 1f - anchorDraggableProgress * 4f } }
 
     val cardPaddingTarget by remember {
         derivedStateOf {
@@ -212,9 +194,7 @@ fun PokemonDetailsScreen(
 
             val resolvedValue = (1f - anchorDraggableProgress) * max
 
-            resolvedValue
-                .coerceIn(min, max)
-                .roundToInt()
+            resolvedValue.coerceIn(min, max).roundToInt()
         }
     }
 
@@ -229,148 +209,151 @@ fun PokemonDetailsScreen(
     }
 
     LaunchedEffect(pagerState, pokemonSet) {
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            if (pokemonSet.isNotEmpty()) {
-                onPage(pokemonSet[page])
+        snapshotFlow { pagerState.currentPage }
+            .collect { page ->
+                if (pokemonSet.isNotEmpty()) {
+                    onPage(pokemonSet[page])
+                }
             }
-        }
     }
 
     val pokemonTypeSurfaceColor = PokemonTypesTheme.colorScheme.surface
     val hueIndex = mapTypeToCuratedAnalogousHue(PokemonTypesTheme.colorScheme.type)
-    val analogousSurfaceColor = remember(pokemonTypeSurfaceColor) {
-        calculateAnalogousColors(pokemonTypeSurfaceColor, 24f)[hueIndex]
-    }
+    val analogousSurfaceColor =
+        remember(pokemonTypeSurfaceColor) {
+            calculateAnalogousColors(pokemonTypeSurfaceColor, 24f)[hueIndex]
+        }
 
-    val colors = listOf(
+    val colors =
         listOf(
-            Offset(0f, 0f) to analogousSurfaceColor,
-            Offset(.33f, 0f) to analogousSurfaceColor,
-            Offset(.66f, 0f) to analogousSurfaceColor,
-            Offset(1f, 0f) to analogousSurfaceColor,
-        ),
-        listOf(
-            Offset(0f, .6f) to pokemonTypeSurfaceColor,
-            Offset(.25f, .4f) to pokemonTypeSurfaceColor,
-            Offset(.8f, .6f) to pokemonTypeSurfaceColor,
-            Offset(1f, .5f) to pokemonTypeSurfaceColor,
-        ),
-        listOf(
-            Offset(0f, 1f) to PokemonTypesTheme.colorScheme.primary,
-            Offset(.33f, 1f) to PokemonTypesTheme.colorScheme.primary,
-            Offset(.67f, 1f) to PokemonTypesTheme.colorScheme.primary,
-            Offset(1f, 1f) to PokemonTypesTheme.colorScheme.primary,
-        ),
-    )
+            listOf(
+                Offset(0f, 0f) to analogousSurfaceColor,
+                Offset(.33f, 0f) to analogousSurfaceColor,
+                Offset(.66f, 0f) to analogousSurfaceColor,
+                Offset(1f, 0f) to analogousSurfaceColor,
+            ),
+            listOf(
+                Offset(0f, .6f) to pokemonTypeSurfaceColor,
+                Offset(.25f, .4f) to pokemonTypeSurfaceColor,
+                Offset(.8f, .6f) to pokemonTypeSurfaceColor,
+                Offset(1f, .5f) to pokemonTypeSurfaceColor,
+            ),
+            listOf(
+                Offset(0f, 1f) to PokemonTypesTheme.colorScheme.primary,
+                Offset(.33f, 1f) to PokemonTypesTheme.colorScheme.primary,
+                Offset(.67f, 1f) to PokemonTypesTheme.colorScheme.primary,
+                Offset(1f, 1f) to PokemonTypesTheme.colorScheme.primary,
+            ),
+        )
 
     Surface(
-        modifier = Modifier.meshGradient(
-            points = colors,
-            resolutionX = 32,
-            resolutionY = 32,
-        ),
-        color = Color.Transparent
+        modifier = Modifier.meshGradient(points = colors, resolutionX = 32, resolutionY = 32),
+        color = Color.Transparent,
     ) {
         Box(Modifier.fillMaxSize()) {
-            RoundedRectangleDecoration(
-                Modifier
-                    .offset(x = (-60).dp, y = (-50).dp)
-                    .rotate(-20f)
-            )
-            DottedDecoration(
-                Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 4.dp, end = 100.dp)
-            )
+            RoundedRectangleDecoration(Modifier.offset(x = (-60).dp, y = (-50).dp).rotate(-20f))
+            DottedDecoration(Modifier.align(Alignment.TopEnd).padding(top = 4.dp, end = 100.dp))
             RotatingPokeBall(
-                Modifier
-                    .align(Alignment.TopCenter)
+                Modifier.align(Alignment.TopCenter)
                     .statusBarsPadding()
                     .padding(top = 16.dp)
                     .padding(top = 140.dp)
                     .size(240.dp)
                     .graphicsLayer { alpha = textAlphaTarget },
-                tint = PokemonTypesTheme.colorScheme.onSurface.copy(alpha = 0.15f)
+                tint = PokemonTypesTheme.colorScheme.onSurface.copy(alpha = 0.15f),
             )
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding()
-                    .padding(top = 16.dp)
-            ) {
-                val textFadeInTransition = fadeIn(tween(durationMillis = 210, delayMillis = 90, easing = LinearOutSlowInEasing))
-                val textFadeOutTransition = fadeOut(tween(durationMillis = 90, easing = FastOutLinearInEasing))
+            Box(Modifier.fillMaxSize().statusBarsPadding().padding(top = 16.dp)) {
+                val textFadeInTransition =
+                    fadeIn(
+                        tween(
+                            durationMillis = 210,
+                            delayMillis = 90,
+                            easing = LinearOutSlowInEasing,
+                        )
+                    )
+                val textFadeOutTransition =
+                    fadeOut(tween(durationMillis = 90, easing = FastOutLinearInEasing))
 
                 AnimatedContent(
-                    modifier = Modifier
-                        .padding(top = 24.dp)
-                        .graphicsLayer { alpha = textAlphaTarget },
+                    modifier =
+                        Modifier.padding(top = 24.dp).graphicsLayer { alpha = textAlphaTarget },
                     targetState = pokemon,
                     transitionSpec = {
                         (textFadeInTransition +
-                            slideInHorizontally(
-                                initialOffsetX = {
-                                    val offset = if (initialState.id < targetState.id) 16 else -16
-                                    with(density) { offset.dp.roundToPx() }
-                                },
-                                animationSpec = tween(300)
-                            ))
-                        .togetherWith(
-                            textFadeOutTransition
-                        ).using(SizeTransform(clip = false))
+                                slideInHorizontally(
+                                    initialOffsetX = {
+                                        val offset =
+                                            if (initialState.id < targetState.id) 16 else -16
+                                        with(density) { offset.dp.roundToPx() }
+                                    },
+                                    animationSpec = tween(300),
+                                ))
+                            .togetherWith(textFadeOutTransition)
+                            .using(SizeTransform(clip = false))
                     },
-                    label = "headerTransition"
+                    label = "headerTransition",
                 ) { targetPokemon ->
                     Header(pokemon = targetPokemon)
                 }
 
-                val nestedScrollConnection = remember((anchorDraggableState)) {
-                    consumeSwipeNestedScrollConnection(
-                        state = anchorDraggableState,
-                        orientation = Orientation.Vertical
-                    )
-                }
-
-                Surface(
-                    modifier = Modifier
-                        // TODO: Add enterExit transition back
-                        // .animateEnterExit(
-                        //     enter = Material3Transitions.SharedYAxisEnterTransition,
-                        //     exit = ExitTransition.None
-                        // )
-                        .align(Alignment.BottomCenter)
-                        .layout { measurable, constraints ->
-                            val placeable = measurable.measure(constraints.copy(
-                                maxHeight = constraints.maxHeight - anchorDraggableState.requireOffset().roundToInt()
-                            ))
-                            layout(placeable.width, placeable.height) {
-                                placeable.placeRelative(0, 0)
-                            }
-                        }
-                        .nestedScroll(nestedScrollConnection)
-                        .anchoredDraggable(
+                val nestedScrollConnection =
+                    remember((anchorDraggableState)) {
+                        consumeSwipeNestedScrollConnection(
                             state = anchorDraggableState,
                             orientation = Orientation.Vertical,
-                            flingBehavior = AnchoredDraggableDefaults.flingBehavior(anchorDraggableState)
-                        ),
-                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+                        )
+                    }
+
+                Surface(
+                    modifier =
+                        Modifier
+                            // TODO: Add enterExit transition back
+                            // .animateEnterExit(
+                            //     enter = Material3Transitions.SharedYAxisEnterTransition,
+                            //     exit = ExitTransition.None
+                            // )
+                            .align(Alignment.BottomCenter)
+                            .layout { measurable, constraints ->
+                                val placeable =
+                                    measurable.measure(
+                                        constraints.copy(
+                                            maxHeight =
+                                                constraints.maxHeight -
+                                                    anchorDraggableState
+                                                        .requireOffset()
+                                                        .roundToInt()
+                                        )
+                                    )
+                                layout(placeable.width, placeable.height) {
+                                    placeable.placeRelative(0, 0)
+                                }
+                            }
+                            .nestedScroll(nestedScrollConnection)
+                            .anchoredDraggable(
+                                state = anchorDraggableState,
+                                orientation = Orientation.Vertical,
+                                flingBehavior =
+                                    AnchoredDraggableDefaults.flingBehavior(anchorDraggableState),
+                            ),
+                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                 ) {
                     CardContent(
                         pokemon = pokemon,
                         evolutions = evolutions,
                         moves = moves,
                         abilities = abilities,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .offset { IntOffset(x = 0, y = cardPaddingTarget) },
+                        modifier =
+                            Modifier.fillMaxHeight().offset {
+                                IntOffset(x = 0, y = cardPaddingTarget)
+                            },
                     )
                 }
 
                 PokemonPager(
-                    modifier = Modifier
-                        .zIndex(pagerZIndex)
-                        .padding(top = 124.dp)
-                        .graphicsLayer { alpha = imageAlphaTarget },
+                    modifier =
+                        Modifier.zIndex(pagerZIndex).padding(top = 124.dp).graphicsLayer {
+                            alpha = imageAlphaTarget
+                        },
                     pokemonList = pokemonSet,
                     foregroundColor = PokemonTypesTheme.colorScheme.onSurface,
                     backgroundColor = pokemonTypeSurfaceColor,
@@ -387,37 +370,37 @@ fun PokemonDetailsScreen(
                 }
             }
             NavigationTopAppBar(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(top = 8.dp, start = 12.dp, end = 12.dp)
-                ,
+                modifier =
+                    Modifier.statusBarsPadding().padding(top = 8.dp, start = 12.dp, end = 12.dp),
                 title = {
                     Text(
                         text = pokemon.name,
-                        modifier = Modifier.graphicsLayer {
-                            // TODO: Look into collapsing toolbar behavior later
-                            alpha = 1f - (textAlphaTarget * 2.5f)
-                        }
+                        modifier =
+                            Modifier.graphicsLayer {
+                                // TODO: Look into collapsing toolbar behavior later
+                                alpha = 1f - (textAlphaTarget * 2.5f)
+                            },
                     )
                 },
                 actions = {
-                    IconButton(
-                        onClick = { onFavoriteClick(pokemon.id) }
-                    ) {
+                    IconButton(onClick = { onFavoriteClick(pokemon.id) }) {
                         Icon(
-                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = stringResource(
-                                R.string.favoritesActionContentDescription,
-                                if (isFavorite) {
-                                    stringResource(R.string.removeActionContentDescription)
-                                } else {
-                                    stringResource(R.string.addActionContentDescription)
-                                }
-                            )
+                            imageVector =
+                                if (isFavorite) Icons.Default.Favorite
+                                else Icons.Default.FavoriteBorder,
+                            contentDescription =
+                                stringResource(
+                                    R.string.favoritesActionContentDescription,
+                                    if (isFavorite) {
+                                        stringResource(R.string.removeActionContentDescription)
+                                    } else {
+                                        stringResource(R.string.addActionContentDescription)
+                                    },
+                                ),
                         )
                     }
                 },
-                onBackClick = { onBackClick(pokemon.id) }
+                onBackClick = { onBackClick(pokemon.id) },
             )
         }
     }
@@ -427,7 +410,7 @@ private enum class Sections(@StringRes val title: Int) {
     About(R.string.aboutLabel),
     BaseStats(R.string.baseStatsLabel),
     Evolution(R.string.evolutionLabel),
-    Moves(R.string.movesLabel)
+    Moves(R.string.movesLabel),
 }
 
 @Composable
@@ -441,24 +424,22 @@ private fun CardContent(
     val sectionTitles = Sections.entries.map { it.title }
     var section by rememberSaveable { mutableStateOf(Sections.BaseStats) }
 
-    Column(
-        modifier = modifier
-    ) {
-        val tabIndicatorColor by animateColorAsState(
-            targetValue = PokemonTypesTheme.colorScheme.primary,
-            animationSpec = tween(durationMillis = 500),
-            label = "tabIndicatorColor"
-        )
+    Column(modifier = modifier) {
+        val tabIndicatorColor by
+            animateColorAsState(
+                targetValue = PokemonTypesTheme.colorScheme.primary,
+                animationSpec = tween(durationMillis = 500),
+                label = "tabIndicatorColor",
+            )
 
         SecondaryTabRow(
             containerColor = MaterialTheme.colorScheme.surface,
             selectedTabIndex = section.ordinal,
             indicator = {
                 SecondaryIndicator(
-                    modifier = Modifier
-                        .tabIndicatorOffset(section.ordinal)
-                        .clip(RoundedCornerShape(100)),
-                    color = tabIndicatorColor
+                    modifier =
+                        Modifier.tabIndicatorOffset(section.ordinal).clip(RoundedCornerShape(100)),
+                    color = tabIndicatorColor,
                 )
             },
         ) {
@@ -473,7 +454,7 @@ private fun CardContent(
                     Text(
                         text = stringResource(text),
                         fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
-                        modifier = Modifier.padding(vertical = 20.dp)
+                        modifier = Modifier.padding(vertical = 20.dp),
                     )
                 }
             }
@@ -491,113 +472,82 @@ private fun CardContent(
 }
 
 @Composable
-private fun RoundedRectangleDecoration(
-    modifier: Modifier = Modifier
-) {
+private fun RoundedRectangleDecoration(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
-            .size(150.dp)
-            .background(color = Color(0x22FFFFFF), shape = RoundedCornerShape(32.dp))
+        modifier =
+            modifier
+                .size(150.dp)
+                .background(color = Color(0x22FFFFFF), shape = RoundedCornerShape(32.dp))
     )
 }
 
 @Composable
-private fun DottedDecoration(
-    modifier: Modifier = Modifier
-) {
+private fun DottedDecoration(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(id = R.drawable.dotted),
         contentDescription = null,
         modifier = modifier.size(width = 63.dp, height = 34.dp),
-        alpha = 0.3f
+        alpha = 0.3f,
     )
 }
 
 @Composable
-private fun Header(
-    modifier: Modifier = Modifier,
-    pokemon: Pokemon
-) {
-    Column(
-        modifier.padding(top = 40.dp, bottom = 32.dp, start = 24.dp, end = 24.dp)
-    ) {
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+private fun Header(modifier: Modifier = Modifier, pokemon: Pokemon) {
+    Column(modifier.padding(top = 40.dp, bottom = 32.dp, start = 24.dp, end = 24.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 text = pokemon.name,
                 style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier.alignByBaseline()
+                modifier = Modifier.alignByBaseline(),
             )
             Text(
                 text = formatId(pokemon.id),
                 style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier
-                    .alignByBaseline()
-                    .graphicsLayer { alpha = Emphasis.Medium.alpha }
+                modifier =
+                    Modifier.alignByBaseline().graphicsLayer { alpha = Emphasis.Medium.alpha },
             )
         }
         Spacer(Modifier.height(8.dp))
-        Row(
-            Modifier.fillMaxWidth(),
-        ) {
-            PokemonTypeLabels(
-                types = pokemon.typeOfPokemon,
-                metrics = MEDIUM,
-            )
+        Row(Modifier.fillMaxWidth()) {
+            PokemonTypeLabels(types = pokemon.typeOfPokemon, metrics = MEDIUM)
         }
     }
 }
 
 @Composable
-private fun RotatingPokeBall(
-    modifier: Modifier = Modifier,
-    tint: Color = Color(0x40F5F5F5)
-) {
+private fun RotatingPokeBall(modifier: Modifier = Modifier, tint: Color = Color(0x40F5F5F5)) {
     val infiniteTransition = rememberInfiniteTransition(label = "rotatingPokeball")
-    val angle by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 4000, easing = LinearEasing)
-        ),
-        label = "rotatingAngle"
-    )
+    val angle by
+        infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec =
+                infiniteRepeatable(animation = tween(durationMillis = 4000, easing = LinearEasing)),
+            label = "rotatingAngle",
+        )
 
-    Pokeball(
-        tint = tint,
-        modifier = modifier.graphicsLayer { rotationZ = angle },
-    )
+    Pokeball(tint = tint, modifier = modifier.graphicsLayer { rotationZ = angle })
 }
 
 @PreviewLightDark
 @Composable
 private fun PokemonDetailsPreview(
-    @PreviewParameter(PokemonPreviewProvider::class) pokemon: Pokemon,
+    @PreviewParameter(PokemonPreviewProvider::class) pokemon: Pokemon
 ) {
     var activePokemon by remember { mutableStateOf(pokemon) }
 
     AppTheme {
         Surface {
-            AnimatedContent(
-                targetState = activePokemon,
-                label = "pokemonDetailsPreview"
-            ) { targetPokemon ->
-                PokemonTypesTheme(
-                    types = targetPokemon.typeOfPokemon
-                ) {
+            AnimatedContent(targetState = activePokemon, label = "pokemonDetailsPreview") {
+                targetPokemon ->
+                PokemonTypesTheme(types = targetPokemon.typeOfPokemon) {
                     PokemonDetailsScreen(
                         pokemonSet = SamplePokemonData,
                         pokemon = targetPokemon,
-                        evolutions = mapSampleEvolutionsToList(
-                            targetPokemon.evolutionChain
-                        ),
+                        evolutions = mapSampleEvolutionsToList(targetPokemon.evolutionChain),
                         moves = mapSampleMovesToDetailsList(),
                         abilities = mapSampleAbilitiesToDetailsList(),
-                        onPage = {
-                            activePokemon = it
-                        }
+                        onPage = { activePokemon = it },
                     )
                 }
             }
@@ -614,23 +564,18 @@ private fun PokemonDetailsPalettePreview(
 
     AppTheme {
         Surface {
-            AnimatedContent(
-                targetState = true,
-                label = ""
-            ) { targetState ->
+            AnimatedContent(targetState = true, label = "") { targetState ->
                 if (targetState) {
                     PokemonTypeColorOverlay(
                         types = activePokemon.typeOfPokemon,
-                        paletteStyle = paletteStyle
+                        paletteStyle = paletteStyle,
                     ) {
                         PokemonDetailsScreen(
                             pokemonSet = SamplePokemonData,
                             pokemon = activePokemon,
-                            evolutions = mapSampleEvolutionsToList(
-                                activePokemon.evolutionChain
-                            ),
+                            evolutions = mapSampleEvolutionsToList(activePokemon.evolutionChain),
                             moves = mapSampleMovesToDetailsList(),
-                            abilities = mapSampleAbilitiesToDetailsList()
+                            abilities = mapSampleAbilitiesToDetailsList(),
                         )
                     }
                 }
@@ -640,12 +585,13 @@ private fun PokemonDetailsPalettePreview(
 }
 
 class PokemonPreviewProvider : PreviewParameterProvider<Pokemon> {
-    override val values = sequenceOf(
-        SamplePokemonData[0],
-        SamplePokemonData[3],
-        SamplePokemonData[6],
-        SamplePokemonData.last(),
-    )
+    override val values =
+        sequenceOf(
+            SamplePokemonData[0],
+            SamplePokemonData[3],
+            SamplePokemonData[6],
+            SamplePokemonData.last(),
+        )
 }
 
 class PaletteStyleProvider : PreviewParameterProvider<PaletteStyle> {

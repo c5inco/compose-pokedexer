@@ -16,32 +16,29 @@ import org.junit.runner.RunWith
  *
  * Before running this benchmark:
  * 1) switch your app's active build variant in the Studio (affects Studio runs only)
- * 2) add `<profileable android:shell="true" />` to your app's manifest, within the `<application>` tag
+ * 2) add `<profileable android:shell="true" />` to your app's manifest, within the `<application>`
+ *    tag
  *
- * Run this benchmark from Studio to see startup measurements, and captured system traces
- * for investigating your app's performance.
+ * Run this benchmark from Studio to see startup measurements, and captured system traces for
+ * investigating your app's performance.
  */
 @RunWith(AndroidJUnit4::class)
 class StartupBenchmark {
-    @get:Rule
-    val benchmarkRule = MacrobenchmarkRule()
+    @get:Rule val benchmarkRule = MacrobenchmarkRule()
 
-    @Test
-    fun startupCompilationNone() = startup(CompilationMode.None())
+    @Test fun startupCompilationNone() = startup(CompilationMode.None())
 
-    @Test
-    fun startupCompilationPartial() = startup(CompilationMode.Partial())
+    @Test fun startupCompilationPartial() = startup(CompilationMode.Partial())
 
-    private fun startup(
-        compilationMode: CompilationMode
-    ) = benchmarkRule.measureRepeated(
-        packageName = "des.c5inco.pokedexer",
-        metrics = listOf(StartupTimingMetric()),
-        iterations = 5,
-        compilationMode = compilationMode,
-        startupMode = StartupMode.COLD
-    ) {
-        pressHome()
-        startActivityAndWait()
-    }
+    private fun startup(compilationMode: CompilationMode) =
+        benchmarkRule.measureRepeated(
+            packageName = "des.c5inco.pokedexer",
+            metrics = listOf(StartupTimingMetric()),
+            iterations = 5,
+            compilationMode = compilationMode,
+            startupMode = StartupMode.COLD,
+        ) {
+            pressHome()
+            startActivityAndWait()
+        }
 }

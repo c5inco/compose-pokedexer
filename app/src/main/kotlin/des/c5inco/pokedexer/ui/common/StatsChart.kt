@@ -32,8 +32,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
-import des.c5inco.pokedexer.shared.model.Pokemon
 import des.c5inco.pokedexer.model.color
+import des.c5inco.pokedexer.shared.model.Pokemon
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import kotlin.math.tan
 
@@ -43,30 +43,18 @@ fun StatsChartPreview() {
     AppTheme {
         Surface {
             Column(
-                Modifier
-                    .fillMaxSize(),
+                Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 var loop by remember { mutableStateOf(0) }
-                val p by remember(loop) {
-                    derivedStateOf { SamplePokemonData[loop] }
-                }
+                val p by remember(loop) { derivedStateOf { SamplePokemonData[loop] } }
 
-                LaunchedEffect(true) {
-                    infiniteLoopFlow.collect {
-                        loop = it
-                    }
-                }
+                LaunchedEffect(true) { infiniteLoopFlow.collect { loop = it } }
 
                 Box {
-                    StatRingBackground(
-                        ringSize = 300
-                    )
-                    StatRingValues(
-                        ringSize = 300,
-                        pokemon = p
-                    )
+                    StatRingBackground(ringSize = 300)
+                    StatRingValues(ringSize = 300, pokemon = p)
                 }
             }
         }
@@ -74,68 +62,47 @@ fun StatsChartPreview() {
 }
 
 @Composable
-fun StatsChart(
-    size: Int = 300,
-    pokemon: Pokemon
-) {
+fun StatsChart(size: Int = 300, pokemon: Pokemon) {
     Box {
-        StatRingBackground(
-            ringSize = size
-        )
-        StatRingValues(
-            ringSize = size,
-            pokemon = pokemon
-        )
+        StatRingBackground(ringSize = size)
+        StatRingValues(ringSize = size, pokemon = pokemon)
     }
 }
 
 @Composable
 private fun StatRingBackground(ringSize: Int) {
-    StatRingCanvas(
-        ringSize = ringSize,
-        color = Color(0xfff5f5f5),
-    ) { size, path, color ->
-        this.drawContext.canvas.drawPathWithPaint(path = path, paint = Paint().apply {
-            this.color = color
-            this.pathEffect = PathEffect.cornerPathEffect(64f)
+    StatRingCanvas(ringSize = ringSize, color = Color(0xfff5f5f5)) { size, path, color ->
+        this.drawContext.canvas.drawPathWithPaint(
+            path = path,
+            paint =
+                Paint().apply {
+                    this.color = color
+                    this.pathEffect = PathEffect.cornerPathEffect(64f)
 
-            style = PaintingStyle.Fill
-        })
+                    style = PaintingStyle.Fill
+                },
+        )
 
         drawOriginLines(
-            width = size.width, height = size.height, angle = 32.0.toRadian(), color = Color.White
+            width = size.width,
+            height = size.height,
+            angle = 32.0.toRadian(),
+            color = Color.White,
         )
     }
 }
 
 @Composable
-private fun StatRingValues(
-    ringSize: Int,
-    pokemon: Pokemon
-) {
+private fun StatRingValues(ringSize: Int, pokemon: Pokemon) {
     val maxStat = 180f
 
-    val animateColor by animateColorAsState(
-        targetValue = pokemon.color(),
-    )
-    val animateHp by animateFloatAsState(
-        targetValue = pokemon.hp / maxStat,
-    )
-    val animateAttack by animateFloatAsState(
-        targetValue = pokemon.attack / maxStat
-    )
-    val animateDefense by animateFloatAsState(
-        targetValue = pokemon.defense / maxStat
-    )
-    val animateSpeed by animateFloatAsState(
-        targetValue = pokemon.speed / maxStat,
-    )
-    val animateSpecialAttack by animateFloatAsState(
-        targetValue = pokemon.specialAttack / maxStat,
-    )
-    val animateSpecialDefense by animateFloatAsState(
-        targetValue = pokemon.specialDefense / maxStat,
-    )
+    val animateColor by animateColorAsState(targetValue = pokemon.color())
+    val animateHp by animateFloatAsState(targetValue = pokemon.hp / maxStat)
+    val animateAttack by animateFloatAsState(targetValue = pokemon.attack / maxStat)
+    val animateDefense by animateFloatAsState(targetValue = pokemon.defense / maxStat)
+    val animateSpeed by animateFloatAsState(targetValue = pokemon.speed / maxStat)
+    val animateSpecialAttack by animateFloatAsState(targetValue = pokemon.specialAttack / maxStat)
+    val animateSpecialDefense by animateFloatAsState(targetValue = pokemon.specialDefense / maxStat)
 
     StatRingCanvas(
         ringSize = ringSize,
@@ -145,16 +112,10 @@ private fun StatRingValues(
         speedRatio = animateSpeed,
         specialDefenseRatio = animateSpecialDefense,
         specialAttackRatio = animateSpecialAttack,
-        color = animateColor
+        color = animateColor,
     ) { _, path, color ->
-        drawPath(
-            path = path, color = color.copy(0.3f), style = Fill
-        )
-        drawPath(
-            path = path,
-            color = color,
-            style = Stroke(width = 8f)
-        )
+        drawPath(path = path, color = color.copy(0.3f), style = Fill)
+        drawPath(path = path, color = color, style = Stroke(width = 8f))
     }
 }
 
@@ -169,42 +130,36 @@ private fun StatRingCanvas(
     speedRatio: Float = 1f,
     specialAttackRatio: Float = 1f,
     specialDefenseRatio: Float = 1f,
-    drawRing: DrawScope.(size: Size, path: Path, color: Color) -> Unit
+    drawRing: DrawScope.(size: Size, path: Path, color: Color) -> Unit,
 ) {
-    Canvas(
-        modifier
-            .padding(16.dp)
-            .size(width = ringSize.dp, height = ringSize.dp * 1.15f)
-    ) {
+    Canvas(modifier.padding(16.dp).size(width = ringSize.dp, height = ringSize.dp * 1.15f)) {
         val (width, height) = size
         val widthRadius = width / 2
         val heightRadius = height / 2
         val angle = 32.0.toRadian()
 
-        val hp = Offset(
-            x = widthRadius,
-            y = heightRadius - heightRadius * hpRatio
-        )
-        val attack = Offset(
-            x = widthRadius + widthRadius * attackRatio,
-            y = (widthRadius * attackRatio) * tan(angle).toFloat()
-        )
-        val defense = Offset(
-            x = widthRadius + widthRadius * defenseRatio,
-            y = (widthRadius * defenseRatio) * tan(-angle).toFloat()
-        )
-        val speed = Offset(
-            x = widthRadius,
-            y = heightRadius + heightRadius * speedRatio
-        )
-        val specialAttack = Offset(
-            x = widthRadius - widthRadius * specialAttackRatio,
-            y = (widthRadius * specialAttackRatio) * tan(angle).toFloat()
-        )
-        val specialDefense = Offset(
-            x = widthRadius - widthRadius * specialDefenseRatio,
-            y = (widthRadius * specialDefenseRatio) * tan(-angle).toFloat()
-        )
+        val hp = Offset(x = widthRadius, y = heightRadius - heightRadius * hpRatio)
+        val attack =
+            Offset(
+                x = widthRadius + widthRadius * attackRatio,
+                y = (widthRadius * attackRatio) * tan(angle).toFloat(),
+            )
+        val defense =
+            Offset(
+                x = widthRadius + widthRadius * defenseRatio,
+                y = (widthRadius * defenseRatio) * tan(-angle).toFloat(),
+            )
+        val speed = Offset(x = widthRadius, y = heightRadius + heightRadius * speedRatio)
+        val specialAttack =
+            Offset(
+                x = widthRadius - widthRadius * specialAttackRatio,
+                y = (widthRadius * specialAttackRatio) * tan(angle).toFloat(),
+            )
+        val specialDefense =
+            Offset(
+                x = widthRadius - widthRadius * specialDefenseRatio,
+                y = (widthRadius * specialDefenseRatio) * tan(-angle).toFloat(),
+            )
 
         val path = Path()
         path.moveTo(hp.x, hp.y)
@@ -225,7 +180,7 @@ private fun DrawScope.drawOriginLines(
     angle: Double,
     color: Color,
     strokeWidth: Float = 4f,
-    capPadding: Float = 0f
+    capPadding: Float = 0f,
 ) {
     val widthRadius = width / 2
     val heightRadius = height / 2
@@ -244,29 +199,10 @@ private fun DrawScope.drawOriginLines(
         )
     }
 
-    drawFromOrigin(Offset(
-        x = widthRadius,
-        y = capPadding
-    ))
-    drawFromOrigin(Offset(
-        x = adjustedWidth,
-        y = height - oppositeY
-    ))
-    drawFromOrigin(Offset(
-        x = adjustedWidth,
-        y = height - oppositeNegY
-    ))
-    drawFromOrigin(Offset(
-        x = capPadding,
-        y = height - oppositeY
-    ))
-    drawFromOrigin(Offset(
-        x = capPadding,
-        y = height - oppositeNegY
-    ))
-    drawFromOrigin(Offset(
-        x = widthRadius,
-        y = adjustedHeight
-    ))
+    drawFromOrigin(Offset(x = widthRadius, y = capPadding))
+    drawFromOrigin(Offset(x = adjustedWidth, y = height - oppositeY))
+    drawFromOrigin(Offset(x = adjustedWidth, y = height - oppositeNegY))
+    drawFromOrigin(Offset(x = capPadding, y = height - oppositeY))
+    drawFromOrigin(Offset(x = capPadding, y = height - oppositeNegY))
+    drawFromOrigin(Offset(x = widthRadius, y = adjustedHeight))
 }
-

@@ -41,15 +41,10 @@ import kotlinx.coroutines.SupervisorJob
 
 private const val USER_PREFERENCES = "user_preferences"
 
-/**
- * Scope annotation for application-level singletons.
- */
-@dev.zacsweers.metro.Scope
-annotation class AppScope
+/** Scope annotation for application-level singletons. */
+@dev.zacsweers.metro.Scope annotation class AppScope
 
-/**
- * Interface containing all provider methods for third-party dependencies.
- */
+/** Interface containing all provider methods for third-party dependencies. */
 @ContributesTo(AppScope::class)
 interface ApplicationModule {
     // Database (from shared module)
@@ -85,36 +80,29 @@ interface ApplicationModule {
     @Provides
     @SingleIn(AppScope::class)
     fun provideApolloClient(): ApolloClient {
-        return ApolloClient.Builder()
-            .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
-            .build()
+        return ApolloClient.Builder().serverUrl("https://beta.pokeapi.co/graphql/v1beta").build()
     }
 
-    // Repositories (from shared module - manually wired since we don't use @ContributesBinding in shared)
+    // Repositories (from shared module - manually wired since we don't use @ContributesBinding in
+    // shared)
     @Provides
     @SingleIn(AppScope::class)
     fun providePokemonRepository(
         pokemonDao: PokemonDao,
-        apolloClient: ApolloClient
+        apolloClient: ApolloClient,
     ): PokemonRepository {
         return RemotePokemonRepository(pokemonDao, apolloClient)
     }
 
     @Provides
     @SingleIn(AppScope::class)
-    fun provideMovesRepository(
-        movesDao: MovesDao,
-        apolloClient: ApolloClient
-    ): MovesRepository {
+    fun provideMovesRepository(movesDao: MovesDao, apolloClient: ApolloClient): MovesRepository {
         return RemoteMovesRepository(movesDao, apolloClient)
     }
 
     @Provides
     @SingleIn(AppScope::class)
-    fun provideItemsRepository(
-        itemsDao: ItemsDao,
-        apolloClient: ApolloClient
-    ): ItemsRepository {
+    fun provideItemsRepository(itemsDao: ItemsDao, apolloClient: ApolloClient): ItemsRepository {
         return ItemsRepositoryImpl(itemsDao, apolloClient)
     }
 
@@ -122,7 +110,7 @@ interface ApplicationModule {
     @SingleIn(AppScope::class)
     fun provideAbilitiesRepository(
         abilitiesDao: AbilitiesDao,
-        apolloClient: ApolloClient
+        apolloClient: ApolloClient,
     ): AbilitiesRepository {
         return AbilitiesRepositoryImpl(abilitiesDao, apolloClient)
     }
@@ -132,12 +120,11 @@ interface ApplicationModule {
     @SingleIn(AppScope::class)
     fun providePreferencesDataStore(context: Context): DataStore<Preferences> {
         return PreferenceDataStoreFactory.create(
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { emptyPreferences() }
-            ),
+            corruptionHandler =
+                ReplaceFileCorruptionHandler(produceNewData = { emptyPreferences() }),
             migrations = listOf(SharedPreferencesMigration(context, USER_PREFERENCES)),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES) }
+            produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES) },
         )
     }
 
@@ -146,17 +133,12 @@ interface ApplicationModule {
     @SingleIn(AppScope::class)
     fun provideGifImageLoader(context: Context): ImageLoader {
         return ImageLoader.Builder(context)
-            .components {
-                add(ImageDecoderDecoder.Factory())
-            }
+            .components { add(ImageDecoderDecoder.Factory()) }
             .build()
     }
 }
 
-/**
- * Main dependency graph for the application.
- * This replaces the Hilt SingletonComponent.
- */
+/** Main dependency graph for the application. This replaces the Hilt SingletonComponent. */
 @SingleIn(AppScope::class)
 @DependencyGraph(AppScope::class)
 interface ApplicationGraph {
@@ -173,9 +155,7 @@ interface ApplicationGraph {
     // Image loading
     val gifImageLoader: ImageLoader
 
-    /**
-     * Factory to create the ApplicationGraph with external dependencies.
-     */
+    /** Factory to create the ApplicationGraph with external dependencies. */
     @DependencyGraph.Factory
     interface Factory {
         fun create(@Provides context: Context): ApplicationGraph

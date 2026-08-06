@@ -15,10 +15,7 @@ import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
 @Composable
-fun Pokeball(
-    modifier: Modifier = Modifier,
-    tint: Color = Color.Black,
-) {
+fun Pokeball(modifier: Modifier = Modifier, tint: Color = Color.Black) {
     Icon(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_catching_pokemon),
@@ -32,9 +29,7 @@ fun Pokeball(
 fun PreviewPokeBall() {
     AppTheme {
         Surface {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Pokeball()
                 Pokeball(Modifier.size(96.dp))
                 Pokeball(Modifier.size(240.dp))

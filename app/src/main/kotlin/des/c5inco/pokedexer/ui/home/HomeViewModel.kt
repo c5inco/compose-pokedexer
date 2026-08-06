@@ -33,7 +33,7 @@ class HomeViewModel(
     private val pokemonRepository: PokemonRepository,
     private val movesRepository: MovesRepository,
     private val itemsRepository: ItemsRepository,
-): ViewModel() {
+) : ViewModel() {
     val searchText = TextFieldState()
 
     val loading by mutableStateOf(false)
@@ -44,29 +44,26 @@ class HomeViewModel(
             .mapLatest {
                 val textContent = it.toString()
                 if (textContent.isEmpty()) {
-                    SearchResponse(
-                        currentText = textContent,
-                    )
+                    SearchResponse(currentText = textContent)
                 } else {
                     combine(
-                        pokemonRepository.getPokemonByName(textContent),
-                        movesRepository.getMovesByName(textContent),
-                        itemsRepository.getItemsByName(textContent)
-                    ) { pokemonResults, movesResults, itemsResults ->
-                        SearchResponse(
-                            currentText = textContent,
-                            foundPokemon = pokemonResults,
-                            foundMoves = movesResults,
-                            foundItems = itemsResults
-                        )
-                    }.first()
+                            pokemonRepository.getPokemonByName(textContent),
+                            movesRepository.getMovesByName(textContent),
+                            itemsRepository.getItemsByName(textContent),
+                        ) { pokemonResults, movesResults, itemsResults ->
+                            SearchResponse(
+                                currentText = textContent,
+                                foundPokemon = pokemonResults,
+                                foundMoves = movesResults,
+                                foundItems = itemsResults,
+                            )
+                        }
+                        .first()
                 }
             }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = SearchResponse(
-                    currentText = ""
-                )
+                initialValue = SearchResponse(currentText = ""),
             )
 }

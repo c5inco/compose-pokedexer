@@ -14,8 +14,8 @@ import kotlinx.coroutines.withContext
 
 class RemoteMovesRepository(
     private val movesDao: MovesDao,
-    private val apolloClient: ApolloClient
-): MovesRepository {
+    private val apolloClient: ApolloClient,
+) : MovesRepository {
     override fun moves(): Flow<List<Move>> {
         return movesDao.getAll()
     }
@@ -29,20 +29,24 @@ class RemoteMovesRepository(
                 val response = apolloClient.query(PokemonOriginalMovesQuery()).execute()
 
                 if (!response.hasErrors()) {
-                    val movesFromServer = response.data!!.moves.map { model ->
-                        Move(
-                            id = model.id,
-                            name = model.name.split("-").joinToString(" ") { part ->
-                                part.replaceFirstChar { it.uppercase() }
-                            },
-                            description = cleanupDescriptionText(model.description.first().flavorText),
-                            category = model.category!!.name.replaceFirstChar { it.uppercase() },
-                            type = model.type!!.name.replaceFirstChar { it.uppercase() },
-                            pp = model.pp!!,
-                            power = model.power,
-                            accuracy = model.accuracy
-                        )
-                    }
+                    val movesFromServer =
+                        response.data!!.moves.map { model ->
+                            Move(
+                                id = model.id,
+                                name =
+                                    model.name.split("-").joinToString(" ") { part ->
+                                        part.replaceFirstChar { it.uppercase() }
+                                    },
+                                description =
+                                    cleanupDescriptionText(model.description.first().flavorText),
+                                category =
+                                    model.category!!.name.replaceFirstChar { it.uppercase() },
+                                type = model.type!!.name.replaceFirstChar { it.uppercase() },
+                                pp = model.pp!!,
+                                power = model.power,
+                                accuracy = model.accuracy,
+                            )
+                        }
 
                     movesDao.deleteAll()
                     movesDao.insertAll(*movesFromServer.toTypedArray())
