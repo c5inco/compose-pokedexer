@@ -46,6 +46,12 @@ import des.c5inco.pokedexer.ui.common.meshGradient
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
+private const val ANALOGOUS_HUE_ANGLE = 18f
+private const val MESH_RESOLUTION = 10
+private const val DARK_THEME_ID_ALPHA = 0.5f
+private const val LIGHT_THEME_ID_ALPHA = 0.7f
+private const val POKEBALL_ALPHA = 0.25f
+
 @Composable
 fun PokedexCard(
     modifier: Modifier = Modifier,
@@ -58,9 +64,10 @@ fun PokedexCard(
         val hueIndex = mapTypeToCuratedAnalogousHue(PokemonTypesTheme.colorScheme.type)
         val analogousSurfaceColor =
             remember(pokemonTypeSurfaceColor) {
-                calculateAnalogousColors(pokemonTypeSurfaceColor, 18f)[hueIndex]
+                calculateAnalogousColors(pokemonTypeSurfaceColor, ANALOGOUS_HUE_ANGLE)[hueIndex]
             }
 
+        @Suppress("MagicNumber") // Generated mesh-gradient control-point coordinates.
         val colors =
             remember(analogousSurfaceColor, pokemonTypeSurfaceColor) {
                 listOf(
@@ -92,7 +99,11 @@ fun PokedexCard(
             modifier =
                 modifier
                     .clip(MaterialTheme.shapes.large)
-                    .meshGradient(points = colors, resolutionX = 10, resolutionY = 10),
+                    .meshGradient(
+                        points = colors,
+                        resolutionX = MESH_RESOLUTION,
+                        resolutionY = MESH_RESOLUTION,
+                    ),
             shape = MaterialTheme.shapes.large,
             color = Color.Transparent,
             contentColor = PokemonTypesTheme.colorScheme.onSurface,
@@ -106,7 +117,8 @@ fun PokedexCard(
                         metrics = TypeLabelMetrics.SMALL,
                     )
                 }
-                val idAlpha = if (isSystemInDarkTheme()) 0.5f else 0.7f
+                val idAlpha =
+                    if (isSystemInDarkTheme()) DARK_THEME_ID_ALPHA else LIGHT_THEME_ID_ALPHA
                 Text(
                     text = formatId(pokemon.id),
                     fontWeight = FontWeight.Bold,
@@ -120,7 +132,7 @@ fun PokedexCard(
                     tint = Color.White,
                     modifier =
                         Modifier.requiredSize(88.dp)
-                            .graphicsLayer { alpha = 0.25f }
+                            .graphicsLayer { alpha = POKEBALL_ALPHA }
                             .align(Alignment.BottomEnd)
                             .offset(x = 0.dp, y = 0.dp),
                 )

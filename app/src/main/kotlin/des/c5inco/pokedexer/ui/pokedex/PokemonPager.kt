@@ -149,10 +149,10 @@ fun PokemonPagerPreview() {
                     pokemonList = SamplePokemonData,
                     backgroundColor = MaterialTheme.colorScheme.surface,
                     pagerState = rememberPagerState { SamplePokemonData.size },
-                ) { it, progress, tint ->
+                ) { pokemon, progress, tint ->
                     PagerPokemonImage(
-                        image = it.image,
-                        description = it.name,
+                        image = pokemon.image,
+                        description = pokemon.name,
                         tint = tint,
                         progress = progress,
                     )
