@@ -19,6 +19,9 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 
+private const val SHARED_AXIS_SCALE = 0.8f
+private const val TRANSFORM_ORIGIN_CENTER_X = 0.5f
+
 // Material2 motion
 
 object Material2Transitions {
@@ -62,16 +65,16 @@ object Material2Transitions {
                 tween(durationMillis = 210, delayMillis = 90, easing = LinearOutSlowInEasing)
         ) +
             scaleIn(
-                initialScale = 0.8f,
-                transformOrigin = TransformOrigin(0.5f, 1f),
+                initialScale = SHARED_AXIS_SCALE,
+                transformOrigin = TransformOrigin(TRANSFORM_ORIGIN_CENTER_X, 1f),
                 animationSpec = tween(durationMillis = 300),
             )
 
     val SharedZAxisExitTransition =
         fadeOut(animationSpec = tween(durationMillis = 90, easing = FastOutLinearInEasing)) +
             scaleOut(
-                targetScale = 0.8f,
-                transformOrigin = TransformOrigin(0.5f, 1f),
+                targetScale = SHARED_AXIS_SCALE,
+                transformOrigin = TransformOrigin(TRANSFORM_ORIGIN_CENTER_X, 1f),
                 animationSpec = tween(durationMillis = 300),
             )
 }
@@ -153,8 +156,8 @@ object Material3Transitions {
     val SharedZAxisEnterTransition =
         fadeIn(animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing)) +
             scaleIn(
-                initialScale = 0.8f,
-                transformOrigin = TransformOrigin(0.5f, 1f),
+                initialScale = SHARED_AXIS_SCALE,
+                transformOrigin = TransformOrigin(TRANSFORM_ORIGIN_CENTER_X, 1f),
                 animationSpec = tween(durationMillis = DurationLong2, easing = EmphasizedEasing),
             )
 
@@ -164,8 +167,8 @@ object Material3Transitions {
                 tween(durationMillis = DurationMedium1, easing = EmphasizedAccelerateEasing)
         ) +
             scaleOut(
-                targetScale = 0.8f,
-                transformOrigin = TransformOrigin(0.5f, 1f),
+                targetScale = SHARED_AXIS_SCALE,
+                transformOrigin = TransformOrigin(TRANSFORM_ORIGIN_CENTER_X, 1f),
                 animationSpec =
                     tween(durationMillis = DurationMedium2, easing = EmphasizedAccelerateEasing),
             )

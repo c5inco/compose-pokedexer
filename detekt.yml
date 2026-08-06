@@ -8,10 +8,18 @@ complexity:
     active: true
     threshold: 500
 
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - Composable
+
 style:
   MagicNumber:
     excludes:
       - '**/data/pokemon/PokemonData.kt'
+    ignoreAnnotated:
+      - Preview
+      - PreviewLightDark
   MaxLineLength:
     active: true
     maxLineLength: 120
@@ -19,6 +27,9 @@ style:
     active: true
   UnusedPrivateMember:
     active: true
+    ignoreAnnotated:
+      - Preview
+      - PreviewLightDark
 
 Compose:
   active: true

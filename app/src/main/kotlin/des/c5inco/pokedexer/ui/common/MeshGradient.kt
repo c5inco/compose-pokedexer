@@ -32,14 +32,16 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.tooling.preview.Preview
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
-private val Teal950 = Color(0xFF00796B)
-private val Indigo700 = Color(0xFF3F51B5)
-private val Pink500 = Color(0xFFEC407A)
-private val Magenta = Color(0xFFFF00FF)
+private const val POINT_STROKE_WIDTH = 4f * 0.001f
+private const val CUBIC_CONTROL_FRACTION = 0.5f
 
 @Preview
 @Composable
 private fun MeshGradientPreview() {
+    val indigo700 = Color(0xFF3F51B5)
+    val magenta = Color(0xFFFF00FF)
+    val midpoint = 0.5f
+    val lowerRowY = 0.4f
     val infiniteTransition = rememberInfiniteTransition(label = "meshGradientTransition")
     val animatedPoint by
         infiniteTransition.animateFloat(
@@ -56,37 +58,18 @@ private fun MeshGradientPreview() {
     val colors =
         listOf(
             listOf(
-                Offset(0f, 0f) to Magenta,
-                Offset(.5f, 0f) to Magenta,
-                Offset(1f, 0f) to Magenta,
+                Offset(0f, 0f) to magenta,
+                Offset(midpoint, 0f) to magenta,
+                Offset(1f, 0f) to magenta,
             ),
             listOf(
-                Offset(0f, .4f) to Indigo700,
-                Offset(.5f, animatedPoint) to Indigo700,
-                Offset(1f, .4f) to Indigo700,
-            ),
-            listOf(
-                Offset(0f, 1f) to Color.DarkGray,
-                Offset(.5f, 1f) to Color.DarkGray,
-                Offset(1f, 1f) to Color.DarkGray,
-            ),
-        )
-
-    val colors2 =
-        listOf(
-            listOf(
-                Offset(0.2f, 0f) to Magenta,
-                Offset(.5f, 0f) to Magenta,
-                Offset(1f, 0f) to Magenta,
-            ),
-            listOf(
-                Offset(0.2f, 0f) to Magenta,
-                Offset(.5f, .4f) to Magenta,
-                Offset(1f, 0f) to Magenta,
+                Offset(0f, lowerRowY) to indigo700,
+                Offset(midpoint, animatedPoint) to indigo700,
+                Offset(1f, lowerRowY) to indigo700,
             ),
             listOf(
                 Offset(0f, 1f) to Color.DarkGray,
-                Offset(.5f, 1f) to Color.DarkGray,
+                Offset(midpoint, 1f) to Color.DarkGray,
                 Offset(1f, 1f) to Color.DarkGray,
             ),
         )
@@ -145,7 +128,7 @@ fun Modifier.meshGradient(
                 if (showPoints) {
                     val flattenedPaint = Paint()
                     flattenedPaint.color = Color.White.copy(alpha = .9f)
-                    flattenedPaint.strokeWidth = 4f * .001f
+                    flattenedPaint.strokeWidth = POINT_STROKE_WIDTH
                     flattenedPaint.strokeCap = StrokeCap.Round
                     flattenedPaint.blendMode = BlendMode.SrcOver
 
@@ -311,7 +294,7 @@ private fun cubicPathX(point1: Offset, point2: Offset, position: Int): Path {
     val path =
         Path().apply {
             moveTo(point1.x, point1.y)
-            val delta = (point2.x - point1.x) * .5f
+            val delta = (point2.x - point1.x) * CUBIC_CONTROL_FRACTION
             when (position) {
                 0 -> cubicTo(point1.x, point1.y, point2.x - delta, point2.y, point2.x, point2.y)
 
@@ -337,7 +320,7 @@ private fun cubicPathY(point1: Offset, point2: Offset, position: Int): Path {
     val path =
         Path().apply {
             moveTo(point1.x, point1.y)
-            val delta = (point2.y - point1.y) * .5f
+            val delta = (point2.y - point1.y) * CUBIC_CONTROL_FRACTION
             when (position) {
                 0 -> cubicTo(point1.x, point1.y, point2.x, point2.y - delta, point2.x, point2.y)
 
