@@ -146,25 +146,31 @@ fun PokedexScreen(
     onMenuItemClick: (FilterMenuEvent) -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
-    val listState = rememberSaveable(
-        typeFilter, generationFilter, showFavorites, saver = LazyGridState.Saver) {
-        LazyGridState()
-    }
-    var filterMenuState by remember { mutableStateOf(FilterMenuState.Hidden) }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        state = rememberSaveable(typeFilter, generationFilter, showFavorites, saver = TopAppBarState.Saver) {
-            TopAppBarState(-Float.MAX_VALUE, 0f, 0f)
+    val listState =
+        rememberSaveable(typeFilter, generationFilter, showFavorites, saver = LazyGridState.Saver) {
+            LazyGridState()
         }
-    )
+    var filterMenuState by remember { mutableStateOf(FilterMenuState.Hidden) }
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            state =
+                rememberSaveable(
+                    typeFilter,
+                    generationFilter,
+                    showFavorites,
+                    saver = TopAppBarState.Saver,
+                ) {
+                    TopAppBarState(-Float.MAX_VALUE, 0f, 0f)
+                }
+        )
 
     LaunchedEffect(pastPokemonSelected, state is PokedexUiState.Ready) {
         if (pastPokemonSelected != null && state is PokedexUiState.Ready) {
             val index = state.pokemon.indexOfFirst { it.id == pastPokemonSelected }
 
             if (index != -1) {
-                val isVisible = listState.layoutInfo.visibleItemsInfo.any {
-                    it.key == pastPokemonSelected
-                }
+                val isVisible =
+                    listState.layoutInfo.visibleItemsInfo.any { it.key == pastPokemonSelected }
 
                 if (!isVisible) {
                     listState.scrollToItem(index, -100)
@@ -208,32 +214,34 @@ fun PokedexScreen(
                 // AnimatedContent(
                 //     targetState = state,
                 //     transitionSpec = {
-                //         if (initialState is PokedexUiState.Loading && targetState is PokedexUiState.Ready) {
-                //             (Material3Transitions.SharedYAxisEnterTransition).togetherWith(fadeOut())
+                //         if (initialState is PokedexUiState.Loading && targetState is
+                // PokedexUiState.Ready) {
+                //
+                // (Material3Transitions.SharedYAxisEnterTransition).togetherWith(fadeOut())
                 //         } else {
                 //             fadeIn().togetherWith(fadeOut())
                 //         }.using(SizeTransform(clip = false))
                 //     },
                 //     label = "pokedexContentTransition"
                 // ) { targetState ->
-                    when (state) {
-                        is PokedexUiState.Loading -> {
-                            LoadingIndicator()
-                        }
-
-                        is PokedexUiState.Ready -> {
-                            PokemonList(
-                                listState = listState,
-                                listLoadedState = state.listLoadedState,
-                                pokemonToShow = state.pokemon,
-                                favoriteIds = state.favoriteIds,
-                                showFavorites = showFavorites,
-                                typeFilter = typeFilter,
-                                generationFilter = generationFilter,
-                                onPokemonSelected = onPokemonSelected,
-                            )
-                        }
+                when (state) {
+                    is PokedexUiState.Loading -> {
+                        LoadingIndicator()
                     }
+
+                    is PokedexUiState.Ready -> {
+                        PokemonList(
+                            listState = listState,
+                            listLoadedState = state.listLoadedState,
+                            pokemonToShow = state.pokemon,
+                            favoriteIds = state.favoriteIds,
+                            showFavorites = showFavorites,
+                            typeFilter = typeFilter,
+                            generationFilter = generationFilter,
+                            onPokemonSelected = onPokemonSelected,
+                        )
+                    }
+                }
                 // }
             }
             AnimatedVisibility(
@@ -585,18 +593,17 @@ private fun AnimatedVisibilityScope.FilterChip(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    val cornerRadius by animateDpAsState(
-        targetValue = when {
-            isPressed -> 8.dp
-            selected -> 12.dp
-            else -> 24.dp
-        },
-        animationSpec = spring(
-            dampingRatio = 0.9f,
-            stiffness = 1400f
-        ),
-        label = "cornerRadius"
-    )
+    val cornerRadius by
+        animateDpAsState(
+            targetValue =
+                when {
+                    isPressed -> 8.dp
+                    selected -> 12.dp
+                    else -> 24.dp
+                },
+            animationSpec = spring(dampingRatio = 0.9f, stiffness = 1400f),
+            label = "cornerRadius",
+        )
 
     FilledTonalButton(
         contentPadding = contentPadding,
@@ -634,19 +641,17 @@ private fun AnimatedVisibilityScope.FilterTypeItem(
     val seedColor = mapTypeToSeedColor(types = listOf(type.toString()))
     val kolorScheme = getDynamicColorScheme(seedColor, PaletteStyle.Rainbow)
     val pokemonColorScheme =
-        mapDynamicPokemonColorScheme(
-            seedColor = seedColor,
-            colorScheme = kolorScheme,
-        )
+        mapDynamicPokemonColorScheme(seedColor = seedColor, colorScheme = kolorScheme)
 
-    val colors = if (selected) {
-        ButtonDefaults.filledTonalButtonColors(
-            containerColor = pokemonColorScheme.surface,
-            contentColor = pokemonColorScheme.onSurface,
-        )
-    } else {
-        ButtonDefaults.filledTonalButtonColors()
-    }
+    val colors =
+        if (selected) {
+            ButtonDefaults.filledTonalButtonColors(
+                containerColor = pokemonColorScheme.surface,
+                contentColor = pokemonColorScheme.onSurface,
+            )
+        } else {
+            ButtonDefaults.filledTonalButtonColors()
+        }
 
     FilterChip(
         modifier = modifier,
@@ -674,14 +679,15 @@ private fun AnimatedVisibilityScope.FilterGenerationItem(
     index: Int,
     onClick: () -> Unit = {},
 ) {
-    val colors = if (selected) {
-        ButtonDefaults.filledTonalButtonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-        )
-    } else {
-        ButtonDefaults.filledTonalButtonColors()
-    }
+    val colors =
+        if (selected) {
+            ButtonDefaults.filledTonalButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            )
+        } else {
+            ButtonDefaults.filledTonalButtonColors()
+        }
 
     FilterChip(
         modifier = modifier,
@@ -723,21 +729,25 @@ private fun PokedexScreenPreview() {
                     is FilterMenuEvent.ToggleFavorites -> {
                         showFavorites = !showFavorites
                         val readyState = state as PokedexUiState.Ready
-                        state = readyState.copy(
-                            pokemon =
-                                if (showFavorites) {
-                                    SamplePokemonData.take(5)
-                                } else {
-                                    SamplePokemonData.toList()
-                                }
-                        )
+                        state =
+                            readyState.copy(
+                                pokemon =
+                                    if (showFavorites) {
+                                        SamplePokemonData.take(5)
+                                    } else {
+                                        SamplePokemonData.toList()
+                                    }
+                            )
                     }
                     is FilterMenuEvent.FilterTypes -> {
-                        typeFilter = if (typeFilter != result.typeToFilter) result.typeToFilter else null
+                        typeFilter =
+                            if (typeFilter != result.typeToFilter) result.typeToFilter else null
                     }
                     is FilterMenuEvent.FilterGeneration -> {
-                        generationFilter = if (generationFilter != result.generationToFilter) result.generationToFilter
-                        else null
+                        generationFilter =
+                            if (generationFilter != result.generationToFilter)
+                                result.generationToFilter
+                            else null
                     }
                     is FilterMenuEvent.ShowTypes -> {}
                     is FilterMenuEvent.ShowGenerations -> {}

@@ -13,48 +13,44 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class PokedexListScrollBenchmark{
-    @get:Rule
-    val benchmarkRule = MacrobenchmarkRule()
+class PokedexListScrollBenchmark {
+    @get:Rule val benchmarkRule = MacrobenchmarkRule()
 
-    @Test
-    fun scrollCompilationNone() = scroll(CompilationMode.None())
+    @Test fun scrollCompilationNone() = scroll(CompilationMode.None())
 
-    @Test
-    fun scrollCompilationPartial() = scroll(CompilationMode.Partial())
+    @Test fun scrollCompilationPartial() = scroll(CompilationMode.Partial())
 
-    private fun scroll(
-        compilationMode: CompilationMode
-    ) = benchmarkRule.measureRepeated(
-        packageName = "des.c5inco.pokedexer",
-        metrics = listOf(FrameTimingMetric()),
-        iterations = 5,
-        compilationMode = compilationMode,
-        startupMode = null,
-        setupBlock = {
-            killProcess()
-            pressHome()
-            startActivityAndWait()
+    private fun scroll(compilationMode: CompilationMode) =
+        benchmarkRule.measureRepeated(
+            packageName = "des.c5inco.pokedexer",
+            metrics = listOf(FrameTimingMetric()),
+            iterations = 5,
+            compilationMode = compilationMode,
+            startupMode = null,
+            setupBlock = {
+                killProcess()
+                pressHome()
+                startActivityAndWait()
 
-            val textSelector = By.text("Pokedex")
-            if (!device.wait(Until.hasObject(textSelector), 5_000)) {
-                fail("Pokedex menu item not found in time")
+                val textSelector = By.text("Pokedex")
+                if (!device.wait(Until.hasObject(textSelector), 5_000)) {
+                    fail("Pokedex menu item not found in time")
+                }
+
+                device.findObject(textSelector).click()
+                device.waitForIdle()
+            },
+        ) {
+            repeat(3) {
+                val listSelector = By.res("PokedexLazyGrid")
+                if (!device.wait(Until.hasObject(listSelector), 5_000)) {
+                    fail("List not found in time")
+                }
+                val list = device.findObject(listSelector)
+                list.setGestureMarginPercentage(0.2f)
+                list.fling(Direction.DOWN)
+                device.waitForIdle()
+                list.fling(Direction.UP)
             }
-
-            device.findObject(textSelector).click()
-            device.waitForIdle()
         }
-    ) {
-        repeat(3) {
-            val listSelector = By.res("PokedexLazyGrid")
-            if (!device.wait(Until.hasObject(listSelector), 5_000)) {
-                fail("List not found in time")
-            }
-            val list = device.findObject(listSelector)
-            list.setGestureMarginPercentage(0.2f)
-            list.fling(Direction.DOWN)
-            device.waitForIdle()
-            list.fling(Direction.UP)
-        }
-    }
 }

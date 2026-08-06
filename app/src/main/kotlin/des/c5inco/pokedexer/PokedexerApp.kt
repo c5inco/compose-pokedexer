@@ -7,7 +7,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.navigation3.runtime.NavEntry
@@ -38,26 +37,21 @@ class PokedexerApplication : Application() {
     }
 }
 
-/**
- * Extension property to access the app graph from any context.
- */
+/** Extension property to access the app graph from any context. */
 val Application.appGraph: ApplicationGraph
     get() = (this as PokedexerApplication).appGraph
 
-val LocalGifImageLoader = compositionLocalOf<ImageLoader> {
-    error("No GIF ImageLoader provided")
-}
+val LocalGifImageLoader = compositionLocalOf<ImageLoader> { error("No GIF ImageLoader provided") }
 
 @Composable
-fun PokedexerApp(
-    viewModel: RootViewModel = metroViewModel()
-) {
+fun PokedexerApp(viewModel: RootViewModel = metroViewModel()) {
     val backStack = rememberNavBackStack(Screen.Home)
     val density = LocalDensity.current
     val context = LocalContext.current
 
     CompositionLocalProvider(
-        LocalGifImageLoader provides (context.applicationContext as Application).appGraph.gifImageLoader
+        LocalGifImageLoader provides
+            (context.applicationContext as Application).appGraph.gifImageLoader
     ) {
         NavDisplay(
             backStack = backStack,
@@ -69,9 +63,11 @@ fun PokedexerApp(
                     // Quit app
                     // (context as? Activity)?.finish()
                     // or just let system handle back?
-                    // For now, if size is 1, onBack typically doesn't trigger if handled by system back handler?
+                    // For now, if size is 1, onBack typically doesn't trigger if handled by system
+                    // back handler?
                     // Actually NavDisplay might request back handling.
-                    // If we want to exit, we usually don't verify strict size > 1 here if back handler is intercepted.
+                    // If we want to exit, we usually don't verify strict size > 1 here if back
+                    // handler is intercepted.
                     // But simplest is removeLast.
                 }
             },
@@ -79,16 +75,18 @@ fun PokedexerApp(
                 if (targetState.key is Screen.PokemonDetails) {
                     Material3Transitions.SharedZAxisEnterTransition togetherWith fadeOut()
                 } else {
-                    Material3Transitions.SharedXAxisEnterTransition(density) togetherWith Material3Transitions.SharedXAxisExitTransition(density)
+                    Material3Transitions.SharedXAxisEnterTransition(density) togetherWith
+                        Material3Transitions.SharedXAxisExitTransition(density)
                 }
             },
             popTransitionSpec = {
                 if (initialState.key is Screen.PokemonDetails) {
                     fadeIn() togetherWith Material3Transitions.SharedZAxisExitTransition
                 } else {
-                    Material3Transitions.SharedXAxisPopEnterTransition(density) togetherWith Material3Transitions.SharedXAxisPopExitTransition(density)
+                    Material3Transitions.SharedXAxisPopEnterTransition(density) togetherWith
+                        Material3Transitions.SharedXAxisPopExitTransition(density)
                 }
-            }
+            },
         ) { screen ->
             NavEntry(screen) {
                 when (screen) {
@@ -118,41 +116,43 @@ fun PokedexerApp(
                                     is SearchResult.ItemEvent -> TODO()
                                     is SearchResult.MoveEvent -> TODO()
                                 }
-                            }
+                            },
                         )
                     }
                     Screen.Pokedex -> {
-                        // Extract the pokemon ID from the previous screen (if it was PokemonDetails)
+                        // Extract the pokemon ID from the previous screen (if it was
+                        // PokemonDetails)
                         // so we can scroll to it when returning from the details screen
-                        val pastPokemonId = (backStack.getOrNull(backStack.lastIndex - 1) as? Screen.PokemonDetails)?.id
-                        
+                        val pastPokemonId =
+                            (backStack.getOrNull(backStack.lastIndex - 1) as? Screen.PokemonDetails)
+                                ?.id
+
                         PokedexScreenRoute(
                             viewModel = metroViewModel(),
-                            onPokemonSelected = {
-                                backStack.add(Screen.PokemonDetails(it.id))
-                            },
+                            onPokemonSelected = { backStack.add(Screen.PokemonDetails(it.id)) },
                             pastPokemonSelected = pastPokemonId,
-                            onBackClick = { backStack.removeAt(backStack.lastIndex) }
+                            onBackClick = { backStack.removeAt(backStack.lastIndex) },
                         )
                     }
                     is Screen.PokemonDetails -> {
                         PokemonDetailsScreenRoute(
-                            detailsViewModel = metroViewModel(key = "pokemon_${screen.id}") { pokemonDetailsViewModelFactory.create(screen.id) },
-                            onBackClick = {
-                                backStack.removeAt(backStack.lastIndex)
-                            }
+                            detailsViewModel =
+                                metroViewModel(key = "pokemon_${screen.id}") {
+                                    pokemonDetailsViewModelFactory.create(screen.id)
+                                },
+                            onBackClick = { backStack.removeAt(backStack.lastIndex) },
                         )
                     }
                     Screen.Moves -> {
                         MovesListScreenRoute(
                             viewModel = metroViewModel(),
-                            onBackClick = { backStack.removeAt(backStack.lastIndex) }
+                            onBackClick = { backStack.removeAt(backStack.lastIndex) },
                         )
                     }
                     Screen.Items -> {
                         ItemsScreenRoute(
                             viewModel = metroViewModel(),
-                            onBackClick = { backStack.removeAt(backStack.lastIndex) }
+                            onBackClick = { backStack.removeAt(backStack.lastIndex) },
                         )
                     }
                     Screen.TypeCharts -> {

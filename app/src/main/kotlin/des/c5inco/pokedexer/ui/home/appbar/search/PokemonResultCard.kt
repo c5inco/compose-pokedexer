@@ -38,53 +38,39 @@ import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 fun PokemonResultCard(
     modifier: Modifier = Modifier,
     pokemon: Pokemon = SamplePokemonData.first(),
-    onPokemonSelected: (Pokemon) -> Unit = {}
+    onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
     PokemonTypesTheme(types = pokemon.typeOfPokemon) {
         Surface(
             modifier = modifier.width(200.dp),
             shape = MaterialTheme.shapes.large,
             color = PokemonTypesTheme.colorScheme.surface,
-            contentColor = PokemonTypesTheme.colorScheme.onSurface
+            contentColor = PokemonTypesTheme.colorScheme.onSurface,
         ) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .clickable { onPokemonSelected(pokemon) }
-            ) {
-                Column(
-                    Modifier
-                        .padding(start = 12.dp)
-                        .align(Alignment.CenterStart)
-                ) {
-                    Text(
-                        text = pokemon.name,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
+            Box(Modifier.fillMaxSize().clickable { onPokemonSelected(pokemon) }) {
+                Column(Modifier.padding(start = 12.dp).align(Alignment.CenterStart)) {
+                    Text(text = pokemon.name, style = MaterialTheme.typography.bodyMedium)
                     Text(
                         text = formatId(pokemon.id),
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier
-                            .graphicsLayer {
-                                alpha = 0.5f
-                            },
+                        modifier = Modifier.graphicsLayer { alpha = 0.5f },
                     )
                 }
                 Pokeball(
                     tint = Color.White,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .offset(x = 16.dp, y = 12.dp)
-                        .requiredSize(120.dp)
-                        .graphicsLayer { alpha = 0.25f },
+                    modifier =
+                        Modifier.align(Alignment.BottomEnd)
+                            .offset(x = 16.dp, y = 12.dp)
+                            .requiredSize(120.dp)
+                            .graphicsLayer { alpha = 0.25f },
                 )
                 PokemonImage(
                     image = pokemon.image,
                     description = pokemon.name,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(bottom = 2.dp, end = 6.dp)
-                        .fillMaxHeight(.85f)
+                    modifier =
+                        Modifier.align(Alignment.BottomEnd)
+                            .padding(bottom = 2.dp, end = 6.dp)
+                            .fillMaxHeight(.85f),
                 )
             }
         }
@@ -95,27 +81,16 @@ fun PokemonResultCard(
 @Composable
 fun PokemonResultCardPreview() {
     AppTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 20.dp)
-        ) {
+        Column(modifier = Modifier.fillMaxSize().padding(vertical = 20.dp)) {
             LazyHorizontalGrid(
                 rows = GridCells.Fixed(2),
                 contentPadding = PaddingValues(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .height(200.dp)
-                    .fillMaxWidth()
+                modifier = Modifier.height(200.dp).fillMaxWidth(),
             ) {
-                items(SamplePokemonData.take(5)) {
-                    PokemonResultCard(
-                        pokemon = it
-                    )
-                }
+                items(SamplePokemonData.take(5)) { PokemonResultCard(pokemon = it) }
             }
         }
     }
 }
-

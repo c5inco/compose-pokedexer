@@ -5,8 +5,8 @@ import des.c5inco.pokedexer.shared.model.Type
 import des.c5inco.pokedexer.ui.theme.PokemonColors
 
 fun mapTypeToColor(type: String): Color {
-    val pokemonType = Type.entries.find { it.name.equals(type, ignoreCase = true) }
-        ?: return PokemonColors.Normal
+    val pokemonType =
+        Type.entries.find { it.name.equals(type, ignoreCase = true) } ?: return PokemonColors.Normal
 
     return when (pokemonType) {
         Type.Bug -> PokemonColors.Bug

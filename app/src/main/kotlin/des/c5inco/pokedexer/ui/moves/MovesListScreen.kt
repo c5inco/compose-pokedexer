@@ -56,16 +56,10 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 @Composable
-fun MovesListScreenRoute(
-    viewModel: MovesListViewModel,
-    onBackClick: () -> Unit = {}
-) {
+fun MovesListScreenRoute(viewModel: MovesListViewModel, onBackClick: () -> Unit = {}) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    MovesListScreen(
-        state = state,
-        onBackClick = onBackClick
-    )
+    MovesListScreen(state = state, onBackClick = onBackClick)
 }
 
 @Composable
@@ -76,35 +70,30 @@ fun MovesListScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
                 title = { Text(stringResource(R.string.movesLabel)) },
-                navigationIcon =  {
+                navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.backActionContentDescription)
+                            contentDescription =
+                                stringResource(R.string.backActionContentDescription),
                         )
                     }
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
-        }
+        },
     ) { innerPadding ->
-        Column(
-            Modifier
-                .padding(top = innerPadding.calculateTopPadding())
-                .fillMaxSize()
-        ) {
+        Column(Modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxSize()) {
             AnimatedContent(
                 targetState = state,
                 transitionSpec = {
                     fadeIn().togetherWith(fadeOut()).using(SizeTransform(clip = false))
                 },
-                label = "movesListContentTransition"
+                label = "movesListContentTransition",
             ) { targetState ->
                 when (val s = targetState) {
                     is MovesListUiState.Ready -> {
@@ -120,99 +109,76 @@ fun MovesListScreen(
 }
 
 @Composable
-private fun MovesList(
-    modifier: Modifier = Modifier,
-    moves: List<Move> = SampleMoves
-) {
+private fun MovesList(modifier: Modifier = Modifier, moves: List<Move> = SampleMoves) {
     LazyColumn(
-        modifier = modifier
-            .padding(horizontal = 16.dp)
-            .testTag("MovesLazyColumn"),
-        contentPadding = WindowInsets.navigationBars.asPaddingValues()
+        modifier = modifier.padding(horizontal = 16.dp).testTag("MovesLazyColumn"),
+        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
     ) {
         stickyHeader {
             val textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
 
             CompositionLocalProvider(
                 LocalTextStyle provides textStyle,
-                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant
+                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
             ) {
                 Row(
-                    Modifier
-                        .fillMaxWidth()
+                    Modifier.fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         text = stringResource(R.string.nameTableHeader),
                         modifier = Modifier.weight(1f),
                     )
-                    Box(
-                        Modifier.requiredWidth(75.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
+                    Box(Modifier.requiredWidth(75.dp), contentAlignment = Alignment.Center) {
                         Text(stringResource(R.string.typeTableHeader))
                     }
-                    Box(
-                        Modifier.requiredWidth(48.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
+                    Box(Modifier.requiredWidth(48.dp), contentAlignment = Alignment.Center) {
                         Text(stringResource(R.string.categoryTableHeader))
                     }
                     Text(
                         text = stringResource(R.string.powerTableHeader),
                         textAlign = TextAlign.End,
-                        modifier = Modifier.requiredWidth(40.dp)
+                        modifier = Modifier.requiredWidth(40.dp),
                     )
                     Text(
                         text = stringResource(R.string.accuracyTableHeader),
                         textAlign = TextAlign.End,
-                        modifier = Modifier.requiredWidth(40.dp)
+                        modifier = Modifier.requiredWidth(40.dp),
                     )
                 }
             }
         }
         items(moves) { move ->
             Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-                ,
-                horizontalArrangement = Arrangement.SpaceBetween
+                Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    move.name.split("-").joinToString(" ") {
-                        it[0].uppercase() + it.substring(1)
-                    },
-                    Modifier.weight(1f)
+                    move.name.split("-").joinToString(" ") { it[0].uppercase() + it.substring(1) },
+                    Modifier.weight(1f),
                 )
                 PokemonTypesTheme(types = listOf(move.type)) {
                     TypeLabel(
                         modifier = Modifier.requiredWidth(75.dp),
                         text = move.type,
                         colored = true,
-                        metrics = MEDIUM
+                        metrics = MEDIUM,
                     )
                 }
-                Box(
-                    Modifier.requiredWidth(48.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CategoryIcon(
-                        modifier = Modifier.size(24.dp),
-                        move = move
-                    )
+                Box(Modifier.requiredWidth(48.dp), contentAlignment = Alignment.Center) {
+                    CategoryIcon(modifier = Modifier.size(24.dp), move = move)
                 }
                 Text(
                     "${move.power ?: "—"}",
                     textAlign = TextAlign.End,
-                    modifier = Modifier.requiredWidth(40.dp)
+                    modifier = Modifier.requiredWidth(40.dp),
                 )
                 Text(
                     text = "${move.accuracy ?: "—"}",
                     textAlign = TextAlign.End,
-                    modifier = Modifier.requiredWidth(40.dp)
+                    modifier = Modifier.requiredWidth(40.dp),
                 )
             }
         }
@@ -222,25 +188,17 @@ private fun MovesList(
 @Preview
 @Composable
 private fun MovesListScreenPreview() {
-    val state: MovesListUiState = MovesListUiState.Ready(
-        moves = SampleMoves + SampleMoves + SampleMoves + SampleMoves + SampleMoves + SampleMoves
-    )
+    val state: MovesListUiState =
+        MovesListUiState.Ready(
+            moves =
+                SampleMoves + SampleMoves + SampleMoves + SampleMoves + SampleMoves + SampleMoves
+        )
 
-    AppTheme {
-        Surface {
-            MovesListScreen(
-                state = state
-            )
-        }
-    }
+    AppTheme { Surface { MovesListScreen(state = state) } }
 }
 
 @Preview
 @Composable
 fun MovesListPreview() {
-    AppTheme {
-        Surface {
-            MovesList()
-        }
-    }
+    AppTheme { Surface { MovesList() } }
 }

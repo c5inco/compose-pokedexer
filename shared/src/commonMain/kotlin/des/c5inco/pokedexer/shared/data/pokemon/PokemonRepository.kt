@@ -5,9 +5,7 @@ import des.c5inco.pokedexer.shared.model.Generation
 import des.c5inco.pokedexer.shared.model.Pokemon
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Interface to the Pokemon data layer.
- */
+/** Interface to the Pokemon data layer. */
 interface PokemonRepository {
     fun pokemon(): Flow<List<Pokemon>>
 

@@ -36,37 +36,36 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 fun RoundedSearchBar(
     modifier: Modifier = Modifier,
     searchText: TextFieldState,
-    onTextClear: () -> Unit = {}
+    onTextClear: () -> Unit = {},
 ) {
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Row(
-            modifier = Modifier
-                .height(48.dp)
-                .fillMaxWidth()
-                .padding(start = 16.dp),
+            modifier = Modifier.height(48.dp).fillMaxWidth().padding(start = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             BasicTextField(
                 modifier = Modifier.weight(1f),
                 state = searchText,
-                textStyle = MaterialTheme.typography.bodyMedium.copy(
-                    color = contentColorFor(backgroundColor = MaterialTheme.colorScheme.surfaceVariant),
-                ),
+                textStyle =
+                    MaterialTheme.typography.bodyMedium.copy(
+                        color =
+                            contentColorFor(
+                                backgroundColor = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                    ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.onPrimaryContainer),
                 lineLimits = TextFieldLineLimits.SingleLine,
                 decorator = { innerTextField ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.outline,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
                         )
                         Spacer(Modifier.width(8.dp))
                         Box {
@@ -79,17 +78,15 @@ fun RoundedSearchBar(
                                     color = MaterialTheme.colorScheme.outline,
                                     modifier = Modifier.padding(end = 12.dp),
                                     overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
+                                    maxLines = 1,
                                 )
                             }
                         }
                     }
-                }
+                },
             )
             if (searchText.text.isNotEmpty()) {
-                IconButton(
-                    onClick = { onTextClear() },
-                ) {
+                IconButton(onClick = { onTextClear() }) {
                     Icon(
                         imageVector = Icons.Default.Clear,
                         contentDescription = stringResource(R.string.clearSearchContentDescription),
@@ -103,9 +100,5 @@ fun RoundedSearchBar(
 @PreviewLightDark
 @Composable
 fun RoundedSearchBarPreview() {
-    AppTheme {
-        RoundedSearchBar(
-            searchText = TextFieldState()
-        )
-    }
+    AppTheme { RoundedSearchBar(searchText = TextFieldState()) }
 }

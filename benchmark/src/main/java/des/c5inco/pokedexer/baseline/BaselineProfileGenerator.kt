@@ -12,24 +12,22 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class BaselineProfileGenerator {
 
-    @get:Rule
-    val rule = BaselineProfileRule()
+    @get:Rule val rule = BaselineProfileRule()
 
     @Test
-    fun generate() = rule.collect(
-        packageName = "des.c5inco.pokedexer",
-    ) {
-        startActivityAndWait()
-        device.wait(Until.hasObject(By.text("Pokedex")), 10_0000)
+    fun generate() =
+        rule.collect(packageName = "des.c5inco.pokedexer") {
+            startActivityAndWait()
+            device.wait(Until.hasObject(By.text("Pokedex")), 10_0000)
 
-        val button = device.findObject(By.text("Pokedex"))
-        button.click()
+            val button = device.findObject(By.text("Pokedex"))
+            button.click()
 
-        device.wait(Until.hasObject(By.res("PokedexLazyGrid")), 5_000)
-        val list = device.findObject(By.res("PokedexLazyGrid"))
-        if (list != null) {
-            list.setGestureMargin(device.displayWidth / 5)
-            list.fling(Direction.DOWN)
+            device.wait(Until.hasObject(By.res("PokedexLazyGrid")), 5_000)
+            val list = device.findObject(By.res("PokedexLazyGrid"))
+            if (list != null) {
+                list.setGestureMargin(device.displayWidth / 5)
+                list.fling(Direction.DOWN)
+            }
         }
-    }
 }

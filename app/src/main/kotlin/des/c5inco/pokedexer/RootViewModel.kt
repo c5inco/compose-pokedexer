@@ -14,8 +14,8 @@ class RootViewModel(
     private val pokemonRepository: PokemonRepository,
     private val movesRepository: MovesRepository,
     private val itemsRepository: ItemsRepository,
-    private val abilitiesRepository: AbilitiesRepository
-): ViewModel() {
+    private val abilitiesRepository: AbilitiesRepository,
+) : ViewModel() {
     init {
         viewModelScope.launch {
             println("Populating databases...")

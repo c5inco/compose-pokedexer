@@ -18,63 +18,55 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 /**
- * Main entry point for iOS to access the shared Pokedex functionality.
- * This SDK provides access to Pokemon, Moves, Items, and Abilities data.
+ * Main entry point for iOS to access the shared Pokedex functionality. This SDK provides access to
+ * Pokemon, Moves, Items, and Abilities data.
  *
  * Use [PokedexerSDK.create] to instantiate asynchronously off the main thread.
  */
-class PokedexerSDK private constructor(
+class PokedexerSDK
+private constructor(
     private val database: PokemonDatabase,
     private val apolloClient: ApolloClient,
     private val pokemonRepository: RemotePokemonRepository,
     private val movesRepository: RemoteMovesRepository,
     private val itemsRepository: ItemsRepositoryImpl,
-    private val abilitiesRepository: AbilitiesRepositoryImpl
+    private val abilitiesRepository: AbilitiesRepositoryImpl,
 ) {
     companion object {
         /**
-         * Creates a PokedexerSDK instance asynchronously.
-         * Database and client initialization happens on Dispatchers.IO
-         * to avoid blocking the main thread.
+         * Creates a PokedexerSDK instance asynchronously. Database and client initialization
+         * happens on Dispatchers.IO to avoid blocking the main thread.
          */
-        suspend fun create(): PokedexerSDK = withContext(Dispatchers.IO) {
-            val database = getDatabaseBuilder()
-                .fallbackToDestructiveMigration(dropAllTables = true)
-                .build()
+        suspend fun create(): PokedexerSDK =
+            withContext(Dispatchers.IO) {
+                val database =
+                    getDatabaseBuilder()
+                        .fallbackToDestructiveMigration(dropAllTables = true)
+                        .build()
 
-            val apolloClient = ApolloClient.Builder()
-                .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
-                .build()
+                val apolloClient =
+                    ApolloClient.Builder()
+                        .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
+                        .build()
 
-            val pokemonRepository = RemotePokemonRepository(
-                database.pokemonDao(),
-                apolloClient
-            )
+                val pokemonRepository = RemotePokemonRepository(database.pokemonDao(), apolloClient)
 
-            val movesRepository = RemoteMovesRepository(
-                database.movesDao(),
-                apolloClient
-            )
+                val movesRepository = RemoteMovesRepository(database.movesDao(), apolloClient)
 
-            val itemsRepository = ItemsRepositoryImpl(
-                database.itemsDao(),
-                apolloClient
-            )
+                val itemsRepository = ItemsRepositoryImpl(database.itemsDao(), apolloClient)
 
-            val abilitiesRepository = AbilitiesRepositoryImpl(
-                database.abilitiesDao(),
-                apolloClient
-            )
+                val abilitiesRepository =
+                    AbilitiesRepositoryImpl(database.abilitiesDao(), apolloClient)
 
-            PokedexerSDK(
-                database,
-                apolloClient,
-                pokemonRepository,
-                movesRepository,
-                itemsRepository,
-                abilitiesRepository
-            )
-        }
+                PokedexerSDK(
+                    database,
+                    apolloClient,
+                    pokemonRepository,
+                    movesRepository,
+                    itemsRepository,
+                    abilitiesRepository,
+                )
+            }
     }
 
     // Pokemon methods
@@ -84,8 +76,9 @@ class PokedexerSDK private constructor(
 
     fun getPokemonById(id: Int): Flow<Pokemon?> = pokemonRepository.getPokemonById(id)
 
-    fun getPokemonByName(name: String): Flow<List<Pokemon>> = pokemonRepository.getPokemonByName(name)
-    
+    fun getPokemonByName(name: String): Flow<List<Pokemon>> =
+        pokemonRepository.getPokemonByName(name)
+
     fun getPokemonByGeneration(generationId: Int): Flow<List<Pokemon>> {
         val generation = Generation.entries.firstOrNull { it.id == generationId } ?: Generation.I
         return pokemonRepository.getPokemonByGeneration(generation)

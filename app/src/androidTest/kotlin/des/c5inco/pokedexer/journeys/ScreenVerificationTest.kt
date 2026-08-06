@@ -16,8 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class ScreenVerificationTest {
-    @get:Rule
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Test
     fun testItemsScreenNavigationAndScrolling() {
@@ -35,17 +34,20 @@ class ScreenVerificationTest {
 
         // 3. Wait for content to load - we should see items with names and descriptions
         composeTestRule.waitUntil(10000) {
-            composeTestRule.onAllNodesWithText("Master Ball", substring = true).fetchSemanticsNodes().isNotEmpty() ||
-            composeTestRule.onAllNodesWithText("Potion", substring = true).fetchSemanticsNodes().isNotEmpty()
+            composeTestRule
+                .onAllNodesWithText("Master Ball", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty() ||
+                composeTestRule
+                    .onAllNodesWithText("Potion", substring = true)
+                    .fetchSemanticsNodes()
+                    .isNotEmpty()
         }
 
         // 4. Verify scrolling works - scroll down multiple times to reach the bottom
         repeat(5) {
             composeTestRule.onNodeWithTag("ItemsLazyColumn").performTouchInput {
-                swipeUp(
-                    startY = this.centerY,
-                    endY = this.centerY - 1000f
-                )
+                swipeUp(startY = this.centerY, endY = this.centerY - 1000f)
             }
             composeTestRule.waitForIdle()
         }
@@ -53,10 +55,7 @@ class ScreenVerificationTest {
         // 5. Scroll back up to the top
         repeat(5) {
             composeTestRule.onNodeWithTag("ItemsLazyColumn").performTouchInput {
-                swipeDown(
-                    startY = this.centerY,
-                    endY = this.centerY + 1000f
-                )
+                swipeDown(startY = this.centerY, endY = this.centerY + 1000f)
             }
             composeTestRule.waitForIdle()
         }
@@ -98,17 +97,20 @@ class ScreenVerificationTest {
         // 4. Wait for move data to load
         composeTestRule.waitUntil(10000) {
             // Wait for at least one move to be visible
-            composeTestRule.onAllNodesWithText("Pound", substring = true).fetchSemanticsNodes().isNotEmpty() ||
-            composeTestRule.onAllNodesWithText("Scratch", substring = true).fetchSemanticsNodes().isNotEmpty()
+            composeTestRule
+                .onAllNodesWithText("Pound", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty() ||
+                composeTestRule
+                    .onAllNodesWithText("Scratch", substring = true)
+                    .fetchSemanticsNodes()
+                    .isNotEmpty()
         }
 
         // 5. Verify scrolling works - scroll down multiple times to see more moves
         repeat(10) {
             composeTestRule.onNodeWithTag("MovesLazyColumn").performTouchInput {
-                swipeUp(
-                    startY = this.centerY,
-                    endY = this.centerY - 1200f
-                )
+                swipeUp(startY = this.centerY, endY = this.centerY - 1200f)
             }
             composeTestRule.waitForIdle()
         }
@@ -116,10 +118,7 @@ class ScreenVerificationTest {
         // 6. Scroll back up to the top
         repeat(10) {
             composeTestRule.onNodeWithTag("MovesLazyColumn").performTouchInput {
-                swipeDown(
-                    startY = this.centerY,
-                    endY = this.centerY + 1200f
-                )
+                swipeDown(startY = this.centerY, endY = this.centerY + 1200f)
             }
             composeTestRule.waitForIdle()
         }
@@ -158,10 +157,7 @@ class ScreenVerificationTest {
         // Scroll down vertically multiple times
         repeat(3) {
             composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
-                swipeUp(
-                    startY = this.centerY,
-                    endY = this.centerY - 800f
-                )
+                swipeUp(startY = this.centerY, endY = this.centerY - 800f)
             }
             composeTestRule.waitForIdle()
         }
@@ -169,10 +165,7 @@ class ScreenVerificationTest {
         // Scroll right horizontally multiple times
         repeat(3) {
             composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
-                swipeLeft(
-                    startX = this.centerX,
-                    endX = this.centerX - 800f
-                )
+                swipeLeft(startX = this.centerX, endX = this.centerX - 800f)
             }
             composeTestRule.waitForIdle()
         }
@@ -180,10 +173,7 @@ class ScreenVerificationTest {
         // Scroll back left horizontally
         repeat(3) {
             composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
-                swipeRight(
-                    startX = this.centerX,
-                    endX = this.centerX + 800f
-                )
+                swipeRight(startX = this.centerX, endX = this.centerX + 800f)
             }
             composeTestRule.waitForIdle()
         }
@@ -191,10 +181,7 @@ class ScreenVerificationTest {
         // Scroll back up vertically
         repeat(3) {
             composeTestRule.onNodeWithTag("TypeChartScrollableBox").performTouchInput {
-                swipeDown(
-                    startY = this.centerY,
-                    endY = this.centerY + 800f
-                )
+                swipeDown(startY = this.centerY, endY = this.centerY + 800f)
             }
             composeTestRule.waitForIdle()
         }
@@ -209,7 +196,8 @@ class ScreenVerificationTest {
 
     @Test
     fun testItemsScreenDataPersistenceAfterNavigation() {
-        // This test verifies that the Items screen maintains its data after navigating away and back
+        // This test verifies that the Items screen maintains its data after navigating away and
+        // back
 
         // 1. Navigate to Items
         composeTestRule.onNodeWithText("Items").performClick()
@@ -217,8 +205,14 @@ class ScreenVerificationTest {
         // 2. Wait for items to load
         composeTestRule.waitForIdle()
         composeTestRule.waitUntil(10000) {
-            composeTestRule.onAllNodesWithText("Master Ball", substring = true).fetchSemanticsNodes().isNotEmpty() ||
-            composeTestRule.onAllNodesWithText("Potion", substring = true).fetchSemanticsNodes().isNotEmpty()
+            composeTestRule
+                .onAllNodesWithText("Master Ball", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty() ||
+                composeTestRule
+                    .onAllNodesWithText("Potion", substring = true)
+                    .fetchSemanticsNodes()
+                    .isNotEmpty()
         }
 
         // 3. Go back to home
@@ -231,8 +225,14 @@ class ScreenVerificationTest {
 
         // 5. Verify items are still loaded (should be faster this time due to caching)
         composeTestRule.waitUntil(8000) {
-            composeTestRule.onAllNodesWithText("Master Ball", substring = true).fetchSemanticsNodes().isNotEmpty() ||
-            composeTestRule.onAllNodesWithText("Potion", substring = true).fetchSemanticsNodes().isNotEmpty()
+            composeTestRule
+                .onAllNodesWithText("Master Ball", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty() ||
+                composeTestRule
+                    .onAllNodesWithText("Potion", substring = true)
+                    .fetchSemanticsNodes()
+                    .isNotEmpty()
         }
 
         composeTestRule.onNodeWithText("Items").assertExists()
@@ -240,7 +240,8 @@ class ScreenVerificationTest {
 
     @Test
     fun testMovesScreenDataPersistenceAfterNavigation() {
-        // This test verifies that the Moves screen maintains its data after navigating away and back
+        // This test verifies that the Moves screen maintains its data after navigating away and
+        // back
 
         // 1. Navigate to Moves
         composeTestRule.onNodeWithText("Moves").performClick()
