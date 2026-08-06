@@ -3,14 +3,15 @@ set -euo pipefail
 
 readonly ANDROID_SDK="$HOME/.android-sdk"
 readonly JAVA_17_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+readonly LOCAL_BIN="$HOME/.local/bin"
 
 export JAVA_HOME="$JAVA_17_HOME"
 export ANDROID_HOME="$ANDROID_SDK"
 export ANDROID_SDK_ROOT="$ANDROID_SDK"
-export PATH="$JAVA_HOME/bin:$ANDROID_SDK/cmdline-tools/latest/bin:$ANDROID_SDK/platform-tools:$PATH"
+export PATH="$JAVA_HOME/bin:$LOCAL_BIN:$ANDROID_SDK/platform-tools:$PATH"
 
-if [[ ! -x "$JAVA_HOME/bin/java" || ! -x "$ANDROID_SDK/platform-tools/adb" ]]; then
-    echo "Java or Android SDK is missing; rerun .agents/setup" >&2
+if [[ ! -x "$JAVA_HOME/bin/java" || ! -x "$LOCAL_BIN/android" || ! -x "$ANDROID_SDK/platform-tools/adb" ]]; then
+    echo "Java, Android CLI, or Android SDK is missing; rerun .agents/setup" >&2
     exit 1
 fi
 
