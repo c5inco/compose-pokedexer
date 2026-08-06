@@ -34,6 +34,10 @@ import des.c5inco.pokedexer.ui.common.formatId
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
+private const val POKEMON_ID_ALPHA = 0.5f
+private const val POKEBALL_ALPHA = 0.25f
+private const val POKEMON_IMAGE_HEIGHT_FRACTION = 0.85f
+
 @Composable
 fun PokemonResultCard(
     modifier: Modifier = Modifier,
@@ -53,7 +57,7 @@ fun PokemonResultCard(
                     Text(
                         text = formatId(pokemon.id),
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.graphicsLayer { alpha = 0.5f },
+                        modifier = Modifier.graphicsLayer { alpha = POKEMON_ID_ALPHA },
                     )
                 }
                 Pokeball(
@@ -62,7 +66,7 @@ fun PokemonResultCard(
                         Modifier.align(Alignment.BottomEnd)
                             .offset(x = 16.dp, y = 12.dp)
                             .requiredSize(120.dp)
-                            .graphicsLayer { alpha = 0.25f },
+                            .graphicsLayer { alpha = POKEBALL_ALPHA },
                 )
                 PokemonImage(
                     image = pokemon.image,
@@ -70,7 +74,7 @@ fun PokemonResultCard(
                     modifier =
                         Modifier.align(Alignment.BottomEnd)
                             .padding(bottom = 2.dp, end = 6.dp)
-                            .fillMaxHeight(.85f),
+                            .fillMaxHeight(POKEMON_IMAGE_HEIGHT_FRACTION),
                 )
             }
         }

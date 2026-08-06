@@ -53,6 +53,13 @@ import des.c5inco.pokedexer.ui.common.TypeIconLabel
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.MoveCategoryTheme
 
+private const val DETAILS_FADE_DURATION_MILLIS = 400
+private const val DETAILS_SLIDE_DURATION_MILLIS = 300
+private const val DETAILS_SLIDE_OFFSET_DIVISOR = 2
+private const val PP_VALUE_WEIGHT = 0.75f
+private const val EXPANDED_CATEGORY_ICON_ALPHA = 0.4f
+private const val VALUE_LABEL_ALPHA = 0.7f
+
 @Composable
 fun SharedTransitionScope.MoveResultCard(
     modifier: Modifier = Modifier,
@@ -182,7 +189,11 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                         Column(
                             Modifier.animateEnterExit(
                                 enter =
-                                    fadeIn(tween(400)) + slideInVertically(tween(300)) { -it / 2 },
+                                    fadeIn(tween(DETAILS_FADE_DURATION_MILLIS)) +
+                                        slideInVertically(tween(DETAILS_SLIDE_DURATION_MILLIS)) {
+                                            fullHeight ->
+                                            -fullHeight / DETAILS_SLIDE_OFFSET_DIVISOR
+                                        },
                                 exit = fadeOut(),
                             )
                         ) {
@@ -195,7 +206,7 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                                 ValuesText(
                                     label = "PP",
                                     value = move.pp,
-                                    modifier = Modifier.weight(0.75f),
+                                    modifier = Modifier.weight(PP_VALUE_WEIGHT),
                                 )
                                 ValuesText(label = "PWR", value = move.power ?: -1)
                                 ValuesText(label = "ACC", value = move.accuracy ?: -1)
@@ -220,7 +231,7 @@ fun SharedTransitionScope.MoveResultExpandedCard(
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = imageBoundsTransform,
                             )
-                            .graphicsLayer { alpha = 0.4f },
+                            .graphicsLayer { alpha = EXPANDED_CATEGORY_ICON_ALPHA },
                 )
             }
         }
@@ -237,7 +248,7 @@ private fun RowScope.ValuesText(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.graphicsLayer { alpha = 0.7f },
+            modifier = Modifier.graphicsLayer { alpha = VALUE_LABEL_ALPHA },
         )
         Spacer(Modifier.width(4.dp))
         Text(

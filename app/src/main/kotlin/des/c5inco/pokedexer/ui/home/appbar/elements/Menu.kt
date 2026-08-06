@@ -35,6 +35,10 @@ import des.c5inco.pokedexer.shared.model.Type
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
+private const val SHADOW_WIDTH_FRACTION = 0.8f
+private const val SHADOW_BLUR_RADIUS = 40f
+private const val SHADOW_CORNER_PERCENT = 100
+
 sealed class MenuItem(@StringRes val label: Int, val typeColor: Type) {
     object Pokedex : MenuItem(R.string.pokedexLabel, Type.Grass)
 
@@ -122,13 +126,17 @@ fun mapMenuItemToIcon(item: MenuItem): Int {
 private fun Modifier.customShadow(color: Color): Modifier {
     return this.then(
         Modifier.height(12.dp)
-            .fillMaxWidth(0.8f)
+            .fillMaxWidth(SHADOW_WIDTH_FRACTION)
             .graphicsLayer {
                 renderEffect =
-                    RenderEffect.createBlurEffect(40f, 40f, Shader.TileMode.DECAL)
+                    RenderEffect.createBlurEffect(
+                            SHADOW_BLUR_RADIUS,
+                            SHADOW_BLUR_RADIUS,
+                            Shader.TileMode.DECAL,
+                        )
                         .asComposeRenderEffect()
             }
-            .background(color, RoundedCornerShape(100))
+            .background(color, RoundedCornerShape(SHADOW_CORNER_PERCENT))
     )
 }
 

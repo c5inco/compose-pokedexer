@@ -44,6 +44,10 @@ import des.c5inco.pokedexer.shared.model.Item
 import des.c5inco.pokedexer.ui.common.ItemImage
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
+private const val DESCRIPTION_FADE_DURATION_MILLIS = 400
+private const val DESCRIPTION_SLIDE_DURATION_MILLIS = 300
+private const val DESCRIPTION_SLIDE_OFFSET_DIVISOR = 2
+
 @Composable
 fun SharedTransitionScope.ItemResultCard(
     modifier: Modifier = Modifier,
@@ -165,7 +169,12 @@ fun SharedTransitionScope.ItemResultExpandedCard(
                         modifier =
                             Modifier.animateEnterExit(
                                 enter =
-                                    fadeIn(tween(400)) + slideInVertically(tween(300)) { -it / 2 },
+                                    fadeIn(tween(DESCRIPTION_FADE_DURATION_MILLIS)) +
+                                        slideInVertically(
+                                            tween(DESCRIPTION_SLIDE_DURATION_MILLIS)
+                                        ) { fullHeight ->
+                                            -fullHeight / DESCRIPTION_SLIDE_OFFSET_DIVISOR
+                                        },
                                 exit = fadeOut(),
                             ),
                     )

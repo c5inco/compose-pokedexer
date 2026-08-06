@@ -66,6 +66,10 @@ import des.c5inco.pokedexer.ui.home.appbar.search.PokemonResultCard
 import des.c5inco.pokedexer.ui.home.appbar.search.slideAndFadeEnterTransition
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
+private const val DEFAULT_SEARCH_RESULT_COUNT = 10
+private const val MOVES_GRID_ROW_COUNT = 4
+private const val ITEMS_GRID_ROW_COUNT = 3
+
 sealed class SearchResult {
     data class PokemonEvent(val pokemon: Pokemon) : SearchResult()
 
@@ -154,9 +158,9 @@ fun MainAppBar(
 @Composable
 private fun AnimatedContentScope.SearchResults(
     modifier: Modifier = Modifier,
-    pokemonResults: List<Pokemon> = SamplePokemonData.take(10),
-    movesResults: List<Move> = SampleMoves.take(10),
-    itemsResults: List<Item> = SampleItems.take(10),
+    pokemonResults: List<Pokemon> = SamplePokemonData.take(DEFAULT_SEARCH_RESULT_COUNT),
+    movesResults: List<Move> = SampleMoves.take(DEFAULT_SEARCH_RESULT_COUNT),
+    itemsResults: List<Item> = SampleItems.take(DEFAULT_SEARCH_RESULT_COUNT),
     selectedSearchResult: SearchResult? = null,
     sharedTransitionScope: SharedTransitionScope,
     onSelected: (SearchResult) -> Unit = { _ -> },
@@ -182,13 +186,17 @@ private fun AnimatedContentScope.SearchResults(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.height(200.dp),
                 ) {
-                    itemsIndexed(items = pokemonResults, key = { _, it -> it.id }) { idx, it ->
+                    itemsIndexed(items = pokemonResults, key = { _, pokemon -> pokemon.id }) {
+                        index,
+                        pokemon ->
                         PokemonResultCard(
-                            pokemon = it,
-                            onPokemonSelected = { onSelected(SearchResult.PokemonEvent(it)) },
+                            pokemon = pokemon,
+                            onPokemonSelected = { selectedPokemon ->
+                                onSelected(SearchResult.PokemonEvent(selectedPokemon))
+                            },
                             modifier =
                                 Modifier.animateEnterExit(
-                                    enter = slideAndFadeEnterTransition(idx),
+                                    enter = slideAndFadeEnterTransition(index),
                                     exit = fadeOut(),
                                 ),
                         )
@@ -206,28 +214,31 @@ private fun AnimatedContentScope.SearchResults(
                 )
                 Spacer(Modifier.height(16.dp))
                 LazyHorizontalGrid(
-                    rows = GridCells.Fixed(4),
+                    rows = GridCells.Fixed(MOVES_GRID_ROW_COUNT),
                     contentPadding = PaddingValues(horizontal = 32.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.height(240.dp),
                 ) {
-                    itemsIndexed(items = movesResults, key = { _, it -> it.id }) { idx, it ->
+                    itemsIndexed(items = movesResults, key = { _, move -> move.id }) { index, move
+                        ->
                         with(sharedTransitionScope) {
                             AnimatedVisibility(
                                 visible =
-                                    it != (selectedSearchResult as? SearchResult.MoveEvent)?.move,
+                                    move != (selectedSearchResult as? SearchResult.MoveEvent)?.move,
                                 modifier =
                                     Modifier.animateEnterExit(
-                                        enter = slideAndFadeEnterTransition(idx),
+                                        enter = slideAndFadeEnterTransition(index),
                                         exit = fadeOut(),
                                     ),
                             ) {
                                 MoveResultCard(
-                                    move = it,
+                                    move = move,
                                     animatedVisibilityScope = this,
                                     modifier = Modifier.width(200.dp),
-                                    onSelected = { onSelected(SearchResult.MoveEvent(it)) },
+                                    onSelected = { selectedMove ->
+                                        onSelected(SearchResult.MoveEvent(selectedMove))
+                                    },
                                 )
                             }
                         }
@@ -245,28 +256,31 @@ private fun AnimatedContentScope.SearchResults(
                 )
                 Spacer(Modifier.height(16.dp))
                 LazyHorizontalGrid(
-                    rows = GridCells.Fixed(3),
+                    rows = GridCells.Fixed(ITEMS_GRID_ROW_COUNT),
                     contentPadding = PaddingValues(horizontal = 32.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.height(240.dp),
                 ) {
-                    itemsIndexed(items = itemsResults, key = { _, it -> it.id }) { idx, it ->
+                    itemsIndexed(items = itemsResults, key = { _, item -> item.id }) { index, item
+                        ->
                         with(sharedTransitionScope) {
                             AnimatedVisibility(
                                 visible =
-                                    it != (selectedSearchResult as? SearchResult.ItemEvent)?.item,
+                                    item != (selectedSearchResult as? SearchResult.ItemEvent)?.item,
                                 modifier =
                                     Modifier.animateEnterExit(
-                                        enter = slideAndFadeEnterTransition(idx),
+                                        enter = slideAndFadeEnterTransition(index),
                                         exit = fadeOut(),
                                     ),
                             ) {
                                 ItemResultCard(
-                                    item = it,
+                                    item = item,
                                     modifier = Modifier.width(200.dp),
                                     animatedVisibilityScope = this,
-                                    onSelected = { onSelected(SearchResult.ItemEvent(it)) },
+                                    onSelected = { selectedItem ->
+                                        onSelected(SearchResult.ItemEvent(selectedItem))
+                                    },
                                 )
                             }
                         }
