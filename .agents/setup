@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly ANDROID_COMMAND_LINE_TOOLS_VERSION="13114758"
+readonly ANDROID_SDK="$HOME/.android-sdk"
+readonly JAVA_17_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+readonly TOOLCHAIN_PROFILE_MARKER="# compose-pokedexer toolchain"
+
+echo "Installing the Java 17 toolchain..."
+if [[ ! -x "$JAVA_17_HOME/bin/java" ]]; then
+    sudo apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-17-jdk-headless
+fi
+
+echo "Installing the Android command-line tools..."
+if [[ ! -x "$ANDROID_SDK/cmdline-tools/latest/bin/sdkmanager" ]]; then
+    archive="$(mktemp)"
+    extracted="$(mktemp -d)"
+    trap 'rm -f "$archive"; rm -rf "$extracted"' EXIT
+
+    curl -fsSL \
+        "https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_COMMAND_LINE_TOOLS_VERSION}_latest.zip" \
+        -o "$archive"
+    unzip -q "$archive" -d "$extracted"
+    mkdir -p "$ANDROID_SDK/cmdline-tools/latest"
+    cp -R "$extracted/cmdline-tools/." "$ANDROID_SDK/cmdline-tools/latest/"
+
+    rm -f "$archive"
+    rm -rf "$extracted"
+    trap - EXIT
+fi
+
+export JAVA_HOME="$JAVA_17_HOME"
+export ANDROID_HOME="$ANDROID_SDK"
+export ANDROID_SDK_ROOT="$ANDROID_SDK"
+export PATH="$JAVA_HOME/bin:$ANDROID_SDK/cmdline-tools/latest/bin:$ANDROID_SDK/platform-tools:$PATH"
+
+if ! grep -Fqx "$TOOLCHAIN_PROFILE_MARKER" "$HOME/.bash_profile" 2>/dev/null; then
+    cat >> "$HOME/.bash_profile" <<EOF
+
+$TOOLCHAIN_PROFILE_MARKER
+export JAVA_HOME="$JAVA_17_HOME"
+export ANDROID_HOME="$ANDROID_SDK"
+export ANDROID_SDK_ROOT="$ANDROID_SDK"
+export PATH="\$JAVA_HOME/bin:\$ANDROID_HOME/cmdline-tools/latest/bin:\$ANDROID_HOME/platform-tools:\$PATH"
+EOF
+fi
+
+echo "Accepting Android SDK licenses..."
+set +o pipefail
+yes | sdkmanager --licenses >/dev/null
+license_status="${PIPESTATUS[1]}"
+set -o pipefail
+if [[ "$license_status" -ne 0 ]]; then
+    echo "Android SDK license acceptance failed" >&2
+    exit "$license_status"
+fi
+
+echo "Installing Android SDK packages..."
+sdkmanager \
+    "platform-tools" \
+    "platforms;android-36" \
+    "build-tools;36.0.0"
+
+echo "Building the Android debug app and warming Gradle dependencies..."
+GRADLE_OPTS="-Dorg.gradle.jvmargs=-Xmx1536m -Dfile.encoding=UTF-8" \
+    ./gradlew --no-daemon --max-workers=1 \
+    -Pkotlin.compiler.execution.strategy=in-process \
+    :app:assembleDebug
+
+echo "Orb setup complete."
