@@ -39,6 +39,27 @@ Write a failing test before the implementation. Then make it pass with the minim
 - Any behavioral change not requested is a regression.
 - Refactors must not change behavior and should be kept separate from feature work.
 
+## Worktree Policy
+
+At the start of a new session, before writing any file that is not gitignored, check whether the user already requested
+a worktree or the session is already isolated:
+
+1. Compare `git rev-parse --git-common-dir` with `git rev-parse --git-dir`. Different results mean the checkout is
+   already a linked worktree.
+2. Run `git branch --show-current`. A non-default feature branch also provides task isolation.
+
+If either isolation condition is true, report the existing isolation and continue without prompting. If the user
+already requested a worktree, treat that request as approval and skip the prompt. Otherwise, ask:
+
+> Would you like me to work in a git worktree so the main checkout stays clean? If yes, I'll create one now before
+> making any changes.
+
+If the user requested or agrees to a worktree, load and follow
+[`.agents/skills/using-git-worktree/SKILL.md`](.agents/skills/using-git-worktree/SKILL.md) before editing files. Worktree
+creation is a Git mutation, so the user's agreement to this prompt is the required approval for that operation.
+
+Any implementation plan saved as a repository file belongs in the root checkout under `.plans/`, which is gitignored.
+
 ## Pull Request Guidelines
 When the agent helps create a PR, please ensure it:
 
@@ -48,8 +69,24 @@ When the agent helps create a PR, please ensure it:
 4. Includes screenshots for UI changes implemented with the agent
 5. Keeps PRs focused on a single concern as specified in AGENTS.md
 
-## Git Policy
-**CRITICAL**: Always ask for explicit permission before running git commit, git push, git rebase, or any other command that makes permanent changes to the repository.
+## Git and GitHub Policy
+
+Before every Git or GitHub operation—including commits, branches, worktrees, pushes, PRs, issues, or any `gh`
+command—load and follow [`.agents/skills/git-github-ops/SKILL.md`](.agents/skills/git-github-ops/SKILL.md).
+
+**CRITICAL**: Read-only inspection is allowed without approval. Always obtain explicit user permission before any
+operation that persistently changes repository, worktree, branch, remote, issue, or pull-request state. This includes
+`git commit`, `git pull`, `git merge`, `git rebase`, `git push`, branch/worktree creation or removal, destructive
+reset/restore operations, and GitHub mutations such as creating, editing, closing, or merging issues and PRs. A
+request for analysis or a question about an approach is not approval.
+
+Never push directly to the default branch without the user explicitly requesting that exact action. Before pushing or
+opening a PR, complete the TDD cycle, run `./gradlew ktfmtFormat`, then run `./gradlew check` and confirm it passes.
+
+## Local Skills
+
+Before falling back to “I can't do that,” check `.agents/skills/` for a project-local workflow. For any matching skill,
+read its `SKILL.md` before using it. The Git and worktree skills above are mandatory for their respective operations.
 
 ## Source of Truth Docs
 

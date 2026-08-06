@@ -57,9 +57,21 @@
 
 ## Git Policy
 
-**CRITICAL**: Always ask for explicit permission before running git commit, git push, git rebase, or any other command that makes permanent changes to the repository.
+`AGENTS.md` is the source of truth for approval and worktree-isolation rules. Before any Git or GitHub operation, load
+and follow `.agents/skills/git-github-ops/SKILL.md`; when creating or using a linked worktree, also load and follow
+`.agents/skills/using-git-worktree/SKILL.md`.
 
-- **Branching**: Use feature-specific branches.
-- **Commit Messages**: Clear and concise, describing the *what* and *why*.
-- **Pre-Push**: Run `./gradlew check` to ensure all quality checks pass.
-- **Worktrees**: Use git worktrees for task isolation (optional but recommended).
+- **Approval**: Read-only inspection is allowed without approval. Ask explicitly before any operation that persistently
+  changes repository, worktree, branch, remote, issue, or pull-request state.
+- **Branching**: Use descriptive, task-specific branch names such as `fix/search-race` or `feat/item-details`. Never
+  push directly to the default branch unless the user explicitly requests it.
+- **Commit Messages**: Explain what changed and why. Do not use typed Conventional Commit prefixes such as `feat:`,
+  `fix:`, `docs:`, or `chore:`. Keep the subject imperative and at most 72 characters; wrap body lines at 72
+  characters.
+- **Pre-Commit**: Run `./gradlew ktfmtFormat`, inspect the resulting diff, and run the targeted tests required by the
+  TDD cycle.
+- **Pre-Push / PR**: Run `./gradlew check` and confirm it passes before pushing or opening a PR.
+- **Pull Requests**: Use a focused title and description, reference related issues (for example, `Fixes #27`), and add
+  screenshots for UI changes.
+- **Worktrees**: Offer a linked worktree before the first tracked edit when the session is still on the default branch
+  in the main checkout. Use `.worktrees/`, which is gitignored, for project-local worktrees.

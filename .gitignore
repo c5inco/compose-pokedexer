@@ -28,6 +28,10 @@ replay_pid*.log
 # Conductor context directory
 .context/
 
+# Agent task isolation and on-disk plans
+.worktrees/
+.plans/
+
 # iOS/Xcode
 iosApp/PokedexerApp.xcodeproj/project.xcworkspace/xcuserdata/
 iosApp/PokedexerApp.xcodeproj/xcuserdata/
