@@ -9,6 +9,9 @@ complexity:
     threshold: 500
 
 style:
+  MagicNumber:
+    excludes:
+      - '**/data/pokemon/PokemonData.kt'
   MaxLineLength:
     active: true
     maxLineLength: 120
