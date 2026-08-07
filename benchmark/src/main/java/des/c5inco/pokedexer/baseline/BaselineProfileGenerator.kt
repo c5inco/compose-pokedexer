@@ -18,16 +18,22 @@ class BaselineProfileGenerator {
     fun generate() =
         rule.collect(packageName = "des.c5inco.pokedexer") {
             startActivityAndWait()
-            device.wait(Until.hasObject(By.text("Pokedex")), 10_0000)
+            device.wait(Until.hasObject(By.text("Pokedex")), APP_START_TIMEOUT_MILLIS)
 
             val button = device.findObject(By.text("Pokedex"))
             button.click()
 
-            device.wait(Until.hasObject(By.res("PokedexLazyGrid")), 5_000)
+            device.wait(Until.hasObject(By.res("PokedexLazyGrid")), GRID_LOAD_TIMEOUT_MILLIS)
             val list = device.findObject(By.res("PokedexLazyGrid"))
             if (list != null) {
-                list.setGestureMargin(device.displayWidth / 5)
+                list.setGestureMargin(device.displayWidth / GESTURE_MARGIN_DIVISOR)
                 list.fling(Direction.DOWN)
             }
         }
+
+    private companion object {
+        const val APP_START_TIMEOUT_MILLIS = 100_000L
+        const val GRID_LOAD_TIMEOUT_MILLIS = 5_000L
+        const val GESTURE_MARGIN_DIVISOR = 5
+    }
 }

@@ -33,7 +33,7 @@ class PokedexListScrollBenchmark {
                 startActivityAndWait()
 
                 val textSelector = By.text("Pokedex")
-                if (!device.wait(Until.hasObject(textSelector), 5_000)) {
+                if (!device.wait(Until.hasObject(textSelector), CONTENT_LOAD_TIMEOUT_MILLIS)) {
                     fail("Pokedex menu item not found in time")
                 }
 
@@ -41,16 +41,22 @@ class PokedexListScrollBenchmark {
                 device.waitForIdle()
             },
         ) {
-            repeat(3) {
+            repeat(SCROLL_CYCLES) {
                 val listSelector = By.res("PokedexLazyGrid")
-                if (!device.wait(Until.hasObject(listSelector), 5_000)) {
+                if (!device.wait(Until.hasObject(listSelector), CONTENT_LOAD_TIMEOUT_MILLIS)) {
                     fail("List not found in time")
                 }
                 val list = device.findObject(listSelector)
-                list.setGestureMarginPercentage(0.2f)
+                list.setGestureMarginPercentage(GESTURE_MARGIN_PERCENTAGE)
                 list.fling(Direction.DOWN)
                 device.waitForIdle()
                 list.fling(Direction.UP)
             }
         }
+
+    private companion object {
+        const val CONTENT_LOAD_TIMEOUT_MILLIS = 5_000L
+        const val SCROLL_CYCLES = 3
+        const val GESTURE_MARGIN_PERCENTAGE = 0.2f
+    }
 }

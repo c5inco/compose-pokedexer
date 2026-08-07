@@ -36,30 +36,42 @@ class DetailsBenchmark {
 
                 device.waitForIdle()
 
-                val firstPokemon = device.wait(Until.findObject(By.text("Bulbasaur")), 5000)
+                val firstPokemon =
+                    device.wait(Until.findObject(By.text("Bulbasaur")), POKEMON_LOAD_TIMEOUT_MILLIS)
                 firstPokemon.click()
 
                 device.waitForIdle()
             },
         ) {
-            val pager = device.wait(Until.findObject(By.res("PokemonPager")), 5000)
+            val pager =
+                device.wait(Until.findObject(By.res("PokemonPager")), POKEMON_LOAD_TIMEOUT_MILLIS)
 
             pager?.let {
-                pager.setGestureMargin(device.displayWidth / 5)
+                pager.setGestureMargin(device.displayWidth / GESTURE_MARGIN_DIVISOR)
 
-                device.wait(Until.findObject(By.text("Bulbasaur")), 5000)
-                pager.fling(Direction.RIGHT, 1500)
+                device.wait(Until.findObject(By.text("Bulbasaur")), POKEMON_LOAD_TIMEOUT_MILLIS)
+                pager.fling(Direction.RIGHT, PAGER_FLING_SPEED_PIXELS_PER_SECOND)
 
-                device.wait(Until.findObject(By.text("Ivysaur")), 5000)
-                pager.fling(Direction.RIGHT, 1500)
+                device.wait(Until.findObject(By.text("Ivysaur")), POKEMON_LOAD_TIMEOUT_MILLIS)
+                pager.fling(Direction.RIGHT, PAGER_FLING_SPEED_PIXELS_PER_SECOND)
 
-                device.wait(Until.findObject(By.text("Venusaur")), 5000)
-                pager.fling(Direction.RIGHT, 1500)
+                device.wait(Until.findObject(By.text("Venusaur")), POKEMON_LOAD_TIMEOUT_MILLIS)
+                pager.fling(Direction.RIGHT, PAGER_FLING_SPEED_PIXELS_PER_SECOND)
 
-                device.wait(Until.findObject(By.text("Charmander")), 1000)
-                pager.fling(Direction.RIGHT, 1500)
+                device.wait(
+                    Until.findObject(By.text("Charmander")),
+                    FINAL_POKEMON_LOAD_TIMEOUT_MILLIS,
+                )
+                pager.fling(Direction.RIGHT, PAGER_FLING_SPEED_PIXELS_PER_SECOND)
             }
 
             device.waitForIdle()
         }
+
+    private companion object {
+        const val POKEMON_LOAD_TIMEOUT_MILLIS = 5_000L
+        const val FINAL_POKEMON_LOAD_TIMEOUT_MILLIS = 1_000L
+        const val GESTURE_MARGIN_DIVISOR = 5
+        const val PAGER_FLING_SPEED_PIXELS_PER_SECOND = 1_500
+    }
 }
