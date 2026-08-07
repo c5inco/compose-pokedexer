@@ -52,6 +52,60 @@ private const val DARK_THEME_ID_ALPHA = 0.5f
 private const val LIGHT_THEME_ID_ALPHA = 0.7f
 private const val POKEBALL_ALPHA = 0.25f
 
+private object PokedexCardMeshCoordinates {
+    const val TOP_SECOND_X = 0.24099097f
+    const val TOP_THIRD_X = 0.5358101f
+    const val TOP_FOURTH_X = 0.7894143f
+    const val MIDDLE_START_Y = 0.5f
+    const val MIDDLE_SECOND_X = 0.24236615f
+    const val MIDDLE_SECOND_Y = 0.6261937f
+    const val MIDDLE_THIRD_X = 0.5254497f
+    const val MIDDLE_THIRD_Y = 0.4176749f
+    const val MIDDLE_FOURTH_X = 0.802476f
+    const val MIDDLE_FOURTH_Y = 0.6690188f
+    const val MIDDLE_END_Y = 0.35517487f
+    const val BOTTOM_SECOND_X = 0.23941448f
+    const val BOTTOM_THIRD_X = 0.5159903f
+    const val BOTTOM_FOURTH_X = 0.7876128f
+}
+
+private fun buildPokedexCardMeshColors(
+    analogousSurfaceColor: Color,
+    pokemonTypeSurfaceColor: Color,
+): List<List<Pair<Offset, Color>>> =
+    listOf(
+        listOf(
+            Offset(0.0f, 0.0f) to analogousSurfaceColor,
+            Offset(PokedexCardMeshCoordinates.TOP_SECOND_X, 0.0f) to analogousSurfaceColor,
+            Offset(PokedexCardMeshCoordinates.TOP_THIRD_X, 0.0f) to analogousSurfaceColor,
+            Offset(PokedexCardMeshCoordinates.TOP_FOURTH_X, 0.0f) to analogousSurfaceColor,
+            Offset(1.0f, 0.0f) to pokemonTypeSurfaceColor,
+        ),
+        listOf(
+            Offset(0.0f, PokedexCardMeshCoordinates.MIDDLE_START_Y) to analogousSurfaceColor,
+            Offset(
+                PokedexCardMeshCoordinates.MIDDLE_SECOND_X,
+                PokedexCardMeshCoordinates.MIDDLE_SECOND_Y,
+            ) to pokemonTypeSurfaceColor,
+            Offset(
+                PokedexCardMeshCoordinates.MIDDLE_THIRD_X,
+                PokedexCardMeshCoordinates.MIDDLE_THIRD_Y,
+            ) to pokemonTypeSurfaceColor,
+            Offset(
+                PokedexCardMeshCoordinates.MIDDLE_FOURTH_X,
+                PokedexCardMeshCoordinates.MIDDLE_FOURTH_Y,
+            ) to analogousSurfaceColor,
+            Offset(1.0f, PokedexCardMeshCoordinates.MIDDLE_END_Y) to pokemonTypeSurfaceColor,
+        ),
+        listOf(
+            Offset(0.0f, 1.0f) to pokemonTypeSurfaceColor,
+            Offset(PokedexCardMeshCoordinates.BOTTOM_SECOND_X, 1.0f) to pokemonTypeSurfaceColor,
+            Offset(PokedexCardMeshCoordinates.BOTTOM_THIRD_X, 1.0f) to pokemonTypeSurfaceColor,
+            Offset(PokedexCardMeshCoordinates.BOTTOM_FOURTH_X, 1.0f) to pokemonTypeSurfaceColor,
+            Offset(1.0f, 1.0f) to pokemonTypeSurfaceColor,
+        ),
+    )
+
 @Composable
 fun PokedexCard(
     modifier: Modifier = Modifier,
@@ -67,31 +121,11 @@ fun PokedexCard(
                 calculateAnalogousColors(pokemonTypeSurfaceColor, ANALOGOUS_HUE_ANGLE)[hueIndex]
             }
 
-        @Suppress("MagicNumber") // Generated mesh-gradient control-point coordinates.
         val colors =
             remember(analogousSurfaceColor, pokemonTypeSurfaceColor) {
-                listOf(
-                    listOf(
-                        Offset(0.0f, 0.0f) to analogousSurfaceColor,
-                        Offset(0.24099097f, 0.0f) to analogousSurfaceColor,
-                        Offset(0.5358101f, 0.0f) to analogousSurfaceColor,
-                        Offset(0.7894143f, 0.0f) to analogousSurfaceColor,
-                        Offset(1.0f, 0.0f) to pokemonTypeSurfaceColor,
-                    ),
-                    listOf(
-                        Offset(0.0f, 0.5f) to analogousSurfaceColor,
-                        Offset(0.24236615f, 0.6261937f) to pokemonTypeSurfaceColor,
-                        Offset(0.5254497f, 0.4176749f) to pokemonTypeSurfaceColor,
-                        Offset(0.802476f, 0.6690188f) to analogousSurfaceColor,
-                        Offset(1.0f, 0.35517487f) to pokemonTypeSurfaceColor,
-                    ),
-                    listOf(
-                        Offset(0.0f, 1.0f) to pokemonTypeSurfaceColor,
-                        Offset(0.23941448f, 1.0f) to pokemonTypeSurfaceColor,
-                        Offset(0.5159903f, 1.0f) to pokemonTypeSurfaceColor,
-                        Offset(0.7876128f, 1.0f) to pokemonTypeSurfaceColor,
-                        Offset(1.0f, 1.0f) to pokemonTypeSurfaceColor,
-                    ),
+                buildPokedexCardMeshColors(
+                    analogousSurfaceColor = analogousSurfaceColor,
+                    pokemonTypeSurfaceColor = pokemonTypeSurfaceColor,
                 )
             }
 

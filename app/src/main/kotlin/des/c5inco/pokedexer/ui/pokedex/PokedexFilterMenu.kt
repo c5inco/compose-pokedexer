@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
@@ -169,6 +170,7 @@ private fun FilterMenu(state: FilterMenuModel, onMenuItemClick: (FilterMenuEvent
             EnterTransition.None togetherWith ExitTransition.None using SizeTransform(false)
         },
         label = "filterMenuTransition",
+        modifier = Modifier.fillMaxWidth(),
     ) { targetState ->
         when (targetState) {
             FilterMenuState.Types -> TypeFilterMenu(state.typeFilter, onMenuItemClick)
