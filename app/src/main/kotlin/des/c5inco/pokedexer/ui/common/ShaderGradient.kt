@@ -3,7 +3,6 @@ package des.c5inco.pokedexer.ui.common
 import android.graphics.RuntimeShader
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
@@ -128,15 +125,10 @@ fun Modifier.shaderGradientBackground(startColor: Color, endColor: Color) =
 @PreviewLightDark
 @Composable
 private fun ShaderGradientPreview() {
-    val time by
-        produceState(0f) {
-            while (true) {
-                withInfiniteAnimationFrameMillis { value = it / 2000f }
-            }
-        }
+    val previewPokemonIndex = 9
 
     AppTheme {
-        PokemonTypesTheme(types = SamplePokemonData[9].typeOfPokemon) {
+        PokemonTypesTheme(types = SamplePokemonData[previewPokemonIndex].typeOfPokemon) {
             Surface {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp),

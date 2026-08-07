@@ -11,6 +11,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import des.c5inco.pokedexer.data.pokemon.placeholderPokemonImage
 
+private const val IMAGE_CROSSFADE_DURATION_MILLIS = 300
+
 @Composable
 fun PokemonImage(
     modifier: Modifier = Modifier,
@@ -22,7 +24,7 @@ fun PokemonImage(
         model =
             ImageRequest.Builder(LocalContext.current)
                 .data(artworkUrl(image))
-                .crossfade(300)
+                .crossfade(IMAGE_CROSSFADE_DURATION_MILLIS)
                 .build(),
         placeholder =
             if (LocalInspectionMode.current) {

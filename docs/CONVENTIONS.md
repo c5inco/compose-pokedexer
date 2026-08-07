@@ -45,7 +45,7 @@
 | Composable screens | `app/ui/` |
 | Composable components | `app/ui/common/` |
 | ViewModels | `app/ui/.../` (alongside their screens) |
-| Navigation keys | `app/ui/navigation/PokedexerDestinations.kt` |
+| Navigation keys | `app/ui/navigation/Screen.kt` |
 | Room models | `shared/src/commonMain/kotlin/des/c5inco/pokedexer/shared/model/` |
 | Repositories | `shared/src/commonMain/kotlin/des/c5inco/pokedexer/shared/data/.../` |
 

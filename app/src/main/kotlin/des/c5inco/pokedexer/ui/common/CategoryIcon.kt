@@ -12,6 +12,9 @@ import des.c5inco.pokedexer.shared.model.Move
 import des.c5inco.pokedexer.shared.model.MoveCategory
 import des.c5inco.pokedexer.ui.theme.MoveCategoryTheme
 
+private const val ICON_ROTATION_X = 40f
+private const val ICON_ROTATION_Y = -15f
+
 @Composable
 fun CategoryIcon(modifier: Modifier = Modifier, move: Move) {
     MoveCategoryTheme(category = MoveCategory.valueOf(move.category)) {
@@ -22,8 +25,8 @@ fun CategoryIcon(modifier: Modifier = Modifier, move: Move) {
                 tint = MoveCategoryTheme.colorScheme.primary,
                 modifier =
                     Modifier.matchParentSize().graphicsLayer {
-                        rotationX = 40f
-                        rotationY = -15f
+                        rotationX = ICON_ROTATION_X
+                        rotationY = ICON_ROTATION_Y
                     },
             )
         }

@@ -14,10 +14,21 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-fun formatId(id: Int): String = "#" + "$id".padStart(3, '0')
+private const val POKEDEX_ID_DIGITS = 3
+private const val DEGREES_IN_HALF_ROTATION = 180
+private const val DEFAULT_ANALOGOUS_ANGLE_DEGREES = 15f
+private const val HSL_COMPONENT_COUNT = 3
+private const val MAX_RGB_CHANNEL_VALUE = 255
+private const val FULL_HUE_ROTATION_DEGREES = 360f
+private const val OPPOSITE_ANALOGOUS_HUE_MULTIPLIER = 2f
+private const val LOOP_DELAY_MILLIS = 1000L
+private const val LOOP_LAST_INDEX = 8
+
+fun formatId(id: Int): String = "#" + "$id".padStart(POKEDEX_ID_DIGITS, '0')
 
 fun artworkUrl(id: Int): String =
-    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/${id.toString().padStart(3, '0')}.png"
+    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/" +
+        "${id.toString().padStart(POKEDEX_ID_DIGITS, '0')}.png"
 
 fun itemAssetsUri(name: String): String = assetsUri("items", "$name.webp")
 
@@ -26,27 +37,30 @@ private fun assetsUri(subDirectory: String? = null, name: String): String {
     return subDirectory?.let { "$baseUri/$subDirectory/$name" } ?: run { "$baseUri/$name" }
 }
 
-fun Double.toRadian(): Double = this / 180 * Math.PI
+fun Double.toRadian(): Double = this / DEGREES_IN_HALF_ROTATION * Math.PI
 
 fun Modifier.debugBounds(width: Dp = 1.dp) = border(width, Color.Magenta)
 
 fun Canvas.drawPathWithPaint(path: Path, paint: Paint = Paint()) = drawPath(path, paint)
 
-fun calculateAnalogousColors(baseColor: Color, angle: Float = 15f): List<Color> {
+fun calculateAnalogousColors(
+    baseColor: Color,
+    angle: Float = DEFAULT_ANALOGOUS_ANGLE_DEGREES,
+): List<Color> {
     // Convert the base color to HSL
-    val hsl = FloatArray(3)
+    val hsl = FloatArray(HSL_COMPONENT_COUNT)
     ColorUtils.RGBToHSL(
-        (baseColor.red * 255).toInt(),
-        (baseColor.green * 255).toInt(),
-        (baseColor.blue * 255).toInt(),
+        (baseColor.red * MAX_RGB_CHANNEL_VALUE).toInt(),
+        (baseColor.green * MAX_RGB_CHANNEL_VALUE).toInt(),
+        (baseColor.blue * MAX_RGB_CHANNEL_VALUE).toInt(),
         hsl,
     )
 
     // Calculate the four analogous hues
-    val hue1 = (hsl[0] + angle) % 360
-    val hue2 = (hsl[0] - angle) % 360
-    val hue3 = (hsl[0] + angle * 2f) % 360
-    val hue4 = (hsl[0] - angle * 2f) % 360
+    val hue1 = (hsl[0] + angle) % FULL_HUE_ROTATION_DEGREES
+    val hue2 = (hsl[0] - angle) % FULL_HUE_ROTATION_DEGREES
+    val hue3 = (hsl[0] + angle * OPPOSITE_ANALOGOUS_HUE_MULTIPLIER) % FULL_HUE_ROTATION_DEGREES
+    val hue4 = (hsl[0] - angle * OPPOSITE_ANALOGOUS_HUE_MULTIPLIER) % FULL_HUE_ROTATION_DEGREES
     val analogousHues = listOf(hue1, hue2, hue3, hue4)
 
     // Create analogous colors
@@ -61,8 +75,8 @@ fun calculateAnalogousColors(baseColor: Color, angle: Float = 15f): List<Color> 
 
 val infiniteLoopFlow: Flow<Int> = flow {
     while (true) {
-        delay(1000L)
-        emit((0..8).random())
+        delay(LOOP_DELAY_MILLIS)
+        emit((0..LOOP_LAST_INDEX).random())
     }
 }
 

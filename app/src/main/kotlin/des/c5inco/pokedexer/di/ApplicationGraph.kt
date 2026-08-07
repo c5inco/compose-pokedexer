@@ -44,10 +44,9 @@ private const val USER_PREFERENCES = "user_preferences"
 /** Scope annotation for application-level singletons. */
 @dev.zacsweers.metro.Scope annotation class AppScope
 
-/** Interface containing all provider methods for third-party dependencies. */
+/** Database and DAO providers from the shared module. */
 @ContributesTo(AppScope::class)
-interface ApplicationModule {
-    // Database (from shared module)
+interface DatabaseModule {
     @Provides
     @SingleIn(AppScope::class)
     fun provideDatabase(context: Context): PokemonDatabase {
@@ -75,16 +74,21 @@ interface ApplicationModule {
     fun provideAbilitiesDao(database: PokemonDatabase): AbilitiesDao {
         return database.abilitiesDao()
     }
+}
 
-    // Network
+/** Network providers. */
+@ContributesTo(AppScope::class)
+interface NetworkModule {
     @Provides
     @SingleIn(AppScope::class)
     fun provideApolloClient(): ApolloClient {
         return ApolloClient.Builder().serverUrl("https://beta.pokeapi.co/graphql/v1beta").build()
     }
+}
 
-    // Repositories (from shared module - manually wired since we don't use @ContributesBinding in
-    // shared)
+/** Repository providers manually wired from the shared module. */
+@ContributesTo(AppScope::class)
+interface RepositoryModule {
     @Provides
     @SingleIn(AppScope::class)
     fun providePokemonRepository(
@@ -114,8 +118,11 @@ interface ApplicationModule {
     ): AbilitiesRepository {
         return AbilitiesRepositoryImpl(abilitiesDao, apolloClient)
     }
+}
 
-    // DataStore
+/** Preferences DataStore provider. */
+@ContributesTo(AppScope::class)
+interface DataStoreModule {
     @Provides
     @SingleIn(AppScope::class)
     fun providePreferencesDataStore(context: Context): DataStore<Preferences> {
@@ -127,8 +134,11 @@ interface ApplicationModule {
             produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES) },
         )
     }
+}
 
-    // Image Loading
+/** Image loading provider. */
+@ContributesTo(AppScope::class)
+interface ImageLoaderModule {
     @Provides
     @SingleIn(AppScope::class)
     fun provideGifImageLoader(context: Context): ImageLoader {

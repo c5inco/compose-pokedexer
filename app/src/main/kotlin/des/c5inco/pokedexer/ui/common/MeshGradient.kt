@@ -32,14 +32,22 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.tooling.preview.Preview
 import des.c5inco.pokedexer.ui.theme.AppTheme
 
-private val Teal950 = Color(0xFF00796B)
-private val Indigo700 = Color(0xFF3F51B5)
-private val Pink500 = Color(0xFFEC407A)
-private val Magenta = Color(0xFFFF00FF)
+private const val POINT_STROKE_WIDTH = 4f * 0.001f
+private const val CUBIC_CONTROL_FRACTION = 0.5f
+
+data class MeshGradientOptions(
+    val blendMode: BlendMode = BlendMode.DstIn,
+    val showPoints: Boolean = false,
+    val modifyIndices: (List<Int>) -> List<Int> = { it },
+)
 
 @Preview
 @Composable
 private fun MeshGradientPreview() {
+    val indigo700 = Color(0xFF3F51B5)
+    val magenta = Color(0xFFFF00FF)
+    val midpoint = 0.5f
+    val lowerRowY = 0.4f
     val infiniteTransition = rememberInfiniteTransition(label = "meshGradientTransition")
     val animatedPoint by
         infiniteTransition.animateFloat(
@@ -56,37 +64,18 @@ private fun MeshGradientPreview() {
     val colors =
         listOf(
             listOf(
-                Offset(0f, 0f) to Magenta,
-                Offset(.5f, 0f) to Magenta,
-                Offset(1f, 0f) to Magenta,
+                Offset(0f, 0f) to magenta,
+                Offset(midpoint, 0f) to magenta,
+                Offset(1f, 0f) to magenta,
             ),
             listOf(
-                Offset(0f, .4f) to Indigo700,
-                Offset(.5f, animatedPoint) to Indigo700,
-                Offset(1f, .4f) to Indigo700,
-            ),
-            listOf(
-                Offset(0f, 1f) to Color.DarkGray,
-                Offset(.5f, 1f) to Color.DarkGray,
-                Offset(1f, 1f) to Color.DarkGray,
-            ),
-        )
-
-    val colors2 =
-        listOf(
-            listOf(
-                Offset(0.2f, 0f) to Magenta,
-                Offset(.5f, 0f) to Magenta,
-                Offset(1f, 0f) to Magenta,
-            ),
-            listOf(
-                Offset(0.2f, 0f) to Magenta,
-                Offset(.5f, .4f) to Magenta,
-                Offset(1f, 0f) to Magenta,
+                Offset(0f, lowerRowY) to indigo700,
+                Offset(midpoint, animatedPoint) to indigo700,
+                Offset(1f, lowerRowY) to indigo700,
             ),
             listOf(
                 Offset(0f, 1f) to Color.DarkGray,
-                Offset(.5f, 1f) to Color.DarkGray,
+                Offset(midpoint, 1f) to Color.DarkGray,
                 Offset(1f, 1f) to Color.DarkGray,
             ),
         )
@@ -96,13 +85,7 @@ private fun MeshGradientPreview() {
             Row(Modifier.fillMaxSize()) {
                 Column(
                     Modifier.fillMaxSize()
-                        .meshGradient(
-                            points = colors,
-                            blendMode = BlendMode.DstIn,
-                            resolutionX = 32,
-                            resolutionY = 32,
-                            showPoints = false,
-                        )
+                        .meshGradient(points = colors, resolutionX = 32, resolutionY = 32)
                 ) {}
             }
         }
@@ -113,11 +96,9 @@ private fun MeshGradientPreview() {
 @Composable
 fun Modifier.meshGradient(
     points: List<List<Pair<Offset, Color>>>,
-    blendMode: BlendMode = BlendMode.DstIn,
     resolutionX: Int = 1,
     resolutionY: Int = 1,
-    showPoints: Boolean = false,
-    indicesModifier: (List<Int>) -> List<Int> = { it },
+    options: MeshGradientOptions = MeshGradientOptions(),
 ): Modifier {
     val pointData by
         remember(points, resolutionX, resolutionY) {
@@ -135,17 +116,17 @@ fun Modifier.meshGradient(
                                 positions = pointData.offsets,
                                 textureCoordinates = pointData.offsets,
                                 colors = pointData.colors,
-                                indices = indicesModifier(pointData.indices),
+                                indices = options.modifyIndices(pointData.indices),
                             ),
-                        blendMode = blendMode,
+                        blendMode = options.blendMode,
                         paint = paint,
                     )
                 }
 
-                if (showPoints) {
+                if (options.showPoints) {
                     val flattenedPaint = Paint()
                     flattenedPaint.color = Color.White.copy(alpha = .9f)
-                    flattenedPaint.strokeWidth = 4f * .001f
+                    flattenedPaint.strokeWidth = POINT_STROKE_WIDTH
                     flattenedPaint.strokeCap = StrokeCap.Round
                     flattenedPaint.blendMode = BlendMode.SrcOver
 
@@ -174,8 +155,6 @@ private class PointData(
     private val yLength: Int = (points.size * stepsY) - (stepsY - 1)
     private val measure = PathMeasure()
 
-    private val indicesBlocks: List<IndicesBlock>
-
     init {
         offsets =
             buildList { repeat((xLength - 0) * (yLength - 0)) { add(Offset(0f, 0f)) } }
@@ -185,91 +164,64 @@ private class PointData(
             buildList { repeat((xLength - 0) * (yLength - 0)) { add(Color.Transparent) } }
                 .toMutableList()
 
-        indicesBlocks = buildList {
-            for (y in 0..yLength - 2) {
-                for (x in 0..xLength - 2) {
-
-                    val a = (y * xLength) + x
-                    val b = a + 1
-                    val c = ((y + 1) * xLength) + x
-                    val d = c + 1
-
-                    add(
-                        IndicesBlock(
-                            indices =
-                                buildList {
-                                    add(a)
-                                    add(c)
-                                    add(d)
-
-                                    add(a)
-                                    add(b)
-                                    add(d)
-                                },
-                            x = x,
-                            y = y,
-                        )
-                    )
-                }
-            }
-        }
-
-        indices = indicesBlocks.flatMap { it.indices }
+        indices = buildTriangleIndices(columns = xLength, rows = yLength)
         generateInterpolatedOffsets()
     }
 
     private fun generateInterpolatedOffsets() {
+        generateHorizontalOffsets()
+        generateVerticalOffsets()
+    }
+
+    private fun generateHorizontalOffsets() {
         for (y in 0..points.lastIndex) {
             for (x in 0..points[y].lastIndex) {
                 this[x * stepsX, y * stepsY] = points[y][x].first
                 this[x * stepsX, y * stepsY] = points[y][x].second
 
-                if (x != points[y].lastIndex) {
-                    val path =
-                        cubicPathX(
-                            point1 = points[y][x].first,
-                            point2 = points[y][x + 1].first,
+                if (x == points[y].lastIndex) continue
+
+                val path =
+                    cubicPathX(
+                        point1 = points[y][x].first,
+                        point2 = points[y][x + 1].first,
+                        position =
                             when (x) {
                                 0 -> 0
                                 points[y].lastIndex - 1 -> 2
                                 else -> 1
                             },
-                        )
-                    measure.setPath(path, false)
+                    )
+                measure.setPath(path, false)
 
-                    for (i in 1..<stepsX) {
-                        measure.getPosition(i / stepsX.toFloat() * measure.length).let {
-                            this[(x * stepsX) + i, (y * stepsY)] = Offset(it.x, it.y)
-                            this[(x * stepsX) + i, (y * stepsY)] =
-                                lerp(
-                                    points[y][x].second,
-                                    points[y][x + 1].second,
-                                    i / stepsX.toFloat(),
-                                )
-                        }
-                    }
+                for (i in 1..<stepsX) {
+                    val position = measure.getPosition(i / stepsX.toFloat() * measure.length)
+                    this[(x * stepsX) + i, y * stepsY] = Offset(position.x, position.y)
+                    this[(x * stepsX) + i, y * stepsY] =
+                        lerp(points[y][x].second, points[y][x + 1].second, i / stepsX.toFloat())
                 }
             }
         }
+    }
 
+    private fun generateVerticalOffsets() {
         for (y in 0..<points.lastIndex) {
             for (x in 0..<this.xLength) {
                 val path =
                     cubicPathY(
                         point1 = this[x, y * stepsY].let { Offset(it.x, it.y) },
                         point2 = this[x, (y + 1) * stepsY].let { Offset(it.x, it.y) },
-                        when (y) {
-                            0 -> 0
-                            points[y].lastIndex - 1 -> 2
-                            else -> 1
-                        },
+                        position =
+                            when (y) {
+                                0 -> 0
+                                points[y].lastIndex - 1 -> 2
+                                else -> 1
+                            },
                     )
                 measure.setPath(path, false)
                 for (i in (1..<stepsY)) {
-                    val point3 =
-                        measure.getPosition(i / stepsY.toFloat() * measure.length).let {
-                            Offset(it.x, it.y)
-                        }
+                    val position = measure.getPosition(i / stepsY.toFloat() * measure.length)
+                    val point3 = Offset(position.x, position.y)
 
                     this[x, ((y * stepsY) + i)] = point3
 
@@ -283,8 +235,6 @@ private class PointData(
             }
         }
     }
-
-    data class IndicesBlock(val indices: List<Int>, val x: Int, val y: Int)
 
     operator fun get(x: Int, y: Int): Offset {
         val index = (y * xLength) + x
@@ -307,11 +257,29 @@ private class PointData(
     }
 }
 
+internal fun buildTriangleIndices(columns: Int, rows: Int): List<Int> = buildList {
+    for (y in 0..<rows - 1) {
+        for (x in 0..<columns - 1) {
+            val topLeft = (y * columns) + x
+            val topRight = topLeft + 1
+            val bottomLeft = ((y + 1) * columns) + x
+            val bottomRight = bottomLeft + 1
+
+            add(topLeft)
+            add(bottomLeft)
+            add(bottomRight)
+            add(topLeft)
+            add(topRight)
+            add(bottomRight)
+        }
+    }
+}
+
 private fun cubicPathX(point1: Offset, point2: Offset, position: Int): Path {
     val path =
         Path().apply {
             moveTo(point1.x, point1.y)
-            val delta = (point2.x - point1.x) * .5f
+            val delta = (point2.x - point1.x) * CUBIC_CONTROL_FRACTION
             when (position) {
                 0 -> cubicTo(point1.x, point1.y, point2.x - delta, point2.y, point2.x, point2.y)
 
@@ -337,7 +305,7 @@ private fun cubicPathY(point1: Offset, point2: Offset, position: Int): Path {
     val path =
         Path().apply {
             moveTo(point1.x, point1.y)
-            val delta = (point2.y - point1.y) * .5f
+            val delta = (point2.y - point1.y) * CUBIC_CONTROL_FRACTION
             when (position) {
                 0 -> cubicTo(point1.x, point1.y, point2.x, point2.y - delta, point2.x, point2.y)
 

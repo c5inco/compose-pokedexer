@@ -65,7 +65,7 @@ The shared module is the single source of truth for business logic and data pers
 - **Project Structure**:
     ```
     app/src/main/kotlin/des/c5inco/pokedexer/
-    ├── MainActivity.kt, PokedexerApp.kt, PokedexerApplication.kt
+    ├── MainActivity.kt, PokedexerApplication.kt
     ├── di/                   # Metro @DependencyGraph and ViewModel helpers
     ├── data/                 # Seed data, DataStore preferences, Type chart
     ├── model/                # Extension functions for shared models

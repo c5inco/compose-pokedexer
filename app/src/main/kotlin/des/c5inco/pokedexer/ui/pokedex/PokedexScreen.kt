@@ -1,31 +1,15 @@
 package des.c5inco.pokedexer.ui.pokedex
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -36,22 +20,13 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -59,6 +34,7 @@ import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -69,26 +45,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.materialkolor.PaletteStyle
-import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.data.pokemon.SamplePokemonData
 import des.c5inco.pokedexer.shared.model.Generation
 import des.c5inco.pokedexer.shared.model.Pokemon
 import des.c5inco.pokedexer.shared.model.Type
 import des.c5inco.pokedexer.ui.common.LoadingIndicator
 import des.c5inco.pokedexer.ui.common.Pokeball
-import des.c5inco.pokedexer.ui.common.mapTypeToIcon
 import des.c5inco.pokedexer.ui.theme.AppTheme
-import des.c5inco.pokedexer.ui.theme.getDynamicColorScheme
-import des.c5inco.pokedexer.ui.theme.mapDynamicPokemonColorScheme
-import des.c5inco.pokedexer.ui.theme.mapTypeToSeedColor
+
+private const val SELECTED_POKEMON_SCROLL_OFFSET = -100
 
 @Composable
 fun PokedexScreenRoute(
@@ -103,51 +73,66 @@ fun PokedexScreenRoute(
     val generationFilter by viewModel.generationFilters.collectAsStateWithLifecycle()
 
     PokedexScreen(
-        state = state,
-        showFavorites = showFavorites,
-        typeFilter = typeFilter,
-        generationFilter = generationFilter,
-        pastPokemonSelected = pastPokemonSelected,
-        onPokemonSelected = onPokemonSelected,
-        onMenuItemClick = {
-            when (it) {
-                is FilterMenuEvent.ToggleFavorites -> {
-                    viewModel.toggleFavorites()
-                }
-                is FilterMenuEvent.FilterTypes -> {
-                    viewModel.filterByType(it.typeToFilter)
-                }
-                is FilterMenuEvent.FilterGeneration -> {
-                    viewModel.filterByGeneration(it.generationToFilter)
-                }
-                is FilterMenuEvent.ShowTypes -> {}
-                is FilterMenuEvent.ShowGenerations -> {}
-            }
-        },
-        onBackClick = onBackClick,
+        screenState =
+            PokedexScreenState(
+                content = state,
+                showFavorites = showFavorites,
+                typeFilter = typeFilter,
+                generationFilter = generationFilter,
+                pastPokemonSelected = pastPokemonSelected,
+            ),
+        callbacks =
+            PokedexScreenCallbacks(
+                onPokemonSelected = onPokemonSelected,
+                onMenuItemClick = { event -> viewModel.onFilterMenuEvent(event) },
+                onBackClick = onBackClick,
+            ),
     )
 }
 
-enum class FilterMenuState {
-    Hidden,
-    Visible,
-    Types,
-    Generations,
+private fun PokedexViewModel.onFilterMenuEvent(event: FilterMenuEvent) {
+    when (event) {
+        is FilterMenuEvent.ToggleFavorites -> toggleFavorites()
+        is FilterMenuEvent.FilterTypes -> filterByType(event.typeToFilter)
+        is FilterMenuEvent.FilterGeneration -> filterByGeneration(event.generationToFilter)
+        is FilterMenuEvent.ShowTypes -> Unit
+        is FilterMenuEvent.ShowGenerations -> Unit
+    }
 }
+
+data class PokedexScreenState(
+    val content: PokedexUiState,
+    val showFavorites: Boolean = false,
+    val typeFilter: Type? = null,
+    val generationFilter: Generation? = null,
+    val pastPokemonSelected: Int? = null,
+)
+
+data class PokedexScreenCallbacks(
+    val onPokemonSelected: (Pokemon) -> Unit = {},
+    val onMenuItemClick: (FilterMenuEvent) -> Unit = {},
+    val onBackClick: () -> Unit = {},
+)
+
+private data class PokedexLayoutState(
+    val screen: PokedexScreenState,
+    val listState: LazyGridState,
+    val filterMenuState: FilterMenuState,
+    val innerPadding: PaddingValues,
+)
 
 @Composable
 fun PokedexScreen(
-    state: PokedexUiState,
-    showFavorites: Boolean = false,
-    typeFilter: Type? = null,
-    generationFilter: Generation? = null,
-    pastPokemonSelected: Int? = null,
-    onPokemonSelected: (Pokemon) -> Unit = {},
-    onMenuItemClick: (FilterMenuEvent) -> Unit = {},
-    onBackClick: () -> Unit = {},
+    screenState: PokedexScreenState,
+    callbacks: PokedexScreenCallbacks = PokedexScreenCallbacks(),
 ) {
     val listState =
-        rememberSaveable(typeFilter, generationFilter, showFavorites, saver = LazyGridState.Saver) {
+        rememberSaveable(
+            screenState.typeFilter,
+            screenState.generationFilter,
+            screenState.showFavorites,
+            saver = LazyGridState.Saver,
+        ) {
             LazyGridState()
         }
     var filterMenuState by remember { mutableStateOf(FilterMenuState.Hidden) }
@@ -155,201 +140,138 @@ fun PokedexScreen(
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
             state =
                 rememberSaveable(
-                    typeFilter,
-                    generationFilter,
-                    showFavorites,
+                    screenState.typeFilter,
+                    screenState.generationFilter,
+                    screenState.showFavorites,
                     saver = TopAppBarState.Saver,
                 ) {
                     TopAppBarState(-Float.MAX_VALUE, 0f, 0f)
                 }
         )
 
-    LaunchedEffect(pastPokemonSelected, state is PokedexUiState.Ready) {
-        if (pastPokemonSelected != null && state is PokedexUiState.Ready) {
-            val index = state.pokemon.indexOfFirst { it.id == pastPokemonSelected }
-
-            if (index != -1) {
-                val isVisible =
-                    listState.layoutInfo.visibleItemsInfo.any { it.key == pastPokemonSelected }
-
-                if (!isVisible) {
-                    listState.scrollToItem(index, -100)
-                }
-            }
-        }
-    }
+    RestoreSelectedPokemon(screenState, listState)
 
     Scaffold(
-        topBar = {
-            MediumTopAppBar(
-                title = { Text("Pokemon") },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
-                    ),
-                scrollBehavior = scrollBehavior,
-            )
-        },
+        topBar = { PokedexTopAppBar(scrollBehavior, callbacks.onBackClick) },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
-        Box(Modifier.fillMaxSize()) {
-            Pokeball(
-                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
-                modifier =
-                    Modifier.size(256.dp).align(Alignment.TopEnd).offset(x = 90.dp, y = (-72).dp),
-            )
+        PokedexBody(
+            layoutState = PokedexLayoutState(screenState, listState, filterMenuState, innerPadding),
+            callbacks = callbacks,
+            onFilterMenuStateChange = { filterMenuState = it },
+        )
+    }
+}
 
-            Column(
-                modifier = Modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxWidth()
-            ) {
-                // TODO: Investigate recomposition or performance issue to reenable this
-                // AnimatedContent(
-                //     targetState = state,
-                //     transitionSpec = {
-                //         if (initialState is PokedexUiState.Loading && targetState is
-                // PokedexUiState.Ready) {
-                //
-                // (Material3Transitions.SharedYAxisEnterTransition).togetherWith(fadeOut())
-                //         } else {
-                //             fadeIn().togetherWith(fadeOut())
-                //         }.using(SizeTransform(clip = false))
-                //     },
-                //     label = "pokedexContentTransition"
-                // ) { targetState ->
-                when (state) {
-                    is PokedexUiState.Loading -> {
-                        LoadingIndicator()
-                    }
-
-                    is PokedexUiState.Ready -> {
-                        PokemonList(
-                            listState = listState,
-                            listLoadedState = state.listLoadedState,
-                            pokemonToShow = state.pokemon,
-                            favoriteIds = state.favoriteIds,
-                            showFavorites = showFavorites,
-                            typeFilter = typeFilter,
-                            generationFilter = generationFilter,
-                            onPokemonSelected = onPokemonSelected,
-                        )
-                    }
-                }
-                // }
-            }
-            AnimatedVisibility(
-                visible = filterMenuState != FilterMenuState.Hidden,
-                enter = fadeIn(),
-                exit = fadeOut(),
-                modifier = Modifier.matchParentSize(),
-            ) {
-                Box(
-                    Modifier.background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { filterMenuState = FilterMenuState.Hidden },
-                        )
-                )
-            }
-
-            Column(
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier =
-                    Modifier.align(Alignment.BottomCenter)
-                        .padding(WindowInsets.navigationBars.asPaddingValues())
-                        .padding(bottom = 24.dp),
-            ) {
-                if (filterMenuState != FilterMenuState.Hidden) {
-                    FilterMenu(
-                        showFavorites = showFavorites,
-                        typeFilter = typeFilter,
-                        generationFilter = generationFilter,
-                        menuState = filterMenuState,
-                        onMenuItemClick = {
-                            if (it is FilterMenuEvent.ShowTypes) {
-                                filterMenuState = FilterMenuState.Types
-                            } else if (it is FilterMenuEvent.ShowGenerations) {
-                                filterMenuState = FilterMenuState.Generations
-                            } else {
-                                filterMenuState = FilterMenuState.Hidden
-                                onMenuItemClick(it)
-                            }
-                        },
-                    )
-                }
-                Spacer(Modifier.height(16.dp))
-                FloatingActionButton(
-                    shape = CircleShape,
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    onClick = {
-                        filterMenuState =
-                            when (filterMenuState) {
-                                FilterMenuState.Hidden -> FilterMenuState.Visible
-                                FilterMenuState.Visible -> FilterMenuState.Hidden
-                                FilterMenuState.Types -> FilterMenuState.Visible
-                                FilterMenuState.Generations -> FilterMenuState.Visible
-                            }
-                    },
-                ) {
-                    AnimatedContent(
-                        targetState = filterMenuState,
-                        label = "filterMenuButtonTransition",
-                    ) { targetState ->
-                        when (targetState) {
-                            FilterMenuState.Hidden -> {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_filter),
-                                    contentDescription = "Show filters",
-                                )
-                            }
-
-                            FilterMenuState.Visible -> {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_close),
-                                    contentDescription = "Hide filters",
-                                )
-                            }
-
-                            FilterMenuState.Types -> {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back to filter menu",
-                                )
-                            }
-
-                            FilterMenuState.Generations -> {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back to filter menu",
-                                )
-                            }
-                        }
-                    }
-                }
+@Composable
+private fun RestoreSelectedPokemon(screenState: PokedexScreenState, listState: LazyGridState) {
+    LaunchedEffect(screenState.pastPokemonSelected, screenState.content is PokedexUiState.Ready) {
+        val selectedId = screenState.pastPokemonSelected
+        val readyState = screenState.content as? PokedexUiState.Ready
+        if (selectedId != null && readyState != null) {
+            val index = readyState.pokemon.indexOfFirst { it.id == selectedId }
+            val isVisible = listState.layoutInfo.visibleItemsInfo.any { it.key == selectedId }
+            if (index != -1 && !isVisible) {
+                listState.scrollToItem(index, SELECTED_POKEMON_SCROLL_OFFSET)
             }
         }
     }
 }
 
 @Composable
+private fun PokedexTopAppBar(scrollBehavior: TopAppBarScrollBehavior, onBackClick: () -> Unit) {
+    MediumTopAppBar(
+        title = { Text("Pokemon") },
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
+        },
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
+            ),
+        scrollBehavior = scrollBehavior,
+    )
+}
+
+@Composable
+private fun PokedexBody(
+    layoutState: PokedexLayoutState,
+    callbacks: PokedexScreenCallbacks,
+    onFilterMenuStateChange: (FilterMenuState) -> Unit,
+) {
+    Box(Modifier.fillMaxSize()) {
+        Pokeball(
+            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+            modifier = Modifier.size(256.dp).align(Alignment.TopEnd).offset(x = 90.dp, y = (-72).dp),
+        )
+        PokedexContent(layoutState, callbacks.onPokemonSelected)
+        FilterScrim(layoutState.filterMenuState != FilterMenuState.Hidden) {
+            onFilterMenuStateChange(FilterMenuState.Hidden)
+        }
+        FilterControls(
+            state =
+                FilterMenuModel(
+                    showFavorites = layoutState.screen.showFavorites,
+                    typeFilter = layoutState.screen.typeFilter,
+                    generationFilter = layoutState.screen.generationFilter,
+                    menuState = layoutState.filterMenuState,
+                ),
+            onMenuItemClick = { event ->
+                onFilterMenuStateChange(layoutState.filterMenuState.after(event))
+                if (!event.opensSubmenu) callbacks.onMenuItemClick(event)
+            },
+            onButtonClick = {
+                onFilterMenuStateChange(layoutState.filterMenuState.afterButtonClick())
+            },
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
+    }
+}
+
+@Composable
+private fun PokedexContent(layoutState: PokedexLayoutState, onPokemonSelected: (Pokemon) -> Unit) {
+    Column(
+        modifier =
+            Modifier.padding(top = layoutState.innerPadding.calculateTopPadding()).fillMaxWidth()
+    ) {
+        // Animated state transitions remain disabled due to a recomposition or performance issue
+        // that still needs investigation.
+        when (val content = layoutState.screen.content) {
+            is PokedexUiState.Loading -> LoadingIndicator()
+            is PokedexUiState.Ready ->
+                PokemonList(
+                    listState = layoutState.listState,
+                    state =
+                        PokemonListState(
+                            listLoadedState = content.listLoadedState,
+                            pokemon = content.pokemon,
+                            favoriteIds = content.favoriteIds,
+                            showFavorites = layoutState.screen.showFavorites,
+                            typeFilter = layoutState.screen.typeFilter,
+                            generationFilter = layoutState.screen.generationFilter,
+                        ),
+                    onPokemonSelected = onPokemonSelected,
+                )
+        }
+    }
+}
+
+private data class PokemonListState(
+    val listLoadedState: MutableTransitionState<Boolean>,
+    val pokemon: List<Pokemon>,
+    val favoriteIds: Set<Int>,
+    val showFavorites: Boolean,
+    val typeFilter: Type?,
+    val generationFilter: Generation?,
+)
+
+@Composable
 private fun PokemonList(
     modifier: Modifier = Modifier,
     listState: LazyGridState,
-    listLoadedState: MutableTransitionState<Boolean>,
-    pokemonToShow: List<Pokemon>,
-    favoriteIds: Set<Int>,
-    showFavorites: Boolean = false,
-    typeFilter: Type? = null,
-    generationFilter: Generation? = null,
+    state: PokemonListState,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
     val bottomContentPadding =
@@ -364,7 +286,7 @@ private fun PokemonList(
         contentPadding =
             PaddingValues(top = 12.dp, start = 16.dp, end = 16.dp, bottom = bottomContentPadding),
         content = {
-            if (pokemonToShow.isEmpty()) {
+            if (state.pokemon.isEmpty()) {
                 item(span = { GridItemSpan(2) }) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -380,21 +302,21 @@ private fun PokemonList(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            if (showFavorites) {
+                            if (state.showFavorites) {
                                 Text(
                                     text = "Favorites",
                                     style = MaterialTheme.typography.titleMedium,
                                 )
                             }
-                            if (generationFilter != null) {
+                            if (state.generationFilter != null) {
                                 Text(
-                                    text = "Gen ${generationFilter.romanNumeral}",
+                                    text = "Gen ${state.generationFilter.romanNumeral}",
                                     style = MaterialTheme.typography.titleMedium,
                                 )
                             }
-                            if (typeFilter != null) {
+                            if (state.typeFilter != null) {
                                 Text(
-                                    text = "Type: $typeFilter",
+                                    text = "Type: ${state.typeFilter}",
                                     style = MaterialTheme.typography.titleMedium,
                                 )
                             }
@@ -402,9 +324,9 @@ private fun PokemonList(
                     }
                 }
             } else {
-                itemsIndexed(items = pokemonToShow, key = { _, p -> p.id }) { idx, p ->
+                itemsIndexed(items = state.pokemon, key = { _, p -> p.id }) { idx, p ->
                     AnimatedVisibility(
-                        visibleState = listLoadedState,
+                        visibleState = state.listLoadedState,
                         enter =
                             slideInVertically(
                                 animationSpec =
@@ -420,7 +342,7 @@ private fun PokemonList(
                     ) {
                         PokedexCard(
                             pokemon = p,
-                            isFavorite = favoriteIds.contains(p.id),
+                            isFavorite = state.favoriteIds.contains(p.id),
                             onPokemonSelected = onPokemonSelected,
                         )
                     }
@@ -428,277 +350,6 @@ private fun PokemonList(
             }
         },
     )
-}
-
-sealed class FilterMenuEvent {
-    data class ToggleFavorites(val filterFavorites: Boolean) : FilterMenuEvent()
-
-    data class ShowTypes(val showTypes: Boolean) : FilterMenuEvent()
-
-    data class ShowGenerations(val showGenerations: Boolean) : FilterMenuEvent()
-
-    data class FilterTypes(val typeToFilter: Type) : FilterMenuEvent()
-
-    data class FilterGeneration(val generationToFilter: Generation) : FilterMenuEvent()
-}
-
-@Composable
-private fun FilterMenu(
-    modifier: Modifier = Modifier,
-    showFavorites: Boolean,
-    typeFilter: Type? = null,
-    generationFilter: Generation? = null,
-    menuState: FilterMenuState,
-    onMenuItemClick: (FilterMenuEvent) -> Unit = {},
-) {
-    AnimatedContent(
-        targetState = menuState,
-        transitionSpec = {
-            EnterTransition.None togetherWith ExitTransition.None using (SizeTransform(false))
-        },
-        label = "filterMenuTransition",
-        modifier = modifier.fillMaxWidth(),
-    ) { targetState ->
-        when (targetState) {
-            FilterMenuState.Types -> {
-                FlowRow(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(horizontal = 24.dp),
-                ) {
-                    Type.entries.forEachIndexed { idx, type ->
-                        FilterTypeItem(
-                            type = type,
-                            selected = type == typeFilter,
-                            index = idx,
-                            onClick = { onMenuItemClick(FilterMenuEvent.FilterTypes(type)) },
-                            modifier = Modifier.padding(horizontal = 4.dp),
-                        )
-                    }
-                }
-            }
-            FilterMenuState.Generations -> {
-                FlowRow(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(horizontal = 24.dp),
-                ) {
-                    Generation.entries.forEachIndexed { idx, generation ->
-                        FilterGenerationItem(
-                            generation = generation,
-                            selected = generation == generationFilter,
-                            index = idx,
-                            onClick = {
-                                onMenuItemClick(FilterMenuEvent.FilterGeneration(generation))
-                            },
-                            modifier = Modifier.padding(horizontal = 4.dp),
-                        )
-                    }
-                }
-            }
-            FilterMenuState.Hidden -> {}
-            FilterMenuState.Visible -> {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    FilterMenuItem(
-                        index = 0,
-                        onClick = {
-                            onMenuItemClick(FilterMenuEvent.ToggleFavorites(!showFavorites))
-                        },
-                    ) {
-                        Icon(
-                            imageVector =
-                                if (showFavorites) Icons.Default.FavoriteBorder
-                                else Icons.Default.Favorite,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(if (showFavorites) "Show all" else "Show favorites")
-                    }
-                    FilterMenuItem(
-                        index = 1,
-                        onClick = { onMenuItemClick(FilterMenuEvent.ShowTypes(true)) },
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_genetics),
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(if (typeFilter != null) "Filtered by $typeFilter" else "All types")
-                    }
-                    FilterMenuItem(
-                        index = 2,
-                        onClick = { onMenuItemClick(FilterMenuEvent.ShowGenerations(true)) },
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_filter),
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            if (generationFilter != null) "Gen ${generationFilter.romanNumeral}"
-                            else "All generations"
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun AnimatedVisibilityScope.FilterMenuItem(
-    modifier: Modifier = Modifier,
-    index: Int,
-    onClick: () -> Unit = {},
-    content: @Composable RowScope.() -> Unit = {},
-) {
-    FilledTonalButton(
-        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp),
-        onClick = onClick,
-        modifier =
-            modifier.animateEnterExit(
-                enter =
-                    fadeIn(
-                        animationSpec = tween(durationMillis = 200, delayMillis = index * 15 + 60)
-                    ) +
-                        slideInVertically(
-                            initialOffsetY = { it / 2 },
-                            animationSpec =
-                                tween(durationMillis = 240, delayMillis = index * 50 + 60),
-                        ),
-                exit =
-                    fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)) +
-                        slideOutVertically(targetOffsetY = { it / 2 }),
-                label = "filterMenuItemTransition",
-            ),
-    ) {
-        content()
-    }
-}
-
-@Composable
-private fun AnimatedVisibilityScope.FilterChip(
-    modifier: Modifier = Modifier,
-    index: Int,
-    colors: ButtonColors,
-    selected: Boolean,
-    onClick: () -> Unit,
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    content: @Composable RowScope.() -> Unit,
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-
-    val cornerRadius by
-        animateDpAsState(
-            targetValue =
-                when {
-                    isPressed -> 8.dp
-                    selected -> 12.dp
-                    else -> 24.dp
-                },
-            animationSpec = spring(dampingRatio = 0.9f, stiffness = 1400f),
-            label = "cornerRadius",
-        )
-
-    FilledTonalButton(
-        contentPadding = contentPadding,
-        onClick = onClick,
-        colors = colors,
-        shape = RoundedCornerShape(cornerRadius),
-        interactionSource = interactionSource,
-        modifier =
-            modifier.animateEnterExit(
-                enter =
-                    fadeIn(
-                        animationSpec = tween(durationMillis = 240, delayMillis = index * 15 + 60)
-                    ) +
-                        slideInVertically(
-                            initialOffsetY = { it / 2 },
-                            animationSpec =
-                                tween(durationMillis = 150, delayMillis = index * 15 + 60),
-                        ),
-                exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
-                label = "filterChipTransition",
-            ),
-    ) {
-        content()
-    }
-}
-
-@Composable
-private fun AnimatedVisibilityScope.FilterTypeItem(
-    modifier: Modifier = Modifier,
-    type: Type,
-    selected: Boolean = false,
-    index: Int,
-    onClick: () -> Unit = {},
-) {
-    val seedColor = mapTypeToSeedColor(types = listOf(type.toString()))
-    val kolorScheme = getDynamicColorScheme(seedColor, PaletteStyle.Rainbow)
-    val pokemonColorScheme =
-        mapDynamicPokemonColorScheme(seedColor = seedColor, colorScheme = kolorScheme)
-
-    val colors =
-        if (selected) {
-            ButtonDefaults.filledTonalButtonColors(
-                containerColor = pokemonColorScheme.surface,
-                contentColor = pokemonColorScheme.onSurface,
-            )
-        } else {
-            ButtonDefaults.filledTonalButtonColors()
-        }
-
-    FilterChip(
-        modifier = modifier,
-        index = index,
-        colors = colors,
-        selected = selected,
-        onClick = onClick,
-        contentPadding = PaddingValues(start = 12.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
-    ) {
-        Icon(
-            painter = painterResource(id = mapTypeToIcon(type)),
-            contentDescription = null,
-            modifier = Modifier.size(18.dp).graphicsLayer { alpha = if (selected) 1f else 0.4f },
-        )
-        Spacer(Modifier.width(4.dp))
-        Text("$type")
-    }
-}
-
-@Composable
-private fun AnimatedVisibilityScope.FilterGenerationItem(
-    modifier: Modifier = Modifier,
-    generation: Generation,
-    selected: Boolean = false,
-    index: Int,
-    onClick: () -> Unit = {},
-) {
-    val colors =
-        if (selected) {
-            ButtonDefaults.filledTonalButtonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            )
-        } else {
-            ButtonDefaults.filledTonalButtonColors()
-        }
-
-    FilterChip(
-        modifier = modifier,
-        index = index,
-        colors = colors,
-        selected = selected,
-        onClick = onClick,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-    ) {
-        Text(text = "Gen ${generation.romanNumeral}")
-    }
 }
 
 @PreviewLightDark
@@ -720,39 +371,46 @@ private fun PokedexScreenPreview() {
 
     AppTheme {
         PokedexScreen(
-            state = state,
-            showFavorites = showFavorites,
-            typeFilter = typeFilter,
-            generationFilter = generationFilter,
-            onMenuItemClick = { result ->
-                when (result) {
-                    is FilterMenuEvent.ToggleFavorites -> {
-                        showFavorites = !showFavorites
-                        val readyState = state as PokedexUiState.Ready
-                        state =
-                            readyState.copy(
-                                pokemon =
-                                    if (showFavorites) {
-                                        SamplePokemonData.take(5)
-                                    } else {
-                                        SamplePokemonData.toList()
-                                    }
-                            )
+            screenState =
+                PokedexScreenState(
+                    content = state,
+                    showFavorites = showFavorites,
+                    typeFilter = typeFilter,
+                    generationFilter = generationFilter,
+                ),
+            callbacks =
+                PokedexScreenCallbacks(
+                    onMenuItemClick = { result ->
+                        when (result) {
+                            is FilterMenuEvent.ToggleFavorites -> {
+                                showFavorites = !showFavorites
+                                val readyState = state as PokedexUiState.Ready
+                                state =
+                                    readyState.copy(
+                                        pokemon =
+                                            if (showFavorites) {
+                                                SamplePokemonData.take(5)
+                                            } else {
+                                                SamplePokemonData.toList()
+                                            }
+                                    )
+                            }
+                            is FilterMenuEvent.FilterTypes -> {
+                                typeFilter =
+                                    if (typeFilter != result.typeToFilter) result.typeToFilter
+                                    else null
+                            }
+                            is FilterMenuEvent.FilterGeneration -> {
+                                generationFilter =
+                                    if (generationFilter != result.generationToFilter)
+                                        result.generationToFilter
+                                    else null
+                            }
+                            is FilterMenuEvent.ShowTypes -> Unit
+                            is FilterMenuEvent.ShowGenerations -> Unit
+                        }
                     }
-                    is FilterMenuEvent.FilterTypes -> {
-                        typeFilter =
-                            if (typeFilter != result.typeToFilter) result.typeToFilter else null
-                    }
-                    is FilterMenuEvent.FilterGeneration -> {
-                        generationFilter =
-                            if (generationFilter != result.generationToFilter)
-                                result.generationToFilter
-                            else null
-                    }
-                    is FilterMenuEvent.ShowTypes -> {}
-                    is FilterMenuEvent.ShowGenerations -> {}
-                }
-            },
+                ),
         )
     }
 }

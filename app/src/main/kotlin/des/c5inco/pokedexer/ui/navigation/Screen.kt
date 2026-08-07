@@ -3,6 +3,7 @@ package des.c5inco.pokedexer.ui.navigation
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
+/** Type-safe destinations in the app navigation stack. */
 @Serializable
 sealed interface Screen : NavKey {
     @Serializable data object Home : Screen

@@ -55,6 +55,18 @@ private val PROGRESSIVE_TINT_SHADER =
     """
         .trimIndent()
 
+data class PokemonPagerConfiguration(
+    val backgroundColor: Color,
+    val foregroundColor: Color = Color.Black,
+    val enabled: Boolean = true,
+)
+
+internal fun pokemonDetailsInitialPage(pokemonSet: List<Pokemon>, displayedPokemonId: Int): Int =
+    pokemonSet.indexOfFirst { it.id == displayedPokemonId }.coerceAtLeast(0)
+
+internal fun pokemonDetailsPokemonForPage(pokemonSet: List<Pokemon>, page: Int): Pokemon? =
+    if (pokemonSet.isEmpty()) null else pokemonSet[page]
+
 @Composable
 fun PagerPokemonImage(
     modifier: Modifier = Modifier.size(200.dp),
@@ -95,17 +107,15 @@ fun PagerPokemonImage(
 fun PokemonPager(
     modifier: Modifier = Modifier,
     pokemonList: List<Pokemon>,
-    foregroundColor: Color = Color.Black,
-    backgroundColor: Color,
-    enabled: Boolean = true,
+    configuration: PokemonPagerConfiguration,
     pagerState: PagerState,
     pagerContent: @Composable BoxScope.(Pokemon, Float, Color) -> Unit,
 ) {
     val foregroundTint =
         Color(
             ColorUtils.compositeColors(
-                foregroundColor.copy(alpha = 0.25f).toArgb(),
-                backgroundColor.toArgb(),
+                configuration.foregroundColor.copy(alpha = 0.25f).toArgb(),
+                configuration.backgroundColor.toArgb(),
             )
         )
 
@@ -114,7 +124,7 @@ fun PokemonPager(
             state = pagerState,
             key = { pokemonList[it].id },
             contentPadding = PaddingValues(horizontal = 92.dp),
-            userScrollEnabled = enabled,
+            userScrollEnabled = configuration.enabled,
             modifier = Modifier.testTag("PokemonPager"),
         ) { page ->
             val pokemon = pokemonList[page]
@@ -147,12 +157,15 @@ fun PokemonPagerPreview() {
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                 PokemonPager(
                     pokemonList = SamplePokemonData,
-                    backgroundColor = MaterialTheme.colorScheme.surface,
+                    configuration =
+                        PokemonPagerConfiguration(
+                            backgroundColor = MaterialTheme.colorScheme.surface
+                        ),
                     pagerState = rememberPagerState { SamplePokemonData.size },
-                ) { it, progress, tint ->
+                ) { pokemon, progress, tint ->
                     PagerPokemonImage(
-                        image = it.image,
-                        description = it.name,
+                        image = pokemon.image,
+                        description = pokemon.name,
                         tint = tint,
                         progress = progress,
                     )

@@ -33,7 +33,16 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import kotlinx.coroutines.delay
 
-data class Stat(@StringRes val label: Int, val value: Int?, val max: Int = 200) {
+private const val STAT_ANIMATION_DELAY_MILLIS = 70L
+private const val STAT_ANIMATION_DAMPING_RATIO = 0.6f
+private const val STAT_ANIMATION_STIFFNESS = 1000f
+private const val STAT_LABEL_ALPHA = 0.7f
+private const val STAT_VALUE_WEIGHT = 0.6f
+private const val INDICATOR_COLOR_ANIMATION_MILLIS = 500
+private const val INDICATOR_WEIGHT = 2.5f
+private const val INDICATOR_CORNER_PERCENT = 100
+
+private data class Stat(@StringRes val label: Int, val value: Int?, val max: Int = 200) {
     val progress: Float = 1f * (value ?: 0) / max
 }
 
@@ -54,10 +63,10 @@ fun BaseStatsSection(modifier: Modifier = Modifier, pokemon: Pokemon) {
             val statValue = remember { Animatable(0f) }
 
             LaunchedEffect(stat) {
-                delay(70L * idx)
+                delay(STAT_ANIMATION_DELAY_MILLIS * idx)
                 statValue.animateTo(
                     targetValue = stat.progress,
-                    animationSpec = spring(0.6f, 1000f),
+                    animationSpec = spring(STAT_ANIMATION_DAMPING_RATIO, STAT_ANIMATION_STIFFNESS),
                 )
             }
 
@@ -67,18 +76,18 @@ fun BaseStatsSection(modifier: Modifier = Modifier, pokemon: Pokemon) {
             ) {
                 Label(
                     text = stringResource(stat.label),
-                    modifier = Modifier.weight(1f).graphicsLayer { alpha = 0.7f },
+                    modifier = Modifier.weight(1f).graphicsLayer { alpha = STAT_LABEL_ALPHA },
                 )
                 Text(
                     "${stat.value}",
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(end = 16.dp).weight(0.6f),
+                    modifier = Modifier.padding(end = 16.dp).weight(STAT_VALUE_WEIGHT),
                 )
 
                 val indicatorColor by
                     animateColorAsState(
                         targetValue = PokemonTypesTheme.colorScheme.primary,
-                        tween(durationMillis = 500),
+                        tween(durationMillis = INDICATOR_COLOR_ANIMATION_MILLIS),
                         label = "statsProgressIndicatorColor",
                     )
 
@@ -86,7 +95,9 @@ fun BaseStatsSection(modifier: Modifier = Modifier, pokemon: Pokemon) {
                     progress = { statValue.value },
                     color = indicatorColor,
                     drawStopIndicator = {},
-                    modifier = Modifier.clip(RoundedCornerShape(100)).weight(2.5f),
+                    modifier =
+                        Modifier.clip(RoundedCornerShape(INDICATOR_CORNER_PERCENT))
+                            .weight(INDICATOR_WEIGHT),
                 )
             }
         }

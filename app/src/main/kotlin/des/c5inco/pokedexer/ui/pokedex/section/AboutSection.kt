@@ -33,6 +33,13 @@ import des.c5inco.pokedexer.ui.pokedex.PokemonDetailsAbilities
 import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
+private const val GENDERLESS_RATE = -1
+private const val GENDER_RATE_PERCENTAGE = 12.5
+private const val FULL_PERCENTAGE = 100.0
+private const val GENDERLESS_VALUE_WEIGHT = 2.2f
+private const val MALE_ICON_COLOR = 0xff6C79DB
+private const val FEMALE_ICON_COLOR = 0xffF0729F
+
 @Composable
 fun AboutSection(
     modifier: Modifier = Modifier,
@@ -113,24 +120,24 @@ private fun BreedingDetails(modifier: Modifier = Modifier, pokemon: Pokemon) {
                 text = stringResource(R.string.genderLabel),
                 modifier = Modifier.weight(1f).padding(end = 12.dp),
             )
-            if (pokemon.genderRate != -1) {
+            if (pokemon.genderRate != GENDERLESS_RATE) {
                 Row(Modifier.weight(2f)) {
-                    val femaleGenderRate = pokemon.genderRate * 12.5
+                    val femaleGenderRate = pokemon.genderRate * GENDER_RATE_PERCENTAGE
                     Row {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_outline_male_20),
                             contentDescription = null,
-                            tint = Color(0xff6C79DB),
+                            tint = Color(MALE_ICON_COLOR),
                         )
                         Spacer(Modifier.width(2.dp))
-                        Text("${100 - femaleGenderRate}%")
+                        Text("${FULL_PERCENTAGE - femaleGenderRate}%")
                     }
                     Spacer(Modifier.width(12.dp))
                     Row {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_outline_female_20),
                             contentDescription = null,
-                            tint = Color(0xffF0729F),
+                            tint = Color(FEMALE_ICON_COLOR),
                         )
                         Spacer(Modifier.width(2.dp))
                         Text("$femaleGenderRate%")
@@ -139,7 +146,7 @@ private fun BreedingDetails(modifier: Modifier = Modifier, pokemon: Pokemon) {
             } else {
                 Text(
                     text = stringResource(R.string.genderlessLabel),
-                    modifier = Modifier.weight(2.2f),
+                    modifier = Modifier.weight(GENDERLESS_VALUE_WEIGHT),
                 )
             }
         }
