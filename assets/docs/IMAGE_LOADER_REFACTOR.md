@@ -32,7 +32,7 @@ fun provideGifImageLoader(context: Context): ImageLoader {
 }
 ```
 
-### 2. Created CompositionLocal for GIF ImageLoader (`PokedexerApp.kt`)
+### 2. Created CompositionLocal for GIF ImageLoader (`PokedexerApplication.kt`)
 
 **What Changed:**
 - Added `LocalGifImageLoader` CompositionLocal
@@ -118,7 +118,7 @@ AsyncImage(
 ## Files Modified
 
 1. `/app/src/main/kotlin/des/c5inco/pokedexer/di/ApplicationGraph.kt`
-2. `/app/src/main/kotlin/des/c5inco/pokedexer/PokedexerApp.kt`
+2. `/app/src/main/kotlin/des/c5inco/pokedexer/PokedexerApplication.kt`
 3. `/app/src/main/kotlin/des/c5inco/pokedexer/ui/common/LoadingIndicator.kt`
 4. `/app/src/main/kotlin/des/c5inco/pokedexer/ui/common/LoadingSpinner.kt`
 5. `/app/src/main/kotlin/des/c5inco/pokedexer/ui/common/ItemImage.kt`

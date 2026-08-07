@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import des.c5inco.pokedexer.R
 import des.c5inco.pokedexer.ui.home.appbar.MainAppBar
+import des.c5inco.pokedexer.ui.home.appbar.MainAppBarCallbacks
 import des.c5inco.pokedexer.ui.home.appbar.SearchResult
 import des.c5inco.pokedexer.ui.home.appbar.elements.MenuItem
 import des.c5inco.pokedexer.ui.home.appbar.search.ItemResultExpandedCard
@@ -71,17 +72,20 @@ fun HomeScreen(
                         searchResponse = searchResponse,
                         selectedSearchResult = searchResult,
                         sharedTransitionScope = this@SharedTransitionLayout,
-                        onMenuItemSelected = onMenuItemSelected,
-                        onSearchResultSelected = {
-                            // TODO: Build Pokemon expanded result card later, for now navigate to
-                            // details
-                            if (it is SearchResult.PokemonEvent) {
-                                onSearchResultSelected(it)
-                            } else {
-                                expandSearchResult = true
-                                searchResult = it
-                            }
-                        },
+                        callbacks =
+                            MainAppBarCallbacks(
+                                onMenuItemSelected = onMenuItemSelected,
+                                onSearchResultSelected = {
+                                    // Pokemon results navigate directly to details because their
+                                    // expanded card is not implemented.
+                                    if (it is SearchResult.PokemonEvent) {
+                                        onSearchResultSelected(it)
+                                    } else {
+                                        expandSearchResult = true
+                                        searchResult = it
+                                    }
+                                },
+                            ),
                     )
                 }
             }

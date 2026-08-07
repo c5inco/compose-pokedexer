@@ -78,14 +78,22 @@ sealed class SearchResult {
     data class ItemEvent(val item: Item) : SearchResult()
 }
 
+class MainAppBarCallbacks(
+    private val onMenuItemSelected: (MenuItem) -> Unit = {},
+    private val onSearchResultSelected: (SearchResult) -> Unit = {},
+) {
+    fun menuItemSelected(menuItem: MenuItem) = onMenuItemSelected(menuItem)
+
+    fun searchResultSelected(searchResult: SearchResult) = onSearchResultSelected(searchResult)
+}
+
 @Composable
 fun MainAppBar(
     searchText: TextFieldState,
     searchResponse: SearchResponse,
     selectedSearchResult: SearchResult? = null,
     sharedTransitionScope: SharedTransitionScope,
-    onMenuItemSelected: (MenuItem) -> Unit = { _ -> },
-    onSearchResultSelected: (SearchResult) -> Unit = { _ -> },
+    callbacks: MainAppBarCallbacks = MainAppBarCallbacks(),
 ) {
     Surface(
         shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
@@ -122,12 +130,10 @@ fun MainAppBar(
                             response.foundItems.isNotEmpty()
                     ) {
                         SearchResults(
-                            pokemonResults = response.foundPokemon,
-                            movesResults = response.foundMoves,
-                            itemsResults = response.foundItems,
+                            searchResponse = response,
                             selectedSearchResult = selectedSearchResult,
                             sharedTransitionScope = sharedTransitionScope,
-                            onSelected = onSearchResultSelected,
+                            onSelected = callbacks::searchResultSelected,
                             modifier = Modifier.padding(top = 32.dp),
                         )
                     } else if (response.currentText.isNotEmpty()) {
@@ -146,7 +152,7 @@ fun MainAppBar(
                     } else {
                         Menu(
                             modifier = Modifier.padding(32.dp),
-                            onMenuItemSelected = onMenuItemSelected,
+                            onMenuItemSelected = callbacks::menuItemSelected,
                         )
                     }
                 }
@@ -158,9 +164,12 @@ fun MainAppBar(
 @Composable
 private fun AnimatedContentScope.SearchResults(
     modifier: Modifier = Modifier,
-    pokemonResults: List<Pokemon> = SamplePokemonData.take(DEFAULT_SEARCH_RESULT_COUNT),
-    movesResults: List<Move> = SampleMoves.take(DEFAULT_SEARCH_RESULT_COUNT),
-    itemsResults: List<Item> = SampleItems.take(DEFAULT_SEARCH_RESULT_COUNT),
+    searchResponse: SearchResponse =
+        SearchResponse(
+            foundPokemon = SamplePokemonData.take(DEFAULT_SEARCH_RESULT_COUNT),
+            foundMoves = SampleMoves.take(DEFAULT_SEARCH_RESULT_COUNT),
+            foundItems = SampleItems.take(DEFAULT_SEARCH_RESULT_COUNT),
+        ),
     selectedSearchResult: SearchResult? = null,
     sharedTransitionScope: SharedTransitionScope,
     onSelected: (SearchResult) -> Unit = { _ -> },
@@ -171,125 +180,156 @@ private fun AnimatedContentScope.SearchResults(
         modifier = modifier.fillMaxSize().imePadding().verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
-        if (pokemonResults.isNotEmpty()) {
-            Column {
-                Text(
-                    text = "${stringResource(R.string.pokemonLabel)} ${pokemonResults.size})",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = 32.dp),
+        if (searchResponse.foundPokemon.isNotEmpty()) {
+            PokemonResultsSection(
+                pokemonResults = searchResponse.foundPokemon,
+                onSelected = { pokemon -> onSelected(SearchResult.PokemonEvent(pokemon)) },
+            )
+        }
+
+        if (searchResponse.foundMoves.isNotEmpty()) {
+            MoveResultsSection(
+                moveResults = searchResponse.foundMoves,
+                selectedMove = (selectedSearchResult as? SearchResult.MoveEvent)?.move,
+                sharedTransitionScope = sharedTransitionScope,
+                onSelected = { move -> onSelected(SearchResult.MoveEvent(move)) },
+            )
+        }
+
+        if (searchResponse.foundItems.isNotEmpty()) {
+            ItemResultsSection(
+                itemResults = searchResponse.foundItems,
+                selectedItem = (selectedSearchResult as? SearchResult.ItemEvent)?.item,
+                sharedTransitionScope = sharedTransitionScope,
+                onSelected = { item -> onSelected(SearchResult.ItemEvent(item)) },
+            )
+        }
+
+        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
+    }
+}
+
+@Composable
+private fun AnimatedContentScope.PokemonResultsSection(
+    pokemonResults: List<Pokemon>,
+    onSelected: (Pokemon) -> Unit,
+) {
+    Column {
+        Text(
+            text = "${stringResource(R.string.pokemonLabel)} ${pokemonResults.size})",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 32.dp),
+        )
+        Spacer(Modifier.height(16.dp))
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(2),
+            contentPadding = PaddingValues(horizontal = 32.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.height(200.dp),
+        ) {
+            itemsIndexed(items = pokemonResults, key = { _, pokemon -> pokemon.id }) {
+                index,
+                pokemon ->
+                PokemonResultCard(
+                    pokemon = pokemon,
+                    onPokemonSelected = onSelected,
+                    modifier =
+                        Modifier.animateEnterExit(
+                            enter = slideAndFadeEnterTransition(index),
+                            exit = fadeOut(),
+                        ),
                 )
-                Spacer(Modifier.height(16.dp))
-                LazyHorizontalGrid(
-                    rows = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(horizontal = 32.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.height(200.dp),
-                ) {
-                    itemsIndexed(items = pokemonResults, key = { _, pokemon -> pokemon.id }) {
-                        index,
-                        pokemon ->
-                        PokemonResultCard(
-                            pokemon = pokemon,
-                            onPokemonSelected = { selectedPokemon ->
-                                onSelected(SearchResult.PokemonEvent(selectedPokemon))
-                            },
-                            modifier =
-                                Modifier.animateEnterExit(
-                                    enter = slideAndFadeEnterTransition(index),
-                                    exit = fadeOut(),
-                                ),
+            }
+        }
+    }
+}
+
+@Composable
+private fun AnimatedContentScope.MoveResultsSection(
+    moveResults: List<Move>,
+    selectedMove: Move?,
+    sharedTransitionScope: SharedTransitionScope,
+    onSelected: (Move) -> Unit,
+) {
+    Column {
+        Text(
+            text = "${stringResource(R.string.movesLabel)} (${moveResults.size})",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 32.dp),
+        )
+        Spacer(Modifier.height(16.dp))
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(MOVES_GRID_ROW_COUNT),
+            contentPadding = PaddingValues(horizontal = 32.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.height(240.dp),
+        ) {
+            itemsIndexed(items = moveResults, key = { _, move -> move.id }) { index, move ->
+                with(sharedTransitionScope) {
+                    AnimatedVisibility(
+                        visible = move != selectedMove,
+                        modifier =
+                            Modifier.animateEnterExit(
+                                enter = slideAndFadeEnterTransition(index),
+                                exit = fadeOut(),
+                            ),
+                    ) {
+                        MoveResultCard(
+                            move = move,
+                            animatedVisibilityScope = this,
+                            modifier = Modifier.width(200.dp),
+                            onSelected = onSelected,
                         )
                     }
                 }
             }
         }
+    }
+}
 
-        if (movesResults.isNotEmpty()) {
-            Column {
-                Text(
-                    text = "${stringResource(R.string.movesLabel)} (${movesResults.size})",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = 32.dp),
-                )
-                Spacer(Modifier.height(16.dp))
-                LazyHorizontalGrid(
-                    rows = GridCells.Fixed(MOVES_GRID_ROW_COUNT),
-                    contentPadding = PaddingValues(horizontal = 32.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.height(240.dp),
-                ) {
-                    itemsIndexed(items = movesResults, key = { _, move -> move.id }) { index, move
-                        ->
-                        with(sharedTransitionScope) {
-                            AnimatedVisibility(
-                                visible =
-                                    move != (selectedSearchResult as? SearchResult.MoveEvent)?.move,
-                                modifier =
-                                    Modifier.animateEnterExit(
-                                        enter = slideAndFadeEnterTransition(index),
-                                        exit = fadeOut(),
-                                    ),
-                            ) {
-                                MoveResultCard(
-                                    move = move,
-                                    animatedVisibilityScope = this,
-                                    modifier = Modifier.width(200.dp),
-                                    onSelected = { selectedMove ->
-                                        onSelected(SearchResult.MoveEvent(selectedMove))
-                                    },
-                                )
-                            }
-                        }
+@Composable
+private fun AnimatedContentScope.ItemResultsSection(
+    itemResults: List<Item>,
+    selectedItem: Item?,
+    sharedTransitionScope: SharedTransitionScope,
+    onSelected: (Item) -> Unit,
+) {
+    Column {
+        Text(
+            text = "${stringResource(R.string.itemsLabel)} (${itemResults.size})",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 32.dp),
+        )
+        Spacer(Modifier.height(16.dp))
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(ITEMS_GRID_ROW_COUNT),
+            contentPadding = PaddingValues(horizontal = 32.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.height(240.dp),
+        ) {
+            itemsIndexed(items = itemResults, key = { _, item -> item.id }) { index, item ->
+                with(sharedTransitionScope) {
+                    AnimatedVisibility(
+                        visible = item != selectedItem,
+                        modifier =
+                            Modifier.animateEnterExit(
+                                enter = slideAndFadeEnterTransition(index),
+                                exit = fadeOut(),
+                            ),
+                    ) {
+                        ItemResultCard(
+                            item = item,
+                            modifier = Modifier.width(200.dp),
+                            animatedVisibilityScope = this,
+                            onSelected = onSelected,
+                        )
                     }
                 }
             }
         }
-
-        if (itemsResults.isNotEmpty()) {
-            Column {
-                Text(
-                    text = "${stringResource(R.string.itemsLabel)} (${itemsResults.size})",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = 32.dp),
-                )
-                Spacer(Modifier.height(16.dp))
-                LazyHorizontalGrid(
-                    rows = GridCells.Fixed(ITEMS_GRID_ROW_COUNT),
-                    contentPadding = PaddingValues(horizontal = 32.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.height(240.dp),
-                ) {
-                    itemsIndexed(items = itemsResults, key = { _, item -> item.id }) { index, item
-                        ->
-                        with(sharedTransitionScope) {
-                            AnimatedVisibility(
-                                visible =
-                                    item != (selectedSearchResult as? SearchResult.ItemEvent)?.item,
-                                modifier =
-                                    Modifier.animateEnterExit(
-                                        enter = slideAndFadeEnterTransition(index),
-                                        exit = fadeOut(),
-                                    ),
-                            ) {
-                                ItemResultCard(
-                                    item = item,
-                                    modifier = Modifier.width(200.dp),
-                                    animatedVisibilityScope = this,
-                                    onSelected = { selectedItem ->
-                                        onSelected(SearchResult.ItemEvent(selectedItem))
-                                    },
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }
 }
 
@@ -299,8 +339,10 @@ private fun SearchResultsPreview() {
     AppTheme {
         Surface(tonalElevation = if (isSystemInDarkTheme()) 2.dp else 0.dp) {
             SharedTransitionLayout {
-                AnimatedContent(targetState = true) { _ ->
-                    SearchResults(sharedTransitionScope = this@SharedTransitionLayout)
+                AnimatedContent(targetState = true) { visible ->
+                    if (visible) {
+                        SearchResults(sharedTransitionScope = this@SharedTransitionLayout)
+                    }
                 }
             }
         }
@@ -313,13 +355,15 @@ fun PreviewMainAppBar() {
     AppTheme {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             SharedTransitionLayout {
-                AnimatedContent(targetState = true) { _ ->
-                    Column {
-                        MainAppBar(
-                            searchText = TextFieldState(),
-                            searchResponse = SearchResponse(),
-                            sharedTransitionScope = this@SharedTransitionLayout,
-                        )
+                AnimatedContent(targetState = true) { visible ->
+                    if (visible) {
+                        Column {
+                            MainAppBar(
+                                searchText = TextFieldState(),
+                                searchResponse = SearchResponse(),
+                                sharedTransitionScope = this@SharedTransitionLayout,
+                            )
+                        }
                     }
                 }
             }

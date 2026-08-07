@@ -46,6 +46,14 @@ import des.c5inco.pokedexer.ui.theme.SuperEllipse
 
 private val CellSize = 44.dp
 private val HeaderCellSize = 44.dp
+private const val SUPER_EFFECTIVE_MULTIPLIER = 2f
+private const val NOT_VERY_EFFECTIVE_MULTIPLIER = 0.5f
+private const val SUPER_EFFECTIVE_BACKGROUND_COLOR = 0xFF4CAF50
+private const val NOT_VERY_EFFECTIVE_BACKGROUND_COLOR = 0xFFF44336
+private const val NO_EFFECT_BACKGROUND_COLOR = 0xFF424242
+private const val SUPER_EFFECTIVE_TEXT_COLOR = 0xFF2E7D32
+private const val NOT_VERY_EFFECTIVE_TEXT_COLOR = 0xFFC62828
+private const val NO_EFFECT_TEXT_COLOR = 0xFF9E9E9E
 
 @Composable
 fun TypeChartScreenRoute(onBackClick: () -> Unit = {}) {
@@ -156,9 +164,9 @@ private fun TypeHeaderCell(type: Type, modifier: Modifier = Modifier) {
 private fun EffectivenessCell(effectiveness: Float, modifier: Modifier = Modifier) {
     val (backgroundColor, text) =
         when (effectiveness) {
-            2f -> Color(0xFF4CAF50) to "2×"
-            0.5f -> Color(0xFFF44336) to "½×"
-            0f -> Color(0xFF424242) to "0"
+            SUPER_EFFECTIVE_MULTIPLIER -> Color(SUPER_EFFECTIVE_BACKGROUND_COLOR) to "2×"
+            NOT_VERY_EFFECTIVE_MULTIPLIER -> Color(NOT_VERY_EFFECTIVE_BACKGROUND_COLOR) to "½×"
+            0f -> Color(NO_EFFECT_BACKGROUND_COLOR) to "0"
             else -> Color.Transparent to ""
         }
 
@@ -180,9 +188,9 @@ private fun EffectivenessCell(effectiveness: Float, modifier: Modifier = Modifie
             textAlign = TextAlign.Center,
             color =
                 when (effectiveness) {
-                    2f -> Color(0xFF2E7D32)
-                    0.5f -> Color(0xFFC62828)
-                    0f -> Color(0xFF9E9E9E)
+                    SUPER_EFFECTIVE_MULTIPLIER -> Color(SUPER_EFFECTIVE_TEXT_COLOR)
+                    NOT_VERY_EFFECTIVE_MULTIPLIER -> Color(NOT_VERY_EFFECTIVE_TEXT_COLOR)
+                    0f -> Color(NO_EFFECT_TEXT_COLOR)
                     else -> Color.Transparent
                 },
         )
@@ -196,9 +204,12 @@ private fun LegendRow(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            LegendItem(color = Color(0xFF4CAF50), text = "2× Super Effective")
-            LegendItem(color = Color(0xFFF44336), text = "½× Not Very Effective")
-            LegendItem(color = Color(0xFF424242), text = "0 No Effect")
+            LegendItem(color = Color(SUPER_EFFECTIVE_BACKGROUND_COLOR), text = "2× Super Effective")
+            LegendItem(
+                color = Color(NOT_VERY_EFFECTIVE_BACKGROUND_COLOR),
+                text = "½× Not Very Effective",
+            )
+            LegendItem(color = Color(NO_EFFECT_BACKGROUND_COLOR), text = "0 No Effect")
         }
     }
 }

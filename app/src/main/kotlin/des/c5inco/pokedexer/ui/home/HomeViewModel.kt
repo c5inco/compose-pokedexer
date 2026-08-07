@@ -21,6 +21,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 
+private const val SEARCH_DEBOUNCE_MILLIS = 200L
+private const val SUBSCRIPTION_STOP_TIMEOUT_MILLIS = 5_000L
+
 data class SearchResponse(
     val currentText: String = "",
     val foundPokemon: List<Pokemon> = emptyList(),
@@ -40,7 +43,7 @@ class HomeViewModel(
 
     val searchResponses: StateFlow<SearchResponse> =
         snapshotFlow { searchText.text }
-            .debounce(200)
+            .debounce(SEARCH_DEBOUNCE_MILLIS)
             .mapLatest {
                 val textContent = it.toString()
                 if (textContent.isEmpty()) {
@@ -63,7 +66,7 @@ class HomeViewModel(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.WhileSubscribed(SUBSCRIPTION_STOP_TIMEOUT_MILLIS),
                 initialValue = SearchResponse(currentText = ""),
             )
 }

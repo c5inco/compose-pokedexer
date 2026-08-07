@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+private const val UI_STATE_STOP_TIMEOUT_MILLIS = 5_000L
+
 data class PokemonDetailsEvolutions(
     val pokemon: Pokemon,
     val trigger: EvolutionTrigger,
@@ -96,8 +98,8 @@ constructor(
                             if (result != null) {
                                 PokemonDetailsMoves(result, it.targetLevel)
                             } else {
-                                // TODO: Moves only queried from local database which currently
-                                // limited to gen 1 moves
+                                // Moves are queried only from the local database, currently limited
+                                // to generation 1 moves.
                                 println("Move not found: $it")
                                 null
                             }
@@ -110,8 +112,8 @@ constructor(
                         if (result != null) {
                             PokemonDetailsAbilities(result, it.isHidden)
                         } else {
-                            // TODO: Moves only queried from local database which currently limited
-                            // to gen 1 moves
+                            // Abilities are queried only from the local database, currently limited
+                            // to generation 1 abilities.
                             println("Ability not found: $it")
                             null
                         }
@@ -127,7 +129,7 @@ constructor(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.WhileSubscribed(UI_STATE_STOP_TIMEOUT_MILLIS),
                 initialValue = null,
             )
 

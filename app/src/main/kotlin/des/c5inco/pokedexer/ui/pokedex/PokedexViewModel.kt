@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 
+private const val LOADING_DELAY_MILLIS = 500L
+
 sealed interface PokedexUiState {
     data class Loading(val listLoadedState: MutableTransitionState<Boolean>) : PokedexUiState
 
@@ -53,7 +55,7 @@ constructor(
 
                 flow {
                     emit(PokedexUiState.Loading(listLoadedState))
-                    delay(500)
+                    delay(LOADING_DELAY_MILLIS)
                     emitAll(
                         combine(pokemonFlow, userPreferencesFlow, showFavorites, typeFilters) {
                             pokemon,

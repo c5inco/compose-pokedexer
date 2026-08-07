@@ -17,8 +17,6 @@ data class UserPreferences(val favorites: List<Int>)
 
 @Inject
 class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
-    private val TAG: String = "UserPreferencesRepo"
-
     private object PreferencesKeys {
         val FAVORITES = stringPreferencesKey("favorites")
     }
@@ -64,5 +62,9 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
                 ?.map { it.toInt() }
 
         return UserPreferences(favorites ?: emptyList())
+    }
+
+    private companion object {
+        const val TAG = "UserPreferencesRepo"
     }
 }

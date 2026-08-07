@@ -41,6 +41,31 @@ import des.c5inco.pokedexer.shared.theme.PokemonTypeSeeds
 import des.c5inco.pokedexer.shared.theme.getSeedColorForType
 import kotlinx.coroutines.launch
 
+private const val PALETTE_POPUP_OFFSET = 200f
+private const val PALETTE_POPUP_FADE_DURATION_MILLIS = 300
+private const val PALETTE_POPUP_OFFSET_DURATION_MILLIS = 500
+private const val PALETTE_POPUP_DISPLAY_DURATION_MILLIS = 1000
+
+private object MoveCategoryPalette {
+    const val PHYSICAL_PRIMARY_DARK = 0xffE3300E
+    const val PHYSICAL_SURFACE_DARK = 0xff561F14
+    const val PHYSICAL_SURFACE_LIGHT = 0xffFFDAD3
+    const val PHYSICAL_ON_SURFACE_DARK = 0xffFFDAD3
+    const val PHYSICAL_ON_SURFACE_LIGHT = 0xff3A0A03
+
+    const val SPECIAL_PRIMARY_DARK = 0xffC7BFFF
+    const val SPECIAL_SURFACE_DARK = 0xff2F295F
+    const val SPECIAL_SURFACE_LIGHT = 0xffE4DFFF
+    const val SPECIAL_ON_SURFACE_DARK = 0xffE4DFFF
+    const val SPECIAL_ON_SURFACE_LIGHT = 0xff1A1249
+
+    const val STATUS_PRIMARY_DARK = 0xffFFB691
+    const val STATUS_SURFACE_DARK = 0xff542102
+    const val STATUS_SURFACE_LIGHT = 0xffFFDBCB
+    const val STATUS_ON_SURFACE_DARK = 0xffFFDBCB
+    const val STATUS_ON_SURFACE_LIGHT = 0xff341100
+}
+
 /**
  * PokemonColors object using shared module's seed colors. Provides Compose Color values for use in
  * Android UI.
@@ -115,32 +140,32 @@ data class MoveCategoryColors(
 
 val PhysicalColors =
     MoveCategoryColors(
-        primaryDark = Color(0xffE3300E),
+        primaryDark = Color(MoveCategoryPalette.PHYSICAL_PRIMARY_DARK),
         primaryLight = PokemonColors.Fighting,
-        surfaceDark = Color(0xff561F14),
-        surfaceLight = Color(0xffFFDAD3),
-        onSurfaceDark = Color(0xffFFDAD3),
-        onSurfaceLight = Color(0xff3A0A03),
+        surfaceDark = Color(MoveCategoryPalette.PHYSICAL_SURFACE_DARK),
+        surfaceLight = Color(MoveCategoryPalette.PHYSICAL_SURFACE_LIGHT),
+        onSurfaceDark = Color(MoveCategoryPalette.PHYSICAL_ON_SURFACE_DARK),
+        onSurfaceLight = Color(MoveCategoryPalette.PHYSICAL_ON_SURFACE_LIGHT),
     )
 
 val SpecialColors =
     MoveCategoryColors(
-        primaryDark = Color(0xffC7BFFF),
+        primaryDark = Color(MoveCategoryPalette.SPECIAL_PRIMARY_DARK),
         primaryLight = PokemonColors.Flying,
-        surfaceDark = Color(0xff2F295F),
-        surfaceLight = Color(0xffE4DFFF),
-        onSurfaceDark = Color(0xffE4DFFF),
-        onSurfaceLight = Color(0xff1A1249),
+        surfaceDark = Color(MoveCategoryPalette.SPECIAL_SURFACE_DARK),
+        surfaceLight = Color(MoveCategoryPalette.SPECIAL_SURFACE_LIGHT),
+        onSurfaceDark = Color(MoveCategoryPalette.SPECIAL_ON_SURFACE_DARK),
+        onSurfaceLight = Color(MoveCategoryPalette.SPECIAL_ON_SURFACE_LIGHT),
     )
 
 val StatusColors =
     MoveCategoryColors(
-        primaryDark = Color(0xffFFB691),
+        primaryDark = Color(MoveCategoryPalette.STATUS_PRIMARY_DARK),
         primaryLight = PokemonColors.Fire,
-        surfaceDark = Color(0xff542102),
-        surfaceLight = Color(0xffFFDBCB),
-        onSurfaceDark = Color(0xffFFDBCB),
-        onSurfaceLight = Color(0xff341100),
+        surfaceDark = Color(MoveCategoryPalette.STATUS_SURFACE_DARK),
+        surfaceLight = Color(MoveCategoryPalette.STATUS_SURFACE_LIGHT),
+        onSurfaceDark = Color(MoveCategoryPalette.STATUS_ON_SURFACE_DARK),
+        onSurfaceLight = Color(MoveCategoryPalette.STATUS_ON_SURFACE_LIGHT),
     )
 
 val AppPaletteStyles =
@@ -170,26 +195,35 @@ fun PokemonTypeColorOverlay(
         Box(modifier = Modifier.fillMaxSize()) {
             content()
 
-            val swatchColors =
-                listOf(
-                    Color(getSeedColorForType(types)),
-                    PokemonTypesTheme.colorScheme.primary,
-                    PokemonTypesTheme.colorScheme.surface,
-                    PokemonTypesTheme.colorScheme.onSurface,
-                    PokemonTypesTheme.colorScheme.surfaceVariant,
-                    MaterialTheme.colorScheme.secondary,
-                    MaterialTheme.colorScheme.primaryContainer,
-                    MaterialTheme.colorScheme.secondaryContainer,
-                )
+            val pokemonTypeColorScheme = PokemonTypesTheme.colorScheme
+            val materialColorScheme = MaterialTheme.colorScheme
 
             val popupAlpha = remember { Animatable(1f) }
             val popupYOffset = remember { Animatable(0f) }
 
             LaunchedEffect(activePaletteStyle) {
                 popupAlpha.animateTo(1f)
-                popupYOffset.animateTo(200f)
-                launch { popupAlpha.animateTo(0f, animationSpec = tween(300, 1000)) }
-                launch { popupYOffset.animateTo(0f, animationSpec = tween(500, 1000)) }
+                popupYOffset.animateTo(PALETTE_POPUP_OFFSET)
+                launch {
+                    popupAlpha.animateTo(
+                        0f,
+                        animationSpec =
+                            tween(
+                                PALETTE_POPUP_FADE_DURATION_MILLIS,
+                                PALETTE_POPUP_DISPLAY_DURATION_MILLIS,
+                            ),
+                    )
+                }
+                launch {
+                    popupYOffset.animateTo(
+                        0f,
+                        animationSpec =
+                            tween(
+                                PALETTE_POPUP_OFFSET_DURATION_MILLIS,
+                                PALETTE_POPUP_DISPLAY_DURATION_MILLIS,
+                            ),
+                    )
+                }
             }
 
             Text(
@@ -233,8 +267,18 @@ fun PokemonTypeColorOverlay(
                         .padding(16.dp)
                         .align(Alignment.BottomCenter),
             ) {
-                QuadrantCircle(swatchColors[0], swatchColors[1], swatchColors[2], swatchColors[3])
-                QuadrantCircle(swatchColors[4], swatchColors[5], swatchColors[6], swatchColors[7])
+                QuadrantCircle(
+                    Color(getSeedColorForType(types)),
+                    pokemonTypeColorScheme.primary,
+                    pokemonTypeColorScheme.surface,
+                    pokemonTypeColorScheme.onSurface,
+                )
+                QuadrantCircle(
+                    pokemonTypeColorScheme.surfaceVariant,
+                    materialColorScheme.secondary,
+                    materialColorScheme.primaryContainer,
+                    materialColorScheme.secondaryContainer,
+                )
             }
         }
     }

@@ -25,7 +25,7 @@ val AppShapes =
         large = RoundedCornerShape(16.dp),
     )
 
-fun RoundedPolygon.getBounds() = calculateBounds().let { Rect(it[0], it[1], it[2], it[3]) }
+fun RoundedPolygon.getBounds() = calculateBounds().let { Rect(it[0], it[1], it[2], it.last()) }
 
 class SuperEllipse(private var matrix: Matrix = Matrix()) : Shape {
     private var path = Path()

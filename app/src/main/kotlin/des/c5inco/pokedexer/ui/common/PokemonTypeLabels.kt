@@ -29,6 +29,29 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 import des.c5inco.pokedexer.ui.theme.SuperEllipse
 
+private const val UNCOLORED_LABEL_BACKGROUND = 0x38FFFFFF
+private val TypeIcons =
+    mapOf(
+        Type.Normal to R.drawable.ic_type_normal,
+        Type.Fire to R.drawable.ic_type_fire,
+        Type.Water to R.drawable.ic_type_water,
+        Type.Electric to R.drawable.ic_type_electric,
+        Type.Grass to R.drawable.ic_type_grass,
+        Type.Ice to R.drawable.ic_type_ice,
+        Type.Fighting to R.drawable.ic_type_fighting,
+        Type.Poison to R.drawable.ic_type_poison,
+        Type.Ground to R.drawable.ic_type_ground,
+        Type.Flying to R.drawable.ic_type_flying,
+        Type.Psychic to R.drawable.ic_type_psychic,
+        Type.Bug to R.drawable.ic_type_bug,
+        Type.Rock to R.drawable.ic_type_rock,
+        Type.Ghost to R.drawable.ic_type_ghost,
+        Type.Dragon to R.drawable.ic_type_dragon,
+        Type.Dark to R.drawable.ic_type_dark,
+        Type.Steel to R.drawable.ic_type_steel,
+        Type.Fairy to R.drawable.ic_type_fairy,
+    )
+
 data class TypeLabelMetrics(
     val cornerRadius: Dp,
     val fontSize: TextUnit,
@@ -90,7 +113,9 @@ fun TypeLabel(
 ) {
     Surface(
         modifier = modifier,
-        color = if (colored) PokemonTypesTheme.colorScheme.surface else Color(0x38FFFFFF),
+        color =
+            if (colored) PokemonTypesTheme.colorScheme.surface
+            else Color(UNCOLORED_LABEL_BACKGROUND),
         contentColor = PokemonTypesTheme.colorScheme.onSurface,
         shape = RoundedCornerShape(metrics.cornerRadius),
     ) {
@@ -185,26 +210,7 @@ fun TypeIconLabel(modifier: Modifier = Modifier, type: Type) {
 }
 
 fun mapTypeToIcon(type: Type): Int {
-    return when (type) {
-        Type.Normal -> return R.drawable.ic_type_normal
-        Type.Fire -> R.drawable.ic_type_fire
-        Type.Water -> R.drawable.ic_type_water
-        Type.Electric -> R.drawable.ic_type_electric
-        Type.Grass -> R.drawable.ic_type_grass
-        Type.Ice -> R.drawable.ic_type_ice
-        Type.Fighting -> R.drawable.ic_type_fighting
-        Type.Poison -> R.drawable.ic_type_poison
-        Type.Ground -> R.drawable.ic_type_ground
-        Type.Flying -> R.drawable.ic_type_flying
-        Type.Psychic -> R.drawable.ic_type_psychic
-        Type.Bug -> R.drawable.ic_type_bug
-        Type.Rock -> R.drawable.ic_type_rock
-        Type.Ghost -> R.drawable.ic_type_ghost
-        Type.Dragon -> R.drawable.ic_type_dragon
-        Type.Dark -> R.drawable.ic_type_dark
-        Type.Steel -> R.drawable.ic_type_steel
-        Type.Fairy -> R.drawable.ic_type_fairy
-    }
+    return TypeIcons.getValue(type)
 }
 
 @PreviewLightDark

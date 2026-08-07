@@ -17,11 +17,16 @@ import des.c5inco.pokedexer.shared.model.MoveCategory
 import des.c5inco.pokedexer.shared.model.Type
 import des.c5inco.pokedexer.shared.theme.getSeedColorForType
 
+private const val DARK_THEME_PRIMARY_DARKEN_AMOUNT = 0.4f
+private const val LIGHT_THEME_COLOR_LIGHTEN_AMOUNT = 0.7f
+private const val MINIMUM_SEED_COLOR_CONTRAST_RATIO = 2.2
+private const val APP_THEME_SEED_COLOR = 0xff673AB7
+
 @Composable
 fun AppTheme(useDarkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
     val colors =
         rememberDynamicColorScheme(
-            seedColor = Color(0xff673AB7),
+            seedColor = Color(APP_THEME_SEED_COLOR),
             isDark = useDarkTheme,
             isAmoled = false,
         )
@@ -49,12 +54,9 @@ fun PokemonTypesTheme(
         mapDynamicPokemonColorScheme(seedColor = seedColor, colorScheme = kolorScheme)
             .copy(
                 type =
-                    types.getOrNull(0)?.let {
-                        try {
-                            Type.valueOf(it.replaceFirstChar { it.uppercase() })
-                        } catch (e: IllegalArgumentException) {
-                            null
-                        }
+                    types.firstOrNull()?.let { typeName ->
+                        val normalizedTypeName = typeName.replaceFirstChar { it.uppercase() }
+                        Type.entries.firstOrNull { it.name == normalizedTypeName }
                     }
             )
 
@@ -92,7 +94,7 @@ fun mapDynamicPokemonColorScheme(
 ): PokemonTypeColorScheme {
     return if (useDarkTheme) {
         PokemonTypeColorScheme(
-            primary = colorScheme.primaryContainer.darken(0.4f),
+            primary = colorScheme.primaryContainer.darken(DARK_THEME_PRIMARY_DARKEN_AMOUNT),
             surface = colorScheme.primaryContainer,
             onSurface = colorScheme.onSurface,
             surfaceVariant = colorScheme.onPrimary,
@@ -101,15 +103,18 @@ fun mapDynamicPokemonColorScheme(
         )
     } else {
         PokemonTypeColorScheme(
-            primary = seedColor.lighten(0.7f),
+            primary = seedColor.lighten(LIGHT_THEME_COLOR_LIGHTEN_AMOUNT),
             surface = seedColor,
             onSurface =
-                if (seedColor.contrastRatio(colorScheme.onSecondary) > 2.2) {
+                if (
+                    seedColor.contrastRatio(colorScheme.onSecondary) >
+                        MINIMUM_SEED_COLOR_CONTRAST_RATIO
+                ) {
                     colorScheme.onSecondary
                 } else {
                     colorScheme.onSecondaryContainer
                 },
-            surfaceVariant = seedColor.lighten(0.7f),
+            surfaceVariant = seedColor.lighten(LIGHT_THEME_COLOR_LIGHTEN_AMOUNT),
             secondary = colorScheme.primary,
             tertiary = colorScheme.secondary,
         )

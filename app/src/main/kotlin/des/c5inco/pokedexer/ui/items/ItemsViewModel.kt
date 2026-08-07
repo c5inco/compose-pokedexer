@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 
+private const val LOADING_DELAY_MILLIS = 500L
+private const val SUBSCRIPTION_STOP_TIMEOUT_MILLIS = 5_000L
+
 sealed interface ItemsListUiState {
     data object Loading : ItemsListUiState
 
@@ -23,12 +26,12 @@ class ItemsViewModel(itemsRepository: ItemsRepository) : ViewModel() {
         itemsRepository
             .items()
             .mapLatest {
-                delay(500)
+                delay(LOADING_DELAY_MILLIS)
                 ItemsListUiState.Ready(it)
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.WhileSubscribed(SUBSCRIPTION_STOP_TIMEOUT_MILLIS),
                 initialValue = ItemsListUiState.Loading,
             )
 }

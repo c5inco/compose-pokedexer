@@ -103,15 +103,19 @@ fun ItemResultCardPreview() {
     AppTheme {
         Column(modifier = Modifier.padding(vertical = 20.dp)) {
             SharedTransitionLayout {
-                AnimatedContent(targetState = true) { _ ->
-                    LazyHorizontalGrid(
-                        rows = GridCells.Fixed(3),
-                        contentPadding = PaddingValues(horizontal = 20.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.height(240.dp).fillMaxWidth(),
-                    ) {
-                        items(5) { ItemResultCard(animatedVisibilityScope = this@AnimatedContent) }
+                AnimatedContent(targetState = true) { visible ->
+                    if (visible) {
+                        LazyHorizontalGrid(
+                            rows = GridCells.Fixed(3),
+                            contentPadding = PaddingValues(horizontal = 20.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier.height(240.dp).fillMaxWidth(),
+                        ) {
+                            items(5) {
+                                ItemResultCard(animatedVisibilityScope = this@AnimatedContent)
+                            }
+                        }
                     }
                 }
             }
