@@ -1,3 +1,5 @@
+@file:JvmName("PokedexerAppKt")
+
 package des.c5inco.pokedexer
 
 import android.app.Application

@@ -10,6 +10,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 private const val POKEMON_ID = 25
+private const val APP_JVM_FACADE = "des.c5inco.pokedexer.PokedexerAppKt"
 
 class PokedexerNavigationTest {
     @Test
@@ -42,5 +43,13 @@ class PokedexerNavigationTest {
             ),
         )
         assertNull(previousPokemonId(listOf(Screen.Home, Screen.Pokedex)))
+    }
+
+    @Test
+    fun jvmFacadeMatchesBaselineProfile() {
+        val facade =
+            Class.forName(APP_JVM_FACADE, false, PokedexerNavigationTest::class.java.classLoader)
+
+        assertTrue(facade.declaredMethods.any { it.name == "PokedexerApp" })
     }
 }
