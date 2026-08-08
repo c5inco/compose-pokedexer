@@ -6,21 +6,27 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import des.c5inco.pokedexer.LocalGifImageLoader
 import des.c5inco.pokedexer.R
+
+private const val LOADING_INDICATOR_DURATION_MILLIS = 2_000
 
 @Composable
 fun LoadingIndicator(modifier: Modifier = Modifier) {
@@ -28,38 +34,53 @@ fun LoadingIndicator(modifier: Modifier = Modifier) {
     val density = LocalDensity.current
     val imageLoader = LocalGifImageLoader.current
     val imageSize = 56.dp
+    val imageSizePx = with(density) { imageSize.toPx() }
 
-    var containerWidth by remember { mutableIntStateOf(0) }
+    val containerWidthPx = remember { mutableIntStateOf(0) }
 
     val infiniteTransition = rememberInfiniteTransition(label = "pika_loader_transition")
-    val xOffset by
+    val progress =
         infiniteTransition.animateFloat(
-            initialValue = with(density) { -imageSize.toPx() },
-            targetValue = containerWidth.toFloat(),
+            initialValue = 0f,
+            targetValue = 1f,
             animationSpec =
                 infiniteRepeatable(
-                    animation = tween(durationMillis = 2000, easing = LinearEasing),
+                    animation =
+                        tween(
+                            durationMillis = LOADING_INDICATOR_DURATION_MILLIS,
+                            easing = LinearEasing,
+                        ),
                     repeatMode = RepeatMode.Restart,
                 ),
-            label = "pika_loader_offset",
+            label = "pika_loader_progress",
         )
 
-    Layout(
-        content = {
-            AsyncImage(
-                model = ImageRequest.Builder(context).data(R.drawable.pika_loader).build(),
-                contentDescription = "Loading",
-                imageLoader = imageLoader,
-                modifier = Modifier.size(imageSize),
-            )
-        },
-        modifier = modifier,
-    ) { measurables, constraints ->
-        val placeable = measurables.first().measure(constraints)
-        containerWidth = constraints.maxWidth
-
-        layout(constraints.maxWidth, placeable.height) {
-            placeable.placeRelative(x = xOffset.toInt(), y = 0)
-        }
+    Box(
+        modifier =
+            modifier.fillMaxWidth().height(imageSize).clipToBounds().onSizeChanged {
+                containerWidthPx.intValue = it.width
+            }
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(context).data(R.drawable.pika_loader).build(),
+            contentDescription = "Loading",
+            imageLoader = imageLoader,
+            placeholder = painterResource(R.drawable.pika_loader_placeholder),
+            modifier =
+                Modifier.size(imageSize).graphicsLayer {
+                    translationX =
+                        loadingIndicatorTranslationX(
+                            progress = progress.value,
+                            imageWidth = imageSizePx,
+                            containerWidth = containerWidthPx.intValue.toFloat(),
+                        )
+                },
+        )
     }
 }
+
+internal fun loadingIndicatorTranslationX(
+    progress: Float,
+    imageWidth: Float,
+    containerWidth: Float,
+): Float = -imageWidth + (containerWidth + imageWidth) * progress
