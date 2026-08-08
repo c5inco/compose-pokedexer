@@ -1,0 +1,19 @@
+appId: des.c5inco.pokedexer.debug
+name: Open the main menu destinations
+tags:
+  - regression
+---
+- launchApp:
+    clearState: true
+- tapOn: "Items"
+- assertVisible: "Master Ball"
+- tapOn: "Back"
+- tapOn: "Moves"
+- assertVisible: "Name"
+- assertVisible: "Pound"
+- tapOn: "Back"
+- tapOn: "Type charts"
+- assertVisible: "Type Chart"
+- assertVisible: ".*Super Effective.*"
+- assertVisible: ".*Not Very Effective.*"
+- assertVisible: ".*No Effect.*"

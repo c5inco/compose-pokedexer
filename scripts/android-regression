@@ -1,0 +1,395 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+readonly PROJECT_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+readonly SERVICE_NAME="${EW_SERVICE_NAME:-pokedexer-android}"
+readonly DEVICE="${EW_DEVICE:-model=Pixel7,version=36}"
+readonly SESSION_LIMIT="${EW_SESSION_LIMIT:-1h}"
+readonly EW_CLI_VERSION="1.4.1"
+readonly MAESTRO_VERSION="2.8.0"
+readonly APK_PATH="${APK_PATH:-$PROJECT_ROOT/app/build/outputs/apk/debug/app-debug.apk}"
+readonly RESULTS_DIR="${MAESTRO_RESULTS_DIR:-$PROJECT_ROOT/build/maestro}"
+
+SESSION_STARTED_HERE=false
+
+export ANDROID_HOME="${ANDROID_HOME:-$HOME/.android-sdk}"
+export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+export PATH="$PATH:$HOME/.local/bin:$HOME/.maestro/bin:$ANDROID_HOME/platform-tools"
+export MAESTRO_CLI_NO_ANALYTICS=1
+export MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true
+
+usage() {
+    cat <<'EOF'
+Usage: scripts/android-regression <command> [arguments]
+
+Manage an Emulator.wtf Android session and run the Maestro regression suite.
+
+Commands:
+  doctor                       Check local tools and authentication.
+  start                        Start a remote Android session and wait for ADB.
+  stop                         Stop the remote session.
+  status                       Show the session and attached ADB devices.
+  deploy [apk]                 Build or install a debug APK on the session.
+  adb <command> [arguments]    Run an adb command against the remote device.
+  shell <command> [arguments]  Run a command through adb shell.
+  logcat [arguments]           Stream or query logs from the remote device.
+  test [apk]                   Start, deploy, test, and stop as one operation.
+  capture-baseline [--force] <git-ref>
+                               Build a historical revision and capture baselines.
+
+Environment:
+  EW_API_TOKEN       Required Emulator.wtf API token. Keep it in an Orb secret.
+  EW_DEVICE          Device definition (default: Pixel7, API 36).
+  EW_SESSION_LIMIT   Remote session lifetime (default: 1h).
+  APK_PATH           Default APK path used by deploy and test.
+
+The start command keeps ew-cli alive as a supervised Amp orb service. A session
+is ephemeral and remains reachable through standard adb only while that service
+is running.
+EOF
+}
+
+die() {
+    printf 'error: %s\n' "$*" >&2
+    exit 1
+}
+
+require_command() {
+    command -v "$1" >/dev/null 2>&1 || die "required command not found: $1"
+}
+
+require_token() {
+    [[ -n "${EW_API_TOKEN:-}" ]] ||
+        die "EW_API_TOKEN is not set; add it as an Orb secret and restart/resume the orb"
+}
+
+service_is_running() {
+    amp orb service list | grep -q "^amp-svc-$SERVICE_NAME.service .* active running "
+}
+
+device_serial() {
+    local devices
+    devices="$(adb devices | awk 'NR > 1 && $2 == "device" { print $1 }')"
+    local device_count
+    device_count="$(wc -w <<<"$devices")"
+    ((device_count <= 1)) || die "multiple ADB devices are attached; refusing to guess which one to use"
+    printf '%s' "$devices"
+}
+
+wait_for_device() {
+    local serial=""
+    local boot_completed=""
+
+    for _ in $(seq 1 60); do
+        serial="$(device_serial)"
+        if [[ -n "$serial" ]]; then
+            boot_completed="$(adb -s "$serial" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')"
+            if [[ "$boot_completed" == "1" ]]; then
+                printf '%s\n' "$serial"
+                return
+            fi
+        fi
+        sleep 2
+    done
+
+    die "remote Android device did not become ready within 120 seconds"
+}
+
+doctor() {
+    require_command amp
+    require_command adb
+    require_command ew-cli
+    require_command maestro
+    require_token
+
+    local ew_version
+    ew_version="$(EW_VERSION="$EW_CLI_VERSION" ew-cli --version)"
+    [[ "$ew_version" == *"version $EW_CLI_VERSION"* ]] ||
+        die "ew-cli $EW_CLI_VERSION is required"
+    printf '%s\n' "$ew_version"
+
+    local installed_maestro_version
+    installed_maestro_version="$(maestro --version 2>/dev/null | tail -n 1)"
+    [[ "$installed_maestro_version" == "$MAESTRO_VERSION" ]] ||
+        die "Maestro $MAESTRO_VERSION is required; found $installed_maestro_version"
+    printf '%s\n' "$installed_maestro_version"
+    printf 'EW_API_TOKEN is set\n'
+}
+
+cleanup_owned_session() {
+    local exit_status=$?
+    trap - EXIT INT TERM
+    if [[ "$SESSION_STARTED_HERE" == true ]]; then
+        if ! stop_session; then
+            exit_status=1
+        fi
+        SESSION_STARTED_HERE=false
+    fi
+    exit "$exit_status"
+}
+
+arm_session_cleanup() {
+    trap cleanup_owned_session EXIT
+    trap 'exit 130' INT
+    trap 'exit 143' TERM
+}
+
+stop_owned_session() {
+    if [[ "$SESSION_STARTED_HERE" == true ]]; then
+        stop_session
+        SESSION_STARTED_HERE=false
+    fi
+}
+
+start_session() {
+    require_command amp
+    require_command adb
+    require_command ew-cli
+    require_token
+
+    if service_is_running; then
+        printf 'Emulator.wtf session service %s is already running\n' "$SERVICE_NAME"
+        wait_for_device >/dev/null
+        return
+    fi
+
+    [[ -z "$(device_serial)" ]] ||
+        die "an ADB device is already attached without the $SERVICE_NAME service"
+
+    local service_command
+    printf -v service_command \
+        'EW_VERSION=%q ew-cli start-session --device %q --max-time-limit %q --adb-binary %q' \
+        "$EW_CLI_VERSION" \
+        "$DEVICE" \
+        "$SESSION_LIMIT" \
+        "$(command -v adb)"
+
+    if amp orb service start "$SERVICE_NAME" --command "$service_command"; then
+        SESSION_STARTED_HERE=true
+    elif service_is_running; then
+        printf 'Emulator.wtf session service %s was started by another process\n' "$SERVICE_NAME"
+    else
+        die "failed to start Emulator.wtf session service $SERVICE_NAME"
+    fi
+
+    local serial
+    if ! serial="$(wait_for_device)"; then
+        amp orb service logs "$SERVICE_NAME" >&2 || true
+        stop_owned_session
+        return 1
+    fi
+    printf 'Remote Android device ready: %s\n' "$serial"
+}
+
+stop_session() {
+    if service_is_running; then
+        amp orb service stop "$SERVICE_NAME"
+    else
+        printf 'Emulator.wtf session service %s is not running\n' "$SERVICE_NAME"
+    fi
+}
+
+status() {
+    if service_is_running; then
+        amp orb service status "$SERVICE_NAME"
+    else
+        printf 'Emulator.wtf session service %s is not running\n' "$SERVICE_NAME"
+    fi
+    printf '\nADB devices:\n'
+    adb devices -l
+}
+
+deploy() {
+    require_command adb
+
+    local apk
+    if [[ $# -eq 0 ]]; then
+        apk="$APK_PATH"
+        "$PROJECT_ROOT/gradlew" -p "$PROJECT_ROOT" :app:assembleDebug
+    else
+        [[ $# -eq 1 ]] || die "deploy accepts at most one APK path"
+        apk="$1"
+    fi
+    [[ -f "$apk" ]] || die "APK not found: $apk"
+
+    local serial
+    serial="$(wait_for_device)"
+    adb -s "$serial" install -r "$apk"
+}
+
+run_maestro_suite() {
+    require_command maestro
+
+    local serial
+    serial="$(wait_for_device)"
+    mkdir -p "$RESULTS_DIR/regression"
+
+    (
+        cd -- "$PROJECT_ROOT"
+        maestro test \
+            --no-ansi \
+            --device "$serial" \
+            --format JUNIT \
+            --output "$RESULTS_DIR/regression/report.xml" \
+            --test-output-dir "$RESULTS_DIR/regression/artifacts" \
+            .maestro
+    )
+}
+
+test_suite() {
+    local apk
+    if [[ $# -eq 0 ]]; then
+        apk="$APK_PATH"
+        "$PROJECT_ROOT/gradlew" -p "$PROJECT_ROOT" :app:assembleDebug
+    else
+        [[ $# -eq 1 ]] || die "test accepts at most one APK path"
+        apk="$1"
+        [[ -f "$apk" ]] || die "APK not found: $apk"
+    fi
+
+    arm_session_cleanup
+    start_session
+    deploy "$apk"
+    run_maestro_suite
+    stop_owned_session
+}
+
+capture_baseline() {
+    local force=false
+    if [[ "${1:-}" == "--force" ]]; then
+        force=true
+        shift
+    fi
+    [[ $# -eq 1 ]] || die "capture-baseline requires exactly one git revision"
+    require_command git
+    require_command maestro
+
+    if [[ "$force" == false ]] &&
+        [[ -n "$(
+            git -C "$PROJECT_ROOT" status --porcelain -- \
+                ':(glob).maestro/baselines/*.png' \
+                .maestro/baselines/source-revision.txt \
+                .maestro/baselines/environment.txt
+        )" ]]; then
+        die "baseline files have uncommitted changes; review them or pass --force"
+    fi
+
+    local revision="$1"
+    local resolved_revision
+    resolved_revision="$(git -C "$PROJECT_ROOT" rev-parse --verify "$revision^{commit}")" ||
+        die "unknown git revision: $revision"
+
+    mkdir -p "$PROJECT_ROOT/build" "$RESULTS_DIR/baseline"
+    local snapshot
+    snapshot="$(mktemp -d "$PROJECT_ROOT/build/maestro-baseline-source.XXXXXX")"
+    local staged_baselines
+    staged_baselines="$(mktemp -d "$PROJECT_ROOT/build/maestro-baseline-images.XXXXXX")"
+    local capture_output
+    capture_output="$(mktemp -d "$RESULTS_DIR/baseline/capture.XXXXXX")"
+    cleanup_baseline_capture() {
+        local exit_status=$?
+        trap - EXIT INT TERM
+        if [[ "$SESSION_STARTED_HERE" == true ]]; then
+            if ! stop_session; then
+                exit_status=1
+            fi
+            SESSION_STARTED_HERE=false
+        fi
+        rm -rf -- "$snapshot" "$staged_baselines"
+        exit "$exit_status"
+    }
+    trap cleanup_baseline_capture EXIT
+    trap 'exit 130' INT
+    trap 'exit 143' TERM
+
+    git -C "$PROJECT_ROOT" archive "$resolved_revision" | tar -x -C "$snapshot"
+    "$snapshot/gradlew" -p "$snapshot" :app:assembleDebug
+
+    start_session
+    deploy "$snapshot/app/build/outputs/apk/debug/app-debug.apk"
+    local serial
+    serial="$(wait_for_device)"
+    mkdir -p "$PROJECT_ROOT/.maestro/baselines" "$RESULTS_DIR/baseline"
+    (
+        cd -- "$PROJECT_ROOT"
+        maestro test \
+            --no-ansi \
+            --device "$serial" \
+            --test-output-dir "$capture_output" \
+            .maestro/capture/generation-filter.yaml
+    )
+
+    local baseline_name
+    local captured_image
+    for baseline_name in home pokedex generation-three torchic-details; do
+        captured_image="$(
+            find "$capture_output" \
+                -type f \
+                -path "*/takeScreenshot/$baseline_name.png" \
+                -print \
+                -quit
+        )"
+        [[ -n "$captured_image" ]] || die "captured baseline not found: $baseline_name.png"
+        cp -- "$captured_image" "$staged_baselines/$baseline_name.png"
+    done
+
+    printf '%s\n' "$resolved_revision" >"$staged_baselines/source-revision.txt"
+    {
+        printf 'revision=%s\n' "$resolved_revision"
+        printf 'device=%s\n' "$DEVICE"
+        printf 'maestro=%s\n' "$MAESTRO_VERSION"
+        printf 'ew-cli=%s\n' "$EW_CLI_VERSION"
+        printf 'captured-at=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    } >"$staged_baselines/environment.txt"
+    mv -- "$staged_baselines"/* "$PROJECT_ROOT/.maestro/baselines/"
+
+    stop_owned_session
+    rm -rf -- "$snapshot" "$staged_baselines"
+    trap - EXIT INT TERM
+}
+
+main() {
+    local command="${1:-}"
+    [[ -n "$command" ]] || {
+        usage
+        exit 2
+    }
+    shift || true
+
+    case "$command" in
+        -h | --help | help) usage ;;
+        doctor) doctor "$@" ;;
+        start)
+            arm_session_cleanup
+            start_session "$@"
+            SESSION_STARTED_HERE=false
+            trap - EXIT INT TERM
+            ;;
+        stop) stop_session "$@" ;;
+        status) status "$@" ;;
+        deploy) deploy "$@" ;;
+        adb)
+            [[ $# -gt 0 ]] || die "adb requires a command"
+            serial="$(wait_for_device)"
+            adb -s "$serial" "$@"
+            ;;
+        shell)
+            [[ $# -gt 0 ]] || die "shell requires a command"
+            serial="$(wait_for_device)"
+            adb -s "$serial" shell "$@"
+            ;;
+        logcat)
+            serial="$(wait_for_device)"
+            adb -s "$serial" logcat "$@"
+            ;;
+        test) test_suite "$@" ;;
+        capture-baseline) capture_baseline "$@" ;;
+        *)
+            usage >&2
+            die "unknown command: $command"
+            ;;
+    esac
+}
+
+main "$@"

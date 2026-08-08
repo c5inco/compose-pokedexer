@@ -1,0 +1,28 @@
+appId: des.c5inco.pokedexer.debug
+name: Capture Android visual regression baselines
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Pokédex"
+- waitForAnimationToEnd
+- takeScreenshot: home
+- tapOn: "Pokédex"
+- assertVisible: "Pokemon"
+- assertVisible: "Bulbasaur"
+- waitForAnimationToEnd
+- takeScreenshot: pokedex
+- tapOn: "Show filters"
+- assertVisible: "Gen I"
+- tapOn: "Gen I"
+- assertVisible: "Gen III"
+- tapOn: "Gen III"
+- assertVisible: "Torchic"
+- waitForAnimationToEnd
+- takeScreenshot: generation-three
+- tapOn: "Torchic"
+- assertVisible: "About"
+- assertVisible: "Base stats"
+- assertVisible: "Evolution"
+- assertVisible: "Moves"
+- waitForAnimationToEnd
+- takeScreenshot: torchic-details

@@ -1,0 +1,5 @@
+revision=aaeae4c92783dd4ee2f0344dac7cdb81768b9b38
+device=model=Pixel7,version=36
+maestro=2.8.0
+ew-cli=1.4.1
+captured-at=2026-08-07T13:01:38Z

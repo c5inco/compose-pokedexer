@@ -1,0 +1,38 @@
+appId: des.c5inco.pokedexer.debug
+name: Filter the Pokédex and open Pokémon details
+tags:
+  - regression
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Pokédex"
+- waitForAnimationToEnd
+- assertScreenshot:
+    path: ../baselines/home.png
+    thresholdPercentage: 98
+- tapOn: "Pokédex"
+- assertVisible: "Pokemon"
+- assertVisible: "Bulbasaur"
+- waitForAnimationToEnd
+- assertScreenshot:
+    path: ../baselines/pokedex.png
+    thresholdPercentage: 98
+- tapOn: "Show filters"
+- assertVisible: "Gen I"
+- tapOn: "Gen I"
+- assertVisible: "Gen III"
+- tapOn: "Gen III"
+- assertVisible: "Torchic"
+- waitForAnimationToEnd
+- assertScreenshot:
+    path: ../baselines/generation-three.png
+    thresholdPercentage: 98
+- tapOn: "Torchic"
+- assertVisible: "About"
+- assertVisible: "Base stats"
+- assertVisible: "Evolution"
+- assertVisible: "Moves"
+- waitForAnimationToEnd
+- assertScreenshot:
+    path: ../baselines/torchic-details.png
+    thresholdPercentage: 98

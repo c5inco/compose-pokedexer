@@ -1,0 +1,44 @@
+appId: des.c5inco.pokedexer.debug
+name: Load Pokémon from generations I through V
+tags:
+  - regression
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Pokédex"
+- tapOn: "Pokédex"
+- assertVisible: "Pokemon"
+- assertVisible: "Bulbasaur"
+- assertVisible: "#001"
+
+- tapOn: "Show filters"
+- assertVisible: "Gen I"
+- tapOn: "Gen I"
+- assertVisible: "Gen II"
+- tapOn: "Gen II"
+- assertVisible: "Chikorita"
+- assertVisible: "#152"
+
+- tapOn: "Show filters"
+- assertVisible: "Gen II"
+- tapOn: "Gen II"
+- assertVisible: "Gen III"
+- tapOn: "Gen III"
+- assertVisible: "Treecko"
+- assertVisible: "#252"
+
+- tapOn: "Show filters"
+- assertVisible: "Gen III"
+- tapOn: "Gen III"
+- assertVisible: "Gen IV"
+- tapOn: "Gen IV"
+- assertVisible: "Turtwig"
+- assertVisible: "#387"
+
+- tapOn: "Show filters"
+- assertVisible: "Gen IV"
+- tapOn: "Gen IV"
+- assertVisible: "Gen V"
+- tapOn: "Gen V"
+- assertVisible: "Victini"
+- assertVisible: "#494"

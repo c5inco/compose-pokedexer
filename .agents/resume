@@ -4,16 +4,42 @@ set -euo pipefail
 readonly ANDROID_SDK="$HOME/.android-sdk"
 readonly JAVA_17_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
 readonly LOCAL_BIN="$HOME/.local/bin"
+readonly MAESTRO_BIN="$HOME/.maestro/bin"
+readonly EW_CLI_VERSION="1.4.1"
+readonly MAESTRO_VERSION="2.8.0"
 
 export JAVA_HOME="$JAVA_17_HOME"
 export ANDROID_HOME="$ANDROID_SDK"
 export ANDROID_SDK_ROOT="$ANDROID_SDK"
-export PATH="$JAVA_HOME/bin:$LOCAL_BIN:$ANDROID_SDK/platform-tools:$PATH"
+export PATH="$JAVA_HOME/bin:$LOCAL_BIN:$MAESTRO_BIN:$ANDROID_SDK/platform-tools:$PATH"
+export EW_VERSION="$EW_CLI_VERSION"
+export MAESTRO_CLI_NO_ANALYTICS=1
+export MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true
 
-if [[ ! -x "$JAVA_HOME/bin/java" || ! -x "$LOCAL_BIN/android" || ! -x "$ANDROID_SDK/platform-tools/adb" ]]; then
-    echo "Java, Android CLI, or Android SDK is missing; rerun .agents/setup" >&2
+if [[ ! -x "$JAVA_HOME/bin/java" ||
+    ! -x "$LOCAL_BIN/android" ||
+    ! -x "$ANDROID_SDK/platform-tools/adb" ||
+    ! -x "$LOCAL_BIN/ew-cli" ||
+    ! -x "$MAESTRO_BIN/maestro" ]]; then
+    echo "Android, Maestro, or Emulator.wtf tooling is missing; rerun .agents/setup" >&2
+    exit 1
+fi
+
+ew_version="$("$LOCAL_BIN/ew-cli" --version)"
+if [[ "$ew_version" != *"version $EW_CLI_VERSION"* ]]; then
+    echo "ew-cli $EW_CLI_VERSION is required; rerun .agents/setup" >&2
+    exit 1
+fi
+
+maestro_version="$("$MAESTRO_BIN/maestro" --version 2>/dev/null | tail -n 1)"
+if [[ "$maestro_version" != "$MAESTRO_VERSION" ]]; then
+    echo "Maestro $MAESTRO_VERSION is required; rerun .agents/setup" >&2
     exit 1
 fi
 
 adb start-server >/dev/null
-echo "Android SDK and ADB are ready."
+if [[ -n "${EW_API_TOKEN:-}" ]]; then
+    echo "Android SDK, ADB, Maestro, and Emulator.wtf are ready."
+else
+    echo "Android SDK, ADB, and Maestro are ready; EW_API_TOKEN is unavailable." >&2
+fi
