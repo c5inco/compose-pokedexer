@@ -4,7 +4,7 @@
 
 - **Kotlin**: Follow standard Kotlin style (ktfmt `kotlinLangStyle`).
 - **Compose**: Use standard Composable naming (`PascalCase`).
-- **Formatting**: Always run `./gradlew ktfmtFormat` before committing.
+- **Formatting**: Run `./gradlew ktfmtFormat` before committing changes that include `.kt` or `.kts` files.
 
 ## Key Patterns
 
@@ -68,8 +68,8 @@ and follow `.agents/skills/git-github-ops/SKILL.md`; when creating or using a li
 - **Commit Messages**: Explain what changed and why. Do not use typed Conventional Commit prefixes such as `feat:`,
   `fix:`, `docs:`, or `chore:`. Keep the subject imperative and at most 72 characters; wrap body lines at 72
   characters.
-- **Pre-Commit**: Run `./gradlew ktfmtFormat`, inspect the resulting diff, and run the targeted tests required by the
-  TDD cycle.
+- **Pre-Commit**: If the change includes `.kt` or `.kts` files, run `./gradlew ktfmtFormat` and inspect the resulting
+  diff. Run the targeted tests required by the TDD cycle for every behavioral change.
 - **Pre-Push / PR**: Run `./gradlew check` and confirm it passes before pushing or opening a PR. The narrowly scoped
   pre-existing-failure exception in `AGENTS.md` applies only to non-code changes with targeted validation, a follow-up
   issue, and explicit user approval; the full check must still be run and reported.

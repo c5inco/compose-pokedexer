@@ -32,7 +32,7 @@ Write a failing test before the implementation. Then make it pass with the minim
 - Never edit `detekt.yml` without explicit permission.
 - Do not create or update Detekt baselines.
 - Fix findings at the source; avoid `@Suppress`.
-- Ensure `./gradlew ktfmtFormat` is run before committing.
+- If the change includes Kotlin (`.kt`) or Kotlin script (`.kts`) files, run `./gradlew ktfmtFormat` before committing.
 
 ### Regressions and Scope
 - Changes must relate to the current task. Unrelated changes are forbidden.
@@ -81,7 +81,8 @@ reset/restore operations, and GitHub mutations such as creating, editing, closin
 request for analysis or a question about an approach is not approval.
 
 Never push directly to the default branch without the user explicitly requesting that exact action. Before pushing or
-opening a PR, complete the TDD cycle, run `./gradlew ktfmtFormat`, then run `./gradlew check` and confirm it passes.
+opening a PR, complete the TDD cycle, run `./gradlew ktfmtFormat` if the change includes `.kt` or `.kts` files, then run
+`./gradlew check` and confirm it passes.
 
 ### Pre-Existing Check Failure Exception
 

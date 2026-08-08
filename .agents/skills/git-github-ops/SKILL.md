@@ -45,7 +45,7 @@ Use this shape:
 
 1. Run `git status --short` and inspect `git diff`.
 2. Run the relevant targeted tests.
-3. Run `./gradlew ktfmtFormat`, then inspect the diff again.
+3. If the change includes `.kt` or `.kts` files, run `./gradlew ktfmtFormat`, then inspect the diff again.
 4. Stage only files in scope.
 5. Inspect `git diff --staged`.
 6. Write the message to a temporary file, optionally starting from `templates/commit-message.txt`.

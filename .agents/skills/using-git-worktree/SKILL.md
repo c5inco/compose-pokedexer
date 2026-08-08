@@ -76,7 +76,8 @@ From the new worktree:
 ## Gradle and Formatting Safeguards
 
 - Use the Gradle tasks configured by this repository, not a separately installed ktfmt CLI.
-- Run `./gradlew ktfmtFormat` before committing and inspect any formatting changes.
+- If the change includes `.kt` or `.kts` files, run `./gradlew ktfmtFormat` before committing and inspect any
+  formatting changes.
 - Run targeted tests during development and `./gradlew check` before every push or PR. If it fails, follow the
   pre-existing check failure exception in `AGENTS.md`; never infer an exception from worktree isolation alone.
 - After an approved rebase or merge, find the merge base, inspect the branch diff, and verify that key changes survived
