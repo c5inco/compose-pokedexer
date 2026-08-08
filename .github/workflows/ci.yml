@@ -23,5 +23,37 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run Build and Quality Checks
-        run: ./gradlew check --stacktrace
+      - name: Run Android and Quality Checks
+        run: >
+          ./gradlew
+          :app:check
+          :benchmark:check
+          :shared:detekt
+          :shared:ktfmtCheck
+          --stacktrace
+
+  ios:
+    runs-on: macos-15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build iOS application
+        run: >
+          xcodebuild
+          -project iosApp/PokedexerApp.xcodeproj
+          -scheme PokedexerApp
+          -configuration Debug
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+          build
