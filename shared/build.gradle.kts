@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.target.HostManager
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -29,10 +31,12 @@ kotlin {
         }
     }
 
-    listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach {
-        it.binaries.framework {
-            baseName = "Shared"
-            isStatic = true
+    if (HostManager.hostIsMac) {
+        listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach {
+            it.binaries.framework {
+                baseName = "Shared"
+                isStatic = true
+            }
         }
     }
 
@@ -59,9 +63,11 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
         }
 
-        iosMain.dependencies {
-            // iOS uses bundled SQLite driver
-            implementation(libs.sqlite.bundled)
+        if (HostManager.hostIsMac) {
+            iosMain.dependencies {
+                // iOS uses bundled SQLite driver
+                implementation(libs.sqlite.bundled)
+            }
         }
 
         commonTest.dependencies { implementation(libs.kotlin.test) }
@@ -82,9 +88,11 @@ apollo {
 // KSP for Room compiler - must be added for each target
 dependencies {
     add("kspAndroid", libs.room.compiler)
-    add("kspIosSimulatorArm64", libs.room.compiler)
-    add("kspIosX64", libs.room.compiler)
-    add("kspIosArm64", libs.room.compiler)
+    if (HostManager.hostIsMac) {
+        add("kspIosSimulatorArm64", libs.room.compiler)
+        add("kspIosX64", libs.room.compiler)
+        add("kspIosArm64", libs.room.compiler)
+    }
 }
 
 // TODO: Remove this workaround when Room KMP stabilizes expect/actual support
