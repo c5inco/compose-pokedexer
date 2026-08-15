@@ -6,6 +6,7 @@ readonly JAVA_17_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
 readonly LOCAL_BIN="$HOME/.local/bin"
 readonly TOOLCHAIN_PROFILE_MARKER="# compose-pokedexer Android CLI toolchain"
 readonly AMP_AGENT_CONFIG_DIR="$HOME/.config/amp"
+readonly ANDROID_CLI_SKILL_DIR="$HOME/.android/cli/skills"
 readonly ORB_GUIDANCE_MARKER="# compose-pokedexer Amp Orb isolation override"
 
 mkdir -p "$AMP_AGENT_CONFIG_DIR"
@@ -56,6 +57,12 @@ if [[ ! -x "$LOCAL_BIN/android" ]]; then
     trap - EXIT
 fi
 android update
+
+echo "Installing Android CLI skills for Amp..."
+while IFS= read -r -d '' skill_file; do
+    skill_dir="${skill_file%/SKILL.md}"
+    amp skill add --global --overwrite "$skill_dir"
+done < <(find "$ANDROID_CLI_SKILL_DIR" -type f -name SKILL.md -print0)
 
 echo "Installing Android SDK packages..."
 android --sdk="$ANDROID_SDK" sdk install \
