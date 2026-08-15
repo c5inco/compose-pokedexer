@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly TAILSCALE_DROP_IN="${TAILSCALE_DROP_IN:-/etc/systemd/system/tailscaled.service.d/amp-orb.conf}"
+readonly TAILSCALE_STATE="${TAILSCALE_STATE:-/var/lib/tailscale/tailscaled.state}"
+readonly TAILSCALE_TAG="${TAILSCALE_TAG:-tag:amp-pokedexer-adb}"
+
+install_tailscale() {
+    if ! command -v tailscale >/dev/null 2>&1; then
+        sudo install -d -m 0755 /usr/share/keyrings
+        curl -fsSL https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg |
+            sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+        curl -fsSL https://pkgs.tailscale.com/stable/debian/bookworm.tailscale-keyring.list |
+            sudo tee /etc/apt/sources.list.d/tailscale.list >/dev/null
+        sudo apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y tailscale
+    fi
+
+    sudo install -d "$(dirname "$TAILSCALE_DROP_IN")"
+    printf '%s\n' \
+        '[Service]' \
+        'Environment=TS_ASSUME_NETWORK_UP_FOR_TEST=true' |
+        sudo tee "$TAILSCALE_DROP_IN" >/dev/null
+    sudo systemctl daemon-reload
+    sudo systemctl enable tailscaled >/dev/null
+
+    # Amp may reuse setup snapshots for other orbs. Never snapshot a node identity.
+    sudo systemctl stop tailscaled
+    sudo rm -f "$TAILSCALE_STATE"
+
+    echo "Tailscale installed without authenticated node state."
+    echo "Join this orb after setup with: ./.agents/tailscale join"
+}
+
+backend_state() {
+    sudo tailscale status --json 2>/dev/null | jq -r '.BackendState // "Unknown"'
+}
+
+wait_for_backend_state() {
+    local state="Unknown"
+    local attempt
+    for attempt in {1..5}; do
+        state="$(backend_state || true)"
+        [[ "$state" == "Running" || "$state" == "NeedsLogin" ]] && break
+        sleep 1
+    done
+    echo "$state"
+}
+
+restart_tailscale() {
+    if ! command -v tailscale >/dev/null 2>&1 || [[ ! -f "$TAILSCALE_DROP_IN" ]]; then
+        echo "Tailscale is not configured; rerun .agents/setup in a fresh orb." >&2
+        return 1
+    fi
+
+    sudo systemctl restart tailscaled
+}
+
+resume_tailscale() {
+    restart_tailscale
+
+    local state
+    state="$(wait_for_backend_state)"
+
+    case "$state" in
+        Running)
+            echo "Tailscale resumed with its existing node identity."
+            ;;
+        NeedsLogin)
+            echo "Tailscale is ready for its first join: ./.agents/tailscale join"
+            ;;
+        *)
+            echo "Tailscale started but its backend state is $state; retry after connectivity recovers." >&2
+            return 1
+            ;;
+    esac
+}
+
+join_tailscale() {
+    : "${TAILSCALE_CLIENT_ID:?Set TAILSCALE_CLIENT_ID in Amp project environment variables}"
+    : "${TAILSCALE_AUDIENCE:?Set TAILSCALE_AUDIENCE in Amp project environment variables}"
+
+    restart_tailscale
+    if [[ "$(wait_for_backend_state)" == "Running" ]]; then
+        echo "Tailscale is already joined."
+        return
+    fi
+
+    local identity_token
+    identity_token="$(amp orb id-token --audience "$TAILSCALE_AUDIENCE")"
+    sudo tailscale up \
+        --client-id="${TAILSCALE_CLIENT_ID}?ephemeral=false&preauthorized=true" \
+        --id-token="$identity_token" \
+        --advertise-tags="$TAILSCALE_TAG" \
+        --hostname="amp-pokedexer-$(hostname -s)"
+    unset identity_token
+
+    if [[ "$(backend_state)" != "Running" ]]; then
+        echo "Tailscale registration did not reach Running state." >&2
+        return 1
+    fi
+
+    echo "Tailscale joined as a persistent, revocable per-orb node."
+}
+
+case "${1:-}" in
+    install)
+        install_tailscale
+        ;;
+    resume)
+        resume_tailscale
+        ;;
+    join)
+        join_tailscale
+        ;;
+    *)
+        echo "Usage: $0 {install|resume|join}" >&2
+        exit 2
+        ;;
+esac

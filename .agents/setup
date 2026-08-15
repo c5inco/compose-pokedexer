@@ -27,6 +27,9 @@ if [[ ! -x "$JAVA_17_HOME/bin/java" ]]; then
     sudo DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-17-jdk-headless
 fi
 
+echo "Installing Tailscale without snapshotting a node identity..."
+./.agents/tailscale install
+
 export JAVA_HOME="$JAVA_17_HOME"
 export ANDROID_HOME="$ANDROID_SDK"
 export ANDROID_SDK_ROOT="$ANDROID_SDK"
@@ -67,3 +70,5 @@ GRADLE_OPTS="-Dorg.gradle.jvmargs=-Xmx1536m -Dfile.encoding=UTF-8" \
     :app:assembleDebug
 
 echo "Orb setup complete."
+echo "Set TAILSCALE_CLIENT_ID and TAILSCALE_AUDIENCE in Amp project environment variables."
+echo "Join this orb to the Android tailnet with: ./.agents/tailscale join"

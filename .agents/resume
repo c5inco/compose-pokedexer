@@ -16,4 +16,5 @@ if [[ ! -x "$JAVA_HOME/bin/java" || ! -x "$LOCAL_BIN/android" || ! -x "$ANDROID_
 fi
 
 adb start-server >/dev/null
+./.agents/tailscale resume
 echo "Android SDK and ADB are ready."
