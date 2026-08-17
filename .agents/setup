@@ -1,81 +1,242 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-readonly ANDROID_SDK="$HOME/.android-sdk"
-readonly JAVA_17_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
-readonly LOCAL_BIN="$HOME/.local/bin"
-readonly TOOLCHAIN_PROFILE_MARKER="# compose-pokedexer Android CLI toolchain"
-readonly AMP_AGENT_CONFIG_DIR="$HOME/.config/amp"
-readonly ANDROID_CLI_SKILL_DIR="$HOME/.android/cli/skills"
-readonly ORB_GUIDANCE_MARKER="# compose-pokedexer Amp Orb isolation override"
+readonly REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=.agents/android-toolchain.env
+source "$REPO_ROOT/.agents/android-toolchain.env"
+readonly JDK_RELEASE JDK_SHA256 CMDLINE_TOOLS_VERSION CMDLINE_TOOLS_BUILD
+readonly CMDLINE_TOOLS_SHA256 ANDROID_CLI_VERSION PLATFORM_TOOLS_REVISION
+readonly ANDROID_COMPILE_SDK ANDROID_PLATFORM_REVISION ANDROID_BUILD_TOOLS_VERSION
 
-mkdir -p "$AMP_AGENT_CONFIG_DIR"
-if ! grep -Fqx "$ORB_GUIDANCE_MARKER" "$AMP_AGENT_CONFIG_DIR/AGENTS.md" 2>/dev/null; then
-    cat >> "$AMP_AGENT_CONFIG_DIR/AGENTS.md" <<'EOF'
+if [[ "$(uname -s)/$(uname -m)" != "Linux/x86_64" ]]; then
+    echo "Android Orb setup supports Linux x86_64; found $(uname -s) $(uname -m)." >&2
+    exit 1
+fi
 
-# compose-pokedexer Amp Orb isolation override
+readonly JDK_VERSION="${JDK_RELEASE%%+*}"
+readonly JDK_ARCHIVE_NAME="OpenJDK17U-jdk_x64_linux_hotspot_${JDK_RELEASE/+/_}.tar.gz"
+readonly JDK_URL="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK_RELEASE/+/%2B}/$JDK_ARCHIVE_NAME"
+readonly CMDLINE_TOOLS_ARCHIVE_NAME="commandlinetools-linux-${CMDLINE_TOOLS_BUILD}_latest.zip"
+readonly CMDLINE_TOOLS_URL="https://dl.google.com/android/repository/$CMDLINE_TOOLS_ARCHIVE_NAME"
+readonly TOOLCHAIN_ROOT="$HOME/.local/share/android-toolchains"
+readonly DOWNLOAD_CACHE="$HOME/.cache/amp/android-toolchains"
+readonly JAVA_HOME="$TOOLCHAIN_ROOT/temurin-$JDK_RELEASE"
+readonly ANDROID_SDK_ROOT="$HOME/.android-sdk"
+readonly SDKMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/$CMDLINE_TOOLS_VERSION/bin/sdkmanager"
+readonly ANDROID_CLI="$ANDROID_SDK_ROOT/cmdline-tools/$CMDLINE_TOOLS_VERSION/bin/android"
+readonly ANDROID_SKILLS_ROOT="$HOME/.config/agents/skills"
+readonly PROFILE_ENV="$HOME/.config/pokedexer/android-env.sh"
+readonly PROFILE_MARKER="# compose-pokedexer pinned Android toolchain"
+readonly PROFILE_SOURCE='source "$HOME/.config/pokedexer/android-env.sh"'
+readonly GRADLE_WRAPPER_PROPERTIES="$REPO_ROOT/gradle/wrapper/gradle-wrapper.properties"
+GRADLE_VERSION="$(sed -n 's#^distributionUrl=.*gradle-\([0-9][^-]*\)-bin\.zip#\1#p' "$GRADLE_WRAPPER_PROPERTIES")"
+readonly GRADLE_VERSION
+: "${GRADLE_VERSION:?Could not derive Gradle version from $GRADLE_WRAPPER_PROPERTIES}"
+readonly -a SDK_PACKAGE_SPECS=(
+    "platform-tools@$PLATFORM_TOOLS_REVISION"
+    "platforms/android-$ANDROID_COMPILE_SDK@$ANDROID_PLATFORM_REVISION"
+    "build-tools/$ANDROID_BUILD_TOOLS_VERSION"
+)
+readonly -a SDK_PACKAGE_DIRECTORIES=(
+    "platform-tools"
+    "platforms/android-$ANDROID_COMPILE_SDK"
+    "build-tools/$ANDROID_BUILD_TOOLS_VERSION"
+)
+readonly -a SDK_PACKAGE_REVISIONS=(
+    "$PLATFORM_TOOLS_REVISION"
+    "$ANDROID_PLATFORM_REVISION"
+    "$ANDROID_BUILD_TOOLS_VERSION"
+)
 
-- When working in the compose-pokedexer checkout, treat the Orb as sufficient filesystem isolation.
-- This overrides the repository Worktree Policy: do not prompt for or create an additional Git worktree.
-- If Git isolation is needed, creating a task-specific feature branch is pre-approved and requires no prompt.
-- All other repository Git and GitHub safeguards continue to apply.
+download() {
+    local url="$1"
+    local checksum="$2"
+    local destination="$3"
+
+    if [[ -f "$destination" ]] &&
+        printf '%s  %s\n' "$checksum" "$destination" | sha256sum --check --status; then
+        return
+    fi
+
+    rm -f "$destination.part"
+    curl --fail --location --retry 3 --retry-all-errors \
+        --output "$destination.part" "$url"
+    if ! printf '%s  %s\n' "$checksum" "$destination.part" | sha256sum --check --status; then
+        rm -f "$destination.part"
+        echo "Checksum verification failed for $url" >&2
+        return 1
+    fi
+    mv -f "$destination.part" "$destination"
+}
+
+install_host_prerequisites() {
+    local -a packages=()
+    command -v curl >/dev/null 2>&1 || packages+=(curl)
+    command -v sha256sum >/dev/null 2>&1 || packages+=(coreutils)
+    command -v tar >/dev/null 2>&1 || packages+=(tar)
+    command -v unzip >/dev/null 2>&1 || packages+=(unzip)
+    [[ -f /etc/ssl/certs/ca-certificates.crt ]] || packages+=(ca-certificates)
+    ((${#packages[@]} == 0)) && return
+
+    local -a as_root=()
+    ((EUID == 0)) || as_root=(sudo)
+    "${as_root[@]}" apt-get update
+    "${as_root[@]}" env DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}"
+}
+
+install_jdk() {
+    if [[ -x "$JAVA_HOME/bin/javac" ]] &&
+        "$JAVA_HOME/bin/java" -version 2>&1 | grep -Fq "$JDK_VERSION"; then
+        return
+    fi
+
+    local archive="$DOWNLOAD_CACHE/$JDK_ARCHIVE_NAME"
+    local partial="$JAVA_HOME.partial"
+    download "$JDK_URL" "$JDK_SHA256" "$archive"
+    rm -rf "$partial"
+    mkdir -p "$partial"
+    tar -xzf "$archive" --strip-components=1 -C "$partial"
+    rm -rf "$JAVA_HOME"
+    mv "$partial" "$JAVA_HOME"
+}
+
+install_android_command_line_tools() {
+    local tools_home="$ANDROID_SDK_ROOT/cmdline-tools/$CMDLINE_TOOLS_VERSION"
+    if [[ -x "$tools_home/bin/sdkmanager" ]] &&
+        [[ -x "$tools_home/bin/android" ]] &&
+        grep -Fq "Pkg.Revision=$CMDLINE_TOOLS_VERSION" "$tools_home/source.properties"; then
+        return
+    fi
+
+    local archive="$DOWNLOAD_CACHE/$CMDLINE_TOOLS_ARCHIVE_NAME"
+    local partial="$ANDROID_SDK_ROOT/cmdline-tools/.$CMDLINE_TOOLS_VERSION.partial"
+    download "$CMDLINE_TOOLS_URL" "$CMDLINE_TOOLS_SHA256" "$archive"
+    rm -rf "$partial"
+    mkdir -p "$partial"
+    unzip -q "$archive" -d "$partial"
+    rm -rf "$tools_home"
+    mv "$partial/cmdline-tools" "$tools_home"
+    rm -rf "$partial"
+}
+
+accept_android_licenses() {
+    local status
+    set +o pipefail
+    yes | "$SDKMANAGER" --sdk_root="$ANDROID_SDK_ROOT" --licenses >/dev/null
+    status="${PIPESTATUS[1]}"
+    set -o pipefail
+    ((status == 0))
+}
+
+write_shell_environment() {
+    mkdir -p "$(dirname "$PROFILE_ENV")"
+    cat > "$PROFILE_ENV" <<EOF
+# Generated by compose-pokedexer/.agents/setup.
+export JAVA_HOME="\$HOME/.local/share/android-toolchains/temurin-$JDK_RELEASE"
+export ANDROID_HOME="\$HOME/.android-sdk"
+export ANDROID_SDK_ROOT="\$ANDROID_HOME"
+export PATH="\$JAVA_HOME/bin:\$ANDROID_HOME/cmdline-tools/$CMDLINE_TOOLS_VERSION/bin:\$ANDROID_HOME/platform-tools:\$PATH"
 EOF
+
+    touch "$HOME/.bash_profile"
+    if ! grep -Fqx "$PROFILE_MARKER" "$HOME/.bash_profile"; then
+        printf '\n%s\n' "$PROFILE_MARKER" >> "$HOME/.bash_profile"
+    fi
+    if ! grep -Fqx "$PROFILE_SOURCE" "$HOME/.bash_profile"; then
+        printf '%s\n' "$PROFILE_SOURCE" >> "$HOME/.bash_profile"
+    fi
+}
+
+sdk_package_is_installed() {
+    local package_directory="$1"
+    local expected_revision="$2"
+    local source_properties="$ANDROID_SDK_ROOT/$package_directory/source.properties"
+    [[ -f "$source_properties" ]] &&
+        grep -Fqx "Pkg.Revision=$expected_revision" "$source_properties"
+}
+
+validate_installed_packages() {
+    local index
+    for index in "${!SDK_PACKAGE_SPECS[@]}"; do
+        if ! sdk_package_is_installed \
+            "${SDK_PACKAGE_DIRECTORIES[$index]}" \
+            "${SDK_PACKAGE_REVISIONS[$index]}"; then
+            echo "Android SDK package is not installed at the pinned revision: ${SDK_PACKAGE_SPECS[$index]}" >&2
+            return 1
+        fi
+    done
+}
+
+cd "$REPO_ROOT"
+mkdir -p "$TOOLCHAIN_ROOT" "$DOWNLOAD_CACHE" "$ANDROID_SDK_ROOT/cmdline-tools"
+
+echo "[1/6] Installing pinned host toolchains..."
+install_host_prerequisites
+install_jdk
+export JAVA_HOME ANDROID_SDK_ROOT
+export ANDROID_HOME="$ANDROID_SDK_ROOT"
+export PATH="$JAVA_HOME/bin:$ANDROID_SDK_ROOT/cmdline-tools/$CMDLINE_TOOLS_VERSION/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH"
+install_android_command_line_tools
+write_shell_environment
+
+echo "[2/6] Installing Android CLI skills for Amp..."
+# The user explicitly prefers the latest official Android skill catalog.
+"$ANDROID_CLI" --no-metrics skills add --all --agent=amp >/dev/null
+mapfile -t android_skills < <("$ANDROID_CLI" --no-metrics skills list)
+((${#android_skills[@]} > 0))
+for skill in "${android_skills[@]}"; do
+    if [[ ! -f "$ANDROID_SKILLS_ROOT/$skill/SKILL.md" ]]; then
+        echo "Android skill is not installed for Amp: $skill" >&2
+        exit 1
+    fi
+done
+
+echo "[3/6] Installing required Android SDK packages..."
+missing_package_specs=()
+for index in "${!SDK_PACKAGE_SPECS[@]}"; do
+    if ! sdk_package_is_installed \
+        "${SDK_PACKAGE_DIRECTORIES[$index]}" \
+        "${SDK_PACKAGE_REVISIONS[$index]}"; then
+        missing_package_specs+=("${SDK_PACKAGE_SPECS[$index]}")
+    fi
+done
+if ((${#missing_package_specs[@]} > 0)); then
+    accept_android_licenses
+    "$ANDROID_CLI" --no-metrics --sdk="$ANDROID_SDK_ROOT" sdk install --force \
+        "${missing_package_specs[@]}"
 fi
 
-echo "Installing the Java 17 toolchain..."
-if [[ ! -x "$JAVA_17_HOME/bin/java" ]]; then
-    sudo apt-get update
-    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-17-jdk-headless
-fi
+echo "[4/6] Validating Java and Android tools..."
+java_version="$($JAVA_HOME/bin/java -version 2>&1)"
+javac_version="$($JAVA_HOME/bin/javac -version 2>&1)"
+sdkmanager_version="$($SDKMANAGER --version)"
+android_cli_version="$($ANDROID_CLI --no-metrics --version)"
+adb_version="$(adb version)"
+grep -Fq "$JDK_VERSION" <<< "$java_version"
+grep -Fq "$JDK_VERSION" <<< "$javac_version"
+grep -Fq "$CMDLINE_TOOLS_VERSION" <<< "$sdkmanager_version"
+grep -Fxq "$ANDROID_CLI_VERSION" <<< "$android_cli_version"
+[[ "$(command -v android)" == "$ANDROID_CLI" ]]
+printf '%s\n%s\nAndroid sdkmanager %s\nAndroid CLI %s (%d Amp skills)\n%s\n' \
+    "$(head -n 1 <<< "$java_version")" \
+    "$javac_version" \
+    "$sdkmanager_version" \
+    "$android_cli_version" \
+    "${#android_skills[@]}" \
+    "$(head -n 2 <<< "$adb_version")"
 
-echo "Installing Tailscale without snapshotting a node identity..."
-./.agents/tailscale install
+echo "[5/6] Validating installed SDK packages and Gradle JVM..."
+validate_installed_packages
+for index in "${!SDK_PACKAGE_SPECS[@]}"; do
+    printf '%s | %s\n' "${SDK_PACKAGE_DIRECTORIES[$index]}" "${SDK_PACKAGE_REVISIONS[$index]}"
+done
+gradle_version="$(./gradlew --no-daemon --version)"
+grep -Fq "Gradle $GRADLE_VERSION" <<< "$gradle_version"
+grep -Fq "Launcher JVM:  $JDK_VERSION" <<< "$gradle_version"
+grep -Fq "$JAVA_HOME" <<< "$gradle_version"
+printf '%s\n' "$gradle_version"
 
-export JAVA_HOME="$JAVA_17_HOME"
-export ANDROID_HOME="$ANDROID_SDK"
-export ANDROID_SDK_ROOT="$ANDROID_SDK"
-export PATH="$JAVA_HOME/bin:$LOCAL_BIN:$ANDROID_SDK/platform-tools:$PATH"
+echo "[6/6] Configuring the Android app with the checked-in Gradle wrapper..."
+./gradlew --no-daemon --max-workers=1 :app:tasks --group build >/dev/null
 
-if ! grep -Fqx "$TOOLCHAIN_PROFILE_MARKER" "$HOME/.bash_profile" 2>/dev/null; then
-    cat >> "$HOME/.bash_profile" <<EOF
-
-$TOOLCHAIN_PROFILE_MARKER
-export JAVA_HOME="$JAVA_17_HOME"
-export ANDROID_HOME="$ANDROID_SDK"
-export ANDROID_SDK_ROOT="$ANDROID_SDK"
-export PATH="\$JAVA_HOME/bin:$LOCAL_BIN:\$ANDROID_HOME/platform-tools:\$PATH"
-EOF
-fi
-
-echo "Installing Android CLI..."
-if [[ ! -x "$LOCAL_BIN/android" ]]; then
-    installer="$(mktemp)"
-    trap 'rm -f "$installer"' EXIT
-    curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh -o "$installer"
-    bash "$installer"
-    rm -f "$installer"
-    trap - EXIT
-fi
-android update
-
-echo "Installing Android CLI skills for Amp..."
-while IFS= read -r -d '' skill_file; do
-    skill_dir="${skill_file%/SKILL.md}"
-    amp skill add --global --overwrite "$skill_dir"
-done < <(find "$ANDROID_CLI_SKILL_DIR" -type f -name SKILL.md -print0)
-
-echo "Installing Android SDK packages..."
-android --sdk="$ANDROID_SDK" sdk install \
-    platform-tools \
-    platforms/android-36 \
-    build-tools/36.0.0
-
-echo "Building the Android debug app and warming Gradle dependencies..."
-GRADLE_OPTS="-Dorg.gradle.jvmargs=-Xmx1536m -Dfile.encoding=UTF-8" \
-    ./gradlew --no-daemon --max-workers=1 \
-    -Pkotlin.compiler.execution.strategy=in-process \
-    :app:assembleDebug
-
-echo "Orb setup complete."
-echo "Set TAILSCALE_CLIENT_ID and TAILSCALE_AUDIENCE in Amp project environment variables."
-echo "Join this orb to the Android tailnet with: ./.agents/tailscale join"
+echo "Orb Android build setup and Android CLI skills are ready. Device connectivity remains managed by the android-device plugin."
