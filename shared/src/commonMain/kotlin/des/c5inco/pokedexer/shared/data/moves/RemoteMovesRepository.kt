@@ -9,7 +9,6 @@ import des.c5inco.pokedexer.shared.model.Move
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class RemoteMovesRepository(
@@ -20,45 +19,50 @@ class RemoteMovesRepository(
         return movesDao.getAll()
     }
 
-    override suspend fun updateMoves() {
-        val moves = movesDao.getAll().first()
+    override suspend fun updateMoves() =
+        withContext(Dispatchers.IO) {
+            println("Loading moves from network...")
+            val response = apolloClient.query(PokemonOriginalMovesQuery()).execute()
 
-        if (moves.isEmpty()) {
-            withContext(Dispatchers.IO) {
-                println("Loading moves from network...")
-                val response = apolloClient.query(PokemonOriginalMovesQuery()).execute()
-
-                if (!response.hasErrors()) {
-                    val movesFromServer =
-                        response.data!!.moves.map { model ->
-                            Move(
-                                id = model.id,
-                                name =
-                                    model.name.split("-").joinToString(" ") { part ->
-                                        part.replaceFirstChar { it.uppercase() }
-                                    },
-                                description =
-                                    cleanupDescriptionText(model.description.first().flavorText),
-                                category =
-                                    model.category!!.name.replaceFirstChar { it.uppercase() },
-                                type = model.type!!.name.replaceFirstChar { it.uppercase() },
-                                pp = model.pp!!,
-                                power = model.power,
-                                accuracy = model.accuracy,
-                            )
-                        }
-
-                    movesDao.deleteAll()
-                    movesDao.insertAll(*movesFromServer.toTypedArray())
-                    println("Populated moves database: ${movesFromServer.size}")
-                } else {
-                    throw ApolloException("The response has errors: ${response.errors}")
-                }
+            if (response.hasErrors()) {
+                throw ApolloException("The response has errors: ${response.errors}")
             }
-        } else {
-            println("Moves loaded from database: ${moves.size}")
+
+            val data = response.data!!
+            val remoteCount = data.info.total?.count ?: data.moves.size
+            val localCount = movesDao.count()
+            if (localCount == remoteCount) {
+                println("Moves loaded from database: $localCount")
+                return@withContext
+            }
+
+            val movesFromServer =
+                data.moves.mapNotNull { model ->
+                    val category = model.category ?: return@mapNotNull null
+                    val type = model.type ?: return@mapNotNull null
+                    val pp = model.pp ?: return@mapNotNull null
+                    Move(
+                        id = model.id,
+                        name =
+                            model.name.split("-").joinToString(" ") { part ->
+                                part.replaceFirstChar { it.uppercase() }
+                            },
+                        description =
+                            cleanupDescriptionText(
+                                model.description.firstOrNull()?.flavorText.orEmpty()
+                            ),
+                        category = category.name.replaceFirstChar { it.uppercase() },
+                        type = type.name.replaceFirstChar { it.uppercase() },
+                        pp = pp,
+                        power = model.power,
+                        accuracy = model.accuracy,
+                    )
+                }
+
+            movesDao.deleteAll()
+            movesDao.insertAll(*movesFromServer.toTypedArray())
+            println("Populated moves database: ${movesFromServer.size}")
         }
-    }
 
     override fun getMoveById(id: Int): Flow<Move?> {
         return movesDao.findById(id)

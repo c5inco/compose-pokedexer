@@ -9,7 +9,6 @@ import des.c5inco.pokedexer.shared.model.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 interface ItemsRepository {
@@ -30,39 +29,41 @@ class ItemsRepositoryImpl(private val itemsDao: ItemsDao, private val apolloClie
         return itemsDao.getAll()
     }
 
-    override suspend fun updateItems() {
-        val items = itemsDao.getAll().first()
+    override suspend fun updateItems() =
+        withContext(Dispatchers.IO) {
+            println("Loading items from network...")
+            val response = apolloClient.query(ItemsQuery()).execute()
 
-        if (items.isEmpty()) {
-            withContext(Dispatchers.IO) {
-                println("Loading items from network...")
-                val response = apolloClient.query(ItemsQuery()).execute()
-
-                if (!response.hasErrors()) {
-                    val itemsFromServer =
-                        response.data!!.info.items.map { model ->
-                            Item(
-                                id = model.id,
-                                name =
-                                    model.name.split("-").joinToString(" ") { part ->
-                                        part.replaceFirstChar { it.uppercase() }
-                                    },
-                                description = cleanupDescriptionText(model.flavorText.first().text),
-                                sprite = model.name,
-                            )
-                        }
-
-                    itemsDao.deleteAll()
-                    itemsDao.insertAll(*itemsFromServer.toTypedArray())
-                    println("Populated items database: ${itemsFromServer.size}")
-                } else {
-                    throw ApolloException("The response has errors: ${response.errors}")
-                }
+            if (response.hasErrors()) {
+                throw ApolloException("The response has errors: ${response.errors}")
             }
-        } else {
-            println("Items loaded from database: ${items.size}")
+
+            val data = response.data!!.info
+            val remoteCount = data.total?.count ?: data.items.size
+            val localCount = itemsDao.count()
+            if (localCount == remoteCount) {
+                println("Items loaded from database: $localCount")
+                return@withContext
+            }
+
+            val itemsFromServer =
+                data.items.map { model ->
+                    Item(
+                        id = model.id,
+                        name =
+                            model.name.split("-").joinToString(" ") { part ->
+                                part.replaceFirstChar { it.uppercase() }
+                            },
+                        description =
+                            cleanupDescriptionText(model.flavorText.firstOrNull()?.text.orEmpty()),
+                        sprite = model.name,
+                    )
+                }
+
+            itemsDao.deleteAll()
+            itemsDao.insertAll(*itemsFromServer.toTypedArray())
+            println("Populated items database: ${itemsFromServer.size}")
         }
-    }
 
     override fun getItemById(id: Int): Flow<Item?> {
         return itemsDao.findById(id)

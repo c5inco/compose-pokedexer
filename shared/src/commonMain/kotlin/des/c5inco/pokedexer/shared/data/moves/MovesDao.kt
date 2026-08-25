@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.Flow
 interface MovesDao {
     @Query("SELECT * FROM move") fun getAll(): Flow<List<Move>>
 
+    @Query("SELECT COUNT(*) FROM move") suspend fun count(): Int
+
     @Query("SELECT * FROM move WHERE id = :id LIMIT 1") fun findById(id: Int): Flow<Move?>
 
     @Query("SELECT * FROM move WHERE id IN (:ids)")
