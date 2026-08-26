@@ -22,11 +22,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+
+private const val MOVES_RETRY_DELAY_MILLIS = 30_000L
 
 class GenerationLoader
 internal constructor(
@@ -34,6 +37,7 @@ internal constructor(
     private val loadedGenerationIds: suspend () -> Set<Int>,
     private val refreshMoves: suspend () -> Unit,
     private val fetchGeneration: suspend (Generation) -> Unit,
+    private val waitBeforeMovesRetry: suspend () -> Unit = { delay(MOVES_RETRY_DELAY_MILLIS) },
 ) {
     constructor(
         pokemonDao: PokemonDao,
@@ -131,7 +135,7 @@ internal constructor(
         try {
             coroutineScope {
                 val shouldRefreshMoves = mutex.withLock { !movesAreReady }
-                val movesRefresh =
+                var movesRefresh =
                     if (shouldRefreshMoves) {
                         async { refreshMovesSafely(refreshMoves) }
                     } else {
@@ -140,9 +144,9 @@ internal constructor(
                 val generationOneQueued = mutex.withLock { queue.remove(Generation.I) }
                 if (generationOneQueued) processGeneration(Generation.I)
 
-                if (movesRefresh?.await() == false) {
-                    finishQueuedAttempts()
-                    return@coroutineScope
+                while (movesRefresh?.await() == false) {
+                    waitBeforeMovesRetry()
+                    movesRefresh = async { refreshMovesSafely(refreshMoves) }
                 }
                 mutex.withLock { movesAreReady = true }
 
@@ -177,19 +181,6 @@ internal constructor(
         } else {
             queue.removeAt(0)
         }
-    }
-
-    private suspend fun finishQueuedAttempts() {
-        val pendingAttempts = mutex.withLock {
-            worker = null
-            queue
-                .mapNotNull { generation ->
-                    inFlight -= generation
-                    attempts.remove(generation)
-                }
-                .also { queue.clear() }
-        }
-        pendingAttempts.forEach { it.complete(Unit) }
     }
 
     private suspend fun finishAttempt(generation: Generation) {
