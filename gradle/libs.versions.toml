@@ -54,6 +54,7 @@ coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coil" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+sqlite-core = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 
 # Coroutines (KMP)
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }

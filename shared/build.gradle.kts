@@ -45,6 +45,7 @@ kotlin {
         commonMain.dependencies {
             // Room KMP
             implementation(libs.room.runtime)
+            implementation(libs.sqlite.core)
 
             // Apollo GraphQL
             implementation(libs.apollo.runtime)
@@ -74,6 +75,8 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.apollo.testing.support)
             implementation(libs.kotlin.test)
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.core)
         }
     }
 }
