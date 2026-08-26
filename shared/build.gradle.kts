@@ -15,6 +15,7 @@ kotlin {
         namespace = "des.c5inco.pokedexer.shared"
         compileSdk = 36
         minSdk = 28
+        withHostTestBuilder {}
 
         compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
     }
@@ -70,7 +71,10 @@ kotlin {
             }
         }
 
-        commonTest.dependencies { implementation(libs.kotlin.test) }
+        commonTest.dependencies {
+            implementation(libs.apollo.testing.support)
+            implementation(libs.kotlin.test)
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package des.c5inco.pokedexer.shared
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.shared.data.PokemonDatabase
 import des.c5inco.pokedexer.shared.data.abilities.AbilitiesRepositoryImpl
 import des.c5inco.pokedexer.shared.data.getDatabaseBuilder
@@ -87,7 +88,7 @@ private constructor(
     // Moves methods
     fun getAllMoves(): Flow<List<Move>> = movesRepository.moves()
 
-    suspend fun updateMoves() = movesRepository.updateMoves()
+    suspend fun updateMoves() = runIosDataUpdateSafely("moves") { movesRepository.updateMoves() }
 
     fun getMoveById(id: Int): Flow<Move?> = movesRepository.getMoveById(id)
 
@@ -96,7 +97,7 @@ private constructor(
     // Items methods
     fun getAllItems(): Flow<List<Item>> = itemsRepository.items()
 
-    suspend fun updateItems() = itemsRepository.updateItems()
+    suspend fun updateItems() = runIosDataUpdateSafely("items") { itemsRepository.updateItems() }
 
     fun getItemById(id: Int): Flow<Item?> = itemsRepository.getItemById(id)
 
@@ -106,4 +107,12 @@ private constructor(
     suspend fun updateAbilities() = abilitiesRepository.updateAbilities()
 
     fun getAbilityById(id: Int): Flow<Ability?> = abilitiesRepository.getAbilityById(id)
+}
+
+internal suspend fun runIosDataUpdateSafely(name: String, update: suspend () -> Unit) {
+    try {
+        update()
+    } catch (exception: ApolloException) {
+        println("Failed to update $name: ${exception.message}")
+    }
 }

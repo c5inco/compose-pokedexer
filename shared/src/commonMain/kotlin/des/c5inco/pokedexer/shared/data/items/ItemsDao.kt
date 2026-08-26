@@ -4,12 +4,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import des.c5inco.pokedexer.shared.model.Item
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ItemsDao {
     @Query("SELECT * FROM item") fun getAll(): Flow<List<Item>>
+
+    @Query("SELECT COUNT(*) FROM item") suspend fun count(): Int
 
     @Query("SELECT * FROM item WHERE id = :id LIMIT 1") fun findById(id: Int): Flow<Item?>
 
@@ -24,4 +27,10 @@ interface ItemsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertAll(vararg item: Item)
 
     @Query("DELETE FROM item") suspend fun deleteAll()
+
+    @Transaction
+    suspend fun replaceAll(items: List<Item>) {
+        deleteAll()
+        insertAll(*items.toTypedArray())
+    }
 }

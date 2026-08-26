@@ -5,12 +5,15 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import des.c5inco.pokedexer.shared.model.Move
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovesDao {
     @Query("SELECT * FROM move") fun getAll(): Flow<List<Move>>
+
+    @Query("SELECT COUNT(*) FROM move") suspend fun count(): Int
 
     @Query("SELECT * FROM move WHERE id = :id LIMIT 1") fun findById(id: Int): Flow<Move?>
 
@@ -27,4 +30,10 @@ interface MovesDao {
     @Delete suspend fun delete(move: Move)
 
     @Query("DELETE FROM move") suspend fun deleteAll()
+
+    @Transaction
+    suspend fun replaceAll(moves: List<Move>) {
+        deleteAll()
+        insertAll(*moves.toTypedArray())
+    }
 }
