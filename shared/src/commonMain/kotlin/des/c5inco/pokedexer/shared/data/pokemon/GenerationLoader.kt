@@ -72,7 +72,7 @@ internal constructor(
     private val queue = mutableListOf<Generation>()
     private val inFlight = mutableSetOf<Generation>()
     private val attempts = mutableMapOf<Generation, CompletableDeferred<Unit>>()
-    private val initialMovesRefresh = CompletableDeferred<Unit>()
+    private var initialMovesRefresh = CompletableDeferred<Unit>()
     private var worker: Job? = null
     private var movesAreReady = false
 
@@ -108,8 +108,12 @@ internal constructor(
     }
 
     internal suspend fun awaitInitialMovesRefresh() {
-        mutex.withLock { if (!initialMovesRefresh.isCompleted) ensureWorkerLocked() }
-        initialMovesRefresh.await()
+        val completion = mutex.withLock {
+            if (movesAreReady) return
+            ensureWorkerLocked()
+            initialMovesRefresh
+        }
+        completion.await()
     }
 
     private fun enqueueLocked(
@@ -132,21 +136,26 @@ internal constructor(
     private fun ensureWorkerLocked() {
         if (worker != null) return
 
-        val newWorker = applicationScope.launch(start = CoroutineStart.LAZY) { runWorker() }
+        val movesRefreshCompletion = CompletableDeferred<Unit>()
+        initialMovesRefresh = movesRefreshCompletion
+        val newWorker =
+            applicationScope.launch(start = CoroutineStart.LAZY) {
+                runWorker(movesRefreshCompletion)
+            }
         worker = newWorker
         newWorker.invokeOnCompletion { error ->
-            if (error != null) initialMovesRefresh.completeExceptionally(error)
+            if (error != null) movesRefreshCompletion.completeExceptionally(error)
         }
         newWorker.start()
     }
 
-    private suspend fun runWorker() {
+    private suspend fun runWorker(movesRefreshCompletion: CompletableDeferred<Unit>) {
         try {
             coroutineScope {
                 val shouldRefreshMoves = mutex.withLock { !movesAreReady }
                 val movesRefresh =
                     if (shouldRefreshMoves) {
-                        async { refreshMovesSafely(refreshMoves, initialMovesRefresh) }
+                        async { refreshMovesSafely(refreshMoves, movesRefreshCompletion) }
                     } else {
                         null
                     }
@@ -158,7 +167,10 @@ internal constructor(
                     waitBeforeMovesRetry()
                     movesRefreshed = refreshMovesSafely(refreshMoves)
                 }
-                if (movesRefreshed) mutex.withLock { movesAreReady = true }
+                if (movesRefreshed) {
+                    mutex.withLock { movesAreReady = true }
+                    movesRefreshCompletion.complete(Unit)
+                }
 
                 while (true) {
                     val generation = takeNextGeneration() ?: return@coroutineScope
@@ -221,7 +233,6 @@ private suspend fun refreshMovesSafely(
 ): Boolean =
     try {
         refreshMoves()
-        completion?.complete(Unit)
         true
     } catch (error: CancellationException) {
         completion?.completeExceptionally(error)

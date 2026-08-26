@@ -167,6 +167,98 @@ class GenerationLoaderTest {
     }
 
     @Test
+    fun laterStartupRetriesMovesAfterWorkerFailures() = runBlocking {
+        val scope = testApplicationScope()
+        val loadedGenerationIds = mutableSetOf<Int>()
+        val movesRefreshStarted = Channel<Int>(Channel.UNLIMITED)
+        val allowMovesRefresh = Channel<Unit>(Channel.UNLIMITED)
+        val movesRetryScheduled = CompletableDeferred<Unit>()
+        val allowMovesRetry = CompletableDeferred<Unit>()
+        var movesRefreshAttempts = 0
+        var fetchCount = 0
+        val loader =
+            GenerationLoader(
+                applicationScope = scope,
+                loadedGenerationIds = { loadedGenerationIds },
+                refreshMoves = {
+                    val attempt = ++movesRefreshAttempts
+                    movesRefreshStarted.send(attempt)
+                    allowMovesRefresh.receive()
+                    if (attempt < 3) error("Moves refresh attempt $attempt failed")
+                },
+                fetchGeneration = { generation ->
+                    fetchCount++
+                    loadedGenerationIds += generation.id
+                },
+                waitBeforeMovesRetry = {
+                    movesRetryScheduled.complete(Unit)
+                    allowMovesRetry.await()
+                },
+            )
+
+        try {
+            val pokemonUpdate = async { loader.load(Generation.I) }
+            assertEquals(1, withTimeout(TIMEOUT_MILLIS) { movesRefreshStarted.receive() })
+            val firstWorker = scope.coroutineContext.job.children.single()
+            val initialMovesUpdate = async { runCatching { loader.awaitInitialMovesRefresh() } }
+            yield()
+
+            assertEquals(1, movesRefreshAttempts)
+            allowMovesRefresh.send(Unit)
+            assertEquals(
+                "Moves refresh attempt 1 failed",
+                withTimeout(TIMEOUT_MILLIS) { initialMovesUpdate.await() }
+                    .exceptionOrNull()
+                    ?.message,
+            )
+
+            withTimeout(TIMEOUT_MILLIS) { movesRetryScheduled.await() }
+            val updateDuringRetryDelay = async { runCatching { loader.awaitInitialMovesRefresh() } }
+            yield()
+
+            assertEquals(1, movesRefreshAttempts)
+            assertEquals(
+                "Moves refresh attempt 1 failed",
+                updateDuringRetryDelay.await().exceptionOrNull()?.message,
+            )
+
+            allowMovesRetry.complete(Unit)
+            assertEquals(2, withTimeout(TIMEOUT_MILLIS) { movesRefreshStarted.receive() })
+            val updateDuringRetry = async { runCatching { loader.awaitInitialMovesRefresh() } }
+            yield()
+
+            assertEquals(2, movesRefreshAttempts)
+            assertEquals(
+                "Moves refresh attempt 1 failed",
+                updateDuringRetry.await().exceptionOrNull()?.message,
+            )
+
+            allowMovesRefresh.send(Unit)
+            withTimeout(TIMEOUT_MILLIS) { firstWorker.join() }
+            withTimeout(TIMEOUT_MILLIS) { pokemonUpdate.await() }
+
+            loader.load(Generation.I)
+            assertEquals(1, fetchCount)
+
+            val laterMovesUpdate = async { loader.awaitInitialMovesRefresh() }
+            assertEquals(3, withTimeout(TIMEOUT_MILLIS) { movesRefreshStarted.receive() })
+            yield()
+
+            assertFalse(laterMovesUpdate.isCompleted)
+            assertEquals(1, fetchCount)
+
+            allowMovesRefresh.send(Unit)
+            withTimeout(TIMEOUT_MILLIS) { laterMovesUpdate.await() }
+
+            loader.awaitInitialMovesRefresh()
+            assertEquals(3, movesRefreshAttempts)
+            assertEquals(1, fetchCount)
+        } finally {
+            scope.cancel()
+        }
+    }
+
+    @Test
     fun generationTwoWaitsForMovesRefresh() = runBlocking {
         val scope = testApplicationScope()
         val loadedGenerationIds = mutableSetOf<Int>()
@@ -286,6 +378,9 @@ class GenerationLoaderTest {
                 withTimeout(TIMEOUT_MILLIS) { fetchedGenerations.receive() },
             )
             generationTwoRequest.await()
+            assertEquals(2, movesRefreshAttempts)
+
+            loader.awaitInitialMovesRefresh()
             assertEquals(2, movesRefreshAttempts)
         } finally {
             scope.cancel()
