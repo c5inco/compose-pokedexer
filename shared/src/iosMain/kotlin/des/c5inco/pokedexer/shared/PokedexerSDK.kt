@@ -32,6 +32,7 @@ private constructor(
     private val database: PokemonDatabase,
     private val apolloClient: ApolloClient,
     private val pokemonRepository: RemotePokemonRepository,
+    private val generationLoader: GenerationLoader,
     private val movesRepository: RemoteMovesRepository,
     private val itemsRepository: ItemsRepositoryImpl,
     private val abilitiesRepository: AbilitiesRepositoryImpl,
@@ -75,6 +76,7 @@ private constructor(
                     database,
                     apolloClient,
                     pokemonRepository,
+                    generationLoader,
                     movesRepository,
                     itemsRepository,
                     abilitiesRepository,
@@ -99,6 +101,9 @@ private constructor(
 
     // Moves methods
     fun getAllMoves(): Flow<List<Move>> = movesRepository.moves()
+
+    suspend fun awaitInitialMovesRefresh() =
+        runIosDataUpdateSafely("moves") { generationLoader.awaitInitialMovesRefresh() }
 
     suspend fun updateMoves() = runIosDataUpdateSafely("moves") { movesRepository.updateMoves() }
 
