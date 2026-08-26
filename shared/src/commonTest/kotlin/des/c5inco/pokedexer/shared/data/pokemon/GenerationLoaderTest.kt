@@ -254,6 +254,76 @@ class GenerationLoaderTest {
     }
 
     @Test
+    fun persistentMovesFailureProcessesQueuedGenerationAfterBoundedRetry() = runBlocking {
+        val scope = testApplicationScope()
+        val loadedGenerationIds = mutableSetOf<Int>()
+        val firstMovesRefreshStarted = CompletableDeferred<Unit>()
+        val allowFirstMovesRefreshToFail = CompletableDeferred<Unit>()
+        val movesRetryScheduled = Channel<Unit>(Channel.UNLIMITED)
+        val allowMovesRetry = Channel<Unit>(Channel.UNLIMITED)
+        val generationTwoFetchStarted = CompletableDeferred<Unit>()
+        val allowGenerationTwoFetchToFinish = CompletableDeferred<Unit>()
+        var movesRefreshAttempts = 0
+        var fetchCount = 0
+        val loader =
+            GenerationLoader(
+                applicationScope = scope,
+                loadedGenerationIds = { loadedGenerationIds },
+                refreshMoves = {
+                    movesRefreshAttempts++
+                    if (movesRefreshAttempts == 1) {
+                        firstMovesRefreshStarted.complete(Unit)
+                        allowFirstMovesRefreshToFail.await()
+                    }
+                    error("Network unavailable")
+                },
+                fetchGeneration = { generation ->
+                    assertEquals(Generation.II, generation)
+                    fetchCount++
+                    generationTwoFetchStarted.complete(Unit)
+                    allowGenerationTwoFetchToFinish.await()
+                    loadedGenerationIds += generation.id
+                },
+                waitBeforeMovesRetry = {
+                    movesRetryScheduled.send(Unit)
+                    allowMovesRetry.receive()
+                },
+            )
+
+        try {
+            val generationTwoRequest = async { loader.load(Generation.II) }
+            withTimeout(TIMEOUT_MILLIS) { firstMovesRefreshStarted.await() }
+            allowFirstMovesRefreshToFail.complete(Unit)
+
+            withTimeout(TIMEOUT_MILLIS) { movesRetryScheduled.receive() }
+            yield()
+            assertFalse(generationTwoRequest.isCompleted)
+            allowMovesRetry.send(Unit)
+
+            withTimeout(TIMEOUT_MILLIS) { generationTwoFetchStarted.await() }
+            yield()
+            assertFalse(generationTwoRequest.isCompleted)
+            allowGenerationTwoFetchToFinish.complete(Unit)
+            withTimeout(TIMEOUT_MILLIS) { generationTwoRequest.await() }
+
+            assertEquals(2, movesRefreshAttempts)
+            assertEquals(setOf(Generation.II.id), loadedGenerationIds)
+
+            val cachedGenerationRequest = async { loader.load(Generation.II) }
+            withTimeout(TIMEOUT_MILLIS) { movesRetryScheduled.receive() }
+            yield()
+            assertFalse(cachedGenerationRequest.isCompleted)
+            allowMovesRetry.send(Unit)
+            withTimeout(TIMEOUT_MILLIS) { cachedGenerationRequest.await() }
+
+            assertEquals(4, movesRefreshAttempts)
+            assertEquals(1, fetchCount)
+        } finally {
+            scope.cancel()
+        }
+    }
+
+    @Test
     fun failedGenerationCompletesTheRequestAndCanRetry() = runBlocking {
         val scope = testApplicationScope()
         val loadedGenerationIds = mutableSetOf<Int>()

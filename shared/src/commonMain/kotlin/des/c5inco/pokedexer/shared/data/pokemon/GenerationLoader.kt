@@ -135,7 +135,7 @@ internal constructor(
         try {
             coroutineScope {
                 val shouldRefreshMoves = mutex.withLock { !movesAreReady }
-                var movesRefresh =
+                val movesRefresh =
                     if (shouldRefreshMoves) {
                         async { refreshMovesSafely(refreshMoves) }
                     } else {
@@ -144,11 +144,12 @@ internal constructor(
                 val generationOneQueued = mutex.withLock { queue.remove(Generation.I) }
                 if (generationOneQueued) processGeneration(Generation.I)
 
-                while (movesRefresh?.await() == false) {
+                var movesRefreshed = movesRefresh?.await() != false
+                if (!movesRefreshed) {
                     waitBeforeMovesRetry()
-                    movesRefresh = async { refreshMovesSafely(refreshMoves) }
+                    movesRefreshed = refreshMovesSafely(refreshMoves)
                 }
-                mutex.withLock { movesAreReady = true }
+                if (movesRefreshed) mutex.withLock { movesAreReady = true }
 
                 while (true) {
                     val generation = takeNextGeneration() ?: return@coroutineScope
