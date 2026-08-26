@@ -1,22 +1,22 @@
 query PokemonOriginalMoves {
-  info: pokemon_v2_move_aggregate(where: {move_damage_class_id: {_is_null: false}, pp: {_is_null: false}, type_id: {_is_null: false}}) {
+  info: move_aggregate(where: {move_damage_class_id: {_is_null: false}, pp: {_is_null: false}, type_id: {_is_null: false}}) {
     total: aggregate {
       count
     }
   }
-  moves: pokemon_v2_move(where: {move_damage_class_id: {_is_null: false}, pp: {_is_null: false}, type_id: {_is_null: false}}) {
+  moves: move(where: {move_damage_class_id: {_is_null: false}, pp: {_is_null: false}, type_id: {_is_null: false}}) {
     id
     name
     accuracy
-    category: pokemon_v2_movedamageclass {
+    category: movedamageclass {
       name
     }
-    description: pokemon_v2_moveflavortexts(where: {pokemon_v2_language: {iso639: {_eq: "en"}}}, order_by: {version_group_id: desc}, limit: 1) {
+    description: moveflavortexts(where: {language: {iso639: {_eq: "en"}}}, order_by: {version_group_id: desc}, limit: 1) {
       flavorText: flavor_text
     }
     pp
     power
-    type: pokemon_v2_type {
+    type: type {
       name
     }
   }
