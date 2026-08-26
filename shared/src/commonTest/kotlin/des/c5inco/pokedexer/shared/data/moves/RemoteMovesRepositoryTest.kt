@@ -3,10 +3,12 @@
 package des.c5inco.pokedexer.shared.data.moves
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
+import com.benasher44.uuid.uuid4
 import des.c5inco.pokedexer.shared.PokemonOriginalMovesQuery
 import des.c5inco.pokedexer.shared.model.Move
 import kotlin.test.Test
@@ -106,6 +108,26 @@ class RemoteMovesRepositoryTest {
         val movesDao = FakeMovesDao(listOf(databaseMove(99)))
         val client = testClient()
         client.enqueueTestNetworkError()
+
+        try {
+            assertFailsWith<ApolloException> {
+                RemoteMovesRepository(movesDao, client).updateMoves()
+            }
+
+            assertEquals(listOf(99), movesDao.currentMoves.map(Move::id))
+            assertEquals(0, movesDao.replaceAllCalls)
+        } finally {
+            client.close()
+        }
+    }
+
+    @Test
+    fun nullDataThrowsApolloException() = runBlocking {
+        val movesDao = FakeMovesDao(listOf(databaseMove(99)))
+        val client = testClient()
+        client.enqueueTestResponse(
+            ApolloResponse.Builder(PokemonOriginalMovesQuery(), uuid4(), null).build()
+        )
 
         try {
             assertFailsWith<ApolloException> {

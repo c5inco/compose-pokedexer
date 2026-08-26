@@ -38,7 +38,8 @@ class ItemsRepositoryImpl(private val itemsDao: ItemsDao, private val apolloClie
                 throw ApolloException("The response has errors: ${response.errors}")
             }
 
-            val data = response.data!!.info
+            val data =
+                response.data?.info ?: throw ApolloException("The response contains no item data")
             val remoteCount = data.total?.count ?: data.items.size
             val itemsFromServer =
                 data.items.map { model ->

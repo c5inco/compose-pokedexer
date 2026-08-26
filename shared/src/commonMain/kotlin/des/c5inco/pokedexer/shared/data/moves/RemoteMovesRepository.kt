@@ -28,7 +28,7 @@ class RemoteMovesRepository(
                 throw ApolloException("The response has errors: ${response.errors}")
             }
 
-            val data = response.data!!
+            val data = response.data ?: throw ApolloException("The response contains no move data")
             val remoteCount = data.info.total?.count ?: data.moves.size
             val movesFromServer =
                 data.moves.mapNotNull { model ->

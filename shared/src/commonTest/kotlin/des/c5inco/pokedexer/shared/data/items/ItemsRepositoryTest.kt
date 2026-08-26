@@ -3,10 +3,12 @@
 package des.c5inco.pokedexer.shared.data.items
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
+import com.benasher44.uuid.uuid4
 import des.c5inco.pokedexer.shared.ItemsQuery
 import des.c5inco.pokedexer.shared.model.Item
 import kotlin.test.Test
@@ -85,6 +87,22 @@ class ItemsRepositoryTest {
         val itemsDao = FakeItemsDao(listOf(databaseItem(99)))
         val client = testClient()
         client.enqueueTestNetworkError()
+
+        try {
+            assertFailsWith<ApolloException> { ItemsRepositoryImpl(itemsDao, client).updateItems() }
+
+            assertEquals(listOf(99), itemsDao.currentItems.map(Item::id))
+            assertEquals(0, itemsDao.replaceAllCalls)
+        } finally {
+            client.close()
+        }
+    }
+
+    @Test
+    fun nullDataThrowsApolloException() = runBlocking {
+        val itemsDao = FakeItemsDao(listOf(databaseItem(99)))
+        val client = testClient()
+        client.enqueueTestResponse(ApolloResponse.Builder(ItemsQuery(), uuid4(), null).build())
 
         try {
             assertFailsWith<ApolloException> { ItemsRepositoryImpl(itemsDao, client).updateItems() }
