@@ -10,9 +10,13 @@ import des.c5inco.pokedexer.shared.model.Generation
 import des.c5inco.pokedexer.shared.model.Pokemon
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.job
 import kotlinx.coroutines.runBlocking
 
 class RemotePokemonRepositoryTest {
@@ -34,6 +38,8 @@ class RemotePokemonRepositoryTest {
         versionGroups.forEach { (generation, versionGroupId) ->
             val pokemonDao = FakePokemonDao()
             val client = ApolloClient.Builder().networkTransport(MapTestNetworkTransport()).build()
+            val applicationScope =
+                CoroutineScope(coroutineContext + SupervisorJob(coroutineContext.job))
             val query = PokemonOriginalQuery(generation.id, versionGroupId)
             client.registerTestResponse(
                 query,
@@ -44,12 +50,20 @@ class RemotePokemonRepositoryTest {
             )
 
             try {
-                RemotePokemonRepository(pokemonDao, client)
+                val loader =
+                    GenerationLoader(
+                        pokemonDao = pokemonDao,
+                        apolloClient = client,
+                        applicationScope = applicationScope,
+                        refreshMoves = {},
+                    )
+                RemotePokemonRepository(pokemonDao, loader)
                     .getPokemonByGeneration(generation)
-                    .toList()
+                    .first()
 
                 assertEquals(1, pokemonDao.insertAllCalls, "Generation ${generation.id}")
             } finally {
+                applicationScope.cancel()
                 client.close()
             }
         }
@@ -68,6 +82,9 @@ private class FakePokemonDao : PokemonDao {
 
     override fun getAllByGeneration(generationId: Int): Flow<List<Pokemon>> =
         MutableStateFlow(pokemon.value.filter { it.generationId == generationId })
+
+    override suspend fun getLoadedGenerationIds(): List<Int> =
+        pokemon.value.map(Pokemon::generationId).distinct()
 
     override fun findById(id: Int): Flow<Pokemon?> =
         MutableStateFlow(pokemon.value.firstOrNull { it.id == id })

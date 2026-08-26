@@ -23,6 +23,7 @@ import des.c5inco.pokedexer.shared.data.items.ItemsRepositoryImpl
 import des.c5inco.pokedexer.shared.data.moves.MovesDao
 import des.c5inco.pokedexer.shared.data.moves.MovesRepository
 import des.c5inco.pokedexer.shared.data.moves.RemoteMovesRepository
+import des.c5inco.pokedexer.shared.data.pokemon.GenerationLoader
 import des.c5inco.pokedexer.shared.data.pokemon.PokemonDao
 import des.c5inco.pokedexer.shared.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.shared.data.pokemon.RemotePokemonRepository
@@ -86,6 +87,16 @@ interface NetworkModule {
     }
 }
 
+/** Application coroutine scope provider. */
+@ContributesTo(AppScope::class)
+interface CoroutineModule {
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideApplicationScope(): CoroutineScope {
+        return CoroutineScope(Dispatchers.IO + SupervisorJob())
+    }
+}
+
 /** Repository providers manually wired from the shared module. */
 @ContributesTo(AppScope::class)
 interface RepositoryModule {
@@ -93,15 +104,26 @@ interface RepositoryModule {
     @SingleIn(AppScope::class)
     fun providePokemonRepository(
         pokemonDao: PokemonDao,
-        apolloClient: ApolloClient,
+        generationLoader: GenerationLoader,
     ): PokemonRepository {
-        return RemotePokemonRepository(pokemonDao, apolloClient)
+        return RemotePokemonRepository(pokemonDao, generationLoader)
     }
 
     @Provides
     @SingleIn(AppScope::class)
     fun provideMovesRepository(movesDao: MovesDao, apolloClient: ApolloClient): MovesRepository {
         return RemoteMovesRepository(movesDao, apolloClient)
+    }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideGenerationLoader(
+        pokemonDao: PokemonDao,
+        apolloClient: ApolloClient,
+        movesRepository: MovesRepository,
+        applicationScope: CoroutineScope,
+    ): GenerationLoader {
+        return GenerationLoader(pokemonDao, apolloClient, movesRepository, applicationScope)
     }
 
     @Provides
