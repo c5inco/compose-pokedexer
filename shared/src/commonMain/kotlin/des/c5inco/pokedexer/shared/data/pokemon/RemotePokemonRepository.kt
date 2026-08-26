@@ -36,7 +36,15 @@ class RemotePokemonRepository(
         if (localPokemon.isEmpty()) {
             withContext(Dispatchers.IO) {
                 println("Loading Pokemon (gen $generationId) from network...")
-                val response = apolloClient.query(PokemonOriginalQuery(generationId)).execute()
+                val response =
+                    apolloClient
+                        .query(
+                            PokemonOriginalQuery(
+                                generationId,
+                                canonicalVersionGroupIds.getValue(generationId),
+                            )
+                        )
+                        .execute()
 
                 if (!response.hasErrors()) {
                     val pokemonFromServer =
@@ -124,6 +132,11 @@ class RemotePokemonRepository(
 
     override suspend fun deleteAllPokemon(): Result<Int> {
         TODO("Not yet implemented")
+    }
+
+    private companion object {
+        val canonicalVersionGroupIds =
+            mapOf(1 to 7, 2 to 10, 3 to 6, 4 to 9, 5 to 14, 6 to 16, 7 to 18, 8 to 20, 9 to 25)
     }
 }
 
