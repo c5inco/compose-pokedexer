@@ -72,6 +72,7 @@ internal constructor(
     private val queue = mutableListOf<Generation>()
     private val inFlight = mutableSetOf<Generation>()
     private val attempts = mutableMapOf<Generation, CompletableDeferred<Unit>>()
+    private val initialMovesRefresh = CompletableDeferred<Unit>()
     private var worker: Job? = null
     private var movesAreReady = false
 
@@ -106,6 +107,11 @@ internal constructor(
         attempt.await()
     }
 
+    internal suspend fun awaitInitialMovesRefresh() {
+        mutex.withLock { if (!initialMovesRefresh.isCompleted) ensureWorkerLocked() }
+        initialMovesRefresh.await()
+    }
+
     private fun enqueueLocked(
         generation: Generation,
         prioritised: Boolean,
@@ -128,6 +134,9 @@ internal constructor(
 
         val newWorker = applicationScope.launch(start = CoroutineStart.LAZY) { runWorker() }
         worker = newWorker
+        newWorker.invokeOnCompletion { error ->
+            if (error != null) initialMovesRefresh.completeExceptionally(error)
+        }
         newWorker.start()
     }
 
@@ -137,7 +146,7 @@ internal constructor(
                 val shouldRefreshMoves = mutex.withLock { !movesAreReady }
                 val movesRefresh =
                     if (shouldRefreshMoves) {
-                        async { refreshMovesSafely(refreshMoves) }
+                        async { refreshMovesSafely(refreshMoves, initialMovesRefresh) }
                     } else {
                         null
                     }
@@ -206,13 +215,19 @@ internal constructor(
     }
 }
 
-private suspend fun refreshMovesSafely(refreshMoves: suspend () -> Unit): Boolean =
+private suspend fun refreshMovesSafely(
+    refreshMoves: suspend () -> Unit,
+    completion: CompletableDeferred<Unit>? = null,
+): Boolean =
     try {
         refreshMoves()
+        completion?.complete(Unit)
         true
     } catch (error: CancellationException) {
+        completion?.completeExceptionally(error)
         throw error
     } catch (error: Exception) {
+        completion?.completeExceptionally(error)
         println("Failed to refresh moves before loading generations: ${error.message}")
         false
     }

@@ -74,6 +74,11 @@ class PokedexerSDKWrapper: ObservableObject {
         try await sdk.updatePokemon()
     }
 
+    func awaitInitialMovesRefresh() async throws {
+        guard let sdk = initializedSDK else { return }
+        try await sdk.awaitInitialMovesRefresh()
+    }
+
     // MARK: - Moves methods
 
     func getAllMoves() -> SkieSwiftFlow<[Move]>? {

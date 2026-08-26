@@ -18,7 +18,7 @@ class AppViewModel: ObservableObject {
         do {
             try await sdk.updatePokemon()
             syncProgress = "Syncing Moves..."
-            try await sdk.updateMoves()
+            try await sdk.awaitInitialMovesRefresh()
             syncProgress = "Syncing Items..."
             try await sdk.updateItems()
             syncProgress = "Syncing Abilities..."

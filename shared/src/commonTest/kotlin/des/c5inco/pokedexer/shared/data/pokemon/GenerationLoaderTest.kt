@@ -128,6 +128,45 @@ class GenerationLoaderTest {
     }
 
     @Test
+    fun startupMovesWaitJoinsLoaderRefresh() = runBlocking {
+        val scope = testApplicationScope()
+        val loadedGenerationIds = mutableSetOf<Int>()
+        val movesRefreshStarted = CompletableDeferred<Unit>()
+        val allowMovesRefreshToFinish = CompletableDeferred<Unit>()
+        var movesRefreshCount = 0
+        val loader =
+            GenerationLoader(
+                applicationScope = scope,
+                loadedGenerationIds = { loadedGenerationIds },
+                refreshMoves = {
+                    movesRefreshCount++
+                    movesRefreshStarted.complete(Unit)
+                    allowMovesRefreshToFinish.await()
+                },
+                fetchGeneration = { generation -> loadedGenerationIds += generation.id },
+            )
+
+        try {
+            val pokemonUpdate = async { loader.load(Generation.I) }
+            withTimeout(TIMEOUT_MILLIS) { movesRefreshStarted.await() }
+            pokemonUpdate.await()
+
+            val movesUpdate = async { loader.awaitInitialMovesRefresh() }
+            yield()
+
+            assertFalse(movesUpdate.isCompleted)
+            assertEquals(1, movesRefreshCount)
+
+            allowMovesRefreshToFinish.complete(Unit)
+            withTimeout(TIMEOUT_MILLIS) { movesUpdate.await() }
+
+            assertEquals(1, movesRefreshCount)
+        } finally {
+            scope.cancel()
+        }
+    }
+
+    @Test
     fun generationTwoWaitsForMovesRefresh() = runBlocking {
         val scope = testApplicationScope()
         val loadedGenerationIds = mutableSetOf<Int>()
