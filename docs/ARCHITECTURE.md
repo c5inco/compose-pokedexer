@@ -26,7 +26,7 @@ The shared module is the single source of truth for business logic and data pers
 
 - **Technology Stack**:
     - **Database**: Room KMP (version 7, with expect/actual platform builders).
-    - **Network**: Apollo GraphQL client connecting to PokéAPI (`https://beta.pokeapi.co/graphql/v1beta`).
+    - **Network**: Apollo GraphQL client connecting to PokéAPI (`https://graphql.pokeapi.co/v1beta2`).
     - **Models**: Shared data classes with Room `@Entity` annotations.
     - **Theming**: Material Kolor for cross-platform seed color generation.
 - **Project Structure**:
@@ -50,7 +50,7 @@ The shared module is the single source of truth for business logic and data pers
         └── data/DatabaseBuilder.ios.kt
     ```
 - **GraphQL**:
-    - **Endpoint**: `https://beta.pokeapi.co/graphql/v1beta`
+    - **Endpoint**: `https://graphql.pokeapi.co/v1beta2`
     - **Queries**: `GetPokemon`, `GetMoves`, `GetItems`, `GetAbilities`
 - **Database Schema**:
     - **Version**: 7

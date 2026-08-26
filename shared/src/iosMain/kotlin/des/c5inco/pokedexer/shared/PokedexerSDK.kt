@@ -50,9 +50,7 @@ private constructor(
                         .build()
 
                 val apolloClient =
-                    ApolloClient.Builder()
-                        .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
-                        .build()
+                    ApolloClient.Builder().serverUrl("https://graphql.pokeapi.co/v1beta2").build()
 
                 val movesRepository = RemoteMovesRepository(database.movesDao(), apolloClient)
 
