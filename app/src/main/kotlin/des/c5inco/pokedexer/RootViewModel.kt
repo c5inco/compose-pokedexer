@@ -5,15 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.shared.data.abilities.AbilitiesRepository
 import des.c5inco.pokedexer.shared.data.items.ItemsRepository
-import des.c5inco.pokedexer.shared.data.moves.MovesRepository
-import des.c5inco.pokedexer.shared.data.pokemon.PokemonRepository
+import des.c5inco.pokedexer.shared.data.pokemon.GenerationLoader
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.launch
 
 @Inject
 class RootViewModel(
-    private val pokemonRepository: PokemonRepository,
-    private val movesRepository: MovesRepository,
+    private val generationLoader: GenerationLoader,
     private val itemsRepository: ItemsRepository,
     private val abilitiesRepository: AbilitiesRepository,
 ) : ViewModel() {
@@ -21,8 +19,7 @@ class RootViewModel(
         viewModelScope.launch {
             println("Populating databases...")
 
-            launch { pokemonRepository.updatePokemon() }
-            launch { runDataUpdateSafely("moves") { movesRepository.updateMoves() } }
+            generationLoader.start()
             launch { runDataUpdateSafely("items") { itemsRepository.updateItems() } }
             launch { abilitiesRepository.updateAbilities() }
         }

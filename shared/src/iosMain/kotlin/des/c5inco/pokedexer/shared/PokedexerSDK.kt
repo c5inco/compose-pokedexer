@@ -7,14 +7,17 @@ import des.c5inco.pokedexer.shared.data.abilities.AbilitiesRepositoryImpl
 import des.c5inco.pokedexer.shared.data.getDatabaseBuilder
 import des.c5inco.pokedexer.shared.data.items.ItemsRepositoryImpl
 import des.c5inco.pokedexer.shared.data.moves.RemoteMovesRepository
+import des.c5inco.pokedexer.shared.data.pokemon.GenerationLoader
 import des.c5inco.pokedexer.shared.data.pokemon.RemotePokemonRepository
 import des.c5inco.pokedexer.shared.model.Ability
 import des.c5inco.pokedexer.shared.model.Generation
 import des.c5inco.pokedexer.shared.model.Item
 import des.c5inco.pokedexer.shared.model.Move
 import des.c5inco.pokedexer.shared.model.Pokemon
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
@@ -50,9 +53,18 @@ private constructor(
                         .serverUrl("https://beta.pokeapi.co/graphql/v1beta")
                         .build()
 
-                val pokemonRepository = RemotePokemonRepository(database.pokemonDao(), apolloClient)
-
                 val movesRepository = RemoteMovesRepository(database.movesDao(), apolloClient)
+
+                val generationLoader =
+                    GenerationLoader(
+                        database.pokemonDao(),
+                        apolloClient,
+                        movesRepository,
+                        CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                    )
+
+                val pokemonRepository =
+                    RemotePokemonRepository(database.pokemonDao(), generationLoader)
 
                 val itemsRepository = ItemsRepositoryImpl(database.itemsDao(), apolloClient)
 

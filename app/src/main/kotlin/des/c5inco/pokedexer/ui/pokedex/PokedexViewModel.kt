@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import des.c5inco.pokedexer.data.preferences.UserPreferencesRepository
+import des.c5inco.pokedexer.shared.data.pokemon.GenerationLoader
 import des.c5inco.pokedexer.shared.data.pokemon.PokemonRepository
 import des.c5inco.pokedexer.shared.model.Generation
 import des.c5inco.pokedexer.shared.model.Pokemon
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 private const val LOADING_DELAY_MILLIS = 500L
 
@@ -37,6 +39,7 @@ class PokedexViewModel
 @AssistedInject
 constructor(
     private val pokemonRepository: PokemonRepository,
+    private val generationLoader: GenerationLoader,
     userPreferencesRepository: UserPreferencesRepository,
     @Assisted private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -104,7 +107,9 @@ constructor(
     }
 
     fun filterByGeneration(generationToFilter: Generation?) {
-        savedStateHandle["generationFilters"] = generationToFilter ?: Generation.I
+        val generation = generationToFilter ?: Generation.I
+        viewModelScope.launch { generationLoader.prioritise(generation) }
+        savedStateHandle["generationFilters"] = generation
     }
 
     @AssistedFactory
