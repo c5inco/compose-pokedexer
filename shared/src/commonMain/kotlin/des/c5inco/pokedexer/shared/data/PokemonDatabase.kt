@@ -1,11 +1,14 @@
 package des.c5inco.pokedexer.shared.data
 
+import androidx.room.AutoMigration
 import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
+import androidx.sqlite.SQLiteConnection
 import des.c5inco.pokedexer.shared.data.abilities.AbilitiesDao
 import des.c5inco.pokedexer.shared.data.items.ItemsDao
 import des.c5inco.pokedexer.shared.data.moves.MovesDao
@@ -24,8 +27,10 @@ import des.c5inco.pokedexer.shared.model.PokemonMove
 expect object PokemonDatabaseConstructor : RoomDatabaseConstructor<PokemonDatabase>
 
 @Database(
-    version = 7,
+    version = 8,
     entities = [Pokemon::class, Move::class, Item::class, Ability::class],
+    autoMigrations =
+        [AutoMigration(from = 7, to = 8, spec = InvalidatePokemonCacheMigration::class)],
     exportSchema = true,
 )
 @ConstructedBy(PokemonDatabaseConstructor::class)
@@ -38,6 +43,12 @@ abstract class PokemonDatabase : RoomDatabase() {
     abstract fun itemsDao(): ItemsDao
 
     abstract fun abilitiesDao(): AbilitiesDao
+}
+
+internal class InvalidatePokemonCacheMigration : AutoMigrationSpec {
+    override fun onPostMigrate(connection: SQLiteConnection) {
+        connection.prepare("DELETE FROM pokemon").use { it.step() }
+    }
 }
 
 class Converters {
