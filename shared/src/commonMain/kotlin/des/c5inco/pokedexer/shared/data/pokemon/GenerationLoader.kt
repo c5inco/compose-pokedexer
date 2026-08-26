@@ -72,7 +72,7 @@ internal constructor(
     private val queue = mutableListOf<Generation>()
     private val inFlight = mutableSetOf<Generation>()
     private val attempts = mutableMapOf<Generation, CompletableDeferred<Unit>>()
-    private var initialMovesRefresh = CompletableDeferred<Unit>()
+    private lateinit var initialMovesRefresh: CompletableDeferred<Unit>
     private var worker: Job? = null
     private var movesAreReady = false
 
@@ -169,7 +169,11 @@ internal constructor(
                 }
                 if (movesRefreshed) {
                     mutex.withLock { movesAreReady = true }
-                    movesRefreshCompletion.complete(Unit)
+                    // Existing startup waiters intentionally retain a first-attempt failure.
+                    // After a successful retry, later callers observe movesAreReady instead.
+                    if (!movesRefreshCompletion.isCompleted) {
+                        movesRefreshCompletion.complete(Unit)
+                    }
                 }
 
                 while (true) {
