@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import des.c5inco.pokedexer.shared.model.Item
 import kotlinx.coroutines.flow.Flow
 
@@ -26,4 +27,10 @@ interface ItemsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertAll(vararg item: Item)
 
     @Query("DELETE FROM item") suspend fun deleteAll()
+
+    @Transaction
+    suspend fun replaceAll(items: List<Item>) {
+        deleteAll()
+        insertAll(*items.toTypedArray())
+    }
 }

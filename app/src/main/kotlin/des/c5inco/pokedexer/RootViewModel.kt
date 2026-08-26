@@ -2,6 +2,7 @@ package des.c5inco.pokedexer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.apollographql.apollo3.exception.ApolloException
 import des.c5inco.pokedexer.shared.data.abilities.AbilitiesRepository
 import des.c5inco.pokedexer.shared.data.items.ItemsRepository
 import des.c5inco.pokedexer.shared.data.moves.MovesRepository
@@ -21,9 +22,17 @@ class RootViewModel(
             println("Populating databases...")
 
             launch { pokemonRepository.updatePokemon() }
-            launch { movesRepository.updateMoves() }
-            launch { itemsRepository.updateItems() }
+            launch { runDataUpdateSafely("moves") { movesRepository.updateMoves() } }
+            launch { runDataUpdateSafely("items") { itemsRepository.updateItems() } }
             launch { abilitiesRepository.updateAbilities() }
         }
+    }
+}
+
+internal suspend fun runDataUpdateSafely(name: String, update: suspend () -> Unit) {
+    try {
+        update()
+    } catch (exception: ApolloException) {
+        println("Failed to update $name: ${exception.message}")
     }
 }

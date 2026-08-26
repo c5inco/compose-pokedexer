@@ -3,19 +3,22 @@
 package des.c5inco.pokedexer.shared.data.moves
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
+import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import des.c5inco.pokedexer.shared.PokemonOriginalMovesQuery
 import des.c5inco.pokedexer.shared.model.Move
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 
 class RemoteMovesRepositoryTest {
     @Test
-    fun countMismatchReplacesLocalMoves() = runBlocking {
+    fun countMismatchReplacesLocalMovesAtomically() = runBlocking {
         val movesDao = FakeMovesDao(listOf(databaseMove(1)))
         val client = testClient()
         client.enqueueTestResponse(
@@ -26,7 +29,7 @@ class RemoteMovesRepositoryTest {
         try {
             RemoteMovesRepository(movesDao, client).updateMoves()
 
-            assertEquals(1, movesDao.deleteAllCalls)
+            assertEquals(1, movesDao.replaceAllCalls)
             assertEquals(listOf(1, 2), movesDao.insertedMoves.map(Move::id))
         } finally {
             client.close()
@@ -45,7 +48,7 @@ class RemoteMovesRepositoryTest {
         try {
             RemoteMovesRepository(movesDao, client).updateMoves()
 
-            assertEquals(0, movesDao.deleteAllCalls)
+            assertEquals(0, movesDao.replaceAllCalls)
             assertEquals(emptyList(), movesDao.insertedMoves)
         } finally {
             client.close()
@@ -72,6 +75,45 @@ class RemoteMovesRepositoryTest {
 
             assertEquals(1, movesDao.insertedMoves.size)
             assertEquals("", movesDao.insertedMoves.single().description)
+        } finally {
+            client.close()
+        }
+    }
+
+    @Test
+    fun mappedCountMismatchKeepsCachedMoves() = runBlocking {
+        val movesDao = FakeMovesDao(listOf(databaseMove(99)))
+        val client = testClient()
+        client.enqueueTestResponse(
+            PokemonOriginalMovesQuery(),
+            movesData(move(id = 1), move(id = 2, pp = null), total = 2),
+        )
+
+        try {
+            assertFailsWith<ApolloException> {
+                RemoteMovesRepository(movesDao, client).updateMoves()
+            }
+
+            assertEquals(listOf(99), movesDao.currentMoves.map(Move::id))
+            assertEquals(0, movesDao.replaceAllCalls)
+        } finally {
+            client.close()
+        }
+    }
+
+    @Test
+    fun networkFailureKeepsCachedMoves() = runBlocking {
+        val movesDao = FakeMovesDao(listOf(databaseMove(99)))
+        val client = testClient()
+        client.enqueueTestNetworkError()
+
+        try {
+            assertFailsWith<ApolloException> {
+                RemoteMovesRepository(movesDao, client).updateMoves()
+            }
+
+            assertEquals(listOf(99), movesDao.currentMoves.map(Move::id))
+            assertEquals(0, movesDao.replaceAllCalls)
         } finally {
             client.close()
         }
@@ -124,7 +166,10 @@ private fun databaseMove(id: Int) =
 private class FakeMovesDao(initialMoves: List<Move> = emptyList()) : MovesDao {
     private val moves = MutableStateFlow(initialMoves)
 
-    var deleteAllCalls = 0
+    val currentMoves: List<Move>
+        get() = moves.value
+
+    var replaceAllCalls = 0
         private set
 
     var insertedMoves = emptyList<Move>()
@@ -151,12 +196,17 @@ private class FakeMovesDao(initialMoves: List<Move> = emptyList()) : MovesDao {
         moves.value = move.toList()
     }
 
+    override suspend fun replaceAll(moves: List<Move>) {
+        replaceAllCalls++
+        insertedMoves = moves
+        this.moves.value = moves
+    }
+
     override suspend fun delete(move: Move) {
         moves.value -= move
     }
 
     override suspend fun deleteAll() {
-        deleteAllCalls++
         moves.value = emptyList()
     }
 }

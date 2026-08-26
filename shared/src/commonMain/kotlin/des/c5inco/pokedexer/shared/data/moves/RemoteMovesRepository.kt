@@ -30,12 +30,6 @@ class RemoteMovesRepository(
 
             val data = response.data!!
             val remoteCount = data.info.total?.count ?: data.moves.size
-            val localCount = movesDao.count()
-            if (localCount == remoteCount) {
-                println("Moves loaded from database: $localCount")
-                return@withContext
-            }
-
             val movesFromServer =
                 data.moves.mapNotNull { model ->
                     val category = model.category ?: return@mapNotNull null
@@ -58,9 +52,19 @@ class RemoteMovesRepository(
                         accuracy = model.accuracy,
                     )
                 }
+            if (movesFromServer.size != remoteCount) {
+                throw ApolloException(
+                    "Expected $remoteCount complete moves but mapped ${movesFromServer.size}"
+                )
+            }
 
-            movesDao.deleteAll()
-            movesDao.insertAll(*movesFromServer.toTypedArray())
+            val localCount = movesDao.count()
+            if (localCount == remoteCount) {
+                println("Moves loaded from database: $localCount")
+                return@withContext
+            }
+
+            movesDao.replaceAll(movesFromServer)
             println("Populated moves database: ${movesFromServer.size}")
         }
 

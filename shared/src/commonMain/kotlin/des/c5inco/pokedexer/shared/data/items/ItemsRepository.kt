@@ -40,12 +40,6 @@ class ItemsRepositoryImpl(private val itemsDao: ItemsDao, private val apolloClie
 
             val data = response.data!!.info
             val remoteCount = data.total?.count ?: data.items.size
-            val localCount = itemsDao.count()
-            if (localCount == remoteCount) {
-                println("Items loaded from database: $localCount")
-                return@withContext
-            }
-
             val itemsFromServer =
                 data.items.map { model ->
                     Item(
@@ -59,9 +53,19 @@ class ItemsRepositoryImpl(private val itemsDao: ItemsDao, private val apolloClie
                         sprite = model.name,
                     )
                 }
+            if (itemsFromServer.size != remoteCount) {
+                throw ApolloException(
+                    "Expected $remoteCount items but mapped ${itemsFromServer.size}"
+                )
+            }
 
-            itemsDao.deleteAll()
-            itemsDao.insertAll(*itemsFromServer.toTypedArray())
+            val localCount = itemsDao.count()
+            if (localCount == remoteCount) {
+                println("Items loaded from database: $localCount")
+                return@withContext
+            }
+
+            itemsDao.replaceAll(itemsFromServer)
             println("Populated items database: ${itemsFromServer.size}")
         }
 
