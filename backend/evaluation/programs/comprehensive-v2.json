@@ -1,0 +1,25 @@
+{
+  "kind": "evaluation-program",
+  "repetitions": 5,
+  "seed": "ask-pokedexer-eval-v3-seed",
+  "suites": [
+    {
+      "requirement": "all_full_pass",
+      "role": "gate",
+      "version": "grounding-canary-v1"
+    },
+    {
+      "category_weighting": "equal",
+      "role": "scored",
+      "version": "holdout-v3",
+      "weight": 0.5
+    },
+    {
+      "category_weighting": "equal",
+      "role": "scored",
+      "version": "search-v3",
+      "weight": 0.5
+    }
+  ],
+  "version": "comprehensive-v2"
+}

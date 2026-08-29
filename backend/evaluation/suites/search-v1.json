@@ -1,0 +1,292 @@
+{
+  "version": "search-v1",
+  "kind": "search",
+  "cases": [
+    {
+      "id": "pagination-water-broad",
+      "category": "pagination",
+      "question": "Show me Water-type Pokémon.",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [7, 8, 9, 54, 55, 60, 61, 62],
+        "forbidden_clear_nonmatches": [4, 25],
+        "min_strong_matches_on_top_page": 4,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["water", "type"],
+        "evidence_coverage": true,
+        "pagination": { "required": true, "min_unique_results": 12 }
+      }
+    },
+    {
+      "id": "pagination-red-broad",
+      "category": "pagination",
+      "question": "Find red Pokémon.",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [4, 5, 6, 98, 99, 129],
+        "forbidden_clear_nonmatches": [1, 7],
+        "min_strong_matches_on_top_page": 3,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["red", "color"],
+        "evidence_coverage": true,
+        "pagination": { "required": true, "min_unique_results": 10 }
+      }
+    },
+    {
+      "id": "ambiguity-small",
+      "category": "ambiguity",
+      "question": "Which Pokémon are small?",
+      "expected": {
+        "behavior": "needs_clarification",
+        "strong_match_ids": [],
+        "forbidden_clear_nonmatches": [],
+        "min_strong_matches_on_top_page": 0,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["height", "weight", "threshold"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "ambiguity-little",
+      "category": "ambiguity",
+      "question": "Which Pokémon are little?",
+      "expected": {
+        "behavior": "needs_clarification",
+        "strong_match_ids": [],
+        "forbidden_clear_nonmatches": [],
+        "min_strong_matches_on_top_page": 0,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["height", "weight", "threshold"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "physical-short",
+      "category": "physical",
+      "question": "Which Pokémon are short?",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [10, 13, 16, 19, 21, 50],
+        "forbidden_clear_nonmatches": [95, 208],
+        "min_strong_matches_on_top_page": 3,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["10 decimetres", "1 metre"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "physical-heavy",
+      "category": "physical",
+      "question": "Which Pokémon are heavy?",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [76, 95, 131, 143, 208],
+        "forbidden_clear_nonmatches": [10, 16, 50],
+        "min_strong_matches_on_top_page": 3,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["1000 hectograms", "100 kilograms"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "subjective-cute",
+      "category": "subjective",
+      "question": "Show me cute Pokémon.",
+      "expected": {
+        "behavior": "requires_enrichment",
+        "strong_match_ids": [25, 39, 133],
+        "forbidden_clear_nonmatches": [],
+        "min_strong_matches_on_top_page": 0,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["cute", "semantic or visual enrichment"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "subjective-sleepy-looking",
+      "category": "subjective",
+      "question": "Show me sleepy-looking Pokémon.",
+      "expected": {
+        "behavior": "requires_enrichment",
+        "strong_match_ids": [79, 96, 143],
+        "forbidden_clear_nonmatches": [],
+        "min_strong_matches_on_top_page": 0,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["sleepy-looking", "visual enrichment"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "combined-round-water",
+      "category": "combined",
+      "question": "Find round Water-type Pokémon.",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [90, 91, 366],
+        "forbidden_clear_nonmatches": [4, 25],
+        "min_strong_matches_on_top_page": 2,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["round", "ball", "water", "type"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "combined-short-fire",
+      "category": "combined",
+      "question": "Find short Fire-type Pokémon.",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [4, 37, 155, 255],
+        "forbidden_clear_nonmatches": [6, 146],
+        "min_strong_matches_on_top_page": 2,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["fire", "10 decimetres", "1 metre"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "pagination-grass-broad",
+      "category": "pagination",
+      "question": "Show me Grass-type Pokémon.",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [1, 2, 3, 43, 44, 45],
+        "forbidden_clear_nonmatches": [4, 7],
+        "min_strong_matches_on_top_page": 3,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["grass", "type"],
+        "evidence_coverage": true,
+        "pagination": { "required": true, "min_unique_results": 10 }
+      }
+    },
+    {
+      "id": "pagination-flying-broad",
+      "category": "pagination",
+      "question": "Which Pokémon are Flying type?",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [6, 12, 16, 17, 18, 21],
+        "forbidden_clear_nonmatches": [1, 7],
+        "min_strong_matches_on_top_page": 3,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["flying", "type"],
+        "evidence_coverage": true,
+        "pagination": { "required": true, "min_unique_results": 10 }
+      }
+    },
+    {
+      "id": "ambiguity-big",
+      "category": "ambiguity",
+      "question": "Which Pokémon are big?",
+      "expected": {
+        "behavior": "needs_clarification",
+        "strong_match_ids": [],
+        "forbidden_clear_nonmatches": [],
+        "min_strong_matches_on_top_page": 0,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["height", "weight", "threshold"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "physical-tall",
+      "category": "physical",
+      "question": "Which Pokémon are tall?",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [3, 23, 24, 95, 103, 115],
+        "forbidden_clear_nonmatches": [10, 16, 50],
+        "min_strong_matches_on_top_page": 3,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["20 decimetres", "2 metres"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "physical-light",
+      "category": "physical",
+      "question": "Which Pokémon are light?",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [10, 13, 16, 19, 21, 50],
+        "forbidden_clear_nonmatches": [76, 95, 143],
+        "min_strong_matches_on_top_page": 3,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["100 hectograms", "10 kilograms"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "subjective-fluffy",
+      "category": "subjective",
+      "question": "Show me fluffy Pokémon.",
+      "expected": {
+        "behavior": "requires_enrichment",
+        "strong_match_ids": [37, 39, 133],
+        "forbidden_clear_nonmatches": [],
+        "min_strong_matches_on_top_page": 0,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["fluffy", "semantic or visual enrichment"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "combined-round-electric",
+      "category": "combined",
+      "question": "Find round Electric-type Pokémon.",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [100, 101],
+        "forbidden_clear_nonmatches": [25, 81],
+        "min_strong_matches_on_top_page": 2,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["round", "ball", "electric", "type"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "combined-heavy-rock",
+      "category": "combined",
+      "question": "Find heavy Rock-type Pokémon.",
+      "expected": {
+        "behavior": "answer",
+        "strong_match_ids": [75, 76, 95, 111, 112],
+        "forbidden_clear_nonmatches": [10, 25],
+        "min_strong_matches_on_top_page": 3,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["rock", "1000 hectograms", "100 kilograms"],
+        "evidence_coverage": true
+      }
+    },
+    {
+      "id": "no-match-scoped",
+      "category": "no-match",
+      "question": "Are there any short, red, round Dragon-type Pokémon?",
+      "expected": {
+        "behavior": "not_found",
+        "strong_match_ids": [],
+        "forbidden_clear_nonmatches": [6, 147],
+        "min_strong_matches_on_top_page": 0,
+        "top_page_size": 8,
+        "interpretation_disclosure": ["current", "verified", "PokéAPI data"],
+        "evidence_coverage": true,
+        "minimum_successful_queries": 1
+      }
+    },
+    {
+      "id": "no-match-insufficient-evidence",
+      "category": "no-match",
+      "question": "Are there any round, purple Dragon-type Pokémon?",
+      "expected": {
+        "behavior": "scoped_no_match",
+        "strong_match_ids": [],
+        "forbidden_clear_nonmatches": [],
+        "min_strong_matches_on_top_page": 0,
+        "top_page_size": 8,
+        "interpretation_disclosure": [],
+        "evidence_coverage": true,
+        "minimum_successful_queries": 1
+      }
+    }
+  ]
+}

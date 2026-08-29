@@ -1,0 +1,27 @@
+{
+  "name": "ask-pokedexer-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "benchmark:schema": "tsx benchmark/schema-lookup.ts",
+    "build": "tsc --noEmit",
+    "evaluate:validate": "tsx evaluation/run.ts --suite holdout",
+    "evaluate:validate:canary": "tsx evaluation/run.ts --suite canary",
+    "evaluate:validate:program": "tsx evaluation/program.ts",
+    "evaluate:validate:search": "tsx evaluation/run.ts --suite search",
+    "evaluate:rescore:search": "tsx evaluation/search-rescore.ts",
+    "start": "tsx src/server.ts",
+    "test": "tsx --test test/**/*.test.ts"
+  },
+  "dependencies": {
+    "@google/genai": "2.19.0",
+    "graphql": "17.0.2",
+    "openai": "7.6.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "26.3.0",
+    "tsx": "4.23.12",
+    "typescript": "7.0.2"
+  }
+}
