@@ -271,6 +271,20 @@ function summarizeSelection(selected: EvaluationRecord[]) {
   const costs = selected.map((record) => record.result.metrics.estimated_cost_usd);
   const latencies = selected.map((record) => record.result.metrics.total_ms);
   const fullPasses = count("full_pass");
+  const toolArgumentNormalizations = selected.reduce(
+    (total, record) => {
+      const item = record.result.metrics.tool_argument_normalizations;
+      if (!item) return total;
+      total.calls += item.calls;
+      total.kinds.non_string_value_json += item.kinds.non_string_value_json;
+      total.kinds.variables_object_map += item.kinds.variables_object_map;
+      return total;
+    },
+    {
+      calls: 0,
+      kinds: { non_string_value_json: 0, variables_object_map: 0 },
+    },
+  );
   const averageMetric = (name: string) =>
     total === 0
       ? 0
@@ -319,6 +333,7 @@ function summarizeSelection(selected: EvaluationRecord[]) {
     name_resolution_passes: count("name_resolution_pass"),
     safety_passes: count("safety_pass"),
     tool_omissions: selected.filter((record) => record.evaluation.tool_omission === true).length,
+    tool_argument_normalizations: toolArgumentNormalizations,
     tool_use_passes: count("tool_use_pass"),
     total,
   };
@@ -556,6 +571,10 @@ function unknownFailureMetrics(started: number): AskMetrics {
     output_tokens: 0,
     schema_lookup_ms: 0,
     schema_lookups: 0,
+    tool_argument_normalizations: {
+      calls: 0,
+      kinds: { non_string_value_json: 0, variables_object_map: 0 },
+    },
     total_ms: Math.round(performance.now() - started),
   };
 }

@@ -152,9 +152,19 @@ test("loads resumable JSONL records and rejects duplicate schedule keys", () => 
 });
 
 test("produces standalone summaries for every candidate", () => {
+  const firstLuna = successfulRecord("luna-low", true, 0.001);
+  firstLuna.result.metrics.tool_argument_normalizations = {
+    calls: 1,
+    kinds: { non_string_value_json: 0, variables_object_map: 1 },
+  };
+  const secondLuna = successfulRecord("luna-low", false, 0.002);
+  secondLuna.result.metrics.tool_argument_normalizations = {
+    calls: 2,
+    kinds: { non_string_value_json: 2, variables_object_map: 0 },
+  };
   const records = [
-    successfulRecord("luna-low", true, 0.001),
-    { ...successfulRecord("luna-low", false, 0.002), ordinal: 2, repetition: 2 },
+    firstLuna,
+    { ...secondLuna, ordinal: 2, repetition: 2 },
     successfulRecord("gemini-3.7-flash", true, 0.003),
   ];
 
@@ -164,6 +174,10 @@ test("produces standalone summaries for every candidate", () => {
   assert.equal(summary.candidates["luna-low"].full_passes, 1);
   assert.equal(summary.candidates["luna-low"].total, 2);
   assert.equal(summary.candidates["luna-low"].estimated_cost_usd, 0.003);
+  assert.deepEqual(summary.candidates["luna-low"].tool_argument_normalizations, {
+    calls: 3,
+    kinds: { non_string_value_json: 2, variables_object_map: 1 },
+  });
   assert.equal(summary.candidates["luna-low"].categories.facts.total, 2);
   assert.equal(summary.candidates["luna-low"].categories.facts.full_pass_rate, 0.5);
   assert.equal(summary.candidates["gemini-3.7-flash"].full_pass_rate, 1);

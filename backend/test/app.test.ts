@@ -73,6 +73,10 @@ test("preserves accumulated metrics and safe diagnostics on evaluation failure",
           output_tokens: 200,
           schema_lookup_ms: 0,
           schema_lookups: 0,
+          tool_argument_normalizations: {
+            calls: 0,
+            kinds: { non_string_value_json: 0, variables_object_map: 0 },
+          },
           total_ms: 1_050,
         },
       });
@@ -112,6 +116,10 @@ test("preserves accumulated metrics and safe diagnostics on evaluation failure",
     output_tokens: 200,
     schema_lookup_ms: 0,
     schema_lookups: 0,
+    tool_argument_normalizations: {
+      calls: 0,
+      kinds: { non_string_value_json: 0, variables_object_map: 0 },
+    },
     total_ms: 1_050,
   });
 });

@@ -76,6 +76,44 @@ test("converts strict OpenAI tool arguments into provider-neutral calls", async 
   });
 });
 
+test("does not normalize conventional GraphQL variable objects on the OpenAI path", async () => {
+  const provider = createOpenAIProvider({
+    client: {
+      responses: {
+        async create() {
+          return {
+            output: [
+              {
+                arguments: JSON.stringify({
+                  purpose: "Resolve Razor Leaf",
+                  query:
+                    "query Move($name: String!) { move(where: {name: {_eq: $name}}, limit: 1) { id name } }",
+                  variables: { name: "razor-leaf", limit: 1 },
+                }),
+                call_id: "call-1",
+                name: "execute_readonly_graphql",
+                type: "function_call",
+              },
+            ],
+            status: "completed",
+            usage: { input_tokens: 40, output_tokens: 12 },
+          };
+        },
+      },
+    },
+    model: "gpt-5.6-luna",
+  });
+
+  await assert.rejects(
+    () => provider.plan({ history: [], question: "Who learns Razor Leaf?" }),
+    (error: unknown) => {
+      assert.ok(error instanceof ModelProviderError);
+      assert.match(error.message, /expected array, received object/);
+      return true;
+    },
+  );
+});
+
 test("uses a separate tools-disabled strict synthesis response", async () => {
   const requests: Array<Record<string, unknown>> = [];
   const response = {

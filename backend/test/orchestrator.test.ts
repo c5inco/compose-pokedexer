@@ -29,7 +29,16 @@ function providerWith(response: SynthesisResponse): ModelProvider {
           name: "execute_readonly_graphql",
         },
       ],
-      usage: { cacheWriteTokens: 5, cachedInputTokens: 20, inputTokens: 100, outputTokens: 30 },
+      usage: {
+        cacheWriteTokens: 5,
+        cachedInputTokens: 20,
+        inputTokens: 100,
+        outputTokens: 30,
+        toolArgumentNormalizations: {
+          calls: 1,
+          kinds: { non_string_value_json: 0, variables_object_map: 1 },
+        },
+      },
     },
     {
       toolCalls: [],
@@ -90,6 +99,10 @@ test("builds authoritative query provenance from executed tools", async () => {
   assert.deepEqual(result.response.pokemon_ids, [1]);
   assert.equal(result.metrics.model_calls, 3);
   assert.equal(result.metrics.graphql_calls, 1);
+  assert.deepEqual(result.metrics.tool_argument_normalizations, {
+    calls: 1,
+    kinds: { non_string_value_json: 0, variables_object_map: 1 },
+  });
   assert.ok(result.metrics.estimated_cost_usd > 0);
 });
 

@@ -10,7 +10,13 @@ import {
   structuredSynthesisInstructions,
   synthesisInstructions,
 } from "./model-contract.js";
-import { ModelProviderError, type ModelProvider, type PlannerTurn, type TokenUsage } from "./orchestrator.js";
+import {
+  ModelProviderError,
+  type ModelProvider,
+  type PlannerTurn,
+  type TokenUsage,
+  type ToolArgumentNormalizationKind,
+} from "./orchestrator.js";
 import { EXECUTION_PROFILE } from "./execution-profile.js";
 
 interface OpenAIResponse {
@@ -35,12 +41,18 @@ export interface ResponsesClient {
   };
 }
 
+export interface NormalizedToolArguments {
+  arguments: unknown;
+  kinds: ToolArgumentNormalizationKind[];
+}
+
 export type ResponsesReasoningEffort = "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
 
 export interface OpenAIProviderOptions {
   client: ResponsesClient;
   includeParallelToolCalls?: boolean;
   model: string;
+  normalizeToolArguments?: (name: string, rawArguments: unknown) => NormalizedToolArguments;
   providerLabel?: "OpenAI" | "OpenRouter";
   reasoningEffort?: ResponsesReasoningEffort;
   requireParameters?: boolean;
@@ -61,11 +73,27 @@ function assertCompleted(response: OpenAIResponse, providerLabel: string): void 
   }
 }
 
-function parseOpenAIToolCall(item: OpenAIResponse["output"][number], providerLabel: string) {
+function parseOpenAIToolCall(
+  item: OpenAIResponse["output"][number],
+  providerLabel: string,
+  usage: TokenUsage,
+  normalizeToolArguments?: (name: string, rawArguments: unknown) => NormalizedToolArguments,
+) {
   if (!item.arguments || !item.call_id || !item.name) {
     throw new Error(`${providerLabel} returned an incomplete function call`);
   }
-  return parseToolCall(item.name, JSON.parse(item.arguments) as unknown, item.call_id);
+  const rawArguments = JSON.parse(item.arguments) as unknown;
+  const normalized = normalizeToolArguments?.(item.name, rawArguments);
+  if (normalized && normalized.kinds.length > 0) {
+    const kinds = new Set(normalized.kinds);
+    usage.toolArgumentNormalizations ??= {
+      calls: 0,
+      kinds: { non_string_value_json: 0, variables_object_map: 0 },
+    };
+    usage.toolArgumentNormalizations.calls += 1;
+    for (const kind of kinds) usage.toolArgumentNormalizations.kinds[kind] += 1;
+  }
+  return parseToolCall(item.name, normalized?.arguments ?? rawArguments, item.call_id);
 }
 
 export function createOpenAIProvider(options: OpenAIProviderOptions): ModelProvider {
@@ -96,12 +124,20 @@ export function createOpenAIProvider(options: OpenAIProviderOptions): ModelProvi
         })),
       });
       const usage = usageFrom(response);
+      if (options.normalizeToolArguments) {
+        usage.toolArgumentNormalizations = {
+          calls: 0,
+          kinds: { non_string_value_json: 0, variables_object_map: 0 },
+        };
+      }
       try {
         assertCompleted(response, providerLabel);
         return {
           toolCalls: response.output
             .filter((item) => item.type === "function_call")
-            .map((item) => parseOpenAIToolCall(item, providerLabel)),
+            .map((item) =>
+              parseOpenAIToolCall(item, providerLabel, usage, options.normalizeToolArguments)
+            ),
           usage,
         };
       } catch (error) {

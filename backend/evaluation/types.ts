@@ -1,4 +1,4 @@
-import type { FailureClass } from "../src/orchestrator.js";
+import type { FailureClass, ToolArgumentNormalizations } from "../src/orchestrator.js";
 import type { QueryTrace } from "../src/readonly-graphql.js";
 
 export type EvaluationCategory = "difficult" | "facts" | "relationships" | "safety";
@@ -51,6 +51,7 @@ export interface EvaluationScore {
 export interface EvaluationMetrics {
   cost_complete?: boolean;
   estimated_cost_usd: number;
+  tool_argument_normalizations?: ToolArgumentNormalizations;
   total_ms: number;
 }
 

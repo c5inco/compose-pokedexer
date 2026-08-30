@@ -29,11 +29,21 @@ export interface ToolCall {
   name: "execute_readonly_graphql" | "schema_lookup";
 }
 
+export type ToolArgumentNormalizationKind =
+  | "non_string_value_json"
+  | "variables_object_map";
+
+export interface ToolArgumentNormalizations {
+  calls: number;
+  kinds: Record<ToolArgumentNormalizationKind, number>;
+}
+
 export interface TokenUsage {
   cacheWriteTokens: number;
   cachedInputTokens: number;
   inputTokens: number;
   outputTokens: number;
+  toolArgumentNormalizations?: ToolArgumentNormalizations;
 }
 
 export class ModelProviderError extends Error {
@@ -98,8 +108,9 @@ interface OrchestratorOptions {
   schemaLookup(request: JsonObject): Promise<JsonValue>;
 }
 
-interface UsageTotals extends TokenUsage {
+interface UsageTotals extends Omit<TokenUsage, "toolArgumentNormalizations"> {
   modelCalls: number;
+  toolArgumentNormalizations: ToolArgumentNormalizations;
 }
 
 export type EvaluationPhase = "graphql" | "planning" | "schema_lookup" | "synthesis" | "validation";
@@ -120,6 +131,7 @@ export interface AskMetrics {
   output_tokens: number;
   schema_lookup_ms: number;
   schema_lookups: number;
+  tool_argument_normalizations: ToolArgumentNormalizations;
   total_ms: number;
 }
 
@@ -156,6 +168,10 @@ function emptyUsage(): UsageTotals {
     inputTokens: 0,
     modelCalls: 0,
     outputTokens: 0,
+    toolArgumentNormalizations: {
+      calls: 0,
+      kinds: { non_string_value_json: 0, variables_object_map: 0 },
+    },
   };
 }
 
@@ -165,6 +181,13 @@ function addUsage(total: UsageTotals, usage: TokenUsage): void {
   total.inputTokens += usage.inputTokens;
   total.outputTokens += usage.outputTokens;
   total.modelCalls += 1;
+  if (usage.toolArgumentNormalizations) {
+    total.toolArgumentNormalizations.calls += usage.toolArgumentNormalizations.calls;
+    total.toolArgumentNormalizations.kinds.non_string_value_json +=
+      usage.toolArgumentNormalizations.kinds.non_string_value_json;
+    total.toolArgumentNormalizations.kinds.variables_object_map +=
+      usage.toolArgumentNormalizations.kinds.variables_object_map;
+  }
 }
 
 function normalizedText(value: string): string {
@@ -305,6 +328,10 @@ export class AskOrchestrator {
         output_tokens: 0,
         schema_lookup_ms: 0,
         schema_lookups: 0,
+        tool_argument_normalizations: {
+          calls: 0,
+          kinds: { non_string_value_json: 0, variables_object_map: 0 },
+        },
         total_ms: 0,
       },
       response,
@@ -366,6 +393,10 @@ export class AskOrchestrator {
         output_tokens: usage.outputTokens,
         schema_lookup_ms: Math.round(schemaLookupMs),
         schema_lookups: schemaLookups,
+        tool_argument_normalizations: {
+          calls: usage.toolArgumentNormalizations.calls,
+          kinds: { ...usage.toolArgumentNormalizations.kinds },
+        },
         total_ms: Math.round(performance.now() - started),
       };
     };
