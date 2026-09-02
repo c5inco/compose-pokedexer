@@ -2,7 +2,7 @@ package des.c5inco.pokedexer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloException
 import des.c5inco.pokedexer.shared.data.abilities.AbilitiesRepository
 import des.c5inco.pokedexer.shared.data.items.ItemsRepository
 import des.c5inco.pokedexer.shared.data.pokemon.GenerationLoader

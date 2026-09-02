@@ -1,13 +1,13 @@
-@file:OptIn(com.apollographql.apollo3.annotations.ApolloExperimental::class)
+@file:OptIn(com.apollographql.apollo.annotations.ApolloExperimental::class)
 
 package des.c5inco.pokedexer.shared.data.moves
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.testing.QueueTestNetworkTransport
-import com.apollographql.apollo3.testing.enqueueTestNetworkError
-import com.apollographql.apollo3.testing.enqueueTestResponse
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.testing.QueueTestNetworkTransport
+import com.apollographql.apollo.testing.enqueueTestNetworkError
+import com.apollographql.apollo.testing.enqueueTestResponse
 import com.benasher44.uuid.uuid4
 import des.c5inco.pokedexer.shared.PokemonOriginalMovesQuery
 import des.c5inco.pokedexer.shared.model.Move

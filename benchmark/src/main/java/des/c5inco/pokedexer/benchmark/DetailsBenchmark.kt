@@ -1,11 +1,11 @@
 package des.c5inco.pokedexer.benchmark
 
+import android.content.Intent
 import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
-import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.Until
 import org.junit.Rule
 import org.junit.Test
@@ -21,57 +21,59 @@ class DetailsBenchmark {
 
     fun pagePokemon(compilationMode: CompilationMode) =
         benchmarkRule.measureRepeated(
-            packageName = "des.c5inco.pokedexer",
+            packageName = "des.c5inco.pokedexer.meshbenchmark",
             metrics = listOf(FrameTimingMetric()),
-            iterations = 5,
+            iterations = 3,
             compilationMode = compilationMode,
             startupMode = null,
             setupBlock = {
                 killProcess()
                 pressHome()
-                startActivityAndWait()
+                startActivityAndWait { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) }
 
-                val button = device.findObject(By.text("Pokedex"))
+                val button = device.findObject(By.text("Pokédex"))
                 button.click()
 
                 device.waitForIdle()
 
                 val firstPokemon =
-                    device.wait(Until.findObject(By.text("Bulbasaur")), POKEMON_LOAD_TIMEOUT_MILLIS)
+                    checkNotNull(
+                        device.wait(
+                            Until.findObject(By.text("Bulbasaur")),
+                            POKEMON_LOAD_TIMEOUT_MILLIS,
+                        )
+                    ) { "Bulbasaur card not found in time" }
                 firstPokemon.click()
 
                 device.waitForIdle()
             },
         ) {
             val pager =
-                device.wait(Until.findObject(By.res("PokemonPager")), POKEMON_LOAD_TIMEOUT_MILLIS)
+                checkNotNull(
+                    device.wait(
+                        Until.findObject(By.scrollable(true)),
+                        POKEMON_LOAD_TIMEOUT_MILLIS,
+                    )
+                ) { "Pokemon pager not found in time" }
+            val bounds = pager.visibleBounds
+            val startX = bounds.right - (bounds.width() / GESTURE_MARGIN_DIVISOR)
+            val endX = bounds.left + (bounds.width() / GESTURE_MARGIN_DIVISOR)
+            val y = bounds.centerY()
 
-            pager?.let {
-                pager.setGestureMargin(device.displayWidth / GESTURE_MARGIN_DIVISOR)
-
-                device.wait(Until.findObject(By.text("Bulbasaur")), POKEMON_LOAD_TIMEOUT_MILLIS)
-                pager.fling(Direction.RIGHT, PAGER_FLING_SPEED_PIXELS_PER_SECOND)
-
-                device.wait(Until.findObject(By.text("Ivysaur")), POKEMON_LOAD_TIMEOUT_MILLIS)
-                pager.fling(Direction.RIGHT, PAGER_FLING_SPEED_PIXELS_PER_SECOND)
-
-                device.wait(Until.findObject(By.text("Venusaur")), POKEMON_LOAD_TIMEOUT_MILLIS)
-                pager.fling(Direction.RIGHT, PAGER_FLING_SPEED_PIXELS_PER_SECOND)
-
-                device.wait(
-                    Until.findObject(By.text("Charmander")),
-                    FINAL_POKEMON_LOAD_TIMEOUT_MILLIS,
-                )
-                pager.fling(Direction.RIGHT, PAGER_FLING_SPEED_PIXELS_PER_SECOND)
+            listOf("Ivysaur", "Venusaur", "Charmander", "Charmeleon").forEach { pokemon ->
+                device.executeShellCommand("input swipe $startX $y $endX $y $SWIPE_DURATION_MILLIS")
+                check(device.wait(Until.hasObject(By.text(pokemon)), POKEMON_LOAD_TIMEOUT_MILLIS)) {
+                    "$pokemon page not found in time"
+                }
             }
 
-            device.waitForIdle()
+            Thread.sleep(POST_SWIPE_DELAY_MILLIS)
         }
 
     private companion object {
         const val POKEMON_LOAD_TIMEOUT_MILLIS = 5_000L
-        const val FINAL_POKEMON_LOAD_TIMEOUT_MILLIS = 1_000L
         const val GESTURE_MARGIN_DIVISOR = 5
-        const val PAGER_FLING_SPEED_PIXELS_PER_SECOND = 1_500
+        const val SWIPE_DURATION_MILLIS = 1_000
+        const val POST_SWIPE_DELAY_MILLIS = 500L
     }
 }

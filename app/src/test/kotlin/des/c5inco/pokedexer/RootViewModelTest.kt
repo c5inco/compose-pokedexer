@@ -1,6 +1,6 @@
 package des.c5inco.pokedexer
 
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.exception.DefaultApolloException
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ class RootViewModelTest {
         var siblingCompleted = false
 
         coroutineScope {
-            launch { runDataUpdateSafely("moves") { throw ApolloException("offline") } }
+            launch { runDataUpdateSafely("moves") { throw DefaultApolloException("offline") } }
             launch { siblingCompleted = true }
         }
 

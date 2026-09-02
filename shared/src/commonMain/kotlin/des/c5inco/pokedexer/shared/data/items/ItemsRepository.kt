@@ -1,7 +1,8 @@
 package des.c5inco.pokedexer.shared.data.items
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.ApolloGraphQLException
+import com.apollographql.apollo.exception.DefaultApolloException
 import des.c5inco.pokedexer.shared.ItemsQuery
 import des.c5inco.pokedexer.shared.data.Result
 import des.c5inco.pokedexer.shared.data.cleanupDescriptionText
@@ -35,11 +36,12 @@ class ItemsRepositoryImpl(private val itemsDao: ItemsDao, private val apolloClie
             val response = apolloClient.query(ItemsQuery()).execute()
 
             if (response.hasErrors()) {
-                throw ApolloException("The response has errors: ${response.errors}")
+                throw ApolloGraphQLException(response.errors.orEmpty())
             }
 
             val data =
-                response.data?.info ?: throw ApolloException("The response contains no item data")
+                response.data?.info
+                    ?: throw DefaultApolloException("The response contains no item data")
             val remoteCount = data.total?.count ?: data.items.size
             val itemsFromServer =
                 data.items.map { model ->
@@ -55,7 +57,7 @@ class ItemsRepositoryImpl(private val itemsDao: ItemsDao, private val apolloClie
                     )
                 }
             if (itemsFromServer.size != remoteCount) {
-                throw ApolloException(
+                throw DefaultApolloException(
                     "Expected $remoteCount items but mapped ${itemsFromServer.size}"
                 )
             }

@@ -1,7 +1,7 @@
 package des.c5inco.pokedexer.shared
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.ApolloException
 import des.c5inco.pokedexer.shared.data.PokemonDatabase
 import des.c5inco.pokedexer.shared.data.abilities.AbilitiesRepositoryImpl
 import des.c5inco.pokedexer.shared.data.getDatabaseBuilder
