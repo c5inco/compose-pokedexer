@@ -871,7 +871,7 @@ test("transparently discloses a reviewed unofficial nickname resolution", async 
   assert.deepEqual(result.response.pokemon_ids, [183]);
 });
 
-test("rejects observed hydration IDs that are unrelated to the question and answer", async () => {
+test("prunes verified hydration IDs that are unrelated to the question and answer", async () => {
   const broadExecution: GraphqlExecution = {
     data: { pokemon: [{ id: 1, name: "bulbasaur" }, { id: 999, name: "unrelated-mon" }] },
     entityIds: { ability: [], item: [], move: [], pokemon: [1, 999] },
@@ -898,10 +898,111 @@ test("rejects observed hydration IDs that are unrelated to the question and answ
     schemaLookup: async () => ({ matches: [] }),
   });
 
-  await assert.rejects(
-    orchestrator.ask("What type is Bulbasaur?"),
-    /unrelated-mon.*not referenced/i,
-  );
+  const result = await orchestrator.ask("What type is Bulbasaur?");
+
+  assert.deepEqual(result.response.pokemon_ids, [1]);
+  assert.deepEqual(result.diagnostics.pruned_hydration_ids, {
+    ability: [],
+    item: [],
+    move: [],
+    pokemon: [999],
+  });
+});
+
+test("prunes the observed unmentioned Galarian Weezing ID without losing Levitate results", async () => {
+  const levitateExecution: GraphqlExecution = {
+    data: {
+      ability: [{ id: 26, name: "levitate" }],
+      pokemon: [
+        { id: 92, name: "gastly" },
+        { id: 93, name: "haunter" },
+        { id: 109, name: "koffing" },
+        { id: 110, name: "weezing" },
+        { id: 10167, name: "weezing-galar" },
+      ],
+    },
+    entityIds: { ability: [26], item: [], move: [], pokemon: [92, 93, 109, 110, 10167] },
+    entityReferences: {
+      ability: [{ id: 26, name: "levitate" }],
+      item: [],
+      move: [],
+      pokemon: [
+        { id: 92, name: "gastly" },
+        { id: 93, name: "haunter" },
+        { id: 109, name: "koffing" },
+        { id: 110, name: "weezing" },
+        { id: 10167, name: "weezing-galar" },
+      ],
+    },
+    trace,
+  };
+  const orchestrator = new AskOrchestrator({
+    executeGraphql: async () => levitateExecution,
+    model: providerWith({
+      ability_ids: [26],
+      answer: "Gastly, Haunter, Koffing, and Weezing can have Levitate.",
+      continuation_candidates: null,
+      item_ids: [],
+      move_ids: [],
+      pokemon_ids: [92, 93, 109, 110, 10167],
+      table: null,
+    }),
+    pricing: { cacheWritePerMillion: 0, cachedInputPerMillion: 0, inputPerMillion: 0, outputPerMillion: 0 },
+    schemaLookup: async () => ({ matches: [] }),
+  });
+
+  const result = await orchestrator.ask("Which Generation I Pokémon can have Levitate?");
+
+  assert.equal(result.response.answer, "Gastly, Haunter, Koffing, and Weezing can have Levitate.");
+  assert.deepEqual(result.response.ability_ids, [26]);
+  assert.deepEqual(result.response.pokemon_ids, [92, 93, 109, 110]);
+  assert.deepEqual(result.diagnostics.pruned_hydration_ids, {
+    ability: [],
+    item: [],
+    move: [],
+    pokemon: [10167],
+  });
+});
+
+test("does not resolve answer entities when verified hydration is already complete", async () => {
+  const intimidateExecution: GraphqlExecution = {
+    data: { ability: [{ id: 22, name: "intimidate" }] },
+    entityIds: { ability: [22], item: [], move: [], pokemon: [] },
+    entityReferences: {
+      ability: [{ id: 22, name: "intimidate" }],
+      item: [],
+      move: [],
+      pokemon: [],
+    },
+    trace: { ...trace, purpose: "Get Intimidate" },
+  };
+  const requests: GraphqlRequest[] = [];
+  const orchestrator = new AskOrchestrator({
+    executeGraphql: async (request) => {
+      requests.push(request);
+      return intimidateExecution;
+    },
+    maxGraphqlAttempts: 2,
+    model: providerWith({
+      ability_ids: [22],
+      answer: "When a Pokémon with Intimidate enters battle, it lowers the opposing Pokémon's Attack.",
+      continuation_candidates: null,
+      item_ids: [],
+      move_ids: [],
+      pokemon_ids: [],
+      table: null,
+    }),
+    pricing: { cacheWritePerMillion: 0, cachedInputPerMillion: 0, inputPerMillion: 0, outputPerMillion: 0 },
+    schemaLookup: async () => ({ matches: [] }),
+  });
+
+  const result = await orchestrator.ask("What happens when a Pokémon with Intimidate enters battle?");
+
+  assert.deepEqual(result.response.ability_ids, [22]);
+  assert.equal(requests.length, 1);
+  assert.equal(result.metrics.graphql_attempts, 1);
+  assert.equal(result.metrics.graphql_calls, 1);
+  assert.deepEqual(result.response.queries.map(({ purpose }) => purpose), ["Get Intimidate"]);
 });
 
 test("derives omitted result hydration from answer-referenced verified evidence", async () => {
@@ -968,9 +1069,7 @@ test("derives omitted result hydration from answer-referenced verified evidence"
   assert.deepEqual(result.response.pokemon_ids, [23, 24, 58, 59, 128, 130]);
   assert.equal(requests.length, 2);
   assert.equal(requests[1].purpose, "Resolve answer-referenced entities");
-  assert.ok(
-    (requests[1].variables as { names: string[] }).names.includes("intimidate"),
-  );
+  assert.deepEqual((requests[1].variables as { names: string[] }).names, ["intimidate"]);
   const schemaSource = readFileSync(
     resolve(
       import.meta.dirname,
@@ -1045,6 +1144,67 @@ test("resolves a question target omitted from otherwise complete evidence", asyn
   assert.deepEqual(result.response.ability_ids, [25]);
   assert.deepEqual(result.response.pokemon_ids, [292]);
   assert.equal(calls, 2);
+});
+
+test("resolves missing name metadata before validating a verified model ID", async () => {
+  const abilityExecution: GraphqlExecution = {
+    data: {
+      pokemonability: [{
+        ability: { id: 25, name: "wonder-guard" },
+        pokemon_id: 292,
+      }],
+    },
+    entityIds: { ability: [25], item: [], move: [], pokemon: [292] },
+    entityReferences: {
+      ability: [{ id: 25, name: "wonder-guard" }],
+      item: [],
+      move: [],
+      pokemon: [],
+    },
+    trace: { ...trace, purpose: "Find Shedinja's ability" },
+  };
+  const shedinjaExecution: GraphqlExecution = {
+    data: { pokemon: [{ id: 292, name: "shedinja" }] },
+    entityIds: { ability: [], item: [], move: [], pokemon: [292] },
+    entityReferences: {
+      ability: [],
+      item: [],
+      move: [],
+      pokemon: [{ id: 292, name: "shedinja" }],
+    },
+    trace: { ...trace, purpose: "Resolve answer-referenced entities" },
+  };
+  const requests: GraphqlRequest[] = [];
+  const orchestrator = new AskOrchestrator({
+    executeGraphql: async (request) => {
+      requests.push(request);
+      return requests.length === 1 ? abilityExecution : shedinjaExecution;
+    },
+    maxGraphqlAttempts: 2,
+    model: providerWith({
+      ability_ids: [25],
+      answer: "Wonder Guard protects Shedinja from damaging moves that are not super effective.",
+      continuation_candidates: null,
+      item_ids: [],
+      move_ids: [],
+      pokemon_ids: [292],
+      table: null,
+    }),
+    pricing: { cacheWritePerMillion: 0, cachedInputPerMillion: 0, inputPerMillion: 0, outputPerMillion: 0 },
+    schemaLookup: async () => ({ matches: [] }),
+  });
+
+  const result = await orchestrator.ask(
+    "What is the ability that stops most damaging moves from hurting Shedinja, and how does it work?",
+  );
+
+  assert.deepEqual(result.response.ability_ids, [25]);
+  assert.deepEqual(result.response.pokemon_ids, [292]);
+  assert.equal(requests.length, 2);
+  assert.equal(requests[1].purpose, "Resolve answer-referenced entities");
+  assert.deepEqual((requests[1].variables as { names: string[] }).names, ["shedinja"]);
+  assert.equal(result.metrics.graphql_attempts, 2);
+  assert.equal(result.metrics.graphql_calls, 2);
 });
 
 test("does not derive unrelated or unmentioned supporting hydration IDs", async () => {

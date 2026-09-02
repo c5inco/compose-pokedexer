@@ -142,6 +142,7 @@ export interface AskDiagnostics {
   contract_warnings?: string[];
   failure_class?: FailureClass;
   phase: EvaluationPhase;
+  pruned_hydration_ids?: EntityIds;
   tool_errors: Array<{
     duration_ms: number;
     message: string;
@@ -213,6 +214,7 @@ const hydrationNameAliases: Readonly<Record<string, string[]>> = {
 const maxHydrationIds = 8;
 const maxHydrationNameWords = 4;
 const maxHydrationResolutionNames = 100;
+const hydrationEntityKindNames = new Set(["ability", "item", "move", "pokemon"]);
 
 function referencesEntityName(semanticText: string, canonicalName: string): boolean {
   return [canonicalName, ...(hydrationNameAliases[canonicalName] ?? [])]
@@ -222,6 +224,15 @@ function referencesEntityName(semanticText: string, canonicalName: string): bool
 
 function answerSemanticText(response: SynthesisResponse): string {
   return normalizedText([
+    response.answer,
+    ...(response.table?.columns ?? []),
+    ...(response.table?.rows.flatMap((row) => row.map((value) => String(value))) ?? []),
+  ].join(" "));
+}
+
+function hydrationSemanticText(question: string, response: SynthesisResponse): string {
+  return normalizedText([
+    question,
     response.answer,
     ...(response.table?.columns ?? []),
     ...(response.table?.rows.flatMap((row) => row.map((value) => String(value))) ?? []),
@@ -275,10 +286,11 @@ function hydrationResolutionNames(
       length += 1
     ) {
       const phrase = words.slice(start, start + length);
-      if (!phrase.some(isCapitalizedWord)) continue;
+      if (!phrase.every(isCapitalizedWord)) continue;
       const name = canonicalizePokeApiName(phrase.join(" "));
       if (
         name &&
+        !hydrationEntityKindNames.has(name) &&
         !coveredByKnownName(name) &&
         referencesEntityName(semanticText, name)
       ) {
@@ -306,31 +318,61 @@ function hydrationResolutionCall(names: string[]): ToolCall {
   };
 }
 
-function validateIds(
-  response: SynthesisResponse,
-  observed: EntityIds,
-  references: EntityReferences,
-  question: string,
-): void {
+function validateObservedIds(response: SynthesisResponse, observed: EntityIds): void {
   const checks: Array<[string, number[], number[]]> = [
     ["Pokémon", response.pokemon_ids, observed.pokemon],
     ["move", response.move_ids, observed.move],
     ["item", response.item_ids, observed.item],
     ["ability", response.ability_ids, observed.ability],
   ];
-  const semanticText = normalizedText([
-    question,
-    response.answer,
-    ...(response.table?.columns ?? []),
-    ...(response.table?.rows.flatMap((row) => row.map((value) => String(value))) ?? []),
-  ].join(" "));
   for (const [label, returned, available] of checks) {
     const allowed = new Set(available);
     for (const id of returned) {
       if (!Number.isInteger(id) || id < 1 || !allowed.has(id)) {
         throw new Error(`Final response referenced unverified ${label} ID ${id}`);
       }
-      const kind = label === "Pokémon" ? "pokemon" : label as keyof EntityReferences;
+    }
+  }
+}
+
+function pruneUnreferencedHydrationIds(
+  response: SynthesisResponse,
+  references: EntityReferences,
+  question: string,
+): EntityIds {
+  const semanticText = hydrationSemanticText(question, response);
+  const pruned: EntityIds = { ability: [], item: [], move: [], pokemon: [] };
+  const prune = (returned: number[], kind: keyof EntityReferences) =>
+    returned.filter((id) => {
+      const reference = references[kind].find((candidate) => candidate.id === id);
+      if (!reference || referencesEntityName(semanticText, reference.name)) return true;
+      pruned[kind].push(id);
+      return false;
+    });
+
+  response.ability_ids = prune(response.ability_ids, "ability");
+  response.item_ids = prune(response.item_ids, "item");
+  response.move_ids = prune(response.move_ids, "move");
+  response.pokemon_ids = prune(response.pokemon_ids, "pokemon");
+  return pruned;
+}
+
+function validateIds(
+  response: SynthesisResponse,
+  observed: EntityIds,
+  references: EntityReferences,
+  question: string,
+): void {
+  validateObservedIds(response, observed);
+  const checks: Array<[string, number[], keyof EntityReferences]> = [
+    ["Pokémon", response.pokemon_ids, "pokemon"],
+    ["move", response.move_ids, "move"],
+    ["item", response.item_ids, "item"],
+    ["ability", response.ability_ids, "ability"],
+  ];
+  const semanticText = hydrationSemanticText(question, response);
+  for (const [label, returned, kind] of checks) {
+    for (const id of returned) {
       const reference = references[kind].find((candidate) => candidate.id === id);
       if (!reference) {
         throw new Error(`Final response ${label} ID ${id} had no verified name for hydration`);
@@ -457,6 +499,7 @@ export class AskOrchestrator {
     let modelAttempts = 0;
     let modelMs = 0;
     let phase: EvaluationPhase = "planning";
+    let prunedHydrationIds: EntityIds | undefined;
     let schemaLookupMs = 0;
     let schemaLookups = 0;
 
@@ -691,7 +734,7 @@ export class AskOrchestrator {
       );
       phase = "validation";
       if (!structuredRequest) {
-        validateIds(synthesis.response, observed, references, question);
+        validateObservedIds(synthesis.response, observed);
         completeHydrationIds(synthesis.response, references);
         const names = hydrationResolutionNames(question, synthesis.response, references);
         if (graphqlCalls > 0 && names.length > 0) {
@@ -702,6 +745,12 @@ export class AskOrchestrator {
           completeHydrationIds(synthesis.response, references);
         }
         phase = "validation";
+        prunedHydrationIds = pruneUnreferencedHydrationIds(
+          synthesis.response,
+          references,
+          question,
+        );
+        completeHydrationIds(synthesis.response, references);
         validateIds(synthesis.response, observed, references, question);
       }
       const continuationAllowed = interpretation?.status === "structured";
@@ -724,6 +773,9 @@ export class AskOrchestrator {
         diagnostics: {
           ...(contractWarnings.length > 0 ? { contract_warnings: contractWarnings } : {}),
           ...(failureClass ? { failure_class: failureClass } : {}),
+          ...(prunedHydrationIds && hasEntityIds(prunedHydrationIds)
+            ? { pruned_hydration_ids: prunedHydrationIds }
+            : {}),
           tool_errors: toolErrors,
         },
         evidence_entity_ids: observed,
@@ -753,6 +805,9 @@ export class AskOrchestrator {
           ...(contractWarnings.length > 0 ? { contract_warnings: contractWarnings } : {}),
           failure_class: classifiedFailure,
           phase,
+          ...(prunedHydrationIds && hasEntityIds(prunedHydrationIds)
+            ? { pruned_hydration_ids: prunedHydrationIds }
+            : {}),
           tool_errors: toolErrors,
         },
         metrics: metrics(),
