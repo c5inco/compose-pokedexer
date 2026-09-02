@@ -1,0 +1,813 @@
+{
+  "schedule_version": "hydration-followup-probe-v1",
+  "frozen_suite": "holdout-v4",
+  "frozen_score_version": "phrase-alias-v1",
+  "local_git_head": "c74db168e7c005b9716d10cd574a9809826bfe76",
+  "backend_sha256": "1bfc8a587e467150a1b86f6ae4f99154520523c4aef421088cf120cf407a3999",
+  "suite_sha256": "734c5c4aad1c1d4b043e0e7f80c4f7b0618c35f6042bab02cd5c019874292ae0",
+  "schema_sha256": "93ea4e5e0131cd56202fc268723792e720f9279f2a8b5f5d70d5b864b4e97015",
+  "candidates": [
+    "luna-low",
+    "gemini-3.7-flash"
+  ],
+  "repetitions": 2,
+  "seed": "ask-pokedexer-hydration-followup-v1-seed",
+  "question_ids": [
+    "facts-intimidate",
+    "relations-kanto-poison-flying",
+    "relations-kanto-intimidate",
+    "relations-kanto-starter-finals",
+    "relations-kanto-levitate",
+    "difficult-blue-crocodile",
+    "difficult-shedinja-protection"
+  ],
+  "cases": [
+    {
+      "id": "facts-intimidate",
+      "category": "facts",
+      "question": "What happens when a Pokémon with Intimidate enters battle?",
+      "roles": [
+        "already-complete hydration control",
+        "no-extra-lookup control"
+      ],
+      "expected_behavior": "answer",
+      "expected_hydration": {
+        "ability_ids": [
+          22
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": []
+      }
+    },
+    {
+      "id": "relations-kanto-poison-flying",
+      "category": "relationships",
+      "question": "What does Zubat evolve into, and do they share the same types?",
+      "roles": [
+        "substantive Zubat answer-failure control"
+      ],
+      "expected_behavior": "answer",
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          41,
+          42
+        ]
+      }
+    },
+    {
+      "id": "relations-kanto-intimidate",
+      "category": "relationships",
+      "question": "Which Pokémon from the original 151 can have Intimidate?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_behavior": "answer",
+      "expected_hydration": {
+        "ability_ids": [
+          22
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          23,
+          24,
+          58,
+          59,
+          128,
+          130
+        ]
+      }
+    },
+    {
+      "id": "relations-kanto-starter-finals",
+      "category": "relationships",
+      "question": "Which final evolutions of the three Kanto starters have two types, and what are those types?",
+      "roles": [
+        "supporting/unrelated-evidence leakage control"
+      ],
+      "expected_behavior": "answer",
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          3,
+          6
+        ]
+      }
+    },
+    {
+      "id": "relations-kanto-levitate",
+      "category": "relationships",
+      "question": "Which first-generation Pokémon can currently have Levitate?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_behavior": "answer",
+      "expected_hydration": {
+        "ability_ids": [
+          26
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          92,
+          93,
+          109,
+          110
+        ]
+      }
+    },
+    {
+      "id": "difficult-blue-crocodile",
+      "category": "difficult",
+      "question": "What does the little blue crocodile starter eventually evolve into, and what type is the final form?",
+      "roles": [
+        "substantive answer-failure control"
+      ],
+      "expected_behavior": "answer",
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          160
+        ]
+      }
+    },
+    {
+      "id": "difficult-shedinja-protection",
+      "category": "difficult",
+      "question": "What is the ability that stops most damaging moves from hurting Shedinja, and how does it work?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_behavior": "answer",
+      "expected_hydration": {
+        "ability_ids": [
+          25
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          292
+        ]
+      }
+    }
+  ],
+  "execution_count": 28,
+  "paid_execution_hard_cap": 32,
+  "exact_runner_arguments": [
+    "evaluation/run.ts",
+    "--suite",
+    "holdout",
+    "--candidate",
+    "luna-low",
+    "--candidate",
+    "gemini-3.7-flash",
+    "--repetitions",
+    "2",
+    "--seed",
+    "ask-pokedexer-hydration-followup-v1-seed",
+    "--question-id",
+    "facts-intimidate",
+    "--question-id",
+    "relations-kanto-poison-flying",
+    "--question-id",
+    "relations-kanto-intimidate",
+    "--question-id",
+    "relations-kanto-starter-finals",
+    "--question-id",
+    "relations-kanto-levitate",
+    "--question-id",
+    "difficult-blue-crocodile",
+    "--question-id",
+    "difficult-shedinja-protection",
+    "--execute-paid",
+    "--confirm-cost",
+    "RUN_PAID_EVALUATION",
+    "--output",
+    "evaluation/results/hydration-followup-holdout-v4-probe-2026-09-02"
+  ],
+  "predeclared_gate": [
+    "All factually correct hydration-sensitive responses contain every required evidence-verified ID.",
+    "The already-complete facts-intimidate control does not issue a Resolve answer-referenced entities lookup.",
+    "No unrelated or supporting evidence IDs leak into hydration arrays.",
+    "Any substantive factual failure remains a factual failure rather than being repaired by hydration.",
+    "No provider/model executions fail.",
+    "Every execution completes in under 30000 milliseconds."
+  ],
+  "schedule": [
+    {
+      "ordinal": 1,
+      "candidate": "luna-low",
+      "question_id": "relations-kanto-poison-flying",
+      "repetition": 1,
+      "question": "What does Zubat evolve into, and do they share the same types?",
+      "roles": [
+        "substantive Zubat answer-failure control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          41,
+          42
+        ]
+      }
+    },
+    {
+      "ordinal": 2,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "relations-kanto-poison-flying",
+      "repetition": 1,
+      "question": "What does Zubat evolve into, and do they share the same types?",
+      "roles": [
+        "substantive Zubat answer-failure control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          41,
+          42
+        ]
+      }
+    },
+    {
+      "ordinal": 3,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "relations-kanto-starter-finals",
+      "repetition": 2,
+      "question": "Which final evolutions of the three Kanto starters have two types, and what are those types?",
+      "roles": [
+        "supporting/unrelated-evidence leakage control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          3,
+          6
+        ]
+      }
+    },
+    {
+      "ordinal": 4,
+      "candidate": "luna-low",
+      "question_id": "relations-kanto-starter-finals",
+      "repetition": 2,
+      "question": "Which final evolutions of the three Kanto starters have two types, and what are those types?",
+      "roles": [
+        "supporting/unrelated-evidence leakage control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          3,
+          6
+        ]
+      }
+    },
+    {
+      "ordinal": 5,
+      "candidate": "luna-low",
+      "question_id": "relations-kanto-intimidate",
+      "repetition": 1,
+      "question": "Which Pokémon from the original 151 can have Intimidate?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          22
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          23,
+          24,
+          58,
+          59,
+          128,
+          130
+        ]
+      }
+    },
+    {
+      "ordinal": 6,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "relations-kanto-intimidate",
+      "repetition": 1,
+      "question": "Which Pokémon from the original 151 can have Intimidate?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          22
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          23,
+          24,
+          58,
+          59,
+          128,
+          130
+        ]
+      }
+    },
+    {
+      "ordinal": 7,
+      "candidate": "luna-low",
+      "question_id": "difficult-shedinja-protection",
+      "repetition": 1,
+      "question": "What is the ability that stops most damaging moves from hurting Shedinja, and how does it work?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          25
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          292
+        ]
+      }
+    },
+    {
+      "ordinal": 8,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "difficult-shedinja-protection",
+      "repetition": 1,
+      "question": "What is the ability that stops most damaging moves from hurting Shedinja, and how does it work?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          25
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          292
+        ]
+      }
+    },
+    {
+      "ordinal": 9,
+      "candidate": "luna-low",
+      "question_id": "relations-kanto-levitate",
+      "repetition": 1,
+      "question": "Which first-generation Pokémon can currently have Levitate?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          26
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          92,
+          93,
+          109,
+          110
+        ]
+      }
+    },
+    {
+      "ordinal": 10,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "relations-kanto-levitate",
+      "repetition": 1,
+      "question": "Which first-generation Pokémon can currently have Levitate?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          26
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          92,
+          93,
+          109,
+          110
+        ]
+      }
+    },
+    {
+      "ordinal": 11,
+      "candidate": "luna-low",
+      "question_id": "relations-kanto-starter-finals",
+      "repetition": 1,
+      "question": "Which final evolutions of the three Kanto starters have two types, and what are those types?",
+      "roles": [
+        "supporting/unrelated-evidence leakage control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          3,
+          6
+        ]
+      }
+    },
+    {
+      "ordinal": 12,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "relations-kanto-starter-finals",
+      "repetition": 1,
+      "question": "Which final evolutions of the three Kanto starters have two types, and what are those types?",
+      "roles": [
+        "supporting/unrelated-evidence leakage control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          3,
+          6
+        ]
+      }
+    },
+    {
+      "ordinal": 13,
+      "candidate": "luna-low",
+      "question_id": "difficult-blue-crocodile",
+      "repetition": 1,
+      "question": "What does the little blue crocodile starter eventually evolve into, and what type is the final form?",
+      "roles": [
+        "substantive answer-failure control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          160
+        ]
+      }
+    },
+    {
+      "ordinal": 14,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "difficult-blue-crocodile",
+      "repetition": 1,
+      "question": "What does the little blue crocodile starter eventually evolve into, and what type is the final form?",
+      "roles": [
+        "substantive answer-failure control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          160
+        ]
+      }
+    },
+    {
+      "ordinal": 15,
+      "candidate": "luna-low",
+      "question_id": "difficult-shedinja-protection",
+      "repetition": 2,
+      "question": "What is the ability that stops most damaging moves from hurting Shedinja, and how does it work?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          25
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          292
+        ]
+      }
+    },
+    {
+      "ordinal": 16,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "difficult-shedinja-protection",
+      "repetition": 2,
+      "question": "What is the ability that stops most damaging moves from hurting Shedinja, and how does it work?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          25
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          292
+        ]
+      }
+    },
+    {
+      "ordinal": 17,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "relations-kanto-levitate",
+      "repetition": 2,
+      "question": "Which first-generation Pokémon can currently have Levitate?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          26
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          92,
+          93,
+          109,
+          110
+        ]
+      }
+    },
+    {
+      "ordinal": 18,
+      "candidate": "luna-low",
+      "question_id": "relations-kanto-levitate",
+      "repetition": 2,
+      "question": "Which first-generation Pokémon can currently have Levitate?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          26
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          92,
+          93,
+          109,
+          110
+        ]
+      }
+    },
+    {
+      "ordinal": 19,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "facts-intimidate",
+      "repetition": 2,
+      "question": "What happens when a Pokémon with Intimidate enters battle?",
+      "roles": [
+        "already-complete hydration control",
+        "no-extra-lookup control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          22
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": []
+      }
+    },
+    {
+      "ordinal": 20,
+      "candidate": "luna-low",
+      "question_id": "facts-intimidate",
+      "repetition": 2,
+      "question": "What happens when a Pokémon with Intimidate enters battle?",
+      "roles": [
+        "already-complete hydration control",
+        "no-extra-lookup control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          22
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": []
+      }
+    },
+    {
+      "ordinal": 21,
+      "candidate": "luna-low",
+      "question_id": "relations-kanto-intimidate",
+      "repetition": 2,
+      "question": "Which Pokémon from the original 151 can have Intimidate?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          22
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          23,
+          24,
+          58,
+          59,
+          128,
+          130
+        ]
+      }
+    },
+    {
+      "ordinal": 22,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "relations-kanto-intimidate",
+      "repetition": 2,
+      "question": "Which Pokémon from the original 151 can have Intimidate?",
+      "roles": [
+        "hydration-sensitive"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          22
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          23,
+          24,
+          58,
+          59,
+          128,
+          130
+        ]
+      }
+    },
+    {
+      "ordinal": 23,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "difficult-blue-crocodile",
+      "repetition": 2,
+      "question": "What does the little blue crocodile starter eventually evolve into, and what type is the final form?",
+      "roles": [
+        "substantive answer-failure control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          160
+        ]
+      }
+    },
+    {
+      "ordinal": 24,
+      "candidate": "luna-low",
+      "question_id": "difficult-blue-crocodile",
+      "repetition": 2,
+      "question": "What does the little blue crocodile starter eventually evolve into, and what type is the final form?",
+      "roles": [
+        "substantive answer-failure control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          160
+        ]
+      }
+    },
+    {
+      "ordinal": 25,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "relations-kanto-poison-flying",
+      "repetition": 2,
+      "question": "What does Zubat evolve into, and do they share the same types?",
+      "roles": [
+        "substantive Zubat answer-failure control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          41,
+          42
+        ]
+      }
+    },
+    {
+      "ordinal": 26,
+      "candidate": "luna-low",
+      "question_id": "relations-kanto-poison-flying",
+      "repetition": 2,
+      "question": "What does Zubat evolve into, and do they share the same types?",
+      "roles": [
+        "substantive Zubat answer-failure control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": [
+          41,
+          42
+        ]
+      }
+    },
+    {
+      "ordinal": 27,
+      "candidate": "gemini-3.7-flash",
+      "question_id": "facts-intimidate",
+      "repetition": 1,
+      "question": "What happens when a Pokémon with Intimidate enters battle?",
+      "roles": [
+        "already-complete hydration control",
+        "no-extra-lookup control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          22
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": []
+      }
+    },
+    {
+      "ordinal": 28,
+      "candidate": "luna-low",
+      "question_id": "facts-intimidate",
+      "repetition": 1,
+      "question": "What happens when a Pokémon with Intimidate enters battle?",
+      "roles": [
+        "already-complete hydration control",
+        "no-extra-lookup control"
+      ],
+      "expected_hydration": {
+        "ability_ids": [
+          22
+        ],
+        "item_ids": [],
+        "max_extra_ids": 2,
+        "move_ids": [],
+        "pokemon_ids": []
+      }
+    }
+  ]
+}

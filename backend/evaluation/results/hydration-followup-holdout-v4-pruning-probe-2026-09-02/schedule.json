@@ -1,0 +1,124 @@
+{
+  "schedule_version": "hydration-followup-pruning-probe-v1",
+  "comparison_schedule_sha256": "26ab23159c0f54828349bf2894520d6f9db50e60ab426b070481d44d28a8f4ba",
+  "frozen_suite": "holdout-v4",
+  "frozen_score_version": "phrase-alias-v1",
+  "base_git_head": "c74db168e7c005b9716d10cd574a9809826bfe76",
+  "backend_state": "local uncommitted hydration resolution and pruning fixes",
+  "backend_sha256": "eb4ed119bdf8bfed13774aad9206b766b66d5a04415cdb1372f5261c89a1438b",
+  "suite_sha256": "734c5c4aad1c1d4b043e0e7f80c4f7b0618c35f6042bab02cd5c019874292ae0",
+  "schema_sha256": "93ea4e5e0131cd56202fc268723792e720f9279f2a8b5f5d70d5b864b4e97015",
+  "candidates": [
+    "luna-low",
+    "gemini-3.7-flash"
+  ],
+  "repetitions": 2,
+  "seed": "ask-pokedexer-hydration-followup-v1-seed",
+  "question_ids": [
+    "facts-intimidate",
+    "relations-kanto-poison-flying",
+    "relations-kanto-intimidate",
+    "relations-kanto-starter-finals",
+    "relations-kanto-levitate",
+    "difficult-blue-crocodile",
+    "difficult-shedinja-protection"
+  ],
+  "cases": [
+    {
+      "id": "facts-intimidate",
+      "question": "What happens when a Pokémon with Intimidate enters battle?",
+      "roles": ["already-complete hydration control", "no-extra-lookup control"],
+      "required_ids": {"ability": [22], "item": [], "move": [], "pokemon": []}
+    },
+    {
+      "id": "relations-kanto-poison-flying",
+      "question": "What does Zubat evolve into, and do they share the same types?",
+      "roles": ["substantive Zubat answer-failure control"],
+      "required_ids": {"ability": [], "item": [], "move": [], "pokemon": [41, 42]}
+    },
+    {
+      "id": "relations-kanto-intimidate",
+      "question": "Which Pokémon from the original 151 can have Intimidate?",
+      "roles": ["hydration-sensitive"],
+      "required_ids": {"ability": [22], "item": [], "move": [], "pokemon": [23, 24, 58, 59, 128, 130]}
+    },
+    {
+      "id": "relations-kanto-starter-finals",
+      "question": "Which final evolutions of the three Kanto starters have two types, and what are those types?",
+      "roles": ["supporting/unrelated-evidence leakage control"],
+      "required_ids": {"ability": [], "item": [], "move": [], "pokemon": [3, 6]}
+    },
+    {
+      "id": "relations-kanto-levitate",
+      "question": "Which first-generation Pokémon can currently have Levitate?",
+      "roles": ["hydration-sensitive", "verified-unmentioned pruning control"],
+      "required_ids": {"ability": [26], "item": [], "move": [], "pokemon": [92, 93, 109, 110]}
+    },
+    {
+      "id": "difficult-blue-crocodile",
+      "question": "What does the little blue crocodile starter eventually evolve into, and what type is the final form?",
+      "roles": ["substantive answer-failure control"],
+      "required_ids": {"ability": [], "item": [], "move": [], "pokemon": [160]}
+    },
+    {
+      "id": "difficult-shedinja-protection",
+      "question": "What is the ability that stops most damaging moves from hurting Shedinja, and how does it work?",
+      "roles": ["hydration-sensitive", "exact resolution control"],
+      "required_ids": {"ability": [25], "item": [], "move": [], "pokemon": [292]}
+    }
+  ],
+  "execution_count": 28,
+  "paid_execution_hard_cap": 32,
+  "schedule": [
+    [1, "luna-low", "relations-kanto-poison-flying", 1],
+    [2, "gemini-3.7-flash", "relations-kanto-poison-flying", 1],
+    [3, "gemini-3.7-flash", "relations-kanto-starter-finals", 2],
+    [4, "luna-low", "relations-kanto-starter-finals", 2],
+    [5, "luna-low", "relations-kanto-intimidate", 1],
+    [6, "gemini-3.7-flash", "relations-kanto-intimidate", 1],
+    [7, "luna-low", "difficult-shedinja-protection", 1],
+    [8, "gemini-3.7-flash", "difficult-shedinja-protection", 1],
+    [9, "luna-low", "relations-kanto-levitate", 1],
+    [10, "gemini-3.7-flash", "relations-kanto-levitate", 1],
+    [11, "luna-low", "relations-kanto-starter-finals", 1],
+    [12, "gemini-3.7-flash", "relations-kanto-starter-finals", 1],
+    [13, "luna-low", "difficult-blue-crocodile", 1],
+    [14, "gemini-3.7-flash", "difficult-blue-crocodile", 1],
+    [15, "luna-low", "difficult-shedinja-protection", 2],
+    [16, "gemini-3.7-flash", "difficult-shedinja-protection", 2],
+    [17, "gemini-3.7-flash", "relations-kanto-levitate", 2],
+    [18, "luna-low", "relations-kanto-levitate", 2],
+    [19, "gemini-3.7-flash", "facts-intimidate", 2],
+    [20, "luna-low", "facts-intimidate", 2],
+    [21, "luna-low", "relations-kanto-intimidate", 2],
+    [22, "gemini-3.7-flash", "relations-kanto-intimidate", 2],
+    [23, "gemini-3.7-flash", "difficult-blue-crocodile", 2],
+    [24, "luna-low", "difficult-blue-crocodile", 2],
+    [25, "gemini-3.7-flash", "relations-kanto-poison-flying", 2],
+    [26, "luna-low", "relations-kanto-poison-flying", 2],
+    [27, "gemini-3.7-flash", "facts-intimidate", 1],
+    [28, "luna-low", "facts-intimidate", 1]
+  ],
+  "exact_runner_arguments": [
+    "evaluation/run.ts", "--suite", "holdout",
+    "--candidate", "luna-low", "--candidate", "gemini-3.7-flash",
+    "--repetitions", "2", "--seed", "ask-pokedexer-hydration-followup-v1-seed",
+    "--question-id", "facts-intimidate",
+    "--question-id", "relations-kanto-poison-flying",
+    "--question-id", "relations-kanto-intimidate",
+    "--question-id", "relations-kanto-starter-finals",
+    "--question-id", "relations-kanto-levitate",
+    "--question-id", "difficult-blue-crocodile",
+    "--question-id", "difficult-shedinja-protection",
+    "--execute-paid", "--confirm-cost", "RUN_PAID_EVALUATION",
+    "--output", "evaluation/results/hydration-followup-holdout-v4-pruning-probe-2026-09-02"
+  ],
+  "predeclared_gate": [
+    "All factually correct hydration-sensitive responses contain every required evidence-verified ID.",
+    "The already-complete facts-intimidate control does not issue a Resolve answer-referenced entities lookup or consume an extra GraphQL attempt.",
+    "No unrelated or supporting evidence IDs leak into returned hydration arrays; any verified-unmentioned IDs are absent and recorded in pruned_hydration_ids.",
+    "Any substantive factual failure remains a factual failure rather than being repaired by hydration.",
+    "No provider or model executions fail.",
+    "Every execution completes in under 30000 milliseconds."
+  ]
+}
