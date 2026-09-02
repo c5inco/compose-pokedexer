@@ -22,7 +22,7 @@ export function rescoreEvaluationRecords(
       ...record,
       evaluation:
         record.status === "success"
-          ? scoreEvaluation(testCase, record.result)
+          ? scoreEvaluation(testCase, record.result, suite.score_version)
           : failedEvaluation(),
       original_evaluation: { ...record.evaluation },
     };

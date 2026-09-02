@@ -835,7 +835,7 @@ async function executePaidRun(
       record = {
         ...entry,
         category: testCase.category,
-        evaluation: scoreEvaluation(testCase, result),
+        evaluation: scoreEvaluation(testCase, result, suite.score_version),
         ordinal: index + 1,
         question: testCase.question,
         result,

@@ -32,6 +32,9 @@ const testCaseSchema = z.object({
 const suiteSchema = z.object({
   cases: z.array(testCaseSchema),
   kind: z.enum(["holdout", "canary"]),
+  score_version: z
+    .enum(["phrase-alias-v1", "semantic-alias-v2"])
+    .default("phrase-alias-v1"),
   version: z.string().regex(/^[a-z0-9-]+$/),
 });
 

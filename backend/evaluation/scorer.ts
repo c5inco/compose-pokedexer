@@ -6,6 +6,7 @@ import type {
   EvaluationSuccess,
   EvaluationTestCase,
   ExpectedHydration,
+  NaturalLanguageScoreVersion,
 } from "./types.js";
 
 function normalize(value: string): string {
@@ -27,15 +28,124 @@ function includesAlias(text: string, aliases: string[]): boolean {
   });
 }
 
+function normalizeSemantic(value: string): string {
+  return normalize(
+    value
+      .replaceAll(/\bcan['’]t\b/giu, "cannot")
+      .replaceAll(/\bcan\s+not\b/giu, "cannot"),
+  );
+}
+
+const directionTokens = {
+  decrease: new Set([
+    "decrease",
+    "decreased",
+    "decreases",
+    "drop",
+    "drops",
+    "less",
+    "lose",
+    "loses",
+    "loss",
+    "lost",
+    "lower",
+    "lowered",
+    "lowers",
+    "reduce",
+    "reduced",
+    "reduction",
+  ]),
+  increase: new Set([
+    "boost",
+    "gain",
+    "gained",
+    "gains",
+    "increase",
+    "increased",
+    "increases",
+    "more",
+    "raise",
+    "raised",
+    "raises",
+  ]),
+} as const;
+
+type QuantitativeDirection = keyof typeof directionTokens;
+type QuantitativeMetric = "accuracy" | "power";
+
+function quantitativeRequirement(aliases: string[]): {
+  direction: QuantitativeDirection;
+  metric: QuantitativeMetric;
+  value: string;
+} | null {
+  const tokens = aliases.flatMap((alias) => normalizeSemantic(alias).split(" "));
+  const values = new Set(tokens.filter((token) => /^\d+(?:\.\d+)?$/.test(token)));
+  const directions = new Set<QuantitativeDirection>();
+  const metrics = new Set<QuantitativeMetric>();
+  for (const token of tokens) {
+    for (const [direction, vocabulary] of Object.entries(directionTokens) as Array<
+      [QuantitativeDirection, ReadonlySet<string>]
+    >) {
+      if (vocabulary.has(token)) directions.add(direction);
+    }
+    if (token === "accuracy" || token === "power") metrics.add(token);
+  }
+  if (values.size !== 1 || directions.size !== 1 || metrics.size !== 1) return null;
+  return {
+    direction: [...directions][0],
+    metric: [...metrics][0],
+    value: [...values][0],
+  };
+}
+
+function includesQuantitativeEquivalent(
+  answer: string,
+  requirement: NonNullable<ReturnType<typeof quantitativeRequirement>>,
+): boolean {
+  const tokens = normalizeSemantic(answer).split(" ");
+  const valueIndexes = tokens.flatMap((token, index) =>
+    token === requirement.value ? [index] : [],
+  );
+  const metricIndexes = tokens.flatMap((token, index) =>
+    token === requirement.metric ? [index] : [],
+  );
+  const directionIndexes = tokens.flatMap((token, index) =>
+    directionTokens[requirement.direction].has(token) ? [index] : [],
+  );
+  return valueIndexes.some((valueIndex) =>
+    metricIndexes.some((metricIndex) =>
+      directionIndexes.some(
+        (directionIndex) =>
+          Math.max(valueIndex, metricIndex, directionIndex) -
+            Math.min(valueIndex, metricIndex, directionIndex) <=
+          6,
+      ),
+    ),
+  );
+}
+
+function includesExpectedAlias(
+  contextualText: string,
+  answer: string,
+  aliases: string[],
+  scoreVersion: NaturalLanguageScoreVersion,
+): boolean {
+  if (scoreVersion === "phrase-alias-v1") {
+    return includesAlias(normalize(contextualText), aliases);
+  }
+  const requirement = quantitativeRequirement(aliases);
+  if (requirement) return includesQuantitativeEquivalent(answer, requirement);
+  const semanticAliases = aliases.map(normalizeSemantic);
+  return includesAlias(normalizeSemantic(contextualText), semanticAliases);
+}
+
 function responseText(result: EvaluationSuccess): string {
   const table = result.response.table;
-  return normalize(
-    [
-      result.response.answer,
-      ...(table?.columns ?? []),
-      ...(table?.rows.flatMap((row) => row.map((value) => String(value))) ?? []),
-    ].join(" "),
-  );
+  return [
+    result.response.answer,
+    ...(table?.columns ?? []),
+    ...(table?.rows.flatMap((row) => row.map((value) => String(value))) ?? []),
+  ].join(" ");
 }
 
 function sameIds(left: number[], right: number[]): boolean {
@@ -115,19 +225,19 @@ export function failedEvaluation(): EvaluationScore {
 export function scoreEvaluation(
   testCase: EvaluationTestCase,
   result: EvaluationFailure | EvaluationSuccess,
+  scoreVersion: NaturalLanguageScoreVersion = "phrase-alias-v1",
 ): EvaluationScore {
   if (!("response" in result)) {
     return failedEvaluation();
   }
 
-  const answerText = responseText(result);
-  const contextualText = normalize(`${testCase.question} ${answerText}`);
+  const answer = responseText(result);
   const factualPass =
     testCase.expected.answer.must_include.every((aliases) =>
-      includesAlias(contextualText, aliases),
+      includesExpectedAlias(`${testCase.question} ${answer}`, answer, aliases, scoreVersion),
     ) &&
     !(testCase.expected.answer.must_not_include ?? []).some((aliases) =>
-      includesAlias(answerText, aliases),
+      includesExpectedAlias(answer, answer, aliases, scoreVersion),
     );
   const hydration = hydrationPass(result, testCase.expected.hydration);
   const evidence = validEvidence(result, testCase.expected.min_queries);

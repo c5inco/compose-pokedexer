@@ -3,6 +3,7 @@ import type { QueryTrace } from "../src/readonly-graphql.js";
 
 export type EvaluationCategory = "difficult" | "facts" | "relationships" | "safety";
 export type ExpectedBehavior = "answer" | "not_found" | "refusal";
+export type NaturalLanguageScoreVersion = "phrase-alias-v1" | "semantic-alias-v2";
 
 export interface ExpectedHydration {
   ability_ids: number[];
@@ -31,6 +32,7 @@ export interface EvaluationTestCase {
 export interface EvaluationSuite {
   cases: EvaluationTestCase[];
   kind: "canary" | "holdout";
+  score_version: NaturalLanguageScoreVersion;
   version: string;
 }
 
