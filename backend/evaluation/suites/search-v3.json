@@ -1,0 +1,257 @@
+{
+  "kind": "search",
+  "version": "search-v3",
+  "score_version": "canonical-predicate-v2",
+  "canonical_snapshot": {
+    "endpoint": "https://graphql.pokeapi.co/v1beta2",
+    "max_results_per_case": 100,
+    "schema_sha256": "93ea4e5e0131cd56202fc268723792e720f9279f2a8b5f5d70d5b864b4e97015"
+  },
+  "cases": [
+    {
+      "id": "pagination-bug-request",
+      "category": "pagination",
+      "question": "Which Pokémon are Bug type? I'd like to browse the whole selection.",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [10, 11, 12, 13, 14, 15, 46, 47, 48, 49, 123, 127, 165, 166, 167, 168, 193, 204, 205, 212, 213, 214, 265, 266, 267, 268, 269, 283, 284, 290, 291, 292, 313, 314, 347, 348, 401, 402, 412, 413, 414, 415, 416, 451, 469, 540, 541, 542, 543, 544, 545, 557, 558, 588, 589, 595, 596, 616, 617, 632, 636, 637, 649, 664, 665, 666, 736, 737, 738, 742, 743, 751, 752, 767, 768, 794, 795, 824, 825, 826, 850, 851, 872, 873, 900, 917, 918, 919, 920, 953, 954, 988],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "type", "operator": "eq", "value": "bug" }], "status": "structured", "unsupported_terms": [] },
+        "pagination": { "required": true, "min_unique_results": 12 },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "pagination-blue-request",
+      "category": "pagination",
+      "question": "What Pokémon are blue? Let me page through the choices.",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [7, 8, 9, 29, 30, 31, 43, 44, 55, 60, 61, 62, 72, 73, 114, 116, 117, 130, 131, 134, 138, 139, 144, 147, 148, 158, 159, 160, 170, 171, 183, 184, 189, 194, 195, 202, 214, 230, 231, 245, 258, 259, 260, 276, 277, 283, 284, 294, 295, 298, 307, 319, 320, 321, 333, 334, 340, 358, 360, 363, 364, 365, 366, 367, 371, 373, 374, 375, 376, 378, 381, 382, 393, 394, 395, 403, 404, 405, 408, 409, 443, 444, 445, 447, 448, 453, 454, 456, 457, 458, 465, 471, 482, 489, 490, 501, 502, 503, 515, 516],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "color", "operator": "eq", "value": "blue" }], "status": "structured", "unsupported_terms": [] },
+        "pagination": { "required": true, "min_unique_results": 10 },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "pagination-upright-request",
+      "category": "pagination",
+      "question": "List the Pokémon with an upright shape, including more than the first few.",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [4, 5, 6, 7, 8, 9, 26, 27, 28, 31, 34, 35, 36, 54, 55, 56, 57, 63, 64, 66, 80, 94, 104, 105, 108, 112, 113, 115, 125, 126, 141, 149, 150, 151, 158, 159, 160, 173, 180, 181, 183, 184, 187, 188, 189, 190, 195, 199, 210, 215, 216, 217, 235, 237, 240, 241, 246, 248, 252, 253, 254, 256, 257, 259, 260, 286, 288, 293, 294, 295, 306, 311, 312, 313, 326, 327, 335, 348, 352, 354, 360, 383, 390, 391, 392, 394, 395, 400, 408, 409, 424, 427, 428, 443, 444, 445, 447, 448, 459, 460],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "shape", "operator": "eq", "value": "upright" }], "status": "structured", "unsupported_terms": [] },
+        "pagination": { "required": true, "min_unique_results": 10 },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "ambiguity-large-wording",
+      "category": "ambiguity",
+      "question": "Which Pokémon are large, broadly speaking?",
+      "expected": {
+        "behavior": "needs_clarification",
+        "canonical_pokemon_ids": [],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": ["large"], "conflicts": [], "constraints": [], "status": "needs_clarification", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "ambiguity-conflicting-colors",
+      "category": "ambiguity",
+      "question": "Find Pokémon that are red and blue.",
+      "expected": {
+        "behavior": "needs_clarification",
+        "canonical_pokemon_ids": [],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [{ "field": "color", "terms": ["red", "blue"] }], "constraints": [{ "field": "color", "operator": "eq", "value": "red" }, { "field": "color", "operator": "eq", "value": "blue" }], "status": "needs_clarification", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "ambiguity-negated-color",
+      "category": "ambiguity",
+      "question": "Show Bug-type Pokémon, but not green ones.",
+      "expected": {
+        "behavior": "needs_clarification",
+        "canonical_pokemon_ids": [],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": ["green"], "conflicts": [], "constraints": [{ "field": "type", "operator": "eq", "value": "bug" }], "status": "needs_clarification", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "physical-heavy-phrasing",
+      "category": "physical",
+      "question": "Which Pokémon are in the heavy group?",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [3, 59, 68, 75, 76, 87, 91, 95, 103, 111, 112, 130, 131, 143, 149, 150, 154, 205, 208, 212, 217, 226, 230, 232, 243, 244, 245, 247, 248, 249, 250, 289, 297, 305, 306, 320, 321, 323, 337, 338, 344, 350, 357, 362, 365, 372, 373, 375, 376, 377, 378, 379, 382, 383, 384, 389, 409, 411, 437, 442, 446, 450, 460, 462, 463, 464, 465, 466, 473, 476, 477, 483, 484, 485, 486, 487, 493, 500, 525, 526, 545, 558, 569, 593, 598, 612, 614, 615, 621, 623, 635, 638, 639, 640, 643, 644, 646, 675, 697, 699],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "weight", "operator": "gte", "unit": "hectograms", "value": 1000 }], "status": "structured", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "physical-light-phrasing",
+      "category": "physical",
+      "question": "Which Pokémon are considered light?",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [1, 4, 7, 10, 11, 13, 14, 16, 19, 21, 23, 25, 29, 32, 35, 37, 39, 41, 43, 44, 46, 50, 52, 69, 70, 81, 90, 92, 93, 98, 102, 104, 109, 110, 116, 129, 132, 133, 138, 147, 151, 152, 155, 158, 161, 167, 172, 173, 174, 175, 176, 177, 179, 182, 183, 187, 188, 189, 191, 192, 194, 198, 200, 201, 204, 209, 211, 216, 220, 222, 238, 251, 252, 255, 258, 265, 266, 270, 273, 276, 278, 280, 283, 284, 285, 290, 292, 298, 311, 312, 315, 327, 333, 339, 349, 351, 353, 358, 370, 385],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "weight", "operator": "lte", "unit": "hectograms", "value": 100 }], "status": "structured", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "physical-short-phrasing",
+      "category": "physical",
+      "question": "Search for Pokémon in the short category.",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [1, 2, 4, 7, 8, 10, 11, 13, 14, 15, 16, 19, 20, 21, 25, 26, 27, 28, 29, 30, 32, 33, 35, 37, 39, 40, 41, 43, 44, 46, 47, 48, 50, 51, 52, 53, 54, 56, 57, 58, 60, 61, 63, 66, 69, 70, 72, 74, 75, 77, 81, 82, 83, 88, 90, 96, 98, 100, 102, 104, 105, 109, 111, 114, 116, 118, 120, 129, 132, 133, 134, 135, 136, 137, 138, 139, 140, 151, 152, 155, 156, 158, 161, 163, 165, 167, 170, 172, 173, 174, 175, 176, 177, 179, 180, 182, 183, 184, 187, 188],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "height", "operator": "lte", "unit": "decimetres", "value": 10 }], "status": "structured", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "physical-tall-phrasing",
+      "category": "physical",
+      "question": "Which Pokémon are tall enough to qualify?",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [3, 23, 24, 95, 103, 115, 130, 131, 143, 146, 148, 149, 150, 160, 199, 208, 226, 244, 245, 248, 249, 250, 289, 297, 306, 320, 321, 330, 336, 350, 357, 381, 382, 383, 384, 389, 450, 460, 464, 465, 472, 473, 477, 483, 484, 486, 487, 493, 497, 545, 593, 604, 614, 623, 638, 640, 643, 644, 646, 675, 697, 699, 706, 713, 716, 717, 718, 750, 760, 766, 768, 773, 776, 780, 781, 791, 792, 794, 796, 797, 799, 800, 804, 805, 809, 812, 823, 839, 843, 844, 851, 858, 870, 874, 879, 881, 882, 883, 887, 888],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "height", "operator": "gte", "unit": "decimetres", "value": 20 }], "status": "structured", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "subjective-cute-opinion",
+      "category": "subjective",
+      "question": "Which Pokémon are cute, in your opinion?",
+      "expected": {
+        "behavior": "requires_enrichment",
+        "canonical_pokemon_ids": [],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [], "status": "requires_enrichment", "unsupported_terms": ["cute"] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "subjective-fluffy-opinion",
+      "category": "subjective",
+      "question": "Find Pokémon that look especially fluffy to you.",
+      "expected": {
+        "behavior": "requires_enrichment",
+        "canonical_pokemon_ids": [],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [], "status": "requires_enrichment", "unsupported_terms": ["fluffy"] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "subjective-sleepy-opinion",
+      "category": "subjective",
+      "question": "Which Pokémon have a sleepy-looking appearance?",
+      "expected": {
+        "behavior": "requires_enrichment",
+        "canonical_pokemon_ids": [],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [], "status": "requires_enrichment", "unsupported_terms": ["sleepy-looking"] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "combined-round-fairy",
+      "category": "combined",
+      "question": "Which Pokémon are round and Fairy type?",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [546, 703, 707, 764, 868],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "shape", "operator": "eq", "value": "ball" }, { "field": "type", "operator": "eq", "value": "fairy" }], "status": "structured", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "combined-black-ghost",
+      "category": "combined",
+      "question": "Show black Ghost-type Pokémon.",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [353, 354, 355, 356, 477, 487, 562, 608, 609, 897],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "color", "operator": "eq", "value": "black" }, { "field": "type", "operator": "eq", "value": "ghost" }], "status": "structured", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "combined-tall-ice",
+      "category": "combined",
+      "question": "Which tall Pokémon have the Ice type?",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [131, 460, 473, 614, 646, 699, 713, 881, 883, 896, 975, 998],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "height", "operator": "gte", "unit": "decimetres", "value": 20 }, { "field": "type", "operator": "eq", "value": "ice" }], "status": "structured", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "combined-light-fighting",
+      "category": "combined",
+      "question": "Find light Fighting-type Pokémon for me.",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [674, 739, 759, 852, 922],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "weight", "operator": "lte", "unit": "hectograms", "value": 100 }, { "field": "type", "operator": "eq", "value": "fighting" }], "status": "structured", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "combined-short-yellow-electric",
+      "category": "combined",
+      "question": "List short, yellow Electric-type Pokémon.",
+      "expected": {
+        "behavior": "answer",
+        "canonical_pokemon_ids": [25, 26, 135, 172, 239, 311, 312, 595, 596, 694, 695, 702, 835, 836, 877, 921, 922, 923, 938],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "height", "operator": "lte", "unit": "decimetres", "value": 10 }, { "field": "color", "operator": "eq", "value": "yellow" }, { "field": "type", "operator": "eq", "value": "electric" }], "status": "structured", "unsupported_terms": [] },
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "no-match-heavy-pink-round-fairy",
+      "category": "no-match",
+      "question": "Are there any heavy, pink, round Fairy-type Pokémon fitting every trait?",
+      "expected": {
+        "behavior": "not_found",
+        "canonical_pokemon_ids": [],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "weight", "operator": "gte", "unit": "hectograms", "value": 1000 }, { "field": "color", "operator": "eq", "value": "pink" }, { "field": "shape", "operator": "eq", "value": "ball" }, { "field": "type", "operator": "eq", "value": "fairy" }], "status": "structured", "unsupported_terms": [] },
+        "minimum_successful_queries": 1,
+        "top_page_size": 8
+      }
+    },
+    {
+      "id": "no-match-tall-green-fish-fire",
+      "category": "no-match",
+      "question": "Are there any tall, green, fish-shaped Fire-type Pokémon?",
+      "expected": {
+        "behavior": "scoped_no_match",
+        "canonical_pokemon_ids": [],
+        "evidence_coverage": true,
+        "interpretation": { "ambiguous_terms": [], "conflicts": [], "constraints": [{ "field": "height", "operator": "gte", "unit": "decimetres", "value": 20 }, { "field": "color", "operator": "eq", "value": "green" }, { "field": "shape", "operator": "eq", "value": "fish" }, { "field": "type", "operator": "eq", "value": "fire" }], "status": "structured", "unsupported_terms": [] },
+        "minimum_successful_queries": 1,
+        "top_page_size": 8
+      }
+    }
+  ]
+}

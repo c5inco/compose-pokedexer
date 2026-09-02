@@ -1,0 +1,66 @@
+{
+  "candidates": {
+    "gemini-3.7-flash": {
+      "categories": {
+        "ambiguity": {
+          "full_passes": 13,
+          "total": 15
+        },
+        "combined": {
+          "full_passes": 25,
+          "total": 25
+        },
+        "no-match": {
+          "full_passes": 10,
+          "total": 10
+        },
+        "pagination": {
+          "full_passes": 15,
+          "total": 15
+        },
+        "physical": {
+          "full_passes": 20,
+          "total": 20
+        },
+        "subjective": {
+          "full_passes": 14,
+          "total": 15
+        }
+      },
+      "full_passes": 97,
+      "total": 100
+    },
+    "luna-low": {
+      "categories": {
+        "ambiguity": {
+          "full_passes": 15,
+          "total": 15
+        },
+        "combined": {
+          "full_passes": 25,
+          "total": 25
+        },
+        "no-match": {
+          "full_passes": 10,
+          "total": 10
+        },
+        "pagination": {
+          "full_passes": 15,
+          "total": 15
+        },
+        "physical": {
+          "full_passes": 20,
+          "total": 20
+        },
+        "subjective": {
+          "full_passes": 13,
+          "total": 15
+        }
+      },
+      "full_passes": 98,
+      "total": 100
+    }
+  },
+  "kind": "search",
+  "records": 200
+}

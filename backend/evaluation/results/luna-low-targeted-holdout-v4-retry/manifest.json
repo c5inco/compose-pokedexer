@@ -1,0 +1,69 @@
+{
+  "backend_sha256": "27381181d433e8de623f70c918d8ce3d699d56d4b81b4adbd1e9a722bc0c5b8e",
+  "candidates": [
+    "luna-low"
+  ],
+  "live_data_sha256": "0c7768c3e53d7a3f54a650cd28e3ba4e607b08723ccf8f0ee9961adf7b3acdb9",
+  "profile": {
+    "graphql": {
+      "max_complexity": 10000,
+      "max_depth": 8,
+      "max_response_bytes": 1000000,
+      "max_rows": 100,
+      "timeout_ms": 5000
+    },
+    "max_graphql_attempts": 6,
+    "max_tool_rounds": 6,
+    "model": {
+      "max_retries": 1,
+      "planning_output_tokens": 2500,
+      "synthesis_output_tokens": 1500,
+      "timeout_ms": 45000
+    },
+    "version": "ask-pokedexer-eval-v3"
+  },
+  "question_ids": [
+    "difficult-farfetchd-punctuation",
+    "difficult-nidoran-female",
+    "difficult-ambiguous-nidoran",
+    "difficult-mr-mime-punctuation",
+    "facts-gengar"
+  ],
+  "repetitions": 5,
+  "schema_sha256": "93ea4e5e0131cd56202fc268723792e720f9279f2a8b5f5d70d5b864b4e97015",
+  "seed": "ask-pokedexer-eval-v4-seed",
+  "source_sha256": {
+    "evaluation/canary-target.ts": "371c359c9ae16e9f7cd7b74c60631559f5219f3ad4583387d60eee4d277f67e4",
+    "evaluation/graphql-controls.ts": "daf313e9b380177a66a77d267dde75b14efb7b228b0499d15d37f73cc0de4780",
+    "evaluation/profile.ts": "de2c2170933bf393ab07a9f7ac211621b9a845c33834ebe8966553e4aeb3e87b",
+    "evaluation/program.ts": "17d9ad093d65b69260247b096aec33cc2bbbc47c8a8cd7db253105e59ea46c6d",
+    "evaluation/programs/comprehensive-v1.json": "043526dffffe5f7dba673a003fdd429703b98343931e8cd8bd39704989c075f5",
+    "evaluation/programs/comprehensive-v2.json": "a755c0f6b6ed4f76f98fb2189bfb6c71525f46ba6880bb816451c29a397b9e7d",
+    "evaluation/programs/comprehensive-v3.json": "b4630d5bf8b132784c5fd52f32695ca2ae8b2911a5d6aafc7730ca04a154fe16",
+    "evaluation/retry-policy.ts": "7d60d8c81ae5af2c62231a5ebb375bf92db5b353f7cb1144998253fe632435d5",
+    "evaluation/run.ts": "38199015788753f5fe2c5c5565d8ee06341709a31741ab74b9f593df3649af20",
+    "evaluation/scorer.ts": "01428ccd8427c42e174395377efafa796f4b9d0acbeb04add14dafd74338dff4",
+    "evaluation/search-scorer.ts": "bb810bb2b83168a5d946f33d8828ca7d0d54e782e522b680f225cf2960b01477",
+    "evaluation/suite.ts": "4d5e2e738056f99ab4ffcfef84f56ff72982be6a43cd17c1685c473c6a8a4890",
+    "evaluation/suites/grounding-canary-v2.json": "94f8df012e29091581fc4f4af3a598dbe1783a078bcf2ef3a5e2fb3b5cf4d510",
+    "evaluation/suites/holdout-v4.json": "734c5c4aad1c1d4b043e0e7f80c4f7b0618c35f6042bab02cd5c019874292ae0",
+    "evaluation/suites/search-v3.json": "04768c8036871947623103b4920e5bcc43394539e5fb60f48482510eafb42848",
+    "evaluation/types.ts": "07a676deb537836455c7013818d4e819743c250be9b0136fee8d14c826695234",
+    "package-lock.json": "8fe8a7248ad291fc3d4ecc5fdad999b1d0f794d9390cd23b603ccbe1c631c69b",
+    "package.json": "14471300eb4426d7cffcb954a3220f47fa5d601bf8c75ec1f18b12587329649c",
+    "src/entity-resolution.ts": "565328e131163272deadd512ab0502b5e4bd00549e6a8181ed1fc86c12bcb1a3",
+    "src/execution-profile.ts": "e0af94d53b948e674a7334e68d003e8265c98aacc2c9d0b15e6fa06092e61af5",
+    "src/gemini-provider.ts": "e2b20295bfdaaf7359262ebbd8696ae5ff240647a0aee900f74728696fcaced6",
+    "src/model-contract.ts": "f67bf2ee59ac0b91d877bd4aca287c263a0877593537c9baa074f7004fae32f6",
+    "src/openai-provider.ts": "1a13678db64e733d8ce3c9d94e4692c6c492227546c1c8dd6a2a4656af037c73",
+    "src/openrouter-provider.ts": "49b639b8ad13e5d8cc2af3f236e53866a0c5ba6fdb756b46bfe105e2b7b836d3",
+    "src/orchestrator.ts": "184248853873e7ab6d914054c1df67b7463b6fab3aa2e1882ad59b74b9d517ce",
+    "src/pagination.ts": "49b7ba873a372ab6c6ff5fc7e297dd2c912c861a11dd2e0337dcc147028d4541",
+    "src/readonly-graphql.ts": "74373f0da7db142848bf3faad3e8bfc26abd5d5f49ee721c38cbdd0dd7e939ef",
+    "src/runtime-config.ts": "d47f2799d0a977514a37255fa4fb9a767ddf2c4e4e663f615ccd4bca8364e014",
+    "src/schema-lookup.ts": "acead7ef3d9b5642bc80eaae062d1b66081dbfdde631ac87ec6c0f1aafe34447",
+    "src/search-descriptors.ts": "154be028bc33b36303e7fd8b9d37e39405c8e75400b8d0f20c255edc27779a1a",
+    "src/structured-search.ts": "2ab83db4c2621839e1fa2236b86708ac0d3847830756348075c2d4093a96e8f0"
+  },
+  "suite_sha256": "734c5c4aad1c1d4b043e0e7f80c4f7b0618c35f6042bab02cd5c019874292ae0"
+}

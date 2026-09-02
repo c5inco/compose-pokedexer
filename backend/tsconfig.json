@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2024", "DOM"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "strict": true,
+    "target": "ES2024",
+    "types": ["node"]
+  },
+  "include": ["benchmark/**/*.ts", "evaluation/**/*.ts", "src/**/*.ts", "test/**/*.ts"]
+}

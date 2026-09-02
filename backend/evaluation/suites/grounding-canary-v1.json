@@ -1,0 +1,72 @@
+{
+  "version": "grounding-canary-v1",
+  "kind": "canary",
+  "cases": [
+    {
+      "id": "canary-cobalt-sprig",
+      "category": "facts",
+      "question": "What types is Cobalt Sprig, and what is its base Speed?",
+      "expected": {
+        "behavior": "answer",
+        "answer": { "must_include": [["cobalt sprig"], ["water"], ["grass"], ["73"]] },
+        "hydration": { "pokemon_ids": [90001], "move_ids": [], "item_ids": [], "ability_ids": [] },
+        "min_queries": 1
+      }
+    },
+    {
+      "id": "canary-aurora-pulse",
+      "category": "facts",
+      "question": "How powerful and accurate is Aurora Pulse, and what type is it?",
+      "expected": {
+        "behavior": "answer",
+        "answer": { "must_include": [["aurora pulse"], ["73"], ["91"], ["ice"]] },
+        "hydration": { "pokemon_ids": [], "move_ids": [91001], "item_ids": [], "ability_ids": [] },
+        "min_queries": 1
+      }
+    },
+    {
+      "id": "canary-echo-mend",
+      "category": "facts",
+      "question": "What does the Echo Mend ability do?",
+      "expected": {
+        "behavior": "answer",
+        "answer": { "must_include": [["one quarter", "quarter", "25%", "25 percent"], ["hp"], ["leaves battle", "switches out", "withdrawn"]] },
+        "hydration": { "pokemon_ids": [], "move_ids": [], "item_ids": [], "ability_ids": [92001] },
+        "min_queries": 1
+      }
+    },
+    {
+      "id": "canary-speed-comparison",
+      "category": "difficult",
+      "question": "Which is faster, Ember Fin or Cobalt Sprig, and by how much?",
+      "expected": {
+        "behavior": "answer",
+        "answer": { "must_include": [["ember fin"], ["91"], ["73"], ["18"]] },
+        "hydration": { "pokemon_ids": [90001, 90002], "move_ids": [], "item_ids": [], "ability_ids": [] },
+        "min_queries": 1
+      }
+    },
+    {
+      "id": "canary-move-comparison",
+      "category": "difficult",
+      "question": "How much stronger is Moss Comet than Aurora Pulse?",
+      "expected": {
+        "behavior": "answer",
+        "answer": { "must_include": [["moss comet"], ["82"], ["aurora pulse"], ["73"], ["9"]] },
+        "hydration": { "pokemon_ids": [], "move_ids": [91001, 91002], "item_ids": [], "ability_ids": [] },
+        "min_queries": 1
+      }
+    },
+    {
+      "id": "canary-not-found",
+      "category": "safety",
+      "question": "Do you have a creature called Silver Bloom?",
+      "expected": {
+        "behavior": "not_found",
+        "answer": { "must_include": [["not found", "couldn't find", "no creature", "no pokemon", "no match", "was not found"]] },
+        "hydration": { "pokemon_ids": [], "move_ids": [], "item_ids": [], "ability_ids": [] },
+        "min_queries": 1
+      }
+    }
+  ]
+}

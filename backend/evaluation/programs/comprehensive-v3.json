@@ -1,0 +1,26 @@
+{
+  "candidates": ["luna-low", "luna-medium", "gemini-3.6-flash"],
+  "kind": "evaluation-program",
+  "repetitions": 5,
+  "seed": "ask-pokedexer-eval-v4-seed",
+  "suites": [
+    {
+      "requirement": "zero_fabrications",
+      "role": "gate",
+      "version": "grounding-canary-v2"
+    },
+    {
+      "category_weighting": "equal",
+      "role": "scored",
+      "version": "holdout-v4",
+      "weight": 0.5
+    },
+    {
+      "category_weighting": "equal",
+      "role": "scored",
+      "version": "search-v3",
+      "weight": 0.5
+    }
+  ],
+  "version": "comprehensive-v3"
+}
