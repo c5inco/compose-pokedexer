@@ -1,0 +1,9 @@
+581a7ab37070cbd7bc0221db9a8e6074dd6796c6c84ba9a92fcc16b256662d53  schedule.json
+3f07a1179c194b992c2ed7ebd37adf45cd44d53a505a29c5ea252569d83c3759  preflight.json
+5c1baf549d380d0612b8210eb2ef8ddf48f9c845f5e1bdd22c47a5b4e2d58ab6  ../../../src/orchestrator.ts
+bd22ebe83d02f25d46ca159a30caf5d213601f00afaecb26d746f983272895ab  ../../../evaluation/scorer.ts
+bb810bb2b83168a5d946f33d8828ca7d0d54e782e522b680f225cf2960b01477  ../../../evaluation/search-scorer.ts
+b4630d5bf8b132784c5fd52f32695ca2ae8b2911a5d6aafc7730ca04a154fe16  ../../../evaluation/programs/comprehensive-v3.json
+94f8df012e29091581fc4f4af3a598dbe1783a078bcf2ef3a5e2fb3b5cf4d510  ../../../evaluation/suites/grounding-canary-v2.json
+734c5c4aad1c1d4b043e0e7f80c4f7b0618c35f6042bab02cd5c019874292ae0  ../../../evaluation/suites/holdout-v4.json
+04768c8036871947623103b4920e5bcc43394539e5fb60f48482510eafb42848  ../../../evaluation/suites/search-v3.json

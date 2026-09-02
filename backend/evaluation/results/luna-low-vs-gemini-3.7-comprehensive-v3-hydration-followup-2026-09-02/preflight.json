@@ -1,0 +1,45 @@
+{
+  "mode": "validation-only",
+  "paid_requests_executed": 0,
+  "base_git_head": "9defbd9c99ad3c23697d75bdea8509a6abdf8725",
+  "backend_sha256": "eb4ed119bdf8bfed13774aad9206b766b66d5a04415cdb1372f5261c89a1438b",
+  "candidates": [
+    "luna-low",
+    "gemini-3.7-flash"
+  ],
+  "repetitions": 5,
+  "seed": "ask-pokedexer-eval-v4-seed",
+  "schedule_entries": 660,
+  "stages": [
+    {
+      "suite": "grounding-canary-v2",
+      "schedule_entries": 60,
+      "backend_sha256": "eb4ed119bdf8bfed13774aad9206b766b66d5a04415cdb1372f5261c89a1438b",
+      "suite_sha256": "94f8df012e29091581fc4f4af3a598dbe1783a078bcf2ef3a5e2fb3b5cf4d510",
+      "schema_sha256": "a0c2024b10a367c0d8312d02599e0cdd3d4b941fb6058c7e030ec11761f6d116",
+      "schedule_sha256": "8e5b9660444b430324c36d0360719e7d35038c672a4b50e52277c8bddee971be"
+    },
+    {
+      "suite": "holdout-v4",
+      "schedule_entries": 400,
+      "backend_sha256": "eb4ed119bdf8bfed13774aad9206b766b66d5a04415cdb1372f5261c89a1438b",
+      "suite_sha256": "734c5c4aad1c1d4b043e0e7f80c4f7b0618c35f6042bab02cd5c019874292ae0",
+      "schema_sha256": "93ea4e5e0131cd56202fc268723792e720f9279f2a8b5f5d70d5b864b4e97015",
+      "schedule_sha256": "ba1c303a84bf3b7c45650407e2ee57edcebbdc0a4789d2b9193c490f832a1fc0"
+    },
+    {
+      "suite": "search-v3",
+      "schedule_entries": 200,
+      "backend_sha256": "eb4ed119bdf8bfed13774aad9206b766b66d5a04415cdb1372f5261c89a1438b",
+      "suite_sha256": "04768c8036871947623103b4920e5bcc43394539e5fb60f48482510eafb42848",
+      "schema_sha256": "93ea4e5e0131cd56202fc268723792e720f9279f2a8b5f5d70d5b864b4e97015",
+      "schedule_sha256": "23dbe57c6338c333961709cebde2f207f46a0c894621eac8579cb3617e4956bf"
+    }
+  ],
+  "validation": {
+    "backend_tests": "156/156 passed",
+    "typescript_build": "passed",
+    "gradle_check": "BUILD SUCCESSFUL",
+    "diff_check": "passed"
+  }
+}

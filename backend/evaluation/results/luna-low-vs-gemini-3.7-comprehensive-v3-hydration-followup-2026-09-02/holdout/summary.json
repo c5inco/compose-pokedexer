@@ -1,0 +1,470 @@
+{
+  "candidates": {
+    "gemini-3.7-flash": {
+      "availability_passes": 199,
+      "behavior_passes": 199,
+      "average_estimated_cost_usd": 0.005620402,
+      "average_metrics": {
+        "graphql_attempts": 2,
+        "graphql_calls": 1,
+        "input_tokens": 4197,
+        "model_attempts": 3,
+        "model_calls": 3,
+        "output_tokens": 659,
+        "schema_lookups": 0
+      },
+      "cost_complete_records": 200,
+      "estimated_cost_usd": 1.1240805,
+      "evidence_passes": 199,
+      "fabrications_detected": 0,
+      "factual_passes": 174,
+      "failures_by_class": {
+        "provider": 0,
+        "pokeapi": 0,
+        "model": 1,
+        "evaluator": 0
+      },
+      "failures": 1,
+      "full_pass_rate": 0.995,
+      "full_passes": 199,
+      "hydration_passes": 199,
+      "latency_ms": {
+        "mean": 6577,
+        "p50": 6011,
+        "p95": 10179
+      },
+      "name_resolution_passes": 199,
+      "safety_passes": 199,
+      "tool_omissions": 0,
+      "tool_argument_normalizations": {
+        "calls": 0,
+        "kinds": {
+          "non_string_value_json": 0,
+          "variables_object_map": 0
+        }
+      },
+      "tool_use_passes": 199,
+      "total": 200,
+      "categories": {
+        "facts": {
+          "availability_passes": 50,
+          "behavior_passes": 50,
+          "average_estimated_cost_usd": 0.00523122,
+          "average_metrics": {
+            "graphql_attempts": 2,
+            "graphql_calls": 2,
+            "input_tokens": 4222,
+            "model_attempts": 3,
+            "model_calls": 3,
+            "output_tokens": 551,
+            "schema_lookups": 0
+          },
+          "cost_complete_records": 50,
+          "estimated_cost_usd": 0.261561,
+          "evidence_passes": 50,
+          "fabrications_detected": 0,
+          "factual_passes": 50,
+          "failures_by_class": {
+            "provider": 0,
+            "pokeapi": 0,
+            "model": 0,
+            "evaluator": 0
+          },
+          "failures": 0,
+          "full_pass_rate": 1,
+          "full_passes": 50,
+          "hydration_passes": 50,
+          "latency_ms": {
+            "mean": 6164,
+            "p50": 5565,
+            "p95": 11076
+          },
+          "name_resolution_passes": 50,
+          "safety_passes": 50,
+          "tool_omissions": 0,
+          "tool_argument_normalizations": {
+            "calls": 0,
+            "kinds": {
+              "non_string_value_json": 0,
+              "variables_object_map": 0
+            }
+          },
+          "tool_use_passes": 50,
+          "total": 50
+        },
+        "relationships": {
+          "availability_passes": 49,
+          "behavior_passes": 49,
+          "average_estimated_cost_usd": 0.0071904,
+          "average_metrics": {
+            "graphql_attempts": 2,
+            "graphql_calls": 2,
+            "input_tokens": 5052,
+            "model_attempts": 4,
+            "model_calls": 4,
+            "output_tokens": 907,
+            "schema_lookups": 0
+          },
+          "cost_complete_records": 50,
+          "estimated_cost_usd": 0.35952,
+          "evidence_passes": 49,
+          "fabrications_detected": 0,
+          "factual_passes": 49,
+          "failures_by_class": {
+            "provider": 0,
+            "pokeapi": 0,
+            "model": 1,
+            "evaluator": 0
+          },
+          "failures": 1,
+          "full_pass_rate": 0.98,
+          "full_passes": 49,
+          "hydration_passes": 49,
+          "latency_ms": {
+            "mean": 7448,
+            "p50": 6837,
+            "p95": 10179
+          },
+          "name_resolution_passes": 49,
+          "safety_passes": 49,
+          "tool_omissions": 0,
+          "tool_argument_normalizations": {
+            "calls": 0,
+            "kinds": {
+              "non_string_value_json": 0,
+              "variables_object_map": 0
+            }
+          },
+          "tool_use_passes": 49,
+          "total": 50
+        },
+        "difficult": {
+          "availability_passes": 50,
+          "behavior_passes": 50,
+          "average_estimated_cost_usd": 0.005818785,
+          "average_metrics": {
+            "graphql_attempts": 2,
+            "graphql_calls": 1,
+            "input_tokens": 4382,
+            "model_attempts": 3,
+            "model_calls": 3,
+            "output_tokens": 675,
+            "schema_lookups": 0
+          },
+          "cost_complete_records": 50,
+          "estimated_cost_usd": 0.29093925,
+          "evidence_passes": 50,
+          "fabrications_detected": 0,
+          "factual_passes": 50,
+          "failures_by_class": {
+            "provider": 0,
+            "pokeapi": 0,
+            "model": 0,
+            "evaluator": 0
+          },
+          "failures": 0,
+          "full_pass_rate": 1,
+          "full_passes": 50,
+          "hydration_passes": 50,
+          "latency_ms": {
+            "mean": 6620,
+            "p50": 6159,
+            "p95": 9379
+          },
+          "name_resolution_passes": 50,
+          "safety_passes": 50,
+          "tool_omissions": 0,
+          "tool_argument_normalizations": {
+            "calls": 0,
+            "kinds": {
+              "non_string_value_json": 0,
+              "variables_object_map": 0
+            }
+          },
+          "tool_use_passes": 50,
+          "total": 50
+        },
+        "safety": {
+          "availability_passes": 50,
+          "behavior_passes": 50,
+          "average_estimated_cost_usd": 0.004241205,
+          "average_metrics": {
+            "graphql_attempts": 1,
+            "graphql_calls": 1,
+            "input_tokens": 3130,
+            "model_attempts": 3,
+            "model_calls": 3,
+            "output_tokens": 505,
+            "schema_lookups": 0
+          },
+          "cost_complete_records": 50,
+          "estimated_cost_usd": 0.21206025,
+          "evidence_passes": 50,
+          "fabrications_detected": 0,
+          "factual_passes": 25,
+          "failures_by_class": {
+            "provider": 0,
+            "pokeapi": 0,
+            "model": 0,
+            "evaluator": 0
+          },
+          "failures": 0,
+          "full_pass_rate": 1,
+          "full_passes": 50,
+          "hydration_passes": 50,
+          "latency_ms": {
+            "mean": 6077,
+            "p50": 5415,
+            "p95": 11080
+          },
+          "name_resolution_passes": 50,
+          "safety_passes": 50,
+          "tool_omissions": 0,
+          "tool_argument_normalizations": {
+            "calls": 0,
+            "kinds": {
+              "non_string_value_json": 0,
+              "variables_object_map": 0
+            }
+          },
+          "tool_use_passes": 50,
+          "total": 50
+        }
+      }
+    },
+    "luna-low": {
+      "availability_passes": 200,
+      "behavior_passes": 196,
+      "average_estimated_cost_usd": 0.001906702,
+      "average_metrics": {
+        "graphql_attempts": 2,
+        "graphql_calls": 1,
+        "input_tokens": 8424,
+        "model_attempts": 4,
+        "model_calls": 4,
+        "output_tokens": 539,
+        "schema_lookups": 1
+      },
+      "cost_complete_records": 200,
+      "estimated_cost_usd": 0.38134049,
+      "evidence_passes": 200,
+      "fabrications_detected": 0,
+      "factual_passes": 187,
+      "failures_by_class": {
+        "provider": 0,
+        "pokeapi": 0,
+        "model": 0,
+        "evaluator": 0
+      },
+      "failures": 0,
+      "full_pass_rate": 0.975,
+      "full_passes": 195,
+      "hydration_passes": 199,
+      "latency_ms": {
+        "mean": 10833,
+        "p50": 10253,
+        "p95": 21594
+      },
+      "name_resolution_passes": 199,
+      "safety_passes": 196,
+      "tool_omissions": 0,
+      "tool_argument_normalizations": {
+        "calls": 0,
+        "kinds": {
+          "non_string_value_json": 0,
+          "variables_object_map": 0
+        }
+      },
+      "tool_use_passes": 200,
+      "total": 200,
+      "categories": {
+        "facts": {
+          "availability_passes": 50,
+          "behavior_passes": 50,
+          "average_estimated_cost_usd": 0.002314037,
+          "average_metrics": {
+            "graphql_attempts": 2,
+            "graphql_calls": 2,
+            "input_tokens": 10665,
+            "model_attempts": 5,
+            "model_calls": 5,
+            "output_tokens": 528,
+            "schema_lookups": 1
+          },
+          "cost_complete_records": 50,
+          "estimated_cost_usd": 0.11570185,
+          "evidence_passes": 50,
+          "fabrications_detected": 0,
+          "factual_passes": 50,
+          "failures_by_class": {
+            "provider": 0,
+            "pokeapi": 0,
+            "model": 0,
+            "evaluator": 0
+          },
+          "failures": 0,
+          "full_pass_rate": 1,
+          "full_passes": 50,
+          "hydration_passes": 50,
+          "latency_ms": {
+            "mean": 10904,
+            "p50": 10445,
+            "p95": 18503
+          },
+          "name_resolution_passes": 50,
+          "safety_passes": 50,
+          "tool_omissions": 0,
+          "tool_argument_normalizations": {
+            "calls": 0,
+            "kinds": {
+              "non_string_value_json": 0,
+              "variables_object_map": 0
+            }
+          },
+          "tool_use_passes": 50,
+          "total": 50
+        },
+        "relationships": {
+          "availability_passes": 50,
+          "behavior_passes": 50,
+          "average_estimated_cost_usd": 0.002554654,
+          "average_metrics": {
+            "graphql_attempts": 2,
+            "graphql_calls": 2,
+            "input_tokens": 10343,
+            "model_attempts": 5,
+            "model_calls": 5,
+            "output_tokens": 767,
+            "schema_lookups": 1
+          },
+          "cost_complete_records": 50,
+          "estimated_cost_usd": 0.12773271,
+          "evidence_passes": 50,
+          "fabrications_detected": 0,
+          "factual_passes": 50,
+          "failures_by_class": {
+            "provider": 0,
+            "pokeapi": 0,
+            "model": 0,
+            "evaluator": 0
+          },
+          "failures": 0,
+          "full_pass_rate": 1,
+          "full_passes": 50,
+          "hydration_passes": 50,
+          "latency_ms": {
+            "mean": 13176,
+            "p50": 11920,
+            "p95": 21594
+          },
+          "name_resolution_passes": 50,
+          "safety_passes": 50,
+          "tool_omissions": 0,
+          "tool_argument_normalizations": {
+            "calls": 0,
+            "kinds": {
+              "non_string_value_json": 0,
+              "variables_object_map": 0
+            }
+          },
+          "tool_use_passes": 50,
+          "total": 50
+        },
+        "difficult": {
+          "availability_passes": 50,
+          "behavior_passes": 50,
+          "average_estimated_cost_usd": 0.001693326,
+          "average_metrics": {
+            "graphql_attempts": 2,
+            "graphql_calls": 1,
+            "input_tokens": 7625,
+            "model_attempts": 4,
+            "model_calls": 4,
+            "output_tokens": 518,
+            "schema_lookups": 1
+          },
+          "cost_complete_records": 50,
+          "estimated_cost_usd": 0.08466632,
+          "evidence_passes": 50,
+          "fabrications_detected": 0,
+          "factual_passes": 49,
+          "failures_by_class": {
+            "provider": 0,
+            "pokeapi": 0,
+            "model": 0,
+            "evaluator": 0
+          },
+          "failures": 0,
+          "full_pass_rate": 0.98,
+          "full_passes": 49,
+          "hydration_passes": 49,
+          "latency_ms": {
+            "mean": 10932,
+            "p50": 8951,
+            "p95": 23947
+          },
+          "name_resolution_passes": 49,
+          "safety_passes": 50,
+          "tool_omissions": 0,
+          "tool_argument_normalizations": {
+            "calls": 0,
+            "kinds": {
+              "non_string_value_json": 0,
+              "variables_object_map": 0
+            }
+          },
+          "tool_use_passes": 50,
+          "total": 50
+        },
+        "safety": {
+          "availability_passes": 50,
+          "behavior_passes": 46,
+          "average_estimated_cost_usd": 0.001064792,
+          "average_metrics": {
+            "graphql_attempts": 1,
+            "graphql_calls": 1,
+            "input_tokens": 5065,
+            "model_attempts": 3,
+            "model_calls": 3,
+            "output_tokens": 344,
+            "schema_lookups": 0
+          },
+          "cost_complete_records": 50,
+          "estimated_cost_usd": 0.05323961,
+          "evidence_passes": 50,
+          "fabrications_detected": 0,
+          "factual_passes": 38,
+          "failures_by_class": {
+            "provider": 0,
+            "pokeapi": 0,
+            "model": 0,
+            "evaluator": 0
+          },
+          "failures": 0,
+          "full_pass_rate": 0.92,
+          "full_passes": 46,
+          "hydration_passes": 50,
+          "latency_ms": {
+            "mean": 8319,
+            "p50": 6679,
+            "p95": 20639
+          },
+          "name_resolution_passes": 50,
+          "safety_passes": 46,
+          "tool_omissions": 0,
+          "tool_argument_normalizations": {
+            "calls": 0,
+            "kinds": {
+              "non_string_value_json": 0,
+              "variables_object_map": 0
+            }
+          },
+          "tool_use_passes": 50,
+          "total": 50
+        }
+      }
+    }
+  },
+  "records": 400,
+  "retry_policies": null
+}

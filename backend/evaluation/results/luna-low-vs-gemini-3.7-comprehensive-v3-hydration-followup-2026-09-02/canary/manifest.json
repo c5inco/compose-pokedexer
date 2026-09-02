@@ -1,0 +1,64 @@
+{
+  "backend_sha256": "eb4ed119bdf8bfed13774aad9206b766b66d5a04415cdb1372f5261c89a1438b",
+  "candidates": [
+    "luna-low",
+    "gemini-3.7-flash"
+  ],
+  "live_data_sha256": null,
+  "profile": {
+    "graphql": {
+      "max_complexity": 10000,
+      "max_depth": 8,
+      "max_response_bytes": 1000000,
+      "max_rows": 100,
+      "timeout_ms": 5000
+    },
+    "max_graphql_attempts": 6,
+    "max_tool_rounds": 6,
+    "model": {
+      "max_retries": 1,
+      "planning_output_tokens": 2500,
+      "synthesis_output_tokens": 1500,
+      "timeout_ms": 45000
+    },
+    "version": "ask-pokedexer-eval-v3"
+  },
+  "question_ids": null,
+  "repetitions": 5,
+  "schema_sha256": "a0c2024b10a367c0d8312d02599e0cdd3d4b941fb6058c7e030ec11761f6d116",
+  "seed": "ask-pokedexer-eval-v4-seed",
+  "source_sha256": {
+    "evaluation/canary-target.ts": "371c359c9ae16e9f7cd7b74c60631559f5219f3ad4583387d60eee4d277f67e4",
+    "evaluation/graphql-controls.ts": "daf313e9b380177a66a77d267dde75b14efb7b228b0499d15d37f73cc0de4780",
+    "evaluation/profile.ts": "de2c2170933bf393ab07a9f7ac211621b9a845c33834ebe8966553e4aeb3e87b",
+    "evaluation/program.ts": "17d9ad093d65b69260247b096aec33cc2bbbc47c8a8cd7db253105e59ea46c6d",
+    "evaluation/programs/comprehensive-v1.json": "043526dffffe5f7dba673a003fdd429703b98343931e8cd8bd39704989c075f5",
+    "evaluation/programs/comprehensive-v2.json": "a755c0f6b6ed4f76f98fb2189bfb6c71525f46ba6880bb816451c29a397b9e7d",
+    "evaluation/programs/comprehensive-v3.json": "b4630d5bf8b132784c5fd52f32695ca2ae8b2911a5d6aafc7730ca04a154fe16",
+    "evaluation/retry-policy.ts": "7d60d8c81ae5af2c62231a5ebb375bf92db5b353f7cb1144998253fe632435d5",
+    "evaluation/run.ts": "3d8fc0eaf9fe535bf4b693a4f1fd806d16587c5bd06bd9ac1d904afcd4bbd197",
+    "evaluation/scorer.ts": "bd22ebe83d02f25d46ca159a30caf5d213601f00afaecb26d746f983272895ab",
+    "evaluation/search-scorer.ts": "bb810bb2b83168a5d946f33d8828ca7d0d54e782e522b680f225cf2960b01477",
+    "evaluation/suite.ts": "938d6aafc9b003ab88a29d3cd38c5d83b955e459d44cc149983490df1b0e6659",
+    "evaluation/suites/grounding-canary-v2.json": "94f8df012e29091581fc4f4af3a598dbe1783a078bcf2ef3a5e2fb3b5cf4d510",
+    "evaluation/suites/holdout-v4.json": "734c5c4aad1c1d4b043e0e7f80c4f7b0618c35f6042bab02cd5c019874292ae0",
+    "evaluation/suites/search-v3.json": "04768c8036871947623103b4920e5bcc43394539e5fb60f48482510eafb42848",
+    "evaluation/types.ts": "d0788357bac51099c642d9a2d6c2ae5a4a30f8607eaf92283fae2e8e8afbe9f0",
+    "package-lock.json": "8fe8a7248ad291fc3d4ecc5fdad999b1d0f794d9390cd23b603ccbe1c631c69b",
+    "package.json": "14471300eb4426d7cffcb954a3220f47fa5d601bf8c75ec1f18b12587329649c",
+    "src/entity-resolution.ts": "565328e131163272deadd512ab0502b5e4bd00549e6a8181ed1fc86c12bcb1a3",
+    "src/execution-profile.ts": "4ef7d5e934af5903e4f54ecb85432fdd9879ba2cfdcdc0b1d3493139c155fa1e",
+    "src/gemini-provider.ts": "b3700b1ab3ca6e5e09499bda2617d9be0f9fc95e56fd6ce6a2e0912b8858d5ae",
+    "src/model-contract.ts": "00bcf8ec8de5f5a43c8b856e5622efe10a977f7bc5b1a558cc2158a38c730735",
+    "src/openai-provider.ts": "6aa4d22516f81459ed9d295193d416a6ec3e9291d3b4bcaf1dd3e7c32611160b",
+    "src/openrouter-provider.ts": "32566f4cff844130d814947487acdbc7578789c5214fc35c25f1bbabf4700ce3",
+    "src/orchestrator.ts": "5c1baf549d380d0612b8210eb2ef8ddf48f9c845f5e1bdd22c47a5b4e2d58ab6",
+    "src/pagination.ts": "49b7ba873a372ab6c6ff5fc7e297dd2c912c861a11dd2e0337dcc147028d4541",
+    "src/readonly-graphql.ts": "59a16ec14776b4ae8ff95db01c83de48d2ba4f1aba6790004dd4442f0376f34b",
+    "src/runtime-config.ts": "d47f2799d0a977514a37255fa4fb9a767ddf2c4e4e663f615ccd4bca8364e014",
+    "src/schema-lookup.ts": "acead7ef3d9b5642bc80eaae062d1b66081dbfdde631ac87ec6c0f1aafe34447",
+    "src/search-descriptors.ts": "154be028bc33b36303e7fd8b9d37e39405c8e75400b8d0f20c255edc27779a1a",
+    "src/structured-search.ts": "2ab83db4c2621839e1fa2236b86708ac0d3847830756348075c2d4093a96e8f0"
+  },
+  "suite_sha256": "94f8df012e29091581fc4f4af3a598dbe1783a078bcf2ef3a5e2fb3b5cf4d510"
+}
