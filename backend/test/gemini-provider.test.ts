@@ -36,8 +36,9 @@ test("converts Gemini function calls into provider-neutral tool calls", async ()
     },
   };
   const provider = createGeminiProvider({ client, model: "gemini-3.7-flash" });
+  const signal = new AbortController().signal;
 
-  const turn = await provider.plan({ history: [], question: "Who learns Razor Leaf?" });
+  const turn = await provider.plan({ history: [], question: "Who learns Razor Leaf?", signal });
 
   assert.deepEqual(turn.toolCalls[0].arguments, {
     purpose: "Resolve Razor Leaf",
@@ -56,6 +57,7 @@ test("converts Gemini function calls into provider-neutral tool calls", async ()
   assert.match(String(config.systemInstruction), /SpeciesWithMove/);
   assert.deepEqual(config.thinkingConfig, { thinkingLevel: "LOW" });
   assert.equal(config.responseMimeType, undefined);
+  assert.equal(config.abortSignal, signal);
   const tools = config.tools as Array<{ functionDeclarations: Array<{ name: string }> }>;
   assert.deepEqual(
     tools[0].functionDeclarations.map((tool) => tool.name),

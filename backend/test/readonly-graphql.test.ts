@@ -97,6 +97,31 @@ test("hashes normalized response data independently of object key order", async 
   assert.equal(first.trace.response_sha256, second.trace.response_sha256);
 });
 
+test("propagates external cancellation instead of treating it as a recoverable GraphQL error", async () => {
+  const controller = new AbortController();
+  const reason = new Error("request deadline");
+  const executor = createReadonlyGraphqlExecutor({
+    endpoint: "https://graphql.pokeapi.co/v1beta2",
+    fetchImpl: async (request) =>
+      await new Promise<Response>((_resolve, reject) => {
+        request.signal.addEventListener("abort", () => reject(request.signal.reason), { once: true });
+      }),
+    schema,
+  });
+  const execution = executor.execute(
+    {
+      purpose: "Resolve Bulbasaur",
+      query: "query Pokemon($limit: Int!) { pokemon(limit: $limit) { id name } }",
+      variables: { limit: 1 },
+    },
+    controller.signal,
+  );
+
+  controller.abort(reason);
+
+  await assert.rejects(execution, (error: unknown) => error === reason);
+});
+
 test("rejects mutations, introspection, aliases, and unbounded lists before fetch", async (t) => {
   const executor = createReadonlyGraphqlExecutor({
     endpoint: "https://graphql.pokeapi.co/v1beta2",

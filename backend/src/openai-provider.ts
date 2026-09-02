@@ -37,7 +37,10 @@ interface OpenAIResponse {
 
 export interface ResponsesClient {
   responses: {
-    create(request: Record<string, unknown>): Promise<OpenAIResponse>;
+    create(
+      request: Record<string, unknown>,
+      options?: { signal?: AbortSignal | null },
+    ): Promise<OpenAIResponse>;
   };
 }
 
@@ -107,22 +110,25 @@ export function createOpenAIProvider(options: OpenAIProviderOptions): ModelProvi
   const reasoning = { effort: options.reasoningEffort ?? "low" };
   return {
     async plan(input): Promise<PlannerTurn> {
-      const response = await options.client.responses.create({
-        input: `Question: ${input.question}\nBackend-reviewed entity resolutions: ${evidenceJson(input.entityResolutions ?? [])}\nBackend-required retry: ${evidenceJson(input.retryReason ?? null)}\nBackend-reviewed search interpretation: ${evidenceJson(input.interpretation ?? null)}\nExecuted tool history: ${evidenceJson(input.history)}`,
-        instructions: plannerInstructions,
-        max_output_tokens: EXECUTION_PROFILE.model.planning_output_tokens,
-        model: options.model,
-        ...parallelToolCalls,
-        ...providerRouting,
-        reasoning,
-        store: false,
-        tool_choice: "auto",
-        tools: structuredClone(functionDeclarations).map((declaration) => ({
-          ...declaration,
-          strict: true,
-          type: "function",
-        })),
-      });
+      const response = await options.client.responses.create(
+        {
+          input: `Question: ${input.question}\nBackend-reviewed entity resolutions: ${evidenceJson(input.entityResolutions ?? [])}\nBackend-required retry: ${evidenceJson(input.retryReason ?? null)}\nBackend-reviewed search interpretation: ${evidenceJson(input.interpretation ?? null)}\nExecuted tool history: ${evidenceJson(input.history)}`,
+          instructions: plannerInstructions,
+          max_output_tokens: EXECUTION_PROFILE.model.planning_output_tokens,
+          model: options.model,
+          ...parallelToolCalls,
+          ...providerRouting,
+          reasoning,
+          store: false,
+          tool_choice: "auto",
+          tools: structuredClone(functionDeclarations).map((declaration) => ({
+            ...declaration,
+            strict: true,
+            type: "function",
+          })),
+        },
+        { signal: input.signal },
+      );
       const usage = usageFrom(response);
       if (options.normalizeToolArguments) {
         usage.toolArgumentNormalizations = {
@@ -150,23 +156,26 @@ export function createOpenAIProvider(options: OpenAIProviderOptions): ModelProvi
 
     async synthesize(input) {
       const structured = input.interpretation?.status === "structured";
-      const response = await options.client.responses.create({
-        input: `Question: ${input.question}\nBackend-reviewed entity resolutions: ${evidenceJson(input.entityResolutions ?? [])}\nBackend-reviewed search interpretation: ${evidenceJson(input.interpretation ?? null)}\nVerified tool evidence: ${evidenceJson(input.evidence)}`,
-        instructions: structured ? structuredSynthesisInstructions : synthesisInstructions,
-        max_output_tokens: EXECUTION_PROFILE.model.synthesis_output_tokens,
-        model: options.model,
-        ...providerRouting,
-        reasoning,
-        store: false,
-        text: {
-          format: {
-            name: "ask_pokedexer_response",
-            schema: structured ? structuredResponseJsonSchema : responseJsonSchema,
-            strict: true,
-            type: "json_schema",
+      const response = await options.client.responses.create(
+        {
+          input: `Question: ${input.question}\nBackend-reviewed entity resolutions: ${evidenceJson(input.entityResolutions ?? [])}\nBackend-reviewed search interpretation: ${evidenceJson(input.interpretation ?? null)}\nVerified tool evidence: ${evidenceJson(input.evidence)}`,
+          instructions: structured ? structuredSynthesisInstructions : synthesisInstructions,
+          max_output_tokens: EXECUTION_PROFILE.model.synthesis_output_tokens,
+          model: options.model,
+          ...providerRouting,
+          reasoning,
+          store: false,
+          text: {
+            format: {
+              name: "ask_pokedexer_response",
+              schema: structured ? structuredResponseJsonSchema : responseJsonSchema,
+              strict: true,
+              type: "json_schema",
+            },
           },
         },
-      });
+        { signal: input.signal },
+      );
       const usage = usageFrom(response);
       try {
         assertCompleted(response, providerLabel);

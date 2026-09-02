@@ -82,12 +82,14 @@ export interface ModelProvider {
     interpretation?: SearchInterpretation;
     question: string;
     retryReason?: string;
+    signal?: AbortSignal;
   }): Promise<PlannerTurn>;
   synthesize(input: {
     entityResolutions?: EntityResolution[];
     evidence: Array<{ call: ToolCall; result: JsonValue }>;
     interpretation?: SearchInterpretation;
     question: string;
+    signal?: AbortSignal;
   }): Promise<{ response: SynthesisResponse; usage: TokenUsage }>;
 }
 
@@ -99,7 +101,7 @@ export interface Pricing {
 }
 
 interface OrchestratorOptions {
-  executeGraphql(request: GraphqlRequest): Promise<GraphqlExecution>;
+  executeGraphql(request: GraphqlRequest, signal?: AbortSignal): Promise<GraphqlExecution>;
   maxGraphqlAttempts?: number;
   maxToolRounds?: number;
   model: ModelProvider;
@@ -338,10 +340,11 @@ export class AskOrchestrator {
     };
   }
 
-  async ask(question: string) {
+  async ask(question: string, signal?: AbortSignal) {
     if (!question.trim() || question.length > 500) {
       throw new Error("Question must be between 1 and 500 characters");
     }
+    signal?.throwIfAborted();
 
     const started = performance.now();
     const history: Array<{ call: ToolCall; result: JsonValue }> = [];
@@ -405,8 +408,11 @@ export class AskOrchestrator {
       modelAttempts += 1;
       const callStarted = performance.now();
       try {
-        return await action();
+        const result = await action();
+        signal?.throwIfAborted();
+        return result;
       } catch (error) {
+        if (signal?.aborted) throw error;
         if (error instanceof ModelProviderError && error.usage) {
           addUsage(usage, error.usage);
           failureClass = "model";
@@ -422,6 +428,7 @@ export class AskOrchestrator {
 
     const executeToolCalls = async (calls: ToolCall[], round: number): Promise<void> => {
       for (const call of calls) {
+        signal?.throwIfAborted();
         if (call.name === "schema_lookup") {
           phase = "schema_lookup";
           const toolStarted = performance.now();
@@ -457,6 +464,7 @@ export class AskOrchestrator {
           try {
             const execution = await this.options.executeGraphql(
               call.arguments as unknown as GraphqlRequest,
+              signal,
             );
             history.push({ call, result: execution.data });
             traces.push(execution.trace);
@@ -467,6 +475,7 @@ export class AskOrchestrator {
             );
             graphqlCalls += 1;
           } catch (error) {
+            if (signal?.aborted) throw error;
             if (error instanceof GraphqlInfrastructureError) failureClass = "pokeapi";
             const message = error instanceof Error ? error.message : "Unknown GraphQL failure";
             history.push({ call, result: { error: message.slice(0, 500) } });
@@ -497,7 +506,7 @@ export class AskOrchestrator {
         };
         const toolStarted = performance.now();
         try {
-          const execution = await this.options.executeGraphql(structuredRequest);
+          const execution = await this.options.executeGraphql(structuredRequest, signal);
           history.push({ call, result: execution.data });
           traces.push(execution.trace);
           mergeIds(observed, execution.entityIds);
@@ -507,6 +516,7 @@ export class AskOrchestrator {
           );
           graphqlCalls += 1;
         } catch (error) {
+          if (signal?.aborted) throw error;
           if (error instanceof GraphqlInfrastructureError) failureClass = "pokeapi";
           const message = error instanceof Error ? error.message : "Unknown GraphQL failure";
           toolErrors.push({
@@ -523,7 +533,7 @@ export class AskOrchestrator {
         for (let round = 0; round < (this.options.maxToolRounds ?? 4); round += 1) {
           phase = "planning";
           const turn = await callModel(() =>
-            this.options.model.plan({ entityResolutions, history, interpretation, question }),
+            this.options.model.plan({ entityResolutions, history, interpretation, question, signal }),
           );
           addUsage(usage, turn.usage);
           if (turn.toolCalls.length === 0) {
@@ -546,6 +556,7 @@ export class AskOrchestrator {
             evidence: synthesisEvidence,
             interpretation,
             question,
+            signal,
           }),
         );
         addUsage(usage, result.usage);
@@ -565,6 +576,7 @@ export class AskOrchestrator {
             interpretation,
             question,
             retryReason,
+            signal,
           }),
         );
         addUsage(usage, retry.usage);
@@ -629,6 +641,7 @@ export class AskOrchestrator {
         },
       };
     } catch (error) {
+      if (signal?.aborted) throw error;
       if (error instanceof AskEvaluationError) throw error;
       const message = error instanceof Error ? error.message : "Evaluation failed";
       const classifiedFailure = failureClass ?? (phase === "validation" ? "model" : "evaluator");

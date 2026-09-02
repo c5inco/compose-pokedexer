@@ -427,7 +427,8 @@ export function createReadonlyGraphqlExecutor(options: ExecutorOptions) {
   };
 
   return {
-    async execute(request: GraphqlRequest): Promise<GraphqlExecution> {
+    async execute(request: GraphqlRequest, signal?: AbortSignal): Promise<GraphqlExecution> {
+      signal?.throwIfAborted();
       if (!request.purpose.trim() || request.purpose.length > 160) {
         throw new GraphqlPolicyError("Query purpose must be between 1 and 160 characters");
       }
@@ -437,6 +438,8 @@ export function createReadonlyGraphqlExecutor(options: ExecutorOptions) {
 
       const started = performance.now();
       let response: Response;
+      const timeoutSignal = AbortSignal.timeout(limits.timeoutMs);
+      const requestSignal = signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal;
       try {
         response = await fetchImpl(
           new Request(options.endpoint, {
@@ -446,15 +449,24 @@ export function createReadonlyGraphqlExecutor(options: ExecutorOptions) {
               "user-agent": "ask-pokedexer-backend/1",
             },
             method: "POST",
-            signal: AbortSignal.timeout(limits.timeoutMs),
+            signal: requestSignal,
           }),
         );
       } catch (error) {
+        if (signal?.aborted) throw signal.reason;
         throw new GraphqlInfrastructureError(
           `PokéAPI request failed: ${error instanceof Error ? error.message : "unknown network error"}`,
         );
       }
-      const text = await response.text();
+      let text: string;
+      try {
+        text = await response.text();
+      } catch (error) {
+        if (signal?.aborted) throw signal.reason;
+        throw new GraphqlInfrastructureError(
+          `PokéAPI response failed: ${error instanceof Error ? error.message : "unknown network error"}`,
+        );
+      }
       if (Buffer.byteLength(text) > limits.maxResponseBytes) {
         throw new GraphqlPolicyError("PokéAPI response exceeded the size limit");
       }
@@ -480,6 +492,7 @@ export function createReadonlyGraphqlExecutor(options: ExecutorOptions) {
       if (!payload.data) {
         throw new GraphqlPolicyError("PokéAPI response did not contain data");
       }
+      signal?.throwIfAborted();
 
       return {
         data: payload.data,

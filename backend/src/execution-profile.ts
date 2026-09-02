@@ -16,3 +16,14 @@ export const EXECUTION_PROFILE = {
   },
   version: "ask-pokedexer-eval-v3",
 } as const;
+
+export const PRODUCT_EXECUTION_PROFILE = {
+  ...EXECUTION_PROFILE,
+  model: {
+    ...EXECUTION_PROFILE.model,
+    max_retries: 0,
+    timeout_ms: 30_000,
+  },
+  request_timeout_ms: 30_000,
+  version: "ask-pokedexer-api-v1",
+} as const;

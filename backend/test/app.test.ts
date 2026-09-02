@@ -16,8 +16,7 @@ test("serves health and evaluation endpoints without exposing model credentials"
         response: { answer: "Bulbasaur is Grass/Poison.", queries: [] },
       };
     },
-    model: "gpt-5.6-luna",
-    provider: "OpenAI",
+    evaluation: { provider: "OpenAI" },
   });
   const server = createServer(app);
   server.listen(0, "127.0.0.1");
@@ -28,7 +27,7 @@ test("serves health and evaluation endpoints without exposing model credentials"
   const origin = `http://127.0.0.1:${address.port}`;
 
   const health = await fetch(`${origin}/health`).then((response) => response.json());
-  assert.deepEqual(health, { model: "gpt-5.6-luna", provider: "OpenAI", status: "ok" });
+  assert.deepEqual(health, { api_version: 1, status: "ok" });
 
   const evaluationPage = await fetch(origin).then((response) => response.text());
   assert.match(evaluationPage, /Bounded OpenAI tool loop/);
@@ -81,8 +80,7 @@ test("preserves accumulated metrics and safe diagnostics on evaluation failure",
         },
       });
     },
-    model: "gpt-5.6-luna",
-    provider: "OpenAI",
+    evaluation: { provider: "OpenAI" },
   });
   const server = createServer(app);
   server.listen(0, "127.0.0.1");
@@ -130,8 +128,6 @@ test("maps rejected continuation cursors to a safe client error", async (t) => {
       assert.equal(cursor, "bad-cursor");
       throw new ContinuationCursorError("Invalid continuation cursor");
     },
-    model: "gpt-5.6-luna",
-    provider: "OpenAI",
   });
   const server = createServer(app);
   server.listen(0, "127.0.0.1");
@@ -147,5 +143,12 @@ test("maps rejected continuation cursors to a safe client error", async (t) => {
   });
 
   assert.equal(response.status, 400);
-  assert.deepEqual(await response.json(), { error: "Invalid continuation cursor" });
+  assert.deepEqual(await response.json(), {
+    api_version: 1,
+    error: {
+      code: "INVALID_CURSOR",
+      message: "The continuation cursor is invalid or expired",
+      retryable: false,
+    },
+  });
 });

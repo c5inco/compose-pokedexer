@@ -55,6 +55,7 @@ export function createGeminiProvider(options: ProviderOptions): ModelProvider {
     async plan(input): Promise<PlannerTurn> {
       const response = await options.client.models.generateContent({
         config: {
+          abortSignal: input.signal,
           maxOutputTokens: EXECUTION_PROFILE.model.planning_output_tokens,
           systemInstruction: plannerInstructions,
           thinkingConfig,
@@ -85,6 +86,7 @@ export function createGeminiProvider(options: ProviderOptions): ModelProvider {
       const structured = input.interpretation?.status === "structured";
       const response = await options.client.models.generateContent({
         config: {
+          abortSignal: input.signal,
           maxOutputTokens: EXECUTION_PROFILE.model.synthesis_output_tokens,
           responseJsonSchema: structured ? structuredResponseJsonSchema : responseJsonSchema,
           responseMimeType: "application/json",

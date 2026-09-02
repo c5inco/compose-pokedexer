@@ -207,10 +207,15 @@ test("uses only answer and table in the structured-search synthesis contract", a
 
 test("uses the configured reasoning effort for planning and synthesis", async () => {
   const requests: Array<Record<string, unknown>> = [];
+  const requestSignals: Array<AbortSignal | null | undefined> = [];
   const client = {
     responses: {
-      async create(request: Record<string, unknown>) {
+      async create(
+        request: Record<string, unknown>,
+        options?: { signal?: AbortSignal | null },
+      ) {
         requests.push(request);
+        requestSignals.push(options?.signal);
         return {
           output: [],
           output_text: JSON.stringify({
@@ -233,15 +238,17 @@ test("uses the configured reasoning effort for planning and synthesis", async ()
     model: "gpt-5.6-luna",
     reasoningEffort: "medium",
   });
+  const signal = new AbortController().signal;
 
-  await provider.plan({ history: [], question: "What is Bulbasaur?" });
-  await provider.synthesize({ evidence: [], question: "What is Bulbasaur?" });
+  await provider.plan({ history: [], question: "What is Bulbasaur?", signal });
+  await provider.synthesize({ evidence: [], question: "What is Bulbasaur?", signal });
 
   assert.deepEqual(requests.map((request) => request.reasoning), [
     { effort: "medium" },
     { effort: "medium" },
   ]);
   assert.deepEqual(requests.map((request) => request.max_output_tokens), [2_500, 1_500]);
+  assert.deepEqual(requestSignals, [signal, signal]);
 });
 
 test("preserves usage when an OpenAI response cannot satisfy the contract", async () => {

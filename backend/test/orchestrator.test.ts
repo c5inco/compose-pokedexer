@@ -168,6 +168,48 @@ test("classifies an SDK failure separately from a model contract failure", async
   );
 });
 
+test("propagates one request cancellation signal through planning and synthesis", async () => {
+  const signals: Array<AbortSignal | undefined> = [];
+  const orchestrator = new AskOrchestrator({
+    executeGraphql: async () => execution,
+    model: {
+      async plan(input) {
+        signals.push(input.signal);
+        return {
+          toolCalls: [],
+          usage: { cacheWriteTokens: 0, cachedInputTokens: 0, inputTokens: 1, outputTokens: 1 },
+        };
+      },
+      async synthesize(input) {
+        signals.push(input.signal);
+        return {
+          response: {
+            ability_ids: [],
+            answer: "That request is outside Pokémon data.",
+            item_ids: [],
+            move_ids: [],
+            pokemon_ids: [],
+            table: null,
+          },
+          usage: { cacheWriteTokens: 0, cachedInputTokens: 0, inputTokens: 1, outputTokens: 1 },
+        };
+      },
+    },
+    pricing: {
+      cacheWritePerMillion: 0,
+      cachedInputPerMillion: 0,
+      inputPerMillion: 0,
+      outputPerMillion: 0,
+    },
+    schemaLookup: async () => ({ matches: [] }),
+  });
+  const signal = new AbortController().signal;
+
+  await orchestrator.ask("Tell me tomorrow's weather", signal);
+
+  assert.deepEqual(signals, [signal, signal]);
+});
+
 test("returns a rejected GraphQL attempt to the planner for one bounded correction", async () => {
   const calls: string[] = [];
   const plannerTurns: PlannerTurn[] = [

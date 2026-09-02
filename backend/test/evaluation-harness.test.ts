@@ -21,8 +21,11 @@ import type {
 } from "../evaluation/types.js";
 import {
   parseSynthesis,
+  parseStructuredSynthesis,
   plannerInstructions,
   responseJsonSchema,
+  structuredResponseJsonSchema,
+  structuredSynthesisInstructions,
   synthesisInstructions,
 } from "../src/model-contract.js";
 
@@ -295,6 +298,26 @@ test("bounds every synthesized entity ID list", () => {
           move_ids: [],
           pokemon_ids: [1, 2, 3, 4, 5, 6, 7, 8, 9],
           table: null,
+        }),
+      ),
+    /Too big/,
+  );
+});
+
+test("bounds structured-search tables to the public result-card page", () => {
+  const table = structuredResponseJsonSchema.properties.table.anyOf[0];
+  assert.equal(table.properties.rows.maxItems, 8);
+  assert.match(structuredSynthesisInstructions, /at most 8 rows/i);
+  assert.match(structuredSynthesisInstructions, /do not enumerate all matches/i);
+  assert.throws(
+    () =>
+      parseStructuredSynthesis(
+        JSON.stringify({
+          answer: "Matching Pokémon.",
+          table: {
+            columns: ["Pokémon"],
+            rows: Array.from({ length: 9 }, (_, index) => [`Pokémon ${index + 1}`]),
+          },
         }),
       ),
     /Too big/,

@@ -5,6 +5,7 @@ import type { JsonObject, JsonValue } from "./readonly-graphql.js";
 
 const maxEntityIds = 8;
 const maxContinuationIds = 100;
+const maxStructuredTableRows = 8;
 
 const continuationCandidatesSchema = z.object({
   ability_ids: z.array(z.number().int().positive()).max(maxContinuationIds),
@@ -38,6 +39,15 @@ const tableSchema = z
   })
   .nullable();
 
+const structuredTableSchema = z
+  .object({
+    columns: z.array(z.string()),
+    rows: z
+      .array(z.array(z.union([z.string(), z.number(), z.boolean(), z.null()])))
+      .max(maxStructuredTableRows),
+  })
+  .nullable();
+
 const synthesisSchema = z.object({
   ability_ids: z.array(z.number().int().positive()).max(maxEntityIds),
   answer: z.string(),
@@ -50,7 +60,7 @@ const synthesisSchema = z.object({
 
 const structuredSynthesisSchema = z.object({
   answer: z.string(),
-  table: tableSchema,
+  table: structuredTableSchema,
 });
 
 export const plannerInstructions = `You are the bounded query planner for Ask Pokedexer.
@@ -129,7 +139,8 @@ Return concise JSON matching the schema.`;
 export const structuredSynthesisInstructions = `Answer only from verified tool evidence for the backend-reviewed structured search.
 Summarize the matching Pokémon concisely and disclose every reviewed mapping or numeric threshold supplied in the search interpretation.
 If the verified query returned no rows, say no matches were found in the current verified PokéAPI data; do not claim global nonexistence.
-The backend owns result IDs and pagination. Return only answer and an optional compact table matching the schema.`;
+The backend owns result IDs and pagination. Do not enumerate all matches in prose or a table. Return only answer and an optional
+compact table with at most 8 rows matching the schema.`;
 
 export const functionDeclarations = [
   {
@@ -242,7 +253,34 @@ export const structuredResponseJsonSchema = {
   additionalProperties: false,
   properties: {
     answer: { type: "string" },
-    table: tableJsonSchema,
+    table: {
+      anyOf: [
+        {
+          additionalProperties: false,
+          properties: {
+            columns: { items: { type: "string" }, type: "array" },
+            rows: {
+              items: {
+                items: {
+                  anyOf: [
+                    { type: "string" },
+                    { type: "number" },
+                    { type: "boolean" },
+                    { type: "null" },
+                  ],
+                },
+                type: "array",
+              },
+              maxItems: maxStructuredTableRows,
+              type: "array",
+            },
+          },
+          required: ["columns", "rows"],
+          type: "object",
+        },
+        { type: "null" },
+      ],
+    },
   },
   required: ["answer", "table"],
   type: "object",
