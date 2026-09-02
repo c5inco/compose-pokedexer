@@ -8,6 +8,7 @@ import type {
   QueryTrace,
 } from "./readonly-graphql.js";
 import {
+  canonicalizePokeApiName,
   collectEntityReferences,
   GraphqlInfrastructureError,
 } from "./readonly-graphql.js";
@@ -209,11 +210,100 @@ const hydrationNameAliases: Readonly<Record<string, string[]>> = {
   "nidoran-f": ["female nidoran", "nidoran female"],
   "nidoran-m": ["male nidoran", "nidoran male"],
 };
+const maxHydrationIds = 8;
+const maxHydrationNameWords = 4;
+const maxHydrationResolutionNames = 100;
 
 function referencesEntityName(semanticText: string, canonicalName: string): boolean {
   return [canonicalName, ...(hydrationNameAliases[canonicalName] ?? [])]
     .map(normalizedText)
     .some((name) => ` ${semanticText} `.includes(` ${name} `));
+}
+
+function answerSemanticText(response: SynthesisResponse): string {
+  return normalizedText([
+    response.answer,
+    ...(response.table?.columns ?? []),
+    ...(response.table?.rows.flatMap((row) => row.map((value) => String(value))) ?? []),
+  ].join(" "));
+}
+
+function completeHydrationIds(
+  response: SynthesisResponse,
+  references: EntityReferences,
+): void {
+  const semanticText = answerSemanticText(response);
+  const complete = (returned: number[], kind: keyof EntityReferences) => {
+    const referenced = references[kind]
+      .filter(({ name }) => referencesEntityName(semanticText, name))
+      .map(({ id }) => id);
+    return [...new Set([...returned, ...referenced])].slice(0, maxHydrationIds);
+  };
+  response.ability_ids = complete(response.ability_ids, "ability");
+  response.item_ids = complete(response.item_ids, "item");
+  response.move_ids = complete(response.move_ids, "move");
+  response.pokemon_ids = complete(response.pokemon_ids, "pokemon");
+}
+
+function isCapitalizedWord(value: string): boolean {
+  const first = [...value][0] ?? "";
+  return first.toLocaleUpperCase() === first && first.toLocaleLowerCase() !== first;
+}
+
+function hydrationResolutionNames(
+  question: string,
+  response: SynthesisResponse,
+  references: EntityReferences,
+): string[] {
+  const words = question.match(/[\p{L}\p{N}♀♂]+(?:[’'][\p{L}\p{N}]+)*/gu) ?? [];
+  const semanticText = answerSemanticText(response);
+  const knownNames = new Set(
+    Object.values(references).flat().flatMap(({ name }) => [
+      canonicalizePokeApiName(name),
+      ...(hydrationNameAliases[name] ?? []).map(canonicalizePokeApiName),
+    ]),
+  );
+  const coveredByKnownName = (candidate: string) =>
+    [...knownNames].some((name) =>
+      ` ${normalizedText(name)} `.includes(` ${normalizedText(candidate)} `),
+    );
+  const candidates = new Set<string>();
+  for (let start = 0; start < words.length; start += 1) {
+    for (
+      let length = 1;
+      length <= maxHydrationNameWords && start + length <= words.length;
+      length += 1
+    ) {
+      const phrase = words.slice(start, start + length);
+      if (!phrase.some(isCapitalizedWord)) continue;
+      const name = canonicalizePokeApiName(phrase.join(" "));
+      if (
+        name &&
+        !coveredByKnownName(name) &&
+        referencesEntityName(semanticText, name)
+      ) {
+        candidates.add(name);
+      }
+    }
+  }
+  return [...candidates].slice(0, maxHydrationResolutionNames);
+}
+
+function hydrationResolutionCall(names: string[]): ToolCall {
+  return {
+    arguments: {
+      purpose: "Resolve answer-referenced entities",
+      query: `query ResolveAnswerEntities($names: [String!]!, $limit: Int!) {
+  ability(where: {name: {_in: $names}}, order_by: {id: asc}, limit: $limit) { id name }
+  item(where: {name: {_in: $names}}, order_by: {id: asc}, limit: $limit) { id name }
+  move(where: {name: {_in: $names}}, order_by: {id: asc}, limit: $limit) { id name }
+  pokemon(where: {name: {_in: $names}}, order_by: {id: asc}, limit: $limit) { id name }
+}`,
+      variables: { limit: maxHydrationIds, names },
+    },
+    callId: "backend-answer-entity-resolution",
+    name: "execute_readonly_graphql",
+  };
 }
 
 function validateIds(
@@ -600,7 +690,20 @@ export class AskOrchestrator {
         entityResolutions,
       );
       phase = "validation";
-      if (!structuredRequest) validateIds(synthesis.response, observed, references, question);
+      if (!structuredRequest) {
+        validateIds(synthesis.response, observed, references, question);
+        completeHydrationIds(synthesis.response, references);
+        const names = hydrationResolutionNames(question, synthesis.response, references);
+        if (graphqlCalls > 0 && names.length > 0) {
+          await executeToolCalls(
+            [hydrationResolutionCall(names)],
+            (this.options.maxToolRounds ?? 4) + 2,
+          );
+          completeHydrationIds(synthesis.response, references);
+        }
+        phase = "validation";
+        validateIds(synthesis.response, observed, references, question);
+      }
       const continuationAllowed = interpretation?.status === "structured";
       if (synthesis.response.continuation_candidates && !continuationAllowed) {
         contractWarnings.push(

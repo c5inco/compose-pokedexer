@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import test from "node:test";
+
+import { buildClientSchema, type IntrospectionQuery } from "graphql";
 
 import {
   AskEvaluationError,
@@ -10,6 +14,10 @@ import {
   type SynthesisResponse,
 } from "../src/orchestrator.js";
 import { createPaginationService } from "../src/pagination.js";
+import {
+  createReadonlyGraphqlExecutor,
+  type GraphqlRequest,
+} from "../src/readonly-graphql.js";
 
 const trace = {
   purpose: "Resolve Bulbasaur",
@@ -894,6 +902,193 @@ test("rejects observed hydration IDs that are unrelated to the question and answ
     orchestrator.ask("What type is Bulbasaur?"),
     /unrelated-mon.*not referenced/i,
   );
+});
+
+test("derives omitted result hydration from answer-referenced verified evidence", async () => {
+  const resultExecution: GraphqlExecution = {
+    data: {
+      pokemon: [
+        { id: 23, name: "ekans" },
+        { id: 24, name: "arbok" },
+        { id: 58, name: "growlithe" },
+        { id: 59, name: "arcanine" },
+        { id: 128, name: "tauros" },
+        { id: 130, name: "gyarados" },
+      ],
+    },
+    entityIds: { ability: [], item: [], move: [], pokemon: [23, 24, 58, 59, 128, 130] },
+    entityReferences: {
+      ability: [],
+      item: [],
+      move: [],
+      pokemon: [
+        { id: 23, name: "ekans" },
+        { id: 24, name: "arbok" },
+        { id: 58, name: "growlithe" },
+        { id: 59, name: "arcanine" },
+        { id: 128, name: "tauros" },
+        { id: 130, name: "gyarados" },
+      ],
+    },
+    trace,
+  };
+  const hydrationExecution: GraphqlExecution = {
+    data: { ability: [{ id: 22, name: "intimidate" }] },
+    entityIds: { ability: [22], item: [], move: [], pokemon: [] },
+    entityReferences: {
+      ability: [{ id: 22, name: "intimidate" }],
+      item: [],
+      move: [],
+      pokemon: [],
+    },
+    trace: { ...trace, purpose: "Resolve answer-referenced entities" },
+  };
+  const requests: GraphqlRequest[] = [];
+  const orchestrator = new AskOrchestrator({
+    executeGraphql: async (request) => {
+      requests.push(request);
+      return requests.length === 1 ? resultExecution : hydrationExecution;
+    },
+    model: providerWith({
+      ability_ids: [],
+      answer: "Ekans, Arbok, Growlithe, Arcanine, Tauros, and Gyarados can have Intimidate.",
+      continuation_candidates: null,
+      item_ids: [],
+      move_ids: [],
+      pokemon_ids: [23, 24, 58, 59, 128, 130],
+      table: null,
+    }),
+    pricing: { cacheWritePerMillion: 0, cachedInputPerMillion: 0, inputPerMillion: 0, outputPerMillion: 0 },
+    schemaLookup: async () => ({ matches: [] }),
+  });
+
+  const result = await orchestrator.ask("Which original 151 Pokémon can have Intimidate?");
+
+  assert.deepEqual(result.response.ability_ids, [22]);
+  assert.deepEqual(result.response.pokemon_ids, [23, 24, 58, 59, 128, 130]);
+  assert.equal(requests.length, 2);
+  assert.equal(requests[1].purpose, "Resolve answer-referenced entities");
+  assert.ok(
+    (requests[1].variables as { names: string[] }).names.includes("intimidate"),
+  );
+  const schemaSource = readFileSync(
+    resolve(
+      import.meta.dirname,
+      "../../shared/src/commonMain/graphql/des.c5inco.pokedexer.shared/schema.json",
+    ),
+    "utf8",
+  );
+  const schema = buildClientSchema(
+    (JSON.parse(schemaSource) as { data: IntrospectionQuery }).data,
+  );
+  const executor = createReadonlyGraphqlExecutor({
+    endpoint: "https://graphql.pokeapi.co/v1beta2",
+    fetchImpl: async () =>
+      new Response(
+        JSON.stringify({
+          data: { ability: [], item: [], move: [], pokemon: [] },
+        }),
+        { status: 200 },
+      ),
+    schema,
+  });
+  await assert.doesNotReject(
+    executor.execute(requests[1]),
+    "backend hydration lookup must remain valid under the pinned PokéAPI schema and policy",
+  );
+});
+
+test("resolves a question target omitted from otherwise complete evidence", async () => {
+  const abilityExecution: GraphqlExecution = {
+    data: { ability: [{ id: 25, name: "wonder-guard" }] },
+    entityIds: { ability: [25], item: [], move: [], pokemon: [] },
+    entityReferences: {
+      ability: [{ id: 25, name: "wonder-guard" }],
+      item: [],
+      move: [],
+      pokemon: [],
+    },
+    trace,
+  };
+  const shedinjaExecution: GraphqlExecution = {
+    data: { pokemon: [{ id: 292, name: "shedinja" }] },
+    entityIds: { ability: [], item: [], move: [], pokemon: [292] },
+    entityReferences: {
+      ability: [],
+      item: [],
+      move: [],
+      pokemon: [{ id: 292, name: "shedinja" }],
+    },
+    trace: { ...trace, purpose: "Resolve answer-referenced entities" },
+  };
+  let calls = 0;
+  const orchestrator = new AskOrchestrator({
+    executeGraphql: async () => {
+      calls += 1;
+      return calls === 1 ? abilityExecution : shedinjaExecution;
+    },
+    model: providerWith({
+      ability_ids: [25],
+      answer: "Wonder Guard protects Shedinja from damaging moves that are not super effective.",
+      continuation_candidates: null,
+      item_ids: [],
+      move_ids: [],
+      pokemon_ids: [],
+      table: null,
+    }),
+    pricing: { cacheWritePerMillion: 0, cachedInputPerMillion: 0, inputPerMillion: 0, outputPerMillion: 0 },
+    schemaLookup: async () => ({ matches: [] }),
+  });
+
+  const result = await orchestrator.ask("Which ability protects Shedinja, and how does it work?");
+
+  assert.deepEqual(result.response.ability_ids, [25]);
+  assert.deepEqual(result.response.pokemon_ids, [292]);
+  assert.equal(calls, 2);
+});
+
+test("does not derive unrelated or unmentioned supporting hydration IDs", async () => {
+  const broadExecution: GraphqlExecution = {
+    data: {
+      pokemon: [{ id: 1, name: "bulbasaur" }],
+      supporting: {
+        ability: [{ id: 65, name: "overgrow" }],
+        pokemon: [{ id: 4, name: "charmander" }],
+      },
+    },
+    entityIds: { ability: [65], item: [], move: [], pokemon: [1, 4] },
+    entityReferences: {
+      ability: [{ id: 65, name: "overgrow" }],
+      item: [],
+      move: [],
+      pokemon: [{ id: 1, name: "bulbasaur" }, { id: 4, name: "charmander" }],
+    },
+    trace,
+  };
+  let calls = 0;
+  const orchestrator = new AskOrchestrator({
+    executeGraphql: async () => {
+      calls += 1;
+      return broadExecution;
+    },
+    model: providerWith({
+      ability_ids: [],
+      answer: "Bulbasaur is Grass/Poison type.",
+      continuation_candidates: null,
+      item_ids: [],
+      move_ids: [],
+      pokemon_ids: [],
+      table: null,
+    }),
+    pricing: { cacheWritePerMillion: 0, cachedInputPerMillion: 0, inputPerMillion: 0, outputPerMillion: 0 },
+    schemaLookup: async () => ({ matches: [] }),
+  });
+
+  const result = await orchestrator.ask("What type is Bulbasaur?");
+
+  assert.deepEqual(result.response.pokemon_ids, [1]);
+  assert.deepEqual(result.response.ability_ids, []);
+  assert.equal(calls, 1);
 });
 
 test("accepts official display forms for canonical PokéAPI hydration names", async (context) => {
