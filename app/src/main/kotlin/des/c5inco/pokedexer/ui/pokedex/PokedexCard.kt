@@ -47,7 +47,6 @@ import des.c5inco.pokedexer.ui.theme.AppTheme
 import des.c5inco.pokedexer.ui.theme.PokemonTypesTheme
 
 private const val ANALOGOUS_HUE_ANGLE = 18f
-private const val MESH_RESOLUTION = 10
 private const val DARK_THEME_ID_ALPHA = 0.5f
 private const val LIGHT_THEME_ID_ALPHA = 0.7f
 private const val POKEBALL_ALPHA = 0.25f
@@ -131,13 +130,7 @@ fun PokedexCard(
 
         Surface(
             modifier =
-                modifier
-                    .clip(MaterialTheme.shapes.large)
-                    .meshGradient(
-                        points = colors,
-                        resolutionX = MESH_RESOLUTION,
-                        resolutionY = MESH_RESOLUTION,
-                    ),
+                modifier.clip(MaterialTheme.shapes.large).meshGradient(points = colors),
             shape = MaterialTheme.shapes.large,
             color = Color.Transparent,
             contentColor = PokemonTypesTheme.colorScheme.onSurface,

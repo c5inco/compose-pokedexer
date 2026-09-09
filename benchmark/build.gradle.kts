@@ -1,12 +1,8 @@
-@Suppress("DSL_SCOPE_VIOLATION")
-plugins {
-    alias(libs.plugins.androidTest)
-    alias(libs.plugins.kotlinAndroid)
-}
+plugins { alias(libs.plugins.androidTest) }
 
 android {
     namespace = "des.c5inco.pokedexer.benchmark"
-    compileSdk = 36
+    compileSdk = 37
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -23,8 +19,8 @@ android {
 
     testOptions {
         managedDevices {
-            devices {
-                create("pixel4Api31", com.android.build.api.dsl.ManagedVirtualDevice::class) {
+            localDevices {
+                create("pixel4Api31") {
                     device = "Pixel 4"
                     apiLevel = 31
                     systemImageSource = "aosp"

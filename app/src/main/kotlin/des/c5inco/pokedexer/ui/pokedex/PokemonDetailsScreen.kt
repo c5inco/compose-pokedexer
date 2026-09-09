@@ -342,8 +342,7 @@ private object PokemonDetailsLayout {
         colors: PokemonDetailsColors,
     ) {
         Surface(
-            modifier =
-                Modifier.meshGradient(points = colors.gradient, resolutionX = 32, resolutionY = 32),
+            modifier = Modifier.meshGradient(points = colors.gradient),
             color = Color.Transparent,
         ) {
             Box(Modifier.fillMaxSize()) {

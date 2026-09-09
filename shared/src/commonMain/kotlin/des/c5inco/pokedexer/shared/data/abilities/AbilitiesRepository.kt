@@ -1,7 +1,7 @@
 package des.c5inco.pokedexer.shared.data.abilities
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.ApolloGraphQLException
 import des.c5inco.pokedexer.shared.AbilitiesQuery
 import des.c5inco.pokedexer.shared.data.Result
 import des.c5inco.pokedexer.shared.data.cleanupDescriptionText
@@ -52,7 +52,7 @@ class AbilitiesRepositoryImpl(
                     abilitiesDao.insertAll(*abilitiesFromServer.toTypedArray())
                     println("Populated abilities database: ${abilitiesFromServer.size}")
                 } else {
-                    throw ApolloException("The response has errors: ${response.errors}")
+                    throw ApolloGraphQLException(response.errors.orEmpty())
                 }
             }
         } else {

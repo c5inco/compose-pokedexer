@@ -32,7 +32,7 @@ class StartupBenchmark {
 
     private fun startup(compilationMode: CompilationMode) =
         benchmarkRule.measureRepeated(
-            packageName = "des.c5inco.pokedexer",
+            packageName = "des.c5inco.pokedexer.meshbenchmark",
             metrics = listOf(StartupTimingMetric()),
             iterations = 5,
             compilationMode = compilationMode,

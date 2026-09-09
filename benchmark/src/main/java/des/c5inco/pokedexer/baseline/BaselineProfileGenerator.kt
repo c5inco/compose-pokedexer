@@ -16,15 +16,15 @@ class BaselineProfileGenerator {
 
     @Test
     fun generate() =
-        rule.collect(packageName = "des.c5inco.pokedexer") {
+        rule.collect(packageName = "des.c5inco.pokedexer.meshbenchmark") {
             startActivityAndWait()
-            device.wait(Until.hasObject(By.text("Pokedex")), APP_START_TIMEOUT_MILLIS)
+            device.wait(Until.hasObject(By.text("Pokédex")), APP_START_TIMEOUT_MILLIS)
 
-            val button = device.findObject(By.text("Pokedex"))
+            val button = device.findObject(By.text("Pokédex"))
             button.click()
 
-            device.wait(Until.hasObject(By.res("PokedexLazyGrid")), GRID_LOAD_TIMEOUT_MILLIS)
-            val list = device.findObject(By.res("PokedexLazyGrid"))
+            device.wait(Until.hasObject(By.scrollable(true)), GRID_LOAD_TIMEOUT_MILLIS)
+            val list = device.findObject(By.scrollable(true))
             if (list != null) {
                 list.setGestureMargin(device.displayWidth / GESTURE_MARGIN_DIVISOR)
                 list.fling(Direction.DOWN)
