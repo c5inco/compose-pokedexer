@@ -10,7 +10,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import coil.ImageLoader
 import coil.decode.ImageDecoderDecoder
-import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo.ApolloClient
 import des.c5inco.pokedexer.RootViewModel
 import des.c5inco.pokedexer.shared.data.PokemonDatabase
 import des.c5inco.pokedexer.shared.data.abilities.AbilitiesDao

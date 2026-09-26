@@ -1,7 +1,7 @@
 package des.c5inco.pokedexer.shared.data.moves
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.DefaultApolloException
 import des.c5inco.pokedexer.shared.PokemonOriginalMovesQuery
 import des.c5inco.pokedexer.shared.data.Result
 import des.c5inco.pokedexer.shared.data.cleanupDescriptionText
@@ -23,12 +23,14 @@ class RemoteMovesRepository(
         withContext(Dispatchers.IO) {
             println("Loading moves from network...")
             val response = apolloClient.query(PokemonOriginalMovesQuery()).execute()
+            response.exception?.let { throw it }
 
             if (response.hasErrors()) {
-                throw ApolloException("The response has errors: ${response.errors}")
+                throw DefaultApolloException("The response has errors: ${response.errors}")
             }
 
-            val data = response.data ?: throw ApolloException("The response contains no move data")
+            val data =
+                response.data ?: throw DefaultApolloException("The response contains no move data")
             val remoteCount = data.info.total?.count ?: data.moves.size
             val movesFromServer =
                 data.moves.mapNotNull { model ->
@@ -53,7 +55,7 @@ class RemoteMovesRepository(
                     )
                 }
             if (movesFromServer.size != remoteCount) {
-                throw ApolloException(
+                throw DefaultApolloException(
                     "Expected $remoteCount complete moves but mapped ${movesFromServer.size}"
                 )
             }

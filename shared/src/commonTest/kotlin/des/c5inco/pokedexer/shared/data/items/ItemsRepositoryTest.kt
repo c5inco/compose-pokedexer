@@ -1,13 +1,14 @@
-@file:OptIn(com.apollographql.apollo3.annotations.ApolloExperimental::class)
+@file:OptIn(com.apollographql.apollo.annotations.ApolloExperimental::class)
 
 package des.c5inco.pokedexer.shared.data.items
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.testing.QueueTestNetworkTransport
-import com.apollographql.apollo3.testing.enqueueTestNetworkError
-import com.apollographql.apollo3.testing.enqueueTestResponse
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.testing.QueueTestNetworkTransport
+import com.apollographql.apollo.testing.enqueueTestNetworkError
+import com.apollographql.apollo.testing.enqueueTestResponse
 import com.benasher44.uuid.uuid4
 import des.c5inco.pokedexer.shared.ItemsQuery
 import des.c5inco.pokedexer.shared.model.Item
@@ -89,7 +90,9 @@ class ItemsRepositoryTest {
         client.enqueueTestNetworkError()
 
         try {
-            assertFailsWith<ApolloException> { ItemsRepositoryImpl(itemsDao, client).updateItems() }
+            assertFailsWith<ApolloNetworkException> {
+                ItemsRepositoryImpl(itemsDao, client).updateItems()
+            }
 
             assertEquals(listOf(99), itemsDao.currentItems.map(Item::id))
             assertEquals(0, itemsDao.replaceAllCalls)
@@ -102,7 +105,7 @@ class ItemsRepositoryTest {
     fun nullDataThrowsApolloException() = runBlocking {
         val itemsDao = FakeItemsDao(listOf(databaseItem(99)))
         val client = testClient()
-        client.enqueueTestResponse(ApolloResponse.Builder(ItemsQuery(), uuid4(), null).build())
+        client.enqueueTestResponse(ApolloResponse.Builder(ItemsQuery(), uuid4()).data(null).build())
 
         try {
             assertFailsWith<ApolloException> { ItemsRepositoryImpl(itemsDao, client).updateItems() }

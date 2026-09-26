@@ -1,10 +1,10 @@
-@file:OptIn(com.apollographql.apollo3.annotations.ApolloExperimental::class)
+@file:OptIn(com.apollographql.apollo.annotations.ApolloExperimental::class)
 
 package des.c5inco.pokedexer.shared.data.pokemon
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.testing.MapTestNetworkTransport
-import com.apollographql.apollo3.testing.registerTestResponse
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.testing.MapTestNetworkTransport
+import com.apollographql.apollo.testing.registerTestResponse
 import des.c5inco.pokedexer.shared.PokemonOriginalQuery
 import des.c5inco.pokedexer.shared.model.Generation
 import des.c5inco.pokedexer.shared.model.Pokemon

@@ -1,7 +1,7 @@
 package des.c5inco.pokedexer.shared.data.pokemon
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.DefaultApolloException
 import des.c5inco.pokedexer.shared.PokemonOriginalQuery
 import des.c5inco.pokedexer.shared.data.cleanupDescriptionText
 import des.c5inco.pokedexer.shared.data.moves.MovesRepository
@@ -264,9 +264,10 @@ private suspend fun fetchPokemonByGeneration(
                     )
                 )
                 .execute()
+        response.exception?.let { throw it }
 
         if (response.hasErrors()) {
-            throw ApolloException("The response has errors: ${response.errors}")
+            throw DefaultApolloException("The response has errors: ${response.errors}")
         }
 
         val pokemonFromServer =
