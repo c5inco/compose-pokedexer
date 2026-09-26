@@ -1,19 +1,13 @@
-@Suppress("DSL_SCOPE_VIOLATION")
-plugins {
-    alias(libs.plugins.androidTest)
-    alias(libs.plugins.kotlinAndroid)
-}
+@Suppress("DSL_SCOPE_VIOLATION") plugins { alias(libs.plugins.androidTest) }
 
 android {
     namespace = "des.c5inco.pokedexer.benchmark"
-    compileSdk = 36
+    compileSdk = 37
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
-    kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
 
     defaultConfig {
         minSdk = 28
@@ -23,8 +17,8 @@ android {
 
     testOptions {
         managedDevices {
-            devices {
-                create("pixel4Api31", com.android.build.api.dsl.ManagedVirtualDevice::class) {
+            localDevices {
+                create("pixel4Api31") {
                     device = "Pixel 4"
                     apiLevel = 31
                     systemImageSource = "aosp"
@@ -48,6 +42,8 @@ android {
     targetProjectPath = ":app"
     experimentalProperties["android.experimental.self-instrumenting"] = true
 }
+
+kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
 
 dependencies {
     implementation(libs.androidx.junit)

@@ -1,7 +1,7 @@
 package des.c5inco.pokedexer.shared.data.abilities
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.DefaultApolloException
 import des.c5inco.pokedexer.shared.AbilitiesQuery
 import des.c5inco.pokedexer.shared.data.Result
 import des.c5inco.pokedexer.shared.data.cleanupDescriptionText
@@ -33,6 +33,7 @@ class AbilitiesRepositoryImpl(
             return withContext(Dispatchers.IO) {
                 println("Loading abilities from network...")
                 val response = apolloClient.query(AbilitiesQuery()).execute()
+                response.exception?.let { throw it }
 
                 if (!response.hasErrors()) {
                     val abilitiesFromServer =
@@ -52,7 +53,7 @@ class AbilitiesRepositoryImpl(
                     abilitiesDao.insertAll(*abilitiesFromServer.toTypedArray())
                     println("Populated abilities database: ${abilitiesFromServer.size}")
                 } else {
-                    throw ApolloException("The response has errors: ${response.errors}")
+                    throw DefaultApolloException("The response has errors: ${response.errors}")
                 }
             }
         } else {

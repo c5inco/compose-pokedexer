@@ -13,7 +13,7 @@ plugins {
 kotlin {
     androidLibrary {
         namespace = "des.c5inco.pokedexer.shared"
-        compileSdk = 36
+        compileSdk = 37
         minSdk = 28
         withHostTestBuilder {}
 

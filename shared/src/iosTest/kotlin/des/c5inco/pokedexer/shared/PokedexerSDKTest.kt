@@ -1,6 +1,6 @@
 package des.c5inco.pokedexer.shared
 
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.exception.DefaultApolloException
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -12,7 +12,7 @@ class PokedexerSDKTest {
     fun apolloFailureDoesNotPreventNextUpdate() = runBlocking {
         var nextUpdateCompleted = false
 
-        runIosDataUpdateSafely("moves") { throw ApolloException("offline") }
+        runIosDataUpdateSafely("moves") { throw DefaultApolloException("offline") }
         runIosDataUpdateSafely("items") { nextUpdateCompleted = true }
 
         assertTrue(nextUpdateCompleted)

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.metro)
     alias(libs.plugins.kotlin.serialization)
@@ -8,7 +7,7 @@ plugins {
 
 android {
     namespace "des.c5inco.pokedexer"
-    compileSdk 36
+    compileSdk 37
 
     defaultConfig {
         applicationId "des.c5inco.pokedexer"
@@ -44,9 +43,20 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs += [
+    buildFeatures {
+        compose true
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        freeCompilerArgs.addAll([
             "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
             "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
             "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
@@ -56,15 +66,7 @@ android {
             "-opt-in=kotlinx.coroutines.FlowPreview",
             "-opt-in=androidx.compose.animation.core.ExperimentalAnimationSpecApi",
             "-opt-in=androidx.compose.ui.test.ExperimentalTestApi"
-        ]
-    }
-    buildFeatures {
-        compose true
-    }
-    packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        ])
     }
 }
 
