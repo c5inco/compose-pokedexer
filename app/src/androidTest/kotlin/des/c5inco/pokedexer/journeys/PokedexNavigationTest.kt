@@ -5,12 +5,12 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.swipeDown
-import androidx.compose.ui.test.swipeUp
+import androidx.compose.ui.test.performScrollToKey
 import des.c5inco.pokedexer.MainActivity
 import org.junit.Rule
 import org.junit.Test
+
+private const val PIKACHU_ID = 25
 
 class PokedexNavigationTest {
     @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
@@ -61,40 +61,18 @@ class PokedexNavigationTest {
             composeTestRule.onAllNodesWithText("Bulbasaur").fetchSemanticsNodes().isNotEmpty()
         }
 
-        // 2. Scroll down in the Pokedex list to reach Pikachu (#25)
-        repeat(2) {
-            composeTestRule.onNodeWithTag("PokedexLazyGrid").performTouchInput {
-                swipeUp(startY = this.centerY, endY = this.centerY - 1000f)
-            }
-            composeTestRule.waitForIdle()
-        }
-
-        // 3. Wait for Pikachu to appear (Pokemon #25)
-        composeTestRule.waitUntil(10000) {
-            composeTestRule.onAllNodesWithText("Pikachu").fetchSemanticsNodes().isNotEmpty()
-        }
-
-        // Note: Pikachu is now visible in the viewport
-        // 4. Scroll up to move Pikachu out of the initial viewport
-        // This simulates the scenario where we'll need to scroll back to it
-        composeTestRule.onNodeWithTag("PokedexLazyGrid").performTouchInput {
-            swipeDown(startY = this.centerY, endY = this.centerY + 800f)
-        }
+        // 2. Scroll the Pokedex list to Pikachu (#25). Pixel-based swipes fling a
+        // density-dependent distance, so scroll by the grid's item key instead.
+        composeTestRule.onNodeWithTag("PokedexLazyGrid").performScrollToKey(PIKACHU_ID)
         composeTestRule.waitForIdle()
 
-        // Scroll back down to see Pikachu again and click it
-        composeTestRule.onNodeWithTag("PokedexLazyGrid").performTouchInput {
-            swipeUp(startY = this.centerY, endY = this.centerY - 800f)
-        }
-        composeTestRule.waitForIdle()
-
-        // Wait again for Pikachu and click it
+        // 3. Wait for Pikachu to appear and click it
         composeTestRule.waitUntil(8000) {
             composeTestRule.onAllNodesWithText("Pikachu").fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onAllNodesWithText("Pikachu")[0].performClick()
 
-        // 5. Wait for details screen to load
+        // 4. Wait for details screen to load
         composeTestRule.waitForIdle()
         composeTestRule.waitUntil(8000) {
             composeTestRule.onAllNodesWithText("About").fetchSemanticsNodes().isNotEmpty()
@@ -103,13 +81,13 @@ class PokedexNavigationTest {
         // Verify we're on the details screen
         composeTestRule.onNodeWithText("Base stats").assertExists()
 
-        // 6. Go back to the Pokedex
+        // 5. Go back to the Pokedex
         composeTestRule.activityRule.scenario.onActivity { activity ->
             activity.onBackPressedDispatcher.onBackPressed()
         }
         composeTestRule.waitForIdle()
 
-        // 7. Verify the Pokedex list has scrolled back to show Pikachu
+        // 6. Verify the Pokedex list has scrolled back to show Pikachu
         // The scroll behavior should ensure Pikachu is visible and positioned
         // at least 100.dp from the top (as per the scroll offset implementation)
         composeTestRule.waitUntil(8000) {

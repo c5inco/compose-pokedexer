@@ -53,7 +53,7 @@ class PokemonDatabaseTest {
         val pokemon = SamplePokemonData
         pokemonDao.insertAll(*(pokemon.toTypedArray()))
         val allPokemon = pokemonDao.getAll()
-        assertEquals(allPokemon.size, 9)
+        assertEquals(SamplePokemonData.size, allPokemon.size)
     }
 
     @Test
@@ -73,6 +73,6 @@ class PokemonDatabaseTest {
         pokemonDao.insertAll(*(pokemon.toTypedArray()))
         pokemonDao.insertAll(*(pokemon.toTypedArray()))
         val allPokemon = pokemonDao.getAll()
-        assertEquals(allPokemon.size, 9)
+        assertEquals(SamplePokemonData.size, allPokemon.size)
     }
 }

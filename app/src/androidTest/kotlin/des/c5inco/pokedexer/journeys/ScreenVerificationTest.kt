@@ -12,6 +12,7 @@ import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
 import androidx.compose.ui.test.swipeUp
 import des.c5inco.pokedexer.MainActivity
+import des.c5inco.pokedexer.R
 import org.junit.Rule
 import org.junit.Test
 
@@ -88,11 +89,18 @@ class ScreenVerificationTest {
         }
 
         // Verify table headers exist
-        composeTestRule.onNodeWithText("Name").assertExists()
-        composeTestRule.onNodeWithText("Type").assertExists()
-        composeTestRule.onNodeWithText("Category").assertExists()
-        composeTestRule.onNodeWithText("Power").assertExists()
-        composeTestRule.onNodeWithText("Accuracy").assertExists()
+        listOf(
+                R.string.nameTableHeader,
+                R.string.typeTableHeader,
+                R.string.categoryTableHeader,
+                R.string.powerTableHeader,
+                R.string.accuracyTableHeader,
+            )
+            .forEach { header ->
+                composeTestRule
+                    .onNodeWithText(composeTestRule.activity.getString(header))
+                    .assertExists()
+            }
 
         // 4. Wait for move data to load
         composeTestRule.waitUntil(10000) {
