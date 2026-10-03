@@ -3,6 +3,7 @@ activityCompose = "1.12.3"
 androidGradlePlugin = "8.13.1"
 apollo = "3.8.6"
 composeBom = "2026.01.01"
+composeUiProgressiveBlur = "1.13.0-alpha03"
 coreKtx = "1.17.0"
 coroutines = "1.9.0"
 espressoCore = "3.7.0"
@@ -38,7 +39,7 @@ navigation-compose = { module = "androidx.navigation:navigation-compose", versio
 
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom"}
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
-androidx-compose-ui = { module = "androidx.compose.ui:ui" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "composeUiProgressiveBlur" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }

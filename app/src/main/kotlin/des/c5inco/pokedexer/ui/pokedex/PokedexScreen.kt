@@ -1,5 +1,6 @@
 package des.c5inco.pokedexer.ui.pokedex
 
+import android.content.pm.ApplicationInfo
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.MutableTransitionState
@@ -27,6 +28,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -45,7 +47,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -119,6 +123,7 @@ private data class PokedexLayoutState(
     val listState: LazyGridState,
     val filterMenuState: FilterMenuState,
     val innerPadding: PaddingValues,
+    val blurTuning: EdgeBlurTuningState,
 )
 
 @Composable
@@ -136,6 +141,9 @@ fun PokedexScreen(
             LazyGridState()
         }
     var filterMenuState by remember { mutableStateOf(FilterMenuState.Hidden) }
+    val blurTuning = remember { EdgeBlurTuningState() }
+    val canTuneBlur =
+        LocalContext.current.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
             state =
@@ -152,11 +160,29 @@ fun PokedexScreen(
     RestoreSelectedPokemon(screenState, listState)
 
     Scaffold(
-        topBar = { PokedexTopAppBar(scrollBehavior, callbacks.onBackClick) },
+        topBar = {
+            PokedexTopAppBar(
+                scrollBehavior = scrollBehavior,
+                onBackClick = callbacks.onBackClick,
+                onTuneBlurClick =
+                    if (canTuneBlur) {
+                        { blurTuning.panelVisible = !blurTuning.panelVisible }
+                    } else {
+                        null
+                    },
+            )
+        },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         PokedexBody(
-            layoutState = PokedexLayoutState(screenState, listState, filterMenuState, innerPadding),
+            layoutState =
+                PokedexLayoutState(
+                    screenState,
+                    listState,
+                    filterMenuState,
+                    innerPadding,
+                    blurTuning,
+                ),
             callbacks = callbacks,
             onFilterMenuStateChange = { filterMenuState = it },
         )
@@ -179,7 +205,11 @@ private fun RestoreSelectedPokemon(screenState: PokedexScreenState, listState: L
 }
 
 @Composable
-private fun PokedexTopAppBar(scrollBehavior: TopAppBarScrollBehavior, onBackClick: () -> Unit) {
+private fun PokedexTopAppBar(
+    scrollBehavior: TopAppBarScrollBehavior,
+    onBackClick: () -> Unit,
+    onTuneBlurClick: (() -> Unit)?,
+) {
     MediumTopAppBar(
         title = { Text("Pokemon") },
         navigationIcon = {
@@ -187,9 +217,17 @@ private fun PokedexTopAppBar(scrollBehavior: TopAppBarScrollBehavior, onBackClic
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
         },
+        actions = {
+            if (onTuneBlurClick != null) {
+                IconButton(onClick = onTuneBlurClick) {
+                    Icon(imageVector = Icons.Filled.Tune, contentDescription = "Tune edge blur")
+                }
+            }
+        },
         colors =
             TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
+                containerColor = Color.Transparent,
+                scrolledContainerColor = Color.Transparent,
             ),
         scrollBehavior = scrollBehavior,
     )
@@ -227,22 +265,28 @@ private fun PokedexBody(
             },
             modifier = Modifier.align(Alignment.BottomCenter),
         )
+        val blurTuning = layoutState.blurTuning
+        if (blurTuning.panelVisible) {
+            EdgeBlurTuningPanel(
+                tuning = blurTuning.tuning,
+                onTuningChange = { blurTuning.tuning = it },
+                onDismiss = { blurTuning.panelVisible = false },
+                modifier = Modifier.align(Alignment.Center).padding(horizontal = 16.dp),
+            )
+        }
     }
 }
 
 @Composable
 private fun PokedexContent(layoutState: PokedexLayoutState, onPokemonSelected: (Pokemon) -> Unit) {
-    Column(
-        modifier =
-            Modifier.padding(top = layoutState.innerPadding.calculateTopPadding()).fillMaxWidth()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         // Animated state transitions remain disabled due to a recomposition or performance issue
         // that still needs investigation.
         when (val content = layoutState.screen.content) {
             is PokedexUiState.Loading -> LoadingIndicator()
             is PokedexUiState.Ready ->
                 PokemonList(
-                    listState = layoutState.listState,
+                    layoutState = layoutState,
                     state =
                         PokemonListState(
                             listLoadedState = content.listLoadedState,
@@ -270,21 +314,45 @@ private data class PokemonListState(
 @Composable
 private fun PokemonList(
     modifier: Modifier = Modifier,
-    listState: LazyGridState,
+    layoutState: PokedexLayoutState,
     state: PokemonListState,
     onPokemonSelected: (Pokemon) -> Unit = {},
 ) {
-    val bottomContentPadding =
-        96.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val listState = layoutState.listState
+    val innerPadding = layoutState.innerPadding
+    val navigationBarPadding =
+        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val bottomContentPadding = 96.dp + navigationBarPadding
+    // The filter button's top edge sits 80dp above the navigation bar (24dp padding + 56dp FAB);
+    // start the blur 8dp below it.
+    val bottomBlurStart = 72.dp + navigationBarPadding
 
     LazyVerticalGrid(
-        modifier = modifier.testTag("PokedexLazyGrid"),
+        modifier =
+            modifier
+                .testTag("PokedexLazyGrid")
+                .fillMaxSize()
+                .pokedexEdgeBlur(
+                    tuning = layoutState.blurTuning.tuning,
+                    listState = listState,
+                    anchors =
+                        EdgeBlurAnchors(
+                            innerPadding = innerPadding,
+                            bottomBlurStart = bottomBlurStart,
+                        ),
+                    pillMask = rememberInvertedPillBlurMask(),
+                ),
         columns = GridCells.Fixed(2),
         state = listState,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding =
-            PaddingValues(top = 12.dp, start = 16.dp, end = 16.dp, bottom = bottomContentPadding),
+            PaddingValues(
+                top = innerPadding.calculateTopPadding() + 12.dp,
+                start = 16.dp,
+                end = 16.dp,
+                bottom = bottomContentPadding,
+            ),
         content = {
             if (state.pokemon.isEmpty()) {
                 item(span = { GridItemSpan(2) }) {

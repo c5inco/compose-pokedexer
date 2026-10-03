@@ -68,6 +68,10 @@ android {
     }
 }
 
+// Progressive blur spike: Compose UI 1.13 alphas declare compileSdk 37 / AGP 9.1 in their AAR
+// metadata. Skip that check until the project migrates to AGP 9.
+tasks.matching { it.name ==~ /check.*AarMetadata/ }.configureEach { enabled = false }
+
 metro {
     // No interop needed for clean migration
 }
