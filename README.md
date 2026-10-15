@@ -1,34 +1,28 @@
 # Compose Pokedexer
 ![License-MIT](https://img.shields.io/badge/License-MIT-red.svg)
 
-A **Kotlin Multiplatform** Pokedex app with native **Android (Jetpack Compose)** and **iOS (SwiftUI)** frontends, sharing a common data layer.
+A **Kotlin Multiplatform** Pokédex app with native **Android (Jetpack Compose)** and **iOS (SwiftUI)** frontends sharing a common data layer, powered by the [PokeAPI GraphQL API](https://pokeapi.co/docs/graphql#v1beta2).
 
-Adapted fork of original [compose-pokedex](https://github.com/zsoltk/compose-pokedex) project.
-
-## PokeAPI
-
-Compose Pokedexer uses the [PokeAPI GraphQL API](https://pokeapi.co/docs/graphql#v1beta2) to load all data and images pertaining to Pokémon.
+Adapted from the original [compose-pokedex](https://github.com/zsoltk/compose-pokedex) project.
 
 ## Features
 
-- Explore the full Pokedex with fast, visual browsing
-- Dive into rich detail pages with stats, evolutions, moves, and abilities
-- Discover moves and items in their own dedicated catalogs
-- Understand type matchups quickly with a built-in type chart
-- Find what you want instantly with unified search
-- Narrow the world by generation, type, or your favorites
-- Make it yours with favorites and dynamic type-based theming
-- Consistent experience across Android and iOS with a shared data layer
+- Pokédex grid with filters for generation, Pokémon type, and favorites
+- Pokémon detail screens with tabs for about, base stats, evolution chains, moves, and abilities
+- Dedicated catalogs for moves, abilities, and items
+- Interactive type-matchup chart
+- Unified search across Pokémon, moves, and items
+- Dynamic light and dark theming seeded from each Pokémon's primary type
 
 ## Notable Technical Choices
 
-- **KMP shared module**: Room database, Apollo GraphQL client, data models, and repositories shared between Android and iOS
+- **KMP `:shared` module**: Room database, Apollo GraphQL client, data models, and repositories shared between Android and iOS
 - **Jetpack Compose Navigation 3**: `NavDisplay` with `rememberNavBackStack` and type-safe serializable routes
 - **Metro DI**: Dependency injection with assisted injection for ViewModels requiring runtime parameters
-- **SKIE**: Kotlin Flow to Swift AsyncSequence interop for iOS
-- **RuntimeShader**: Pager color transitions on API 33+ devices
+- **SKIE**: Kotlin `Flow` to Swift `AsyncSequence` interop for iOS
+- **RuntimeShader**: Pager color transitions on Android 13+ (API 33+)
 - **Material Kolor**: Seed-based dynamic color generation across platforms
-- **Coil**: Image loading with GIF support
+- **Coil**: Image loading with animated GIF support
 - **DataStore**: User preferences (favorites) storage
 
 ## Screenshots
@@ -65,8 +59,8 @@ Notable additions:
 
 ## Disclaimer
 
-This sample app is not affiliated or endorsed by the creators, distributors, or the copyright or trademark holders of the series of games Compose Pokedexer relates to. The character names and information are trademarks of Nintendo. No copyright infringement is intended, this sample app is a fair-use reference for their works.,
+This sample app is not affiliated with or endorsed by Nintendo, Game Freak, or The Pokémon Company. Character names and game data are trademarks of their respective owners and are used here as a fair-use reference.
 
 ## License
 
-All the code available under the MIT license. See [LICENSE](LICENSE).
+All code is available under the MIT license. See [LICENSE](LICENSE).
